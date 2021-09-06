@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Trabajador{% endblock %}
+
+{% block body %}
+    <h1>Trabajador</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Cargo</th>
+                <td>{{ trabajador.cargo }}</td>
+            </tr>
+            <tr>
+                <th>Habilitado</th>
+                <td>{{ trabajador.habilitado ? 'Yes' : 'No' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('trabajador_index') }}">back to list</a>
+
+    <a href="{{ path('trabajador_edit', {'trabajador': trabajador.id}) }}">edit</a>
+
+    {{ include('admin/trabajador/_delete_form.html.twig') }}
+{% endblock %}
