@@ -6,16 +6,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\Pure;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 #[ORM\Entity]
 class Trabajador extends _Entity_
 {
-    #[ORM\Id]
-    #[ORM\Column(type: "string", length: 36)]
-    #[ORM\GeneratedValue(strategy: "UUID")]
-    private string $id;
-
     #[ORM\OneToOne(targetEntity: Persona::class, cascade: ["persist"])]
     #[ORM\JoinColumn(name: 'persona_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Persona $persona;
@@ -38,11 +32,6 @@ class Trabajador extends _Entity_
     #[Pure] public function __construct()
     {
         $this->grupos = new ArrayCollection();
-    }
-
-    public function getId(): ?string
-    {
-        return $this->id;
     }
 
     public function getCargo(): ?string

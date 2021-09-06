@@ -8,7 +8,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity]
 #[ORM\UniqueConstraint(name: "UNQ_USERNAME", fields: ['username'])]
-class Usuario extends _Entity_ implements UserInterface
+class Usuario implements UserInterface
 {
     #[ORM\Id]
     #[ORM\OneToOne(inversedBy: 'usuario', targetEntity: Trabajador::class)]

@@ -22,11 +22,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[UniqueEntity(fields: ['codigo'])]
 class Nomenclador extends BaseNestedTree
 {
-    #[ORM\Id]
-    #[ORM\Column(type: "string", length: 36)]
-    #[ORM\GeneratedValue(strategy: "UUID")]
-    private ?string $id;
-
     /** @Gedmo\TreeRoot() */
     #[ORM\ManyToOne(targetEntity: Nomenclador::class)]
     #[ORM\JoinColumn(onDelete: "CASCADE")]
@@ -71,17 +66,6 @@ class Nomenclador extends BaseNestedTree
     public function __construct()
     {
         $this->children = new ArrayCollection();
-    }
-
-    public function getId(): ?string
-    {
-        return $this->id;
-    }
-
-    public function setId(?string $id): Nomenclador
-    {
-        $this->id = $id;
-        return $this;
     }
 
     public function getRoot(): ?self
