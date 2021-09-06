@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Persona;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -13,10 +14,15 @@ class PersonaType extends AbstractType
     {
         $builder
             ->add('numero_identidad')
-            ->add('nombre')
-            ->add('apellido_primero')
-            ->add('apellido_segundo')
-        ;
+            ->add('nombre', TextType::class, [
+                'label' => 'Nombre'
+            ])
+            ->add('apellido_primero', TextType::class, [
+                'label' => 'Primer Apellido'
+            ])
+            ->add('apellido_segundo', TextType::class, [
+                'label' => 'Segundo Apellido'
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

@@ -1,5 +1,13 @@
 FROM dap/php:8.0-apache
 
+# Instalando paquete
+RUN apt-get -y update && \
+    apt-get install -y libicu-dev
+
+# Configurando extenciones
+RUN docker-php-ext-configure intl && \
+    docker-php-ext-install intl
+
 # Install symfony
 RUN curl -sS https://get.symfony.com/cli/installer | bash && \
     mv /root/.symfony/bin/symfony /usr/local/bin/symfony

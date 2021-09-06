@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity]
@@ -55,6 +54,11 @@ class Usuario implements UserInterface
         $this->trabajador = $trabajador;
 
         return $this;
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->username;
     }
 
     public function getRoles(): array

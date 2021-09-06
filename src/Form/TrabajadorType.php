@@ -12,8 +12,12 @@ class TrabajadorType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('persona', PersonaType::class)
-            ->add('usuario', UsuarioType::class)
+            ->add('persona', PersonaType::class, [
+                'label' => 'Datos de la Persona'
+            ])
+            ->add('usuario', UsuarioType::class, [
+                'label' => 'Datos del usuario'
+            ])
             ->add('grupos')
             ->add('cargo')
             ->add('habilitado');
