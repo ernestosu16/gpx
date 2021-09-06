@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\Pure;
 
 #[ORM\Entity]
-#[ORM\Index(fields: ['numero_identidad'], name: 'IDX_NUMERO_IDENTIDAD')]
+#[ORM\UniqueConstraint(name: 'UNQ_NUMERO_IDENTIDAD', fields: ['numero_identidad'])]
 class Persona extends _Entity_
 {
     #[ORM\Column(type: "string", length: 11, unique: true)]
