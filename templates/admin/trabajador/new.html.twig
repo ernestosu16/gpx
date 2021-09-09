@@ -7,5 +7,5 @@
 
     {{ include('admin/trabajador/_form.html.twig') }}
 
-    <a href="{{ path('trabajador_index') }}">back to list</a>
+    <a href="{{ path('trabajador_index') }}">{{ 'back to list'|trans({},'nomenclador') }}</a>
 {% endblock %}
