@@ -4,7 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Config\Nomenclador\Grupo as GrupoNomenclador;
 use App\Entity\Grupo;
-use App\Form\GrupoType;
+use App\Form\Admin\GrupoType;
 use App\Repository\GrupoRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;

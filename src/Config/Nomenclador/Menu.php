@@ -2,9 +2,9 @@
 
 namespace App\Config\Nomenclador;
 
-use App\Entity\Grupo as GrupoEntity;
+use App\Entity\Menu as MenuEntity;
 
-final class Grupo extends _Nomenclador_
+final class Menu extends _Nomenclador_
 {
     static function parent(): ?string
     {
@@ -13,21 +13,21 @@ final class Grupo extends _Nomenclador_
 
     static function code(): string
     {
-        return 'GRUPO';
+        return 'MENU';
     }
 
     static function name(): string
     {
-        return 'Grupos de Usuarios';
+        return 'Menú';
     }
 
     static function description(): string
     {
-        return 'Listado de los grupos de la aplicación';
+        return 'Listado de Menú de la aplicación';
     }
 
     static function discriminator(): string
     {
-        return GrupoEntity::class;
+        return MenuEntity::class;
     }
 }

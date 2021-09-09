@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Menu index{% endblock %}
+
+{% block body %}
+    <h1>Menu index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Codigo</th>
+                <th>Nombre</th>
+                <th>Descripcion</th>
+                <th>Parametros</th>
+                <th>End</th>
+                <th>Habilitado</th>
+                <th>Lft</th>
+                <th>Rgt</th>
+                <th>Id</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for menu in menus %}
+            <tr>
+                <td>{{ menu.codigo }}</td>
+                <td>{{ menu.nombre }}</td>
+                <td>{{ menu.descripcion }}</td>
+                <td>{{ menu.parametros ? menu.parametros|json_encode : '' }}</td>
+                <td>{{ menu.end ? 'Yes' : 'No' }}</td>
+                <td>{{ menu.habilitado ? 'Yes' : 'No' }}</td>
+                <td>{{ menu.lft }}</td>
+                <td>{{ menu.rgt }}</td>
+                <td>{{ menu.id }}</td>
+                <td>
+                    <a href="{{ path('menu_show', {'id': menu.id}) }}">show</a>
+                    <a href="{{ path('menu_edit', {'id': menu.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="10">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('menu_new') }}">Create new</a>
+{% endblock %}
