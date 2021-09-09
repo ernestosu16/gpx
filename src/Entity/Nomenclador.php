@@ -10,15 +10,14 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use JetBrains\PhpStorm\Pure;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /** @Gedmo\Tree(type="nested") */
 #[ORM\Entity(repositoryClass: NomencladorRepository::class)]
-#[ORM\Index(columns: ["parent_id"], name: "IDX_PARENT_ID")]
-#[ORM\Index(columns: ["root_id"], name: "IDX_ROOT_ID")]
-#[ORM\UniqueConstraint(name: "UNQ_CODIGO", fields: ['codigo'])]
+#[ORM\Index(columns: ['parent_id'], name: 'IDX_PARENT_ID')]
+#[ORM\Index(columns: ['root_id'], name: 'IDX_ROOT_ID')]
+#[ORM\UniqueConstraint(name: 'UNQ_CODIGO', fields: ['codigo'])]
 #[UniqueEntity(fields: ['codigo'])]
 class Nomenclador extends BaseNestedTree
 {
@@ -26,45 +25,47 @@ class Nomenclador extends BaseNestedTree
 
     /** @Gedmo\TreeRoot() */
     #[ORM\ManyToOne(targetEntity: Nomenclador::class)]
-    #[ORM\JoinColumn(onDelete: "CASCADE")]
+    #[ORM\JoinColumn(onDelete: 'CASCADE')]
     private Nomenclador $root;
 
     /** @Gedmo\TreeParent() */
-    #[ORM\ManyToOne(targetEntity: Nomenclador::class, inversedBy: "children")]
-    #[ORM\JoinColumn(onDelete: "CASCADE")]
+    #[ORM\ManyToOne(targetEntity: Nomenclador::class, inversedBy: 'children')]
+    #[ORM\JoinColumn(onDelete: 'CASCADE')]
     private ?Nomenclador $parent = null;
 
-    #[ORM\OneToMany(mappedBy: "parent", targetEntity: Nomenclador::class, cascade: ['persist'])]
-    #[ORM\OrderBy(["lft" => "ASC"])]
-    #[Groups(["nomenclador:children"])]
+    #[ORM\OneToMany(mappedBy: 'parent', targetEntity: Nomenclador::class, cascade: ['persist'])]
+    #[ORM\OrderBy(['lft' => 'ASC'])]
     #[MaxDepth(1)]
     private ?Collection $children;
 
-    #[ORM\Column(type: "string", length: 100, unique: true)]
-    #[Groups(["nomenclador:default", "nomenclador:read", "nomenclador:write", "cliente:read"])]
+    #[ORM\Column(type: 'string', length: 100, unique: true)]
     #[Assert\NotBlank]
-    #[Assert\Regex(pattern: RegexUtil::CODIGO, message: "regex.codigo")]
+    #[Assert\Regex(pattern: RegexUtil::CODIGO, message: 'regex.codigo')]
     private string $codigo;
 
-    #[ORM\Column(type: "string", length: 50)]
-    #[Groups(["nomenclador:default", "nomenclador:read", "nomenclador:write", "cliente:read"])]
+    #[ORM\Column(type: 'string', length: 50)]
     #[Assert\NotBlank]
-    #[Assert\Regex(pattern: RegexUtil::TEXTO_ACENTO_ESPACIO, message: "regex.nombre")]
+    #[Assert\Regex(pattern: RegexUtil::TEXTO_ACENTO_ESPACIO, message: 'regex.nombre')]
     #[Assert\Length(min: 3, max: 100)]
     private string $nombre;
 
-    #[ORM\Column(type: "text", length: 500)]
+    #[ORM\Column(type: 'text', length: 500)]
     #[Assert\Length(max: 500)]
     private string $descripcion = '';
 
-    #[ORM\Column(type: "json")]
+    #[ORM\Column(type: 'json')]
     private array $parametros = array();
 
-    #[ORM\Column(type: "boolean")]
+    #[ORM\Column(type: 'boolean')]
     private bool $end = false;
 
-    #[ORM\Column(type: "boolean")]
+    #[ORM\Column(type: 'boolean')]
     private bool $habilitado = true;
+
+    public function __toString(): string
+    {
+        return $this->nombre;
+    }
 
     #[Pure]
     public function __construct()

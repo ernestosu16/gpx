@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity]
-#[ORM\UniqueConstraint(name: "UNQ_USERNAME", fields: ['username'])]
+#[ORM\UniqueConstraint(name: 'UNQ_USERNAME', fields: ['username'])]
 class Usuario implements UserInterface
 {
     #[ORM\Id]
@@ -14,10 +14,10 @@ class Usuario implements UserInterface
     #[ORM\JoinColumn(name: 'id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private ?Trabajador $trabajador = null;
 
-    #[ORM\Column(type: "string", length: 36, unique: true)]
+    #[ORM\Column(type: 'string', length: 36, unique: true)]
     private string $username;
 
-    #[ORM\Column(type: "string", length: 36)]
+    #[ORM\Column(type: 'string', length: 36)]
     private string $password;
 
     public function getUsername(): ?string

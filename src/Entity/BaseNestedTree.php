@@ -5,15 +5,15 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/** @Gedmo\Tree(type="nested") */
+/** @Gedmo\Tree(type='nested') */
 abstract class BaseNestedTree extends _Entity_
 {
     /** @Gedmo\TreeLeft() */
-    #[ORM\Column(type: "integer")]
+    #[ORM\Column(type: 'integer')]
     protected ?int $lft;
 
     /** @Gedmo\TreeRight */
-    #[ORM\Column(type: "integer")]
+    #[ORM\Column(type: 'integer')]
     protected ?int $rgt;
 
     public function getLft(): ?int

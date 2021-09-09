@@ -9,16 +9,16 @@ use JetBrains\PhpStorm\Pure;
 #[ORM\UniqueConstraint(name: 'UNQ_NUMERO_IDENTIDAD', fields: ['numero_identidad'])]
 class Persona extends _Entity_
 {
-    #[ORM\Column(type: "string", length: 11, unique: true)]
+    #[ORM\Column(type: 'string', length: 11, unique: true)]
     private string $numero_identidad;
 
-    #[ORM\Column(type: "string", length: 100)]
+    #[ORM\Column(type: 'string', length: 100)]
     private string $nombre;
 
-    #[ORM\Column(type: "string", length: 100)]
+    #[ORM\Column(type: 'string', length: 100)]
     private string $apellido_primero;
 
-    #[ORM\Column(type: "string", length: 100)]
+    #[ORM\Column(type: 'string', length: 100)]
     private string $apellido_segundo;
 
     #[Pure] public function __toString(): string

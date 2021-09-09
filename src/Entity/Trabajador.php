@@ -10,23 +10,23 @@ use JetBrains\PhpStorm\Pure;
 #[ORM\Entity]
 class Trabajador extends _Entity_
 {
-    #[ORM\OneToOne(targetEntity: Persona::class, cascade: ["persist"])]
+    #[ORM\OneToOne(targetEntity: Persona::class, cascade: ['persist'])]
     #[ORM\JoinColumn(name: 'persona_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Persona $persona;
 
-    #[ORM\OneToOne(mappedBy: 'trabajador', targetEntity: Usuario::class, cascade: ["persist"])]
+    #[ORM\OneToOne(mappedBy: 'trabajador', targetEntity: Usuario::class, cascade: ['persist'])]
     private ?Usuario $usuario;
 
     #[ORM\ManyToMany(targetEntity: Nomenclador::class)]
-    #[ORM\JoinTable(name: "trabajador_grupo_asignado")]
-    #[ORM\JoinColumn(name: "trabajador_id", referencedColumnName: "id")]
-    #[ORM\InverseJoinColumn(name: "grupo_id", referencedColumnName: "id")]
+    #[ORM\JoinTable(name: 'trabajador_grupo_asignado')]
+    #[ORM\JoinColumn(name: 'trabajador_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(name: 'grupo_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Collection $grupos;
 
-    #[ORM\Column(type: "string", length: 11)]
+    #[ORM\Column(type: 'string', length: 11)]
     private string $cargo;
 
-    #[ORM\Column(type: "boolean")]
+    #[ORM\Column(type: 'boolean')]
     private bool $habilitado = true;
 
     #[Pure] public function __construct()
@@ -93,7 +93,7 @@ class Trabajador extends _Entity_
     }
 
     /**
-     * @return Collection|Nomenclador[]
+     * @return Collection
      */
     public function getGrupos(): Collection
     {
