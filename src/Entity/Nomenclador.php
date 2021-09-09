@@ -17,8 +17,12 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: NomencladorRepository::class)]
 #[ORM\Index(columns: ['parent_id'], name: 'IDX_PARENT_ID')]
 #[ORM\Index(columns: ['root_id'], name: 'IDX_ROOT_ID')]
+#[ORM\Index(columns: ['discr'], name: 'IDX_DISCR')]
 #[ORM\UniqueConstraint(name: 'UNQ_CODIGO', fields: ['codigo'])]
 #[UniqueEntity(fields: ['codigo'])]
+#[ORM\InheritanceType("SINGLE_TABLE")]
+#[ORM\DiscriminatorColumn(name: 'discr', type: 'string', length: 11)]
+#[ORM\DiscriminatorMap(value: ["nomenclador" => Nomenclador::class, "grupo" => Grupo::class, "menu" => Menu::class])]
 class Nomenclador extends BaseNestedTree
 {
     const ROOT = 'APP';

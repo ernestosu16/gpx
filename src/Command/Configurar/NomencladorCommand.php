@@ -4,6 +4,7 @@ namespace App\Command\Configurar;
 
 use App\Command\BaseCommand;
 use App\Command\BaseCommandInterface;
+use App\Config\Nomenclador\_Nomenclador_;
 use App\Config\nomenclador\NomencladorInterface;
 use App\Entity\Nomenclador;
 use App\Repository\NomencladorRepository;
@@ -23,8 +24,8 @@ final class NomencladorCommand extends BaseCommand implements BaseCommandInterfa
 {
 
     private ObjectRepository|EntityRepository|NomencladorRepository $repository;
-    private array $codigo = [];
-    private array $codigo_parent = [];
+    private array $code = [];
+    private array $code_parent = [];
 
     static function getCommandName(): string
     {
@@ -32,39 +33,39 @@ final class NomencladorCommand extends BaseCommand implements BaseCommandInterfa
     }
 
     /**
-     * @return NomencladorInterface[]
+     * @return self[]
      * @throws ReflectionException
      */
     private static function nomencladores(): array
     {
         $nomenclador = [];
 
-        $MyClassesNamespace = ClassFinderUtil::getClassesInNamespace('App\\Config\\nomenclador');
+        $MyClassesNamespace = ClassFinderUtil::getClassesInNamespace('App\\Config\\Nomenclador');
         foreach ($MyClassesNamespace as $item) {
             $classReflection = new ReflectionClass($item);
             if ($classReflection->isAbstract()) continue;
-            /** @var NomencladorInterface $className */
+            /** @var _Nomenclador_ $className */
             $className = $classReflection->getName();
-            $nomenclador[] = $className::INFO();
+            $nomenclador[] = $className::newInstance();
         }
 
-        $MyNamespace = [
-            'FormaEntrega',
-            'FormaPago',
-            'TipoJuridico',
-            'TipoMoneda',
-        ];
-
-        foreach ($MyNamespace as $namespace) {
-            $MyClassesNamespace = ClassFinderUtil::getClassesInNamespace('App\\Config\\nomenclador\\' . $namespace);
-            foreach ($MyClassesNamespace as $item) {
-                $classReflection = new ReflectionClass($item);
-                if ($classReflection->isAbstract()) continue;
-                /** @var NomencladorInterface $className */
-                $className = $classReflection->getName();
-                $nomenclador[] = $className::INFO();
-            }
-        }
+//        $MyNamespace = [
+//            'FormaEntrega',
+//            'FormaPago',
+//            'TipoJuridico',
+//            'TipoMoneda',
+//        ];
+//
+//        foreach ($MyNamespace as $namespace) {
+//            $MyClassesNamespace = ClassFinderUtil::getClassesInNamespace('App\\Config\\nomenclador\\' . $namespace);
+//            foreach ($MyClassesNamespace as $item) {
+//                $classReflection = new ReflectionClass($item);
+//                if ($classReflection->isAbstract()) continue;
+//                /** @var NomencladorInterface $className */
+//                $className = $classReflection->getName();
+//                $nomenclador[] = $className::INFO();
+//            }
+//        }
 
         return $nomenclador;
     }
@@ -84,6 +85,7 @@ final class NomencladorCommand extends BaseCommand implements BaseCommandInterfa
         $section1 = $output->section();
         $section1->writeln('Creando la lista de nomencladores por defecto');
 
+        /** @var _Nomenclador_ $nomenclador */
         foreach (self::nomencladores() as $nomenclador) {
             $nomencladorEntity = $this->generarNomencladorEntity($nomenclador);
             if ($nomencladorEntity) {
@@ -100,8 +102,9 @@ final class NomencladorCommand extends BaseCommand implements BaseCommandInterfa
     }
 
 
-    private function generarNomencladorEntity(NomencladorInterface $nomenclador): ?Nomenclador
+    private function generarNomencladorEntity(_Nomenclador_ $nomenclador): ?Nomenclador
     {
+
         $this->codigo = [];
         $this->codigo_parent = [];
         $this->generarNomenclador($nomenclador);
@@ -126,7 +129,7 @@ final class NomencladorCommand extends BaseCommand implements BaseCommandInterfa
         return $this->repository->nuevo($codigo, $nomenclador->getName(), $nomenclador->getDescription(), $parent);
     }
 
-    private function generarNomenclador(NomencladorInterface $nomenclador)
+    private function generarNomenclador(_Nomenclador_ $nomenclador)
     {
         if ($nomenclador->getParent())
             $this->generarNomenclador($nomenclador->getParent());

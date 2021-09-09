@@ -3,7 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Nomenclador;
-use App\Form\NomencladorType;
+use App\Form\Admin\NomencladorType;
 use App\Repository\NomencladorRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

@@ -4,9 +4,15 @@ namespace App\Repository;
 
 use App\Entity\Nomenclador;
 
+/**
+ * @method Nomenclador|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Nomenclador|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Nomenclador[]    findAll()
+ * @method Nomenclador[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ */
 class NomencladorRepository extends _NestedTreeRepository_
 {
-    static function classEntity(): string
+    protected static function classEntity(): string
     {
         return Nomenclador::class;
     }

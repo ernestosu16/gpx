@@ -3,7 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Trabajador;
-use App\Form\TrabajadorType;
+use App\Form\Admin\TrabajadorType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

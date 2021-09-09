@@ -5,7 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/** @Gedmo\Tree(type='nested') */
+/** @Gedmo\Tree(type="nested") */
 abstract class BaseNestedTree extends _Entity_
 {
     /** @Gedmo\TreeLeft() */

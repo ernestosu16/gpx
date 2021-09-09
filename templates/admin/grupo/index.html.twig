@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Grupo index{% endblock %}
+
+{% block body %}
+    <h1>Grupo index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Codigo</th>
+                <th>Nombre</th>
+                <th>Descripcion</th>
+                <th>Parametros</th>
+                <th>End</th>
+                <th>Habilitado</th>
+                <th>Lft</th>
+                <th>Rgt</th>
+                <th>Id</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for grupo in grupos %}
+            <tr>
+                <td>{{ grupo.codigo }}</td>
+                <td>{{ grupo.nombre }}</td>
+                <td>{{ grupo.descripcion }}</td>
+                <td>{{ grupo.parametros ? grupo.parametros|json_encode : '' }}</td>
+                <td>{{ grupo.end ? 'Yes' : 'No' }}</td>
+                <td>{{ grupo.habilitado ? 'Yes' : 'No' }}</td>
+                <td>{{ grupo.lft }}</td>
+                <td>{{ grupo.rgt }}</td>
+                <td>{{ grupo.id }}</td>
+                <td>
+                    <a href="{{ path('grupo_show', {'id': grupo.id}) }}">show</a>
+                    <a href="{{ path('grupo_edit', {'id': grupo.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="10">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('grupo_new') }}">Create new</a>
+{% endblock %}

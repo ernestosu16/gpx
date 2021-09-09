@@ -10,7 +10,7 @@ use App\Entity\Persona;
  * @method Persona[]    findAll()
  * @method Persona[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class PersonaRepository extends _Repository_
+final class PersonaRepository extends _Repository_
 {
     static function classEntity(): string
     {
