@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Nomenclador{% endblock %}
+
+{% block body %}
+    <h1>Edit Nomenclador</h1>
+
+    {{ include('admin/nomenclador/child/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('nomenclador_child_index', {'codigo':nomencladorParent.codigo}) }}">back to list</a>
+
+
+    {{ include('admin/nomenclador/child/_delete_form.html.twig') }}
+{% endblock %}

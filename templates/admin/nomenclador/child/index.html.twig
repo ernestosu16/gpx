@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nomenclador index{% endblock %}
+
+{% block body %}
+    <h1>Nomenclador index</h1>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>{{ 'name'|trans({}, 'nomenclador') }}</th>
+            <th>{{ 'description'|trans({}, 'nomenclador') }}</th>
+            <th>{{ 'parameters'|trans({}, 'nomenclador') }}</th>
+            <th>{{ 'code'|trans({}, 'nomenclador') }}</th>
+            <th>{{ 'end'|trans({}, 'nomenclador') }}</th>
+            <th>{{ 'enabled'|trans({}, 'nomenclador') }}</th>
+            <th>{{ 'actions'|trans({}, 'nomenclador') }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for nomenclador in nomencladors %}
+            <tr>
+                <td>{{ nomenclador.nombre }}</td>
+                <td>{{ nomenclador.descripcion }}</td>
+                <td>{{ nomenclador.parametros ? nomenclador.parametros|json_encode : '' }}</td>
+                <td>{{ nomenclador.codigo }}</td>
+                <td>{{ nomenclador.end ? 'Yes' : 'No' }}</td>
+                <td>{{ nomenclador.habilitado ? 'Yes' : 'No' }}</td>
+                <td>
+                    <a href="{{ path('nomenclador_child_show', {'codigo': nomencladorParent.codigo, 'id': nomenclador.id}) }}">{{ 'show'|trans({}, 'nomenclador') }}</a>
+                    <a href="{{ path('nomenclador_child_edit', {'codigo':nomencladorParent.codigo, 'id': nomenclador.id}) }}">{{ 'edit'|trans({}, 'nomenclador') }}</a>
+                    {% if nomenclador.children.count %}
+                        <a href="{{ path('nomenclador_child_index', {'codigo':nomenclador.codigo }) }}">{{ 'list of children'|trans({}, 'nomenclador') }}</a>
+                    {% endif %}
+                    {% if nomencladorParent.end == false and nomenclador.children.count == 0 %}
+                        <a href="{{ path('nomenclador_child_new', {'codigo':nomenclador.codigo }) }}">{{ 'new child'|trans({}, 'nomenclador') }}</a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">{{ 'no records found'|trans({}, 'nomenclador') }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('nomenclador_child_new', {'codigo': nomencladorParent.codigo}) }}">{{ 'create new'|trans({}, 'nomenclador') }}</a>
+    {% if nomencladorParent.parent.codigo != constant('App\\Entity\\Nomenclador::ROOT') %}
+        <a href="{{ path('nomenclador_child_index', {'codigo': nomencladorParent.parent.codigo}) }}">
+            {{ 'back to'|trans({'%name%': nomencladorParent.codigo},'nomenclador') }}</a>
+    {% else %}
+        <a href="{{ path('nomenclador_index') }}">{{ 'back to root'|trans({}, 'nomenclador') }}</a>
+    {% endif %}
+{% endblock %}

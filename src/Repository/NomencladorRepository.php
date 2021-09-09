@@ -41,4 +41,11 @@ class NomencladorRepository extends _NestedTreeRepository_
         $n->setDescripcion($descripcion);
         return $n;
     }
+
+
+    public function findByChildren(string $codigo)
+    {
+        $nomenclador = $this->findOneByCodigo($codigo);
+        return $nomenclador?->getChildren();
+    }
 }

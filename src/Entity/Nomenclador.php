@@ -22,6 +22,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[UniqueEntity(fields: ['codigo'])]
 class Nomenclador extends BaseNestedTree
 {
+    const ROOT = 'APP';
+
     /** @Gedmo\TreeRoot() */
     #[ORM\ManyToOne(targetEntity: Nomenclador::class)]
     #[ORM\JoinColumn(onDelete: "CASCADE")]
@@ -32,7 +34,7 @@ class Nomenclador extends BaseNestedTree
     #[ORM\JoinColumn(onDelete: "CASCADE")]
     private ?Nomenclador $parent = null;
 
-    #[ORM\OneToMany(mappedBy: "parent", targetEntity: Nomenclador::class)]
+    #[ORM\OneToMany(mappedBy: "parent", targetEntity: Nomenclador::class, cascade: ['persist'])]
     #[ORM\OrderBy(["lft" => "ASC"])]
     #[Groups(["nomenclador:children"])]
     #[MaxDepth(1)]
@@ -59,7 +61,9 @@ class Nomenclador extends BaseNestedTree
     private array $parametros = array();
 
     #[ORM\Column(type: "boolean")]
-    #[Groups(["nomenclador:read", "nomenclador:write"])]
+    private bool $end = false;
+
+    #[ORM\Column(type: "boolean")]
     private bool $habilitado = true;
 
     #[Pure]
@@ -129,7 +133,7 @@ class Nomenclador extends BaseNestedTree
 
     public function setCodigo(string $codigo): self
     {
-        $this->codigo = $codigo;
+        $this->codigo = mb_strtoupper($codigo);
 
         return $this;
     }
@@ -141,7 +145,7 @@ class Nomenclador extends BaseNestedTree
 
     public function setNombre(string $nombre): self
     {
-        $this->nombre = $nombre;
+        $this->nombre = ucfirst($nombre);
 
         return $this;
     }
@@ -167,6 +171,24 @@ class Nomenclador extends BaseNestedTree
     {
         $this->parametros = $parametros;
 
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnd(): bool
+    {
+        return $this->end;
+    }
+
+    /**
+     * @param bool $end
+     * @return Nomenclador
+     */
+    public function setEnd(bool $end): Nomenclador
+    {
+        $this->end = $end;
         return $this;
     }
 

@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nomenclador{% endblock %}
+
+{% block body %}
+    <h1>Nomenclador</h1>
+
+    <table class="table">
+        <tbody>
+        <tr>
+            <th>Id</th>
+            <td>{{ nomenclador.id }}</td>
+        </tr>
+        <tr>
+            <th>Codigo</th>
+            <td>{{ nomenclador.codigo }}</td>
+        </tr>
+        <tr>
+            <th>Nombre</th>
+            <td>{{ nomenclador.nombre }}</td>
+        </tr>
+        <tr>
+            <th>Descripcion</th>
+            <td>{{ nomenclador.descripcion }}</td>
+        </tr>
+        <tr>
+            <th>Parametros</th>
+            <td>{{ nomenclador.parametros ? nomenclador.parametros|json_encode : '' }}</td>
+        </tr>
+        <tr>
+            <th>Habilitado</th>
+            <td>{{ nomenclador.habilitado ? 'Yes' : 'No' }}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('nomenclador_index') }}">back to list</a>
+
+    <a href="{{ path('nomenclador_edit', {'id': nomenclador.id}) }}">edit</a>
+
+    {{ include('admin/nomenclador/_delete_form.html.twig') }}
+{% endblock %}
