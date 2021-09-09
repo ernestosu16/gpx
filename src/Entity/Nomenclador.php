@@ -36,7 +36,7 @@ class Nomenclador extends BaseNestedTree
     #[ORM\OrderBy(["lft" => "ASC"])]
     #[Groups(["nomenclador:children"])]
     #[MaxDepth(1)]
-    private Collection $children;
+    private ?Collection $children;
 
     #[ORM\Column(type: "string", length: 100, unique: true)]
     #[Groups(["nomenclador:default", "nomenclador:read", "nomenclador:write", "cliente:read"])]
@@ -95,7 +95,7 @@ class Nomenclador extends BaseNestedTree
     /**
      * @return Collection|Nomenclador[]
      */
-    public function getChildren(): Collection
+    public function getChildren(): ?Collection
     {
         return $this->children;
     }

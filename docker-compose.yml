@@ -1,38 +1,39 @@
 version: '3'
 
 networks:
-  app-net:
-    ipam:
-      driver: 'default'
+    app-net:
+        ipam:
+            driver: 'default'
 
 volumes:
-  db-datastore:
+    db-datastore:
 
-services: 
-  db:
-    image: 'dap/mysql:8.0'
-    command: 
-      - 'mysqld' 
-      - '--default-authentication-plugin=mysql_native_password' 
-      - '--character-set-server=utf8mb4' 
-      - '--collation-server=utf8mb4_unicode_ci'
-    networks: 
-      - 'app-net'
-    ports: 
-      - '3306:3306'
-    security_opt: 
-      - seccomp:unconfined
-    environment: 
-      MYSQL_ROOT_PASSWORD: 'root'
-      MYSQL_DATABASE: 'smexpress'
+services:
+    db:
+        image: 'dap/mysql:8.0'
+        command:
+            - 'mysqld'
+            - '--default-authentication-plugin=mysql_native_password'
+            - '--character-set-server=utf8mb4'
+            - '--collation-server=utf8mb4_unicode_ci'
+            - '--initialize-insecure'
+        networks:
+            - 'app-net'
+        ports:
+            - '3306:3306'
+        security_opt:
+            - seccomp:unconfined
+        environment:
+            MYSQL_ROOT_PASSWORD: 'root'
+            MYSQL_DATABASE: 'smexpress'
 
-  app:
-    build: 'docker/app'
-    volumes:
-      - './:/app'
-    depends_on: 
-      - 'db'
-    networks: 
-      - 'app-net'
-    ports: 
-      - '80:80'
+    app:
+        build: 'docker/app'
+        volumes:
+            - './:/app'
+        depends_on:
+            - 'db'
+        networks:
+            - 'app-net'
+        ports:
+            - '80:80'

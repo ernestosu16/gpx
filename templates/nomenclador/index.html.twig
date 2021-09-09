@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nomenclador index{% endblock %}
+
+{% block body %}
+    <h1>Nomenclador index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Codigo</th>
+                <th>Nombre</th>
+                <th>Descripcion</th>
+                <th>Parametros</th>
+                <th>Habilitado</th>
+                <th>Lft</th>
+                <th>Rgt</th>
+                <th>Id</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for nomenclador in nomencladors %}
+            <tr>
+                <td>{{ nomenclador.codigo }}</td>
+                <td>{{ nomenclador.nombre }}</td>
+                <td>{{ nomenclador.descripcion }}</td>
+                <td>{{ nomenclador.parametros ? nomenclador.parametros|json_encode : '' }}</td>
+                <td>{{ nomenclador.habilitado ? 'Yes' : 'No' }}</td>
+                <td>{{ nomenclador.lft }}</td>
+                <td>{{ nomenclador.rgt }}</td>
+                <td>{{ nomenclador.id }}</td>
+                <td>
+                    <a href="{{ path('nomenclador_show', {'id': nomenclador.id}) }}">show</a>
+                    <a href="{{ path('nomenclador_edit', {'id': nomenclador.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="9">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('nomenclador_new') }}">Create new</a>
+{% endblock %}
