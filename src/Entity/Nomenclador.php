@@ -218,4 +218,9 @@ class Nomenclador extends BaseNestedTree
     {
         return $this->habilitado;
     }
+
+    public function getEnd(): ?bool
+    {
+        return $this->end;
+    }
 }
