@@ -13,7 +13,7 @@ final class App extends _Nomenclador_
 
     static function code(): string
     {
-        return 'App';
+        return 'APP';
     }
 
     static function name(): string

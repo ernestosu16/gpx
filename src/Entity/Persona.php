@@ -101,8 +101,18 @@ class Persona extends _Entity_
         return $this;
     }
 
-    public function getNombreCompleto(): string
+    #[Pure] public function getNombre(): string
     {
-        return sprintf('%s %s %s', $this->nombre, $this->apellido_primero, $this->apellido_segundo);
+        return $this->getNombrePrimero() . ' ' . $this->getNombreSegundo();
+    }
+
+    #[Pure] public function getApellidos(): string
+    {
+        return $this->getApellidoPrimero() . ' ' . $this->getApellidoSegundo();
+    }
+
+    #[Pure] public function getNombreCompleto(): string
+    {
+        return $this->getNombre() . ' ' . $this->getApellidos();
     }
 }

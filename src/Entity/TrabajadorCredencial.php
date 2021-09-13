@@ -26,7 +26,7 @@ class TrabajadorCredencial implements UserInterface
         return $this->usuario;
     }
 
-    public function setUsername(string $usuario): self
+    public function setUsuario(string $usuario): self
     {
         $this->usuario = $usuario;
 

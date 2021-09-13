@@ -18,7 +18,9 @@ class PersonaType extends AbstractType
                 'label' => 'Primer Nombre'
             ])
             ->add('nombre_segundo', TextType::class, [
-                'label' => 'Segundo Nombre'
+                'label' => 'Segundo Nombre',
+                'required' => false,
+                'empty_data' => '',
             ])
             ->add('apellido_primero', TextType::class, [
                 'label' => 'Primer Apellido'

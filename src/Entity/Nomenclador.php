@@ -29,8 +29,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 ])]
 class Nomenclador extends BaseNestedTree
 {
-    const ROOT = 'APP';
-
     /** @Gedmo\TreeRoot() */
     #[ORM\ManyToOne(targetEntity: Nomenclador::class)]
     #[ORM\JoinColumn(onDelete: 'CASCADE')]

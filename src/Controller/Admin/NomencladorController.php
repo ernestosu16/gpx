@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Config\Nomenclador\App;
 use App\Entity\Nomenclador;
 use App\Form\Admin\NomencladorType;
 use App\Repository\NomencladorRepository;
@@ -18,7 +19,7 @@ class NomencladorController extends AbstractController
     public function index(NomencladorRepository $nomencladorRepository): Response
     {
         return $this->render('admin/nomenclador/index.html.twig', [
-            'nomencladors' => $nomencladorRepository->findByChildren(Nomenclador::ROOT),
+            'nomencladors' => $nomencladorRepository->findByChildren(App::code()),
         ]);
     }
 
@@ -34,7 +35,7 @@ class NomencladorController extends AbstractController
 
             /** @var NomencladorRepository $nomencladorRepository */
             $nomencladorRepository = $entityManager->getRepository(Nomenclador::class);
-            $nomencladorParent = $nomencladorRepository->findOneByCodigo(Nomenclador::ROOT);
+            $nomencladorParent = $nomencladorRepository->findOneByCodigo(App::code());
             $nomencladorParent->addChild($nomenclador);
 
             $entityManager->persist($nomencladorParent);
@@ -52,7 +53,7 @@ class NomencladorController extends AbstractController
     #[Route('/{id}', name: 'nomenclador_show', methods: ['GET'])]
     public function show(Nomenclador $nomenclador): Response
     {
-        if ($nomenclador->getParent()->getCodigo() !== Nomenclador::ROOT)
+        if ($nomenclador->getParent()->getCodigo() !== App::code())
             throw $this->createNotFoundException('El nomenclador no existe');
 
         return $this->render('admin/nomenclador/show.html.twig', [
@@ -63,7 +64,7 @@ class NomencladorController extends AbstractController
     #[Route('/{id}/edit', name: 'nomenclador_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Nomenclador $nomenclador): Response
     {
-        if ($nomenclador->getParent()->getCodigo() !== Nomenclador::ROOT)
+        if ($nomenclador->getParent()->getCodigo() !== App::code())
             throw $this->createNotFoundException('El nomenclador no existe');
 
         $form = $this->createForm(NomencladorType::class, $nomenclador);
@@ -84,7 +85,7 @@ class NomencladorController extends AbstractController
     #[Route('/{id}', name: 'nomenclador_delete', methods: ['POST'])]
     public function delete(Request $request, Nomenclador $nomenclador): Response
     {
-        if ($nomenclador->getParent()->getCodigo() !== Nomenclador::ROOT)
+        if ($nomenclador->getParent()->getCodigo() !== App::code())
             throw $this->createNotFoundException('El nomenclador no existe');
 
         if ($this->isCsrfTokenValid('delete' . $nomenclador->getId(), $request->request->get('_token'))) {

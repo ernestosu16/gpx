@@ -46,7 +46,9 @@
     </table>
 
     <a href="{{ path('nomenclador_child_new', {'codigo': nomencladorParent.codigo}) }}">{{ 'create new'|trans({}, 'nomenclador') }}</a>
-    {% if nomencladorParent.parent.codigo != constant('App\\Entity\\Nomenclador::ROOT') %}
+    {# @var n \App\Config\Nomenclador\App #}
+    {% set n = callstatic('App\\Config\\Nomenclador\\App','newInstance') %}
+    {% if nomencladorParent.parent.codigo != n.code %}
         <a href="{{ path('nomenclador_child_index', {'codigo': nomencladorParent.parent.codigo}) }}">
             {{ 'back to'|trans({'%name%': nomencladorParent.codigo},'nomenclador') }}</a>
     {% else %}
