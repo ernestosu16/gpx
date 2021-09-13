@@ -1,0 +1,4 @@
+services:
+    app.manager.persona:
+        class: App\Manager\PersonaManager
+        public: true

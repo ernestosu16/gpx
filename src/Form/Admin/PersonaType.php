@@ -13,14 +13,15 @@ class PersonaType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('numero_identidad')
+            ->add('numero_identidad', TextType::class, [
+                'required' => true
+            ])
             ->add('nombre_primero', TextType::class, [
                 'label' => 'Primer Nombre'
             ])
             ->add('nombre_segundo', TextType::class, [
                 'label' => 'Segundo Nombre',
                 'required' => false,
-                'empty_data' => '',
             ])
             ->add('apellido_primero', TextType::class, [
                 'label' => 'Primer Apellido'

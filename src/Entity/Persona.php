@@ -12,17 +12,17 @@ class Persona extends _Entity_
     #[ORM\Column(type: 'string', length: 32, unique: true)]
     private string $hash;
 
-    #[ORM\Column(type: 'string', length: 11, unique: false)]
-    private string $numero_identidad;
+    #[ORM\Column(type: 'string', length: 11, nullable: true)]
+    private ?string $numero_identidad;
 
-    #[ORM\Column(type: 'string', length: 11, unique: false)]
-    private string $numero_pasaporte;
+    #[ORM\Column(type: 'string', length: 11, nullable: true)]
+    private ?string $numero_pasaporte;
 
     #[ORM\Column(type: 'string', length: 50)]
     private string $nombre_primero;
 
-    #[ORM\Column(type: 'string', length: 80)]
-    private string $nombre_segundo;
+    #[ORM\Column(type: 'string', length: 80, nullable: true)]
+    private ?string $nombre_segundo;
 
     #[ORM\Column(type: 'string', length: 50)]
     private string $apellido_primero;
@@ -53,24 +53,24 @@ class Persona extends _Entity_
         return $this;
     }
 
-    public function getNumeroIdentidad(): string
+    public function getNumeroIdentidad(): ?string
     {
         return $this->numero_identidad;
     }
 
-    public function setNumeroIdentidad(string $numero_identidad): self
+    public function setNumeroIdentidad(?string $numero_identidad): self
     {
         $this->numero_identidad = $numero_identidad;
 
         return $this;
     }
 
-    public function getNumeroPasaporte(): string
+    public function getNumeroPasaporte(): ?string
     {
         return $this->numero_pasaporte;
     }
 
-    public function setNumeroPasaporte(string $numero_pasaporte): self
+    public function setNumeroPasaporte(?string $numero_pasaporte): self
     {
         $this->numero_pasaporte = $numero_pasaporte;
 
@@ -96,18 +96,18 @@ class Persona extends _Entity_
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getNombreSegundo(): string
+    public function getNombreSegundo(): ?string
     {
         return $this->nombre_segundo;
     }
 
     /**
-     * @param string $nombre_segundo
+     * @param string|null $nombre_segundo
      * @return Persona
      */
-    public function setNombreSegundo(string $nombre_segundo): Persona
+    public function setNombreSegundo(?string $nombre_segundo): Persona
     {
         $this->nombre_segundo = $nombre_segundo;
         return $this;
