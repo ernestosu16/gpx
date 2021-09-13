@@ -10,9 +10,7 @@ use App\Entity\Nomenclador;
 use App\Repository\NomencladorRepository;
 use App\Util\ClassFinderUtil;
 use App\Utils\ClassFinder;
-use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\ORMException;
-use Doctrine\Persistence\ObjectRepository;
 use ReflectionClass;
 use ReflectionException;
 use Symfony\Component\Console\Command\Command;
@@ -22,10 +20,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class NomencladorCommand extends BaseCommand implements BaseCommandInterface
 {
-
-    private ObjectRepository|EntityRepository|NomencladorRepository $repository;
-    private array $code = [];
-    private array $code_parent = [];
+    private array $codigo;
 
     static function getCommandName(): string
     {
@@ -49,24 +44,6 @@ final class NomencladorCommand extends BaseCommand implements BaseCommandInterfa
             $nomenclador[] = $className::newInstance();
         }
 
-//        $MyNamespace = [
-//            'FormaEntrega',
-//            'FormaPago',
-//            'TipoJuridico',
-//            'TipoMoneda',
-//        ];
-//
-//        foreach ($MyNamespace as $namespace) {
-//            $MyClassesNamespace = ClassFinderUtil::getClassesInNamespace('App\\Config\\nomenclador\\' . $namespace);
-//            foreach ($MyClassesNamespace as $item) {
-//                $classReflection = new ReflectionClass($item);
-//                if ($classReflection->isAbstract()) continue;
-//                /** @var NomencladorInterface $className */
-//                $className = $classReflection->getName();
-//                $nomenclador[] = $className::INFO();
-//            }
-//        }
-
         return $nomenclador;
     }
 
@@ -79,17 +56,15 @@ final class NomencladorCommand extends BaseCommand implements BaseCommandInterfa
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->repository = $this->getRepository(Nomenclador::class);
-
-        /** @var ConsoleSectionOutput $section1 */
-        $section1 = $output->section();
-        $section1->writeln('Creando la lista de nomencladores por defecto');
+        /** @var ConsoleSectionOutput $section */
+        $section = $output->section();
+        $section->writeln('Creando la lista de nomencladores por defecto');
 
         /** @var _Nomenclador_ $nomenclador */
         foreach (self::nomencladores() as $nomenclador) {
             $nomencladorEntity = $this->generarNomencladorEntity($nomenclador);
             if ($nomencladorEntity) {
-                $section1->writeln(sprintf(
+                $section->writeln(sprintf(
                     '* Creando nomenclador - ["codigo" => "%s", "nombre" => "%s"]',
                     $nomencladorEntity->getCodigo(), $nomencladorEntity->getNombre()
                 ));
@@ -97,16 +72,15 @@ final class NomencladorCommand extends BaseCommand implements BaseCommandInterfa
                 $this->getEntityManager()->flush();
             }
         }
-        $section1->writeln('OK');
+        $section->writeln('OK');
         return Command::SUCCESS;
     }
 
 
     private function generarNomencladorEntity(_Nomenclador_ $nomenclador): ?Nomenclador
     {
-
         $this->codigo = [];
-        $this->codigo_parent = [];
+        $codigo_parent = [];
         $this->generarNomenclador($nomenclador);
 
         # Quitando el ultimo registro para que quede el codigo padre
@@ -114,19 +88,22 @@ final class NomencladorCommand extends BaseCommand implements BaseCommandInterfa
         if ($lastKeyCodigo != 0) {
             $codigoParent = $this->codigo;
             unset($codigoParent[$lastKeyCodigo]);
-            $this->codigo_parent = $codigoParent;
+            $codigo_parent = $codigoParent;
         }
 
         $codigo = implode('_', $this->codigo);
-        $nomencladorEntity = $this->repository->findOneByCodigo($codigo);
+        /** @var NomencladorRepository $repository */
+        $repository = $this->getEntityManager()->getRepository($nomenclador->getDiscriminator());
+
+        $nomencladorEntity = $repository->findOneByCodigo($codigo);
         if ($nomencladorEntity)
             return null;
 
         $parent = null;
-        if (count($this->codigo_parent))
-            $parent = $this->repository->findOneByCodigo(implode('_', $this->codigo_parent));
+        if (count($codigo_parent))
+            $parent = $repository->findOneByCodigo(implode('_', $codigo_parent));
 
-        return $this->repository->nuevo($codigo, $nomenclador->getName(), $nomenclador->getDescription(), $parent);
+        return $repository::newInstance($codigo, $nomenclador->getName(), $nomenclador->getDescription(), $parent);
     }
 
     private function generarNomenclador(_Nomenclador_ $nomenclador)

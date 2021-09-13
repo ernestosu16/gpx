@@ -14,6 +14,7 @@ class MenuType extends AbstractType
         $builder
             ->add('codigo')
             ->add('nombre')
+            ->add('href')
             ->add('descripcion')
             ->add('habilitado')
         ;

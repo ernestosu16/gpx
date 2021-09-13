@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Nomenclador;
+use DeepCopy\Exception\PropertyException;
+use Doctrine\Instantiator\Exception\InvalidArgumentException;
 
 /**
  * @method Nomenclador|null find($id, $lockMode = null, $lockVersion = null)
@@ -37,15 +39,23 @@ class NomencladorRepository extends _NestedTreeRepository_
         return $this->findOneBy(['codigo' => $code]);
     }
 
-    public function nuevo(string $codigo, string $nombre, string $descripcion, ?Nomenclador $parent = null): Nomenclador
+    public static function newInstance(string $codigo, string $nombre, string $descripcion, ?Nomenclador $parent = null): Nomenclador
     {
-        $n = new Nomenclador();
+        $class = static::classEntity();
+        $object = new $class();
+
+        if(!$object instanceof Nomenclador)
+            throw new InvalidArgumentException('El objeto instanciado no es de clase "Nomenclador"');
+
         if ($parent)
-            $n->setParent($parent);
-        $n->setCodigo($codigo);
-        $n->setNombre($nombre);
-        $n->setDescripcion($descripcion);
-        return $n;
+            $object->setParent($parent);
+
+        $object->setCodigo($codigo);
+        $object->setNombre($nombre);
+        $object->setDescripcion($descripcion);
+        $object->setDescripcion($descripcion);
+
+        return $object;
     }
 
 
