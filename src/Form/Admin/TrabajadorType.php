@@ -2,7 +2,11 @@
 
 namespace App\Form\Admin;
 
+use App\Entity\Grupo;
+use App\Entity\Nomenclador;
 use App\Entity\Trabajador;
+use App\Repository\GrupoRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -18,7 +22,14 @@ class TrabajadorType extends AbstractType
             ->add('credencial', TrabajadorCredencialType::class, [
                 'label' => 'Datos del usuario'
             ])
-            ->add('grupos')
+            ->add('grupos', EntityType::class, [
+                'class' => Grupo::class,
+                'multiple' => true,
+                'query_builder' => function (GrupoRepository $gr) {
+//                dump( $gr->createQueryBuilder('g'));exit;
+                    return $gr->createQueryBuilder('grupo');
+                },
+            ])
             ->add('cargo')
             ->add('habilitado');
     }
