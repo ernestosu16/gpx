@@ -15,7 +15,7 @@ class TrabajadorType extends AbstractType
             ->add('persona', PersonaType::class, [
                 'label' => 'Datos de la Persona'
             ])
-            ->add('usuario', UsuarioType::class, [
+            ->add('credencial', TrabajadorCredencialType::class, [
                 'label' => 'Datos del usuario'
             ])
             ->add('grupos')

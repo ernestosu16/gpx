@@ -14,8 +14,8 @@ class Trabajador extends _Entity_
     #[ORM\JoinColumn(name: 'persona_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Persona $persona;
 
-    #[ORM\OneToOne(mappedBy: 'trabajador', targetEntity: Usuario::class, cascade: ['persist'])]
-    private ?Usuario $usuario;
+    #[ORM\OneToOne(mappedBy: 'trabajador', targetEntity: TrabajadorCredencial::class, cascade: ['persist'])]
+    private ?TrabajadorCredencial $credencial;
 
     #[ORM\ManyToMany(targetEntity: Nomenclador::class)]
     #[ORM\JoinTable(name: 'trabajador_grupo_asignado')]
@@ -70,24 +70,24 @@ class Trabajador extends _Entity_
         return $this;
     }
 
-    public function getUsuario(): ?Usuario
+    public function getCredencial(): ?TrabajadorCredencial
     {
-        return $this->usuario;
+        return $this->credencial;
     }
 
-    public function setUsuario(?Usuario $usuario): self
+    public function setCredencial(?TrabajadorCredencial $credencial): self
     {
         // unset the owning side of the relation if necessary
-        if ($usuario === null && $this->usuario !== null) {
-            $this->usuario->setTrabajador(null);
+        if ($credencial === null && $this->credencial !== null) {
+            $this->credencial->setTrabajador(null);
         }
 
         // set the owning side of the relation if necessary
-        if ($usuario !== null && $usuario->getTrabajador() !== $this) {
-            $usuario->setTrabajador($this);
+        if ($credencial !== null && $credencial->getTrabajador() !== $this) {
+            $credencial->setTrabajador($this);
         }
 
-        $this->usuario = $usuario;
+        $this->credencial = $credencial;
 
         return $this;
     }
