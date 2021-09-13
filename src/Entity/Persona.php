@@ -6,14 +6,17 @@ use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\Pure;
 
 #[ORM\Entity]
-#[ORM\UniqueConstraint(name: 'UNQ_NUMERO_IDENTIDAD', fields: ['numero_identidad'])]
+#[ORM\Index(fields: ['numero_identidad'], name: 'IDX_NUMERO_IDENTIDAD')]
 class Persona extends _Entity_
 {
-    #[ORM\Column(type: 'string', length: 11, unique: true)]
+    #[ORM\Column(type: 'string', length: 11, unique: false)]
     private string $numero_identidad;
 
     #[ORM\Column(type: 'string', length: 100)]
-    private string $nombre;
+    private string $nombre_primero;
+
+    #[ORM\Column(type: 'string', length: 100)]
+    private string $nombre_segundo;
 
     #[ORM\Column(type: 'string', length: 100)]
     private string $apellido_primero;
@@ -38,15 +41,39 @@ class Persona extends _Entity_
         return $this;
     }
 
-    public function getNombre(): ?string
+    /**
+     * @return string
+     */
+    public function getNombrePrimero(): string
     {
-        return $this->nombre;
+        return $this->nombre_primero;
     }
 
-    public function setNombre(string $nombre): self
+    /**
+     * @param string $nombre_primero
+     * @return Persona
+     */
+    public function setNombrePrimero(string $nombre_primero): Persona
     {
-        $this->nombre = $nombre;
+        $this->nombre_primero = $nombre_primero;
+        return $this;
+    }
 
+    /**
+     * @return string
+     */
+    public function getNombreSegundo(): string
+    {
+        return $this->nombre_segundo;
+    }
+
+    /**
+     * @param string $nombre_segundo
+     * @return Persona
+     */
+    public function setNombreSegundo(string $nombre_segundo): Persona
+    {
+        $this->nombre_segundo = $nombre_segundo;
         return $this;
     }
 

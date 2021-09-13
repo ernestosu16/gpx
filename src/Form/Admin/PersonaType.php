@@ -14,7 +14,10 @@ class PersonaType extends AbstractType
     {
         $builder
             ->add('numero_identidad')
-            ->add('nombre', TextType::class, [
+            ->add('nombre_primero', TextType::class, [
+                'label' => 'Nombre'
+            ])
+            ->add('nombre_segundo', TextType::class, [
                 'label' => 'Nombre'
             ])
             ->add('apellido_primero', TextType::class, [
