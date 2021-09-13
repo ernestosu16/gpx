@@ -13,7 +13,7 @@ final class App extends _Nomenclador_
 
     static function code(): string
     {
-        return Nomenclador::ROOT;
+        return 'App';
     }
 
     static function name(): string

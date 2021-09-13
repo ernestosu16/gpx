@@ -17,7 +17,7 @@ class MenuController extends AbstractController
     #[Route('/', name: 'menu_index', methods: ['GET'])]
     public function index(MenuRepository $menuRepository): Response
     {
-        $menu = $menuRepository->findOneByCodigo('APP_MENU');
+        $menu = $menuRepository->findOneByCodigo(MenuNomenclador::code());
         return $this->render('admin/menu/index.html.twig', [
             'menus' => $menu->getChildren(),
         ]);
@@ -33,7 +33,7 @@ class MenuController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
 
-            /** @var GrupoRepository $nomencladorRepository */
+            /** @var MenuRepository $nomencladorRepository */
             $nomencladorRepository = $entityManager->getRepository(Menu::class);
             $parent = $nomencladorRepository->findOneByCodigo((string)MenuNomenclador::newInstance());
             $menu->setParent($parent);

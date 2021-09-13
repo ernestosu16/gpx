@@ -8,7 +8,7 @@ final class Menu extends _Nomenclador_
 {
     static function parent(): ?string
     {
-        return App::class;
+        return null;
     }
 
     static function code(): string
