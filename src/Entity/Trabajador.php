@@ -19,7 +19,7 @@ class Trabajador extends _Entity_
 
     #[ORM\OneToOne(mappedBy: 'trabajador', targetEntity: TrabajadorCredencial::class, cascade: ['persist'])]
     #[Assert\Valid]
-    private ?TrabajadorCredencial $credencial;
+    private ?TrabajadorCredencial $credencial = null;
 
     #[ORM\ManyToMany(targetEntity: Nomenclador::class)]
     #[ORM\JoinTable(name: 'trabajador_grupo_asignado')]

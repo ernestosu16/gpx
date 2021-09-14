@@ -7,13 +7,12 @@ use App\Entity\Nomenclador;
 use App\Form\Admin\NomencladorType;
 use App\Repository\NomencladorRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/admin/nomenclador')]
-class NomencladorController extends AbstractController
+#[Route(path: '/nomenclador')]
+class NomencladorController extends _AdminController_
 {
     #[Route('/', name: 'nomenclador_index', methods: ['GET'])]
     public function index(NomencladorRepository $nomencladorRepository): Response

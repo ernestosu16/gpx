@@ -1,0 +1,4 @@
+Admin:
+    resource: '../../Controller/Admin'
+    prefix: '/admin'
+    type: 'annotation'

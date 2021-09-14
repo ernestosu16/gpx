@@ -6,13 +6,12 @@ use App\Config\Nomenclador\Grupo as GrupoNomenclador;
 use App\Entity\Grupo;
 use App\Form\Admin\GrupoType;
 use App\Repository\GrupoRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/admin/grupo')]
-class GrupoController extends AbstractController
+#[Route(path: '/grupo')]
+class GrupoController extends _AdminController_
 {
     #[Route('/', name: 'grupo_index', methods: ['GET'])]
     public function index(): Response

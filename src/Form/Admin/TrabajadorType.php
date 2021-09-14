@@ -20,12 +20,16 @@ class TrabajadorType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        /** @var Trabajador $data */
+        $data = $builder->getData();
+
         $builder
             ->add('persona', PersonaType::class, [
                 'label' => 'Datos de la Persona'
             ])
             ->add('credencial', TrabajadorCredencialType::class, [
-                'label' => 'Datos del usuario'
+                'label' => 'Datos del usuario',
+                'data' => $data->getCredencial(),
             ])
             ->add('grupos', EntityType::class, [
                 'class' => Grupo::class,
@@ -44,6 +48,7 @@ class TrabajadorType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Trabajador::class,
+            'edit' => false,
         ]);
     }
 }

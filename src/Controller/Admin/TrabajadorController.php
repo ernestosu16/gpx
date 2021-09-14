@@ -4,13 +4,12 @@ namespace App\Controller\Admin;
 
 use App\Entity\Trabajador;
 use App\Form\Admin\TrabajadorType;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/admin/trabajador')]
-class TrabajadorController extends AbstractController
+#[Route(path: '/trabajador')]
+class TrabajadorController extends _AdminController_
 {
     #[Route('/', name: 'trabajador_index', methods: ['GET'])]
     public function index(): Response
@@ -74,11 +73,9 @@ class TrabajadorController extends AbstractController
     #[Route('/{trabajador}', name: 'trabajador_delete', methods: ['POST'])]
     public function delete(Request $request, Trabajador $trabajador): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $trabajador->getPersona(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($trabajador);
-            $entityManager->flush();
-        }
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->remove($trabajador);
+        $entityManager->flush();
 
         return $this->redirectToRoute('trabajador_index', [], Response::HTTP_SEE_OTHER);
     }
