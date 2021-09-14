@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title|trans([],config.translation_domain) }}{% endblock %}
+
+{% block body %}
+    <h1>{{ title|trans([],config.translation_domain) }}</h1>
+
+    <table class="table">
+        <tbody>
+        <tr>
+            <th>Id</th>
+            <td>{{ nomenclador.id }}</td>
+        </tr>
+        <tr>
+            <th>{{ 'code'|trans([],'nomenclador') }}</th>
+            <td>{{ nomenclador.codigo }}</td>
+        </tr>
+        <tr>
+            <th>{{ 'name'|trans([],'nomenclador') }}</th>
+            <td>{{ nomenclador.nombre }}</td>
+        </tr>
+        <tr>
+            <th>{{ 'description'|trans([],'nomenclador') }}</th>
+            <td>{{ nomenclador.descripcion }}</td>
+        </tr>
+        <tr>
+            <th>{{ 'parameters'|trans([],'nomenclador') }}</th>
+            <td>{{ nomenclador.parametros ? nomenclador.parametros|json_encode : '' }}</td>
+        </tr>
+        <tr>
+            <th>{{ 'enabled'|trans([],'nomenclador') }}</th>
+            <td>{{ nomenclador.habilitado ? 'Yes'|trans([],'nomenclador') : 'No'|trans([],'nomenclador') }}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path(config.routes.index) }}">{{ 'back to list'|trans([],'nomenclador') }}</a>
+
+    <a href="{{ path(config.routes.edit, {'id': nomenclador.id}) }}">{{ 'edit'|trans([],'nomenclador') }}</a>
+
+    {{ include('admin/crud/nomenclador/_delete_form.html.twig') }}
+{% endblock %}

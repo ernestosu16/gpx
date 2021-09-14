@@ -2,102 +2,42 @@
 
 namespace App\Controller\Admin;
 
-use App\Config\Nomenclador\App;
-use App\Controller\_Controller_;
 use App\Entity\Nomenclador;
 use App\Form\Admin\NomencladorType;
-use App\Repository\NomencladorRepository;
+use App\Repository\_Repository_;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route(path: '/nomenclador')]
-class NomencladorController extends _Controller_
+abstract class CrudTreeNomencladorController extends CrudController
 {
-    #[Route('/', name: 'nomenclador_index', methods: ['GET'])]
-    public function index(NomencladorRepository $nomencladorRepository): Response
+
+    #[Route('/', name: '_index', methods: ['GET'])]
+    public function index(): Response
     {
-        return $this->render('admin/nomenclador/index.html.twig', [
-            'nomencladors' => $nomencladorRepository->findByChildren(App::code()),
+        /** @var _Repository_ $repository */
+        $repository = $this->getDoctrine()->getRepository(static::entity());
+
+        if (!$repository instanceof Nomenclador)
+            $this->createNotFoundException('Error la entidad no es una instancia de "Nomenclador"');
+
+        /** @var Nomenclador $nomenclador */
+        $nomenclador = $repository->findOneBy(['codigo' => $this->getCode()]);
+
+        if (!$nomenclador)
+            $this->createNotFoundException(printf(
+                'Error no se encontró el nomenclador padre "%s"', $this->getCode()
+            ));
+
+        return $this->render($this->getTemplate(self::INDEX), [
+            'title' => $this->getTitle(self::INDEX),
+            'config' => $this->getConfig(),
+            'nomencladores' => $nomenclador->getChildren(),
         ]);
     }
 
-    #[Route('/new', name: 'nomenclador_new', methods: ['GET', 'POST'])]
-    public function new(Request $request): Response
-    {
-        $nomenclador = new Nomenclador();
-        $form = $this->createForm(NomencladorType::class, $nomenclador);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-
-            /** @var NomencladorRepository $nomencladorRepository */
-            $nomencladorRepository = $entityManager->getRepository(Nomenclador::class);
-            $nomencladorParent = $nomencladorRepository->findOneByCodigo(App::code());
-            $nomencladorParent->addChild($nomenclador);
-
-            $entityManager->persist($nomencladorParent);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('nomenclador_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->renderForm('admin/nomenclador/new.html.twig', [
-            'nomenclador' => $nomenclador,
-            'form' => $form,
-        ]);
-    }
-
-    #[Route('/{id}', name: 'nomenclador_show', methods: ['GET'])]
-    public function show(Nomenclador $nomenclador): Response
-    {
-        if ($nomenclador->getParent()->getCodigo() !== App::code())
-            throw $this->createNotFoundException('El nomenclador no existe');
-
-        return $this->render('admin/nomenclador/show.html.twig', [
-            'nomenclador' => $nomenclador,
-        ]);
-    }
-
-    #[Route('/{id}/edit', name: 'nomenclador_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Nomenclador $nomenclador): Response
-    {
-        if ($nomenclador->getParent()->getCodigo() !== App::code())
-            throw $this->createNotFoundException('El nomenclador no existe');
-
-        $form = $this->createForm(NomencladorType::class, $nomenclador);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
-            return $this->redirectToRoute('nomenclador_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->renderForm('admin/nomenclador/edit.html.twig', [
-            'nomenclador' => $nomenclador,
-            'form' => $form,
-        ]);
-    }
-
-    #[Route('/{id}', name: 'nomenclador_delete', methods: ['POST'])]
-    public function delete(Request $request, Nomenclador $nomenclador): Response
-    {
-        if ($nomenclador->getParent()->getCodigo() !== App::code())
-            throw $this->createNotFoundException('El nomenclador no existe');
-
-        if ($this->isCsrfTokenValid('delete' . $nomenclador->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($nomenclador);
-            $entityManager->flush();
-        }
-
-        return $this->redirectToRoute('nomenclador_index', [], Response::HTTP_SEE_OTHER);
-    }
-
-    #[Route('/parent/{codigo}', name: 'nomenclador_child_index', methods: ['GET'])]
+    #[Route('/parent/{codigo}', name: '_child_index', methods: ['GET'])]
     #[Entity(data: 'nomencladorParent', expr: 'repository.findOneByCodigo(codigo)')]
     public function childIndex(Nomenclador $nomencladorParent): Response
     {
@@ -107,7 +47,7 @@ class NomencladorController extends _Controller_
         );
     }
 
-    #[Route('/parent/{codigo}/new', name: 'nomenclador_child_new', methods: ['GET', 'POST'])]
+    #[Route('/parent/{codigo}/new', name: '_child_new', methods: ['GET', 'POST'])]
     #[Entity(data: 'nomencladorParent', expr: 'repository.findOneByCodigo(codigo)')]
     public function childNew(Nomenclador $nomencladorParent, Request $request): Response
     {
@@ -131,7 +71,7 @@ class NomencladorController extends _Controller_
     }
 
 
-    #[Route('/parent/{codigo}/{id}', name: 'nomenclador_child_show', methods: ['GET'])]
+    #[Route('/parent/{codigo}/{id}', name: '_child_show', methods: ['GET'])]
     #[Entity(data: 'nomencladorParent', expr: 'repository.findOneByCodigo(codigo)')]
     public function childShow(Nomenclador $nomencladorParent, Nomenclador $nomenclador): Response
     {
@@ -145,7 +85,7 @@ class NomencladorController extends _Controller_
     }
 
 
-    #[Route('/parent/{codigo}/{id}/edit', name: 'nomenclador_child_edit', methods: ['GET', 'POST'])]
+    #[Route('/parent/{codigo}/{id}/edit', name: '_child_edit', methods: ['GET', 'POST'])]
     #[Entity(data: 'nomencladorParent', expr: 'repository.findOneByCodigo(codigo)')]
     public function childEdit(Request $request, Nomenclador $nomencladorParent, Nomenclador $nomenclador): Response
     {
@@ -173,7 +113,7 @@ class NomencladorController extends _Controller_
     }
 
 
-    #[Route('/parent/{codigo}/{id}', name: 'nomenclador_child_delete', methods: ['POST'])]
+    #[Route('/parent/{codigo}/{id}', name: '_child_delete', methods: ['POST'])]
     #[Entity(data: 'nomencladorParent', expr: 'repository.findOneByCodigo(codigo)')]
     public function childDelete(Request $request, Nomenclador $nomencladorParent, Nomenclador $nomenclador): Response
     {

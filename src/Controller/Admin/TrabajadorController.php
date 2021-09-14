@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Controller\_Controller_;
 use App\Entity\Trabajador;
 use App\Form\Admin\TrabajadorType;
 use Symfony\Component\HttpFoundation\Request;
@@ -9,7 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route(path: '/trabajador')]
-class TrabajadorController extends _AdminController_
+class TrabajadorController extends _Controller_
 {
     #[Route('/', name: 'trabajador_index', methods: ['GET'])]
     public function index(): Response

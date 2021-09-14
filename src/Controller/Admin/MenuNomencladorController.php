@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Config\Nomenclador\Menu as MenuNomenclador;
+use App\Controller\_Controller_;
 use App\Entity\Menu;
 use App\Form\Admin\MenuType;
 use App\Repository\MenuRepository;
@@ -11,7 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route(path: '/menu')]
-class MenuController extends _TreeCrudController_
+class MenuNomencladorController extends _Controller_
 {
     #[Route('/', name: 'menu_index', methods: ['GET'])]
     public function index(MenuRepository $menuRepository): Response

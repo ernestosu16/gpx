@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title|trans([],config.translation_domain) }}{% endblock %}
+
+{% block body %}
+    <h1>{{ title|trans([],config.translation_domain) }}</h1>
+
+    {{ include('admin/crud/nomenclador/_form.html.twig') }}
+
+    <a href="{{ path(config.routes.index) }}">{{ 'back to list'|trans([],'nomenclador') }}</a>
+{% endblock %}

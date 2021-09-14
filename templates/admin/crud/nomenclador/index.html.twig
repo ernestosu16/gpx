@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title|trans([],config.translation_domain) }}{% endblock %}
+
+{% block body %}
+    <h1>{{ title|trans([],config.translation_domain) }}</h1>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>{{ 'code'|trans([],'nomenclador') }}</th>
+            <th>{{ 'name'|trans([],'nomenclador') }}</th>
+            <th>{{ 'description'|trans([],'nomenclador') }}</th>
+            <th>{{ 'parameters'|trans([],'nomenclador') }}</th>
+            <th>{{ 'enabled'|trans([],'nomenclador') }}</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for  nomenclador in nomencladores %}
+            <tr>
+                <td>{{ nomenclador.codigo }}</td>
+                <td>{{ nomenclador.nombre }}</td>
+                <td>{{ nomenclador.descripcion }}</td>
+                <td>{{ nomenclador.parametros ? nomenclador.parametros|json_encode : '' }}</td>
+                <td>{{ nomenclador.habilitado ? 'Yes'|trans([],'nomenclador') : 'No'|trans([],'nomenclador') }}</td>
+                <td>
+                    <a href="{{ path(config.routes.show, {'id': nomenclador.id}) }}">{{ 'show'|trans([],'nomenclador') }}</a>
+                    <a href="{{ path(config.routes.edit, {'id': nomenclador.id}) }}">{{ 'edit'|trans([],'nomenclador') }}</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="10">{{ 'no records found'|trans([],'nomenclador') }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path(config.routes.new) }}">{{ 'create new'|trans([],'nomenclador') }}</a>
+{% endblock %}
