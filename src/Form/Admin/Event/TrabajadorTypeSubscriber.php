@@ -40,7 +40,7 @@ class TrabajadorTypeSubscriber implements EventSubscriberInterface
         $trabajadorRepository = $this->entityManager->getRepository(Trabajador::class);
         $trabajadorExist = $trabajadorRepository->findOneByNumeroIdentidad($persona->getNumeroIdentidad());
 
-        if ($trabajadorExist)
+        if ($trabajadorExist && $persona->getNumeroIdentidad() !== $trabajadorExist->getPersona()->getNumeroIdentidad())
             $form
                 ->get('persona')
                 ->get('numero_identidad')

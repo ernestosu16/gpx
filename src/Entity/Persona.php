@@ -3,7 +3,9 @@
 namespace App\Entity;
 
 use App\Repository\PersonaRepository;
+use App\Util\RegexUtil;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 use JetBrains\PhpStorm\Pure;
 
 #[ORM\Entity(repositoryClass: PersonaRepository::class)]
@@ -14,6 +16,10 @@ class Persona extends _Entity_
     private string $hash;
 
     #[ORM\Column(type: 'string', length: 11, nullable: true)]
+    #[Assert\Regex(
+        pattern : RegexUtil::NUMERO_IDENTIDAD,
+        message : 'Número de identidad es incorrecto')]
+    #[Assert\Length(min : 11, max : 11)]
     private ?string $numero_identidad;
 
     #[ORM\Column(type: 'string', length: 11, nullable: true)]

@@ -7,21 +7,25 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\Pure;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TrabajadorRepository::class)]
 class Trabajador extends _Entity_
 {
     #[ORM\OneToOne(targetEntity: Persona::class, cascade: ['persist'])]
     #[ORM\JoinColumn(name: 'persona_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[Assert\Valid]
     private Persona $persona;
 
     #[ORM\OneToOne(mappedBy: 'trabajador', targetEntity: TrabajadorCredencial::class, cascade: ['persist'])]
+    #[Assert\Valid]
     private ?TrabajadorCredencial $credencial;
 
     #[ORM\ManyToMany(targetEntity: Nomenclador::class)]
     #[ORM\JoinTable(name: 'trabajador_grupo_asignado')]
     #[ORM\JoinColumn(name: 'trabajador_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'grupo_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[Assert\Valid]
     private Collection $grupos;
 
     #[ORM\Column(type: 'string', length: 11)]

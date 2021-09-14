@@ -12,6 +12,7 @@ final class TrabajadorRepository extends _Repository_
         return Trabajador::class;
     }
 
+
     /**
      * @throws NonUniqueResultException
      */
@@ -21,6 +22,7 @@ final class TrabajadorRepository extends _Repository_
             ->join('trabajador.persona', 'persona')
             ->where('persona.numero_identidad = :numeroIdentidad')
             ->setParameter('numeroIdentidad', $numeroIdentidad)
-            ->getQuery()->getOneOrNullResult();
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }
