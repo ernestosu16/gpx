@@ -18,8 +18,7 @@ class TrabajadorCredencialType extends AbstractType
         $data = $builder->getData();
         $builder
             ->add('usuario', TextType::class, [
-                'label' => 'credencial.username',
-                'translation_domain' => 'trabajador',
+                'label' => 'trabajador.credencial.username',
                 'required' => false,
                 'disabled' => (bool)$data?->getUsuario(),
             ])
@@ -28,8 +27,8 @@ class TrabajadorCredencialType extends AbstractType
                 'required' => false,
                 'invalid_message' => 'The password fields must match.',
                 'options' => ['attr' => ['class' => 'password-field']],
-                'first_options' => ['label' => 'credencial.password', 'translation_domain' => 'trabajador'],
-                'second_options' => ['label' => 'credencial.repeat_password', 'translation_domain' => 'trabajador'],
+                'first_options' => ['label' => 'trabajador.credencial.password'],
+                'second_options' => ['label' => 'trabajador.credencial.repeat_password'],
             ]);
     }
 
@@ -37,6 +36,7 @@ class TrabajadorCredencialType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => TrabajadorCredencial::class,
+            'translation_domain' => 'admin_trabajador'
         ]);
     }
 }

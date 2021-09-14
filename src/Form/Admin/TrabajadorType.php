@@ -9,6 +9,8 @@ use App\Repository\GrupoRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -25,21 +27,26 @@ class TrabajadorType extends AbstractType
 
         $builder
             ->add('persona', PersonaType::class, [
-                'label' => 'Datos de la Persona'
+                'label' => 'trabajador.persona.label'
             ])
             ->add('credencial', TrabajadorCredencialType::class, [
-                'label' => 'Datos del usuario',
+                'label' => 'trabajador.credencial.label',
                 'data' => $data->getCredencial(),
             ])
             ->add('grupos', EntityType::class, [
                 'class' => Grupo::class,
+                'label' => 'trabajador.grupos',
                 'multiple' => true,
                 'query_builder' => function (GrupoRepository $gr) {
                     return $gr->createQueryBuilder('grupo');
                 },
             ])
-            ->add('cargo')
-            ->add('habilitado');
+            ->add('cargo', TextType::class, [
+                'label' => 'trabajador.cargo'
+            ])
+            ->add('habilitado', CheckboxType::class, [
+                'label' => 'trabajador.habilitado'
+            ]);
 
         $builder->addEventSubscriber(new TrabajadorTypeSubscriber($this->entityManager));
     }
@@ -48,7 +55,7 @@ class TrabajadorType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Trabajador::class,
-            'edit' => false,
+            'translation_domain' => 'admin_trabajador',
         ]);
     }
 }

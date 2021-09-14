@@ -14,20 +14,26 @@ class PersonaType extends AbstractType
     {
         $builder
             ->add('numero_identidad', TextType::class, [
-                'required' => true
+                'required' => true,
+                'label' => 'trabajador.persona.numero_identidad',
+                'attr' => ['autocomplete' => 'off'],
             ])
             ->add('nombre_primero', TextType::class, [
-                'label' => 'Primer Nombre'
+                'label' => 'trabajador.persona.nombre_primero',
+                'attr' => ['autocomplete' => 'off'],
             ])
             ->add('nombre_segundo', TextType::class, [
-                'label' => 'Segundo Nombre',
+                'label' => 'trabajador.persona.nombre_segundo',
+                'attr' => ['autocomplete' => 'off'],
                 'required' => false,
             ])
             ->add('apellido_primero', TextType::class, [
-                'label' => 'Primer Apellido'
+                'label' => 'trabajador.persona.apellido_primero',
+                'attr' => ['autocomplete' => 'off'],
             ])
             ->add('apellido_segundo', TextType::class, [
-                'label' => 'Segundo Apellido'
+                'label' => 'trabajador.persona.apellido_segundo',
+                'attr' => ['autocomplete' => 'off'],
             ]);
     }
 
