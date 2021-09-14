@@ -2,12 +2,13 @@
 
 namespace App\Entity;
 
+use App\Repository\TrabajadorRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\Pure;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: TrabajadorRepository::class)]
 class Trabajador extends _Entity_
 {
     #[ORM\OneToOne(targetEntity: Persona::class, cascade: ['persist'])]

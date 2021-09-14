@@ -7,8 +7,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 abstract class _Subscriber_ implements EventSubscriberInterface
 {
-
-    public function __construct(private ContainerInterface $container)
+    public function __construct(
+        private ContainerInterface $container
+    )
     {
     }
 

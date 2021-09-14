@@ -12,8 +12,13 @@ use App\Entity\Persona;
  */
 final class PersonaRepository extends _Repository_
 {
-    static function classEntity(): string
+    protected static function classEntity(): string
     {
         return Persona::class;
+    }
+
+    public function findOneByNumeroIdentidad(string $numeroIdentidad): ?Persona
+    {
+        return $this->findOneBy(['numero_identidad' => $numeroIdentidad]);
     }
 }

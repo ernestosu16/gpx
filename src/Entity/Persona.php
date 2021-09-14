@@ -2,10 +2,11 @@
 
 namespace App\Entity;
 
+use App\Repository\PersonaRepository;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\Pure;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: PersonaRepository::class)]
 #[ORM\Index(fields: ['numero_identidad'], name: 'IDX_NUMERO_IDENTIDAD')]
 class Persona extends _Entity_
 {
@@ -39,6 +40,12 @@ class Persona extends _Entity_
     #[Pure] public function __toString(): string
     {
         return $this->getNombreCompleto();
+    }
+
+    public function __construct()
+    {
+        $this->numero_pasaporte = null;
+        $this->nombre_segundo = null;
     }
 
     public function getHash(): string

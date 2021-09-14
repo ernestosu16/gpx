@@ -13,6 +13,7 @@ class PersonaSubscriber extends _Subscriber_
     {
         return [
             Events::prePersist,
+            Events::preUpdate,
         ];
     }
 
@@ -23,6 +24,22 @@ class PersonaSubscriber extends _Subscriber_
         if (!$object instanceof Persona)
             return;
 
+        $this->personaHash($object);
+    }
+
+    public function preUpdate(LifecycleEventArgs $args)
+    {
+
+        $object = $args->getObject();
+
+        if (!$object instanceof Persona)
+            return;
+
+        $this->personaHash($object);
+    }
+
+    private function personaHash(Persona $object)
+    {
         /** @var PersonaManager $personaManager */
         $personaManager = $this->get('app.manager.persona');
 

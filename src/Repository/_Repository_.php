@@ -7,7 +7,7 @@ use Doctrine\Persistence\ManagerRegistry;
 
 abstract class _Repository_ extends ServiceEntityRepository
 {
-    abstract static function classEntity(): string;
+    abstract protected static function classEntity(): string;
 
     public function __construct(ManagerRegistry $registry)
     {

@@ -3,9 +3,10 @@
 namespace App\Form\Admin;
 
 use App\Entity\Grupo;
-use App\Entity\Nomenclador;
 use App\Entity\Trabajador;
+use App\Form\Admin\Event\TrabajadorTypeSubscriber;
 use App\Repository\GrupoRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -13,6 +14,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TrabajadorType extends AbstractType
 {
+    public function __construct(protected EntityManagerInterface $entityManager)
+    {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -26,12 +31,13 @@ class TrabajadorType extends AbstractType
                 'class' => Grupo::class,
                 'multiple' => true,
                 'query_builder' => function (GrupoRepository $gr) {
-//                dump( $gr->createQueryBuilder('g'));exit;
                     return $gr->createQueryBuilder('grupo');
                 },
             ])
             ->add('cargo')
             ->add('habilitado');
+
+        $builder->addEventSubscriber(new TrabajadorTypeSubscriber($this->entityManager));
     }
 
     public function configureOptions(OptionsResolver $resolver)

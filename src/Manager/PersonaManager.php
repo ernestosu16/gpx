@@ -9,13 +9,18 @@ class PersonaManager
 {
     #[Pure] public function generarHash(Persona $persona): string
     {
-        $index = sprintf(
-            '%s-%s-%s',
-            $persona->getNombre(),
-            $persona->getApellidoPrimero(),
-            $persona->getApellidoSegundo()
-        );
+        $index = [];
 
-        return md5($index);
+        if ($persona->getNumeroIdentidad())
+            $index[] = $persona->getNumeroIdentidad();
+
+        if ($persona->getNumeroPasaporte())
+            $index[] = $persona->getNumeroPasaporte();
+
+        $index[] = $persona->getNombre();
+        $index[] = $persona->getApellidoPrimero();
+        $index[] = $persona->getApellidoSegundo();
+
+        return md5(implode('-', $index));
     }
 }
