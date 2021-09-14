@@ -21,8 +21,8 @@
                 <td>{{ trabajador.cargo }}</td>
                 <td>{{ trabajador.habilitado ? 'Yes' : 'No' }}</td>
                 <td>
-                    <a href="{{ path('trabajador_show', {'trabajador': trabajador.id}) }}">show</a>
-                    <a href="{{ path('trabajador_edit', {'trabajador': trabajador.id}) }}">edit</a>
+                    <a href="{{ path('trabajador_show', {'trabajador': trabajador.id}) }}">{{ 'show'|trans([],'admin_trabajador') }}</a>
+                    <a href="{{ path('trabajador_edit', {'trabajador': trabajador.id}) }}">{{ 'edit'|trans([],'admin_trabajador') }}</a>
                 </td>
             </tr>
         {% else %}
@@ -33,5 +33,5 @@
         </tbody>
     </table>
 
-    <a href="{{ path('trabajador_new') }}">Create new</a>
+    <a href="{{ path('trabajador_new') }}">{{ 'new'|trans([],'admin_trabajador') }}</a>
 {% endblock %}
