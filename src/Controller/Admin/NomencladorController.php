@@ -8,7 +8,7 @@ use App\Form\Admin\NomencladorType;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route(path: '/nomenclador', name: 'admin_nomenclador')]
-class NomencladorController extends CrudTreeNomencladorController
+final class NomencladorController extends CrudTreeNomencladorController
 {
     protected static function parent(): AppNomenclador
     {
