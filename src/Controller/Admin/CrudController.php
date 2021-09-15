@@ -14,6 +14,19 @@ abstract class CrudController extends _Controller_
     const DELETE = 'delete';
     const SHOW = 'show';
 
+    private array $titles = [
+        self::INDEX => 'Lista de nomencladores',
+        self::NEW => 'Nuevo nomenclador',
+        self::EDIT => 'Editar nomenclador',
+        self::SHOW => 'Mostrar nomenclador',
+    ];
+
+    protected array $template = [];
+
+    private array $routes = [self::INDEX => null, self::NEW => null, self::EDIT => null, self::SHOW => null, self::DELETE => null];
+
+    private array $page = ['limit' => 50, 'orderBy' => []];
+
     abstract protected static function entity(): string;
 
     abstract protected static function formType(): string;
@@ -28,25 +41,15 @@ abstract class CrudController extends _Controller_
         'template' => "string[]",
         'page' => "array"
     ])]
-    private static function default(): array
+    private function default(): array
     {
         return [
             'parent' => null,
             'translation_domain' => 'nomenclador',
-            'title' => [
-                self::INDEX => 'Lista de nomencladores',
-                self::NEW => 'Nuevo nomenclador',
-                self::EDIT => 'Editar nomenclador',
-                self::SHOW => 'Mostrar nomenclador',
-            ],
-            'template' => [
-                self::INDEX => 'admin/crud/nomenclador/index.html.twig',
-                self::NEW => 'admin/crud/nomenclador/new.html.twig',
-                self::EDIT => 'admin/crud/nomenclador/edit.html.twig',
-                self::SHOW => 'admin/crud/nomenclador/show.html.twig',
-            ],
-            'routes' => [self::INDEX => null, self::NEW => null, self::EDIT => null, self::SHOW => null, self::DELETE => null],
-            'page' => ['limit' => 50, 'orderBy' => []]
+            'title' => $this->titles,
+            'template' => $this->template,
+            'routes' => $this->routes,
+            'page' => $this->page,
         ];
     }
 

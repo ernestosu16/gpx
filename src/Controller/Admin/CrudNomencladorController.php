@@ -5,26 +5,34 @@ namespace App\Controller\Admin;
 use App\Entity\Nomenclador;
 use App\Repository\_Repository_;
 use App\Repository\NomencladorRepository;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 abstract class CrudNomencladorController extends CrudController
 {
+    protected array $template = [
+        self::INDEX => 'admin/crud/nomenclador/index.html.twig',
+        self::NEW => 'admin/crud/nomenclador/new.html.twig',
+        self::EDIT => 'admin/crud/nomenclador/edit.html.twig',
+        self::SHOW => 'admin/crud/nomenclador/show.html.twig',
+    ];
+
     #[Route('/', name: '_index', methods: ['GET'])]
     public function index(): Response
     {
         /** @var _Repository_ $repository */
         $repository = $this->getDoctrine()->getRepository(static::entity());
 
-        if (!$repository instanceof Nomenclador)
-            $this->createNotFoundException('Error la entidad no es una instancia de "Nomenclador"');
+        if (!$repository instanceof EntityRepository)
+            throw $this->createNotFoundException('Error la entidad no es una instancia de "Nomenclador"');
 
         /** @var Nomenclador $nomenclador */
         $nomenclador = $repository->findOneBy(['codigo' => $this->getCode()]);
 
         if (!$nomenclador)
-            $this->createNotFoundException(printf(
+            throw $this->createNotFoundException(printf(
                 'Error no se encontró el nomenclador padre "%s"', $this->getCode()
             ));
 

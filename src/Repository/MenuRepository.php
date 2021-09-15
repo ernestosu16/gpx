@@ -10,7 +10,7 @@ use App\Entity\Menu;
  * @method Menu[]    findAll()
  * @method Menu[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-final class MenuRepository extends NomencladorRepository
+final class MenuRepository extends _NestedTreeRepository_
 {
     protected static function classEntity(): string
     {

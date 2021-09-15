@@ -130,7 +130,6 @@ class NomencladorController extends _Controller_
         );
     }
 
-
     #[Route('/parent/{codigo}/{id}', name: 'nomenclador_child_show', methods: ['GET'])]
     #[Entity(data: 'nomencladorParent', expr: 'repository.findOneByCodigo(codigo)')]
     public function childShow(Nomenclador $nomencladorParent, Nomenclador $nomenclador): Response
@@ -143,7 +142,6 @@ class NomencladorController extends _Controller_
             ['nomencladorParent' => $nomencladorParent, 'nomenclador' => $nomenclador]
         );
     }
-
 
     #[Route('/parent/{codigo}/{id}/edit', name: 'nomenclador_child_edit', methods: ['GET', 'POST'])]
     #[Entity(data: 'nomencladorParent', expr: 'repository.findOneByCodigo(codigo)')]
@@ -171,7 +169,6 @@ class NomencladorController extends _Controller_
             'form' => $form,
         ]);
     }
-
 
     #[Route('/parent/{codigo}/{id}', name: 'nomenclador_child_delete', methods: ['POST'])]
     #[Entity(data: 'nomencladorParent', expr: 'repository.findOneByCodigo(codigo)')]
