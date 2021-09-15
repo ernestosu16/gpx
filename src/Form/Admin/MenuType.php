@@ -15,6 +15,8 @@ class MenuType extends AbstractType
             ->add('codigo')
             ->add('nombre')
             ->add('descripcion')
+            ->add('route')
+            ->add('class')
             ->add('habilitado')
         ;
     }

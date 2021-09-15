@@ -62,7 +62,7 @@ abstract class CrudTreeNomencladorController extends CrudController
 
     #[Route('/{parent}/new', name: '_new', defaults: ['parent' => ''], methods: ['GET', 'POST'])]
     #[Entity(data: 'nomencladorParent', expr: 'repository.findOneByCodigo(parent)')]
-    public function new(Request $request, ?Nomenclador $nomencladorParent): Response
+    public function childNew(Request $request, ?Nomenclador $nomencladorParent): Response
     {
         $class = static::entity();
         $menu = new $class();
@@ -98,7 +98,7 @@ abstract class CrudTreeNomencladorController extends CrudController
         if ($nomenclador->getParent()->getCodigo() !== $nomencladorParent->getCodigo())
             throw $this->createNotFoundException('El nomenclador no existe');
 
-        $form = $this->createForm(NomencladorType::class, $nomenclador);
+        $form = $this->createForm(static::formType(), $nomenclador);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

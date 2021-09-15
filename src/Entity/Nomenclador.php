@@ -181,6 +181,18 @@ class Nomenclador extends BaseNestedTree
         return $this;
     }
 
+
+    public function getParametro(string $key): string|array|null
+    {
+        return $this->parametros[$key] ?? null;
+    }
+
+    public function setParametro(string $key, null|string|array $value): static
+    {
+        $this->parametros[$key] = $value;
+        return $this;
+    }
+
     /**
      * @return bool
      */
