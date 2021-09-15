@@ -12,9 +12,16 @@ class NomencladorType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        /** @var Nomenclador $data */
+        $data = $builder->getData();
+
         $builder
-            ->add('codigo')
-            ->add('nombre')
+            ->add('codigo', TextType::class, [
+                'attr' => ['autocomplete' => 'off']
+            ])
+            ->add('nombre', TextType::class, [
+                'attr' => ['autocomplete' => 'off']
+            ])
             ->add('descripcion', TextType::class, [
                 'empty_data' => '',
                 'required' => false,

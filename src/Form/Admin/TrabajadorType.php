@@ -27,22 +27,26 @@ class TrabajadorType extends AbstractType
 
         $builder
             ->add('persona', PersonaType::class, [
-                'label' => 'trabajador.persona.label'
+                'label' => 'trabajador.persona.label',
+                'attr' => ['autocomplete' => 'off'],
             ])
             ->add('credencial', TrabajadorCredencialType::class, [
                 'label' => 'trabajador.credencial.label',
                 'data' => $data->getCredencial(),
+                'attr' => ['autocomplete' => 'off'],
             ])
             ->add('grupos', EntityType::class, [
                 'class' => Grupo::class,
                 'label' => 'trabajador.grupos',
                 'multiple' => true,
+                'attr' => ['autocomplete' => 'off'],
                 'query_builder' => function (GrupoRepository $gr) {
                     return $gr->createQueryBuilder('grupo');
                 },
             ])
             ->add('cargo', TextType::class, [
-                'label' => 'trabajador.cargo'
+                'label' => 'trabajador.cargo',
+                'attr' => ['autocomplete' => 'off']
             ])
             ->add('habilitado', CheckboxType::class, [
                 'label' => 'trabajador.habilitado'

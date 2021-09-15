@@ -31,9 +31,11 @@
                     <a href="{{ path(config.routes.edit, {'parent': nomencladorParent.codigo,'id': nomenclador.id}) }}">
                         {{ 'edit'|trans([],'nomenclador') }}
                     </a>&nbsp;
-                    <a href="{{ path(config.routes.index,{'parent': nomenclador.codigo}) }}">
-                        {{ 'list of children'|trans([],'nomenclador') }}
-                    </a>
+                    {% if nomenclador.parent.end == false %}
+                        <a href="{{ path(config.routes.index,{'parent': nomenclador.codigo}) }}">
+                            {{ 'list of children'|trans([],'nomenclador') }}
+                        </a>
+                    {% endif %}
                 </td>
             </tr>
         {% else %}
