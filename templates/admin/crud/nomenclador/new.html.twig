@@ -1,11 +1,7 @@
-{% extends 'base.html.twig' %}
-
+{% extends 'homer-theme/layout.html.twig' %}
 {% block title %}{{ title|trans([],config.translation_domain) }}{% endblock %}
-
-{% block body %}
-    <h1>{{ title|trans([],config.translation_domain) }}</h1>
-
+{% block panel_title %}{{ title|trans([],config.translation_domain) }}{% endblock %}
+{% block panel_body %}
     {{ include('admin/crud/nomenclador/_form.html.twig') }}
-
-    <a href="{{ path(config.routes.index) }}">{{ 'back to list'|trans([],'nomenclador') }}</a>
+    <a href="{{ path(config.routes.index) }}" class="btn btn-sm btn-default">{{ 'back to list'|trans([],'nomenclador') }}</a>
 {% endblock %}

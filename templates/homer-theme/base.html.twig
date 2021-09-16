@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Welcome!{% endblock %}</title>
+    <!-- Vendor styles -->
+    <link rel="stylesheet" href="{{ asset('homer-theme/vendor/fontawesome/css/font-awesome.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('homer-theme/vendor/metisMenu/dist/metisMenu.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('homer-theme/vendor/animate.css/animate.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('homer-theme/vendor/bootstrap/dist/css/bootstrap.min.css') }}"/>
+
+    <!-- App styles -->
+    <link rel="stylesheet" href="{{ asset('homer-theme/fonts/pe-icon-7-stroke/css/pe-icon-7-stroke.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('homer-theme/fonts/pe-icon-7-stroke/css/helper.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('homer-theme/styles/style.css') }}">
+
+    {% block stylesheets %}{% endblock %}
+</head>
+<body class="{% block bodyClass %}{% endblock %}">
+{% block layout %}{% endblock %}
+
+<!-- Vendor scripts -->
+<script src="{{ asset('homer-theme/vendor/jquery/dist/jquery.min.js') }}"></script>
+<script src="{{ asset('homer-theme/vendor/slimScroll/jquery.slimscroll.min.js') }}"></script>
+<script src="{{ asset('homer-theme/vendor/bootstrap/dist/js/bootstrap.min.js') }}"></script>
+<script src="{{ asset('homer-theme/vendor/metisMenu/dist/metisMenu.min.js') }}"></script>
+
+<!-- App scripts -->
+<script src="{{ asset('homer-theme/scripts/homer.js') }}"></script>
+
+{% block javascripts %}{% endblock %}
+</body>
+</html>

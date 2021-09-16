@@ -1,10 +1,7 @@
-{% extends 'base.html.twig' %}
-
+{% extends 'homer-theme/layout.html.twig' %}
 {% block title %}{{ title|trans([],config.translation_domain) }}{% endblock %}
-
-{% block body %}
-    <h1>{{ title|trans([],config.translation_domain) }}</h1>
-
+{% block panel_title %}{{ title|trans([],config.translation_domain) }}{% endblock %}
+{% block panel_body %}
     <table class="table">
         <tbody>
         <tr>
@@ -34,9 +31,10 @@
         </tbody>
     </table>
 
-    <a href="{{ path(config.routes.index) }}">{{ 'back to list'|trans([],'nomenclador') }}</a>
+    <a class="btn btn-sm btn-default" href="{{ path(config.routes.index) }}">{{ 'back to list'|trans([],'nomenclador') }}</a>
 
-    <a href="{{ path(config.routes.edit, {'id': nomenclador.id}) }}">{{ 'edit'|trans([],'nomenclador') }}</a>
+    <a class="btn btn-sm btn-primary" href="{{ path(config.routes.edit, {'id': nomenclador.id}) }}">
+        {{ 'edit'|trans([],'nomenclador') }}</a>
 
     {{ include('admin/crud/nomenclador/_delete_form.html.twig') }}
 {% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'homer-theme/base.html.twig' %}
+
+{% use 'homer-theme/components/header.html.twig' %}
+{% use 'homer-theme/components/menu.html.twig' %}
+{% use 'homer-theme/components/splash.html.twig' %}
+{% use 'homer-theme/components/wrapper.html.twig' %}
+
+{% block bodyClass %}fixed-navbar fixed-sidebar{% endblock %}
+{% block layout %}
+    {% block splash %}{{ parent() }}{% endblock %}
+    {% block header %}{{ parent() }}{% endblock %}
+    {% block menu %}{{ parent() }}{% endblock %}
+    {% block wrapper %}{{ parent() }}{% endblock %}
+{% endblock %}

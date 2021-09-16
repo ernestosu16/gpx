@@ -1,0 +1,36 @@
+{% block wrapper %}
+    <!-- Main Wrapper -->
+    <div id="wrapper">
+        {% include 'homer-theme/components/warpper.small.header.html.twig' %}
+        <div class="content animate-panel">
+            {% block body %}
+                <div class="row">
+                    <div class="col-lg-12">
+                        {% block hpanel %}
+                            <div class="hpanel">
+                                <div class="panel-heading hbuilt">
+                                    {% block panel_tools %}
+                                        <div class="panel-tools">
+                                            <a class="showhide"><i class="fa fa-chevron-up"></i></a>
+                                        </div>
+                                    {% endblock %}
+                                    {% block panel_title %}{% endblock %}
+                                </div>
+                                <div class="panel-body">
+                                    {% block panel_body %}{% endblock %}
+                                </div>
+                                {% block panel_footer %}
+                                    {# <div class="panel-footer"></div> #}
+                                {% endblock %}
+                            </div>
+                        {% endblock %}
+                    </div>
+                </div>
+            {% endblock %}
+        </div>
+
+        <!-- Footer-->
+        {% include 'homer-theme/components/wrapper.footer.html.twig' %}
+    </div>
+
+{% endblock %}

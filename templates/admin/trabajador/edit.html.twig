@@ -1,10 +1,7 @@
-{% extends 'base.html.twig' %}
-
+{% extends 'homer-theme/layout.html.twig' %}
 {% block title %}Edit Trabajador{% endblock %}
-
-{% block body %}
-    <h1>Edit Trabajador</h1>
-
+{% block panel_title %}Edit Trabajador{% endblock %}
+{% block panel_body %}
     {{ include('admin/trabajador/_form.html.twig', {'button_label': 'Update'}) }}
 
     <a href="{{ path('trabajador_index') }}">{{ 'back to list'|trans({},'nomenclador') }}</a>

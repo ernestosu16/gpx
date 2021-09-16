@@ -28,15 +28,15 @@ class MenuType extends AbstractType
         $builder
             ->add('codigo', TextType::class, [
                 'label' => 'code',
-                'attr' => ['autocomplete' => 'off']
+                'attr' => ['autocomplete' => 'off', 'class' => 'form-control input-sm'],
             ])
             ->add('nombre', TextType::class, [
                 'label' => 'name',
-                'attr' => ['autocomplete' => 'off']
+                'attr' => ['autocomplete' => 'off', 'class' => 'form-control input-sm']
             ])
             ->add('descripcion', TextType::class, [
                 'label' => 'description',
-                'attr' => ['autocomplete' => 'off']
+                'attr' => ['autocomplete' => 'off', 'class' => 'form-control input-sm']
             ])
             ->add('route', ChoiceType::class, [
                 'required' => true,
@@ -64,7 +64,7 @@ class MenuType extends AbstractType
         ]);
     }
 
-    private function setModelTransformer(FormBuilderInterface $builder)
+    private function setModelTransformer(FormBuilderInterface $builder): FormBuilderInterface
     {
         $builder->get('route')->addModelTransformer(new CallbackTransformer(
             function ($path): ?Route {

@@ -1,5 +1,5 @@
 <form method="post" action="{{ path(config.routes.delete, {'id': nomenclador.id}) }}"
       onsubmit="return confirm('Are you sure you want to delete this item?');">
     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ nomenclador.id) }}">
-    <button class="btn">{{ 'delete'|trans([],'nomenclador') }}</button>
+    <button class="btn btn-sm btn-danger">{{ 'delete'|trans([],'nomenclador') }}</button>
 </form>

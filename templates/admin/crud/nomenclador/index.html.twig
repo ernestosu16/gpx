@@ -1,10 +1,7 @@
-{% extends 'base.html.twig' %}
-
+{% extends 'homer-theme/layout.html.twig' %}
 {% block title %}{{ title|trans([],config.translation_domain) }}{% endblock %}
-
-{% block body %}
-    <h1>{{ title|trans([],config.translation_domain) }}</h1>
-
+{% block panel_title %}{{ title|trans([],config.translation_domain) }}{% endblock %}
+{% block panel_body %}
     <table class="table">
         <thead>
         <tr>
@@ -25,8 +22,14 @@
                 <td>{{ nomenclador.parametros ? nomenclador.parametros|json_encode : '' }}</td>
                 <td>{{ nomenclador.habilitado ? 'Yes'|trans([],'nomenclador') : 'No'|trans([],'nomenclador') }}</td>
                 <td>
-                    <a href="{{ path(config.routes.show, {'id': nomenclador.id}) }}">{{ 'show'|trans([],'nomenclador') }}</a>
-                    <a href="{{ path(config.routes.edit, {'id': nomenclador.id}) }}">{{ 'edit'|trans([],'nomenclador') }}</a>
+                    <a class="btn btn-default btn-xs" href="{{ path(config.routes.show, {'id': nomenclador.id}) }}"
+                       title="{{ 'show'|trans([],'nomenclador') }}">
+                        <i class="fa fa-eye"></i>
+                    </a>
+                    <a class="btn btn-xs btn-default" href="{{ path(config.routes.edit, {'id': nomenclador.id}) }}"
+                       title="{{ 'edit'|trans([],'nomenclador') }}">
+                        <i class="fa fa-list"></i>
+                    </a>
                 </td>
             </tr>
         {% else %}
@@ -37,5 +40,7 @@
         </tbody>
     </table>
 
-    <a href="{{ path(config.routes.new) }}">{{ 'create new'|trans([],'nomenclador') }}</a>
+    <a class="btn btn-sm btn-primary" href="{{ path(config.routes.new) }}">
+        {{ 'create new'|trans([],'nomenclador') }}
+    </a>
 {% endblock %}
