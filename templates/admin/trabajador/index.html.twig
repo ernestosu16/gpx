@@ -1,6 +1,6 @@
 {% extends 'homer-theme/layout.html.twig' %}
 {% block title %}Trabajador index{% endblock %}
-{% block panel_title %}Trabajador index{% endblock %}
+{% block panel_title %}Listado de los trabajadores{% endblock %}
 {% block panel_body %}
     <table class="table">
         <thead>
@@ -8,7 +8,7 @@
             <th>Nombre</th>
             <th>Cargo</th>
             <th>Habilitado</th>
-            <th>actions</th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
@@ -16,19 +16,25 @@
             <tr>
                 <td>{{ trabajador.persona }}</td>
                 <td>{{ trabajador.cargo }}</td>
-                <td>{{ trabajador.habilitado ? 'Yes' : 'No' }}</td>
+                <td>{{ trabajador.habilitado ? 'Yes'|trans({},'nomenclador') : 'No'|trans({},'nomenclador') }}</td>
                 <td>
-                    <a href="{{ path('trabajador_show', {'trabajador': trabajador.id}) }}">{{ 'show'|trans([],'admin_trabajador') }}</a>
-                    <a href="{{ path('trabajador_edit', {'trabajador': trabajador.id}) }}">{{ 'edit'|trans([],'admin_trabajador') }}</a>
+                    <a href="{{ path('trabajador_show', {'trabajador': trabajador.id}) }}"
+                       class="btn btn-xs btn-default" title="{{ 'show'|trans([],'nomenclador') }}">
+                        <i class="fa fa-eye"></i>
+                    </a>
+                    <a href="{{ path('trabajador_edit', {'trabajador': trabajador.id}) }}"
+                       class="btn btn-xs btn-default" title="{{ 'edit'|trans([],'nomenclador') }}">
+                        <i class="fa fa-pencil-square-o"></i>
+                    </a>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="3">no records found</td>
+                <td colspan="3">{{ 'no records found'|trans({},'nomenclador')}}</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('trabajador_new') }}">{{ 'new'|trans([],'admin_trabajador') }}</a>
+    <a class="btn btn-sm btn-primary" href="{{ path('trabajador_new') }}">
+        {{ 'new'|trans([],'admin_trabajador') }}</a>
 {% endblock %}

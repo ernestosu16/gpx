@@ -38,6 +38,7 @@ class TrabajadorType extends AbstractType
             ->add('grupos', EntityType::class, [
                 'class' => Grupo::class,
                 'label' => 'trabajador.grupos',
+                'label_attr' => ['class' => 'col-sm-4 control-label'],
                 'multiple' => true,
                 'attr' => ['autocomplete' => 'off'],
                 'query_builder' => function (GrupoRepository $gr) {
@@ -46,10 +47,12 @@ class TrabajadorType extends AbstractType
             ])
             ->add('cargo', TextType::class, [
                 'label' => 'trabajador.cargo',
-                'attr' => ['autocomplete' => 'off']
+                'label_attr' => ['class' => 'col-sm-4 control-label'],
+                'attr' => ['class' => 'form-control input-sm'],
             ])
             ->add('habilitado', CheckboxType::class, [
-                'label' => 'trabajador.habilitado'
+                'label' => 'trabajador.habilitado',
+                'label_attr' => ['class' => 'col-sm-4 control-label'],
             ]);
 
         $builder->addEventSubscriber(new TrabajadorTypeSubscriber($this->entityManager));
@@ -60,6 +63,7 @@ class TrabajadorType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Trabajador::class,
             'translation_domain' => 'admin_trabajador',
+            'attr' => ['class' => 'form-horizontal'],
         ]);
     }
 }

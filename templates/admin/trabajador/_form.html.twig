@@ -1,4 +1,57 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('save'|trans({},'nomenclador')) }}</button>
+<div class="row">
+    <div class="col-md-6">
+        <fieldset>
+            <legend>{{ form_label(form.persona) }}</legend>
+        </fieldset>
+        {# @var fv \Symfony\Component\Form\FormView #}
+        {% for fv in form.persona %}
+            {% if fv.vars.name != '_token' %}
+                <div class="form-group">
+                    {{ form_label(fv) }}
+                    <div class="col-sm-8">{{ form_widget(fv) }}</div>
+                    {{ form_errors(fv) }}
+                </div>
+            {% endif %}
+        {% endfor %}
+        <div class="form-group">
+            {{ form_label(form.cargo) }}
+            <div class="col-sm-8">{{ form_widget(form.cargo) }}</div>
+            {{ form_errors(form.cargo) }}
+        </div>
+        <div class="form-group">
+            {{ form_label(form.habilitado) }}
+            <div class="col-sm-8">{{ form_widget(form.habilitado) }}</div>
+            {{ form_errors(form.habilitado) }}
+        </div>
+    </div>
+    <div class="col-md-6">
+        <fieldset>
+            <legend>Credenciales</legend>
+        </fieldset>
+        <div class="form-group">
+            {{ form_label(form.credencial.usuario) }}
+            <div class="col-sm-8">{{ form_widget(form.credencial.usuario) }}</div>
+            {{ form_errors(form.credencial.usuario) }}
+        </div>
+        <div class="form-group">
+            {{ form_label(form.credencial.contrasena.first) }}
+            <div class="col-sm-8">{{ form_widget(form.credencial.contrasena.first) }}</div>
+            {{ form_errors(form.credencial.contrasena.first) }}
+        </div>
+        <div class="form-group">
+            {{ form_label(form.credencial.contrasena.second) }}
+            <div class="col-sm-8">{{ form_widget(form.credencial.contrasena.second) }}</div>
+            {{ form_errors(form.credencial.contrasena.second) }}
+        </div>
+        <div class="form-group">
+            {{ form_label(form.grupos) }}
+            <div class="col-sm-8">{{ form_widget(form.grupos) }}</div>
+            {{ form_errors(form.grupos) }}
+        </div>
+    </div>
+</div>
+<button class="btn">{{ button_label|default('save'|trans({},'nomenclador')) }}</button>
+{{ form_errors(form) }}
+{{ form_help(form) }}
 {{ form_end(form) }}

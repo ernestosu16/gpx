@@ -16,24 +16,29 @@ class PersonaType extends AbstractType
             ->add('numero_identidad', TextType::class, [
                 'required' => true,
                 'label' => 'trabajador.persona.numero_identidad',
-                'attr' => ['autocomplete' => 'off'],
+                'label_attr' => ['class' => 'col-sm-4 control-label'],
+                'attr' => ['autocomplete' => 'off', 'class' => 'form-control input-sm'],
             ])
             ->add('nombre_primero', TextType::class, [
                 'label' => 'trabajador.persona.nombre_primero',
-                'attr' => ['autocomplete' => 'off'],
+                'label_attr' => ['class' => 'col-sm-4 control-label'],
+                'attr' => ['autocomplete' => 'off', 'class' => 'form-control input-sm'],
             ])
             ->add('nombre_segundo', TextType::class, [
                 'label' => 'trabajador.persona.nombre_segundo',
-                'attr' => ['autocomplete' => 'off'],
+                'label_attr' => ['class' => 'col-sm-4 control-label'],
+                'attr' => ['autocomplete' => 'off', 'class' => 'form-control input-sm'],
                 'required' => false,
             ])
             ->add('apellido_primero', TextType::class, [
                 'label' => 'trabajador.persona.apellido_primero',
-                'attr' => ['autocomplete' => 'off'],
+                'label_attr' => ['class' => 'col-sm-4 control-label'],
+                'attr' => ['autocomplete' => 'off', 'class' => 'form-control input-sm'],
             ])
             ->add('apellido_segundo', TextType::class, [
                 'label' => 'trabajador.persona.apellido_segundo',
-                'attr' => ['autocomplete' => 'off'],
+                'label_attr' => ['class' => 'col-sm-4 control-label'],
+                'attr' => ['autocomplete' => 'off', 'class' => 'form-control input-sm'],
             ]);
     }
 
