@@ -1,4 +1,15 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-<button class="btn btn-sm btn-success">{{ button_label|default('save'|trans([],'nomenclador')) }}</button>
+{% for fv in form %}
+    {% if fv.vars.name != '_token' %}
+        <div class="form-group">
+            <label class="col-sm-2 control-label">{{ form_label(fv) }}</label>
+            <div class="col-sm-10">
+                {{ form_widget(fv) }}
+            </div>
+        </div>
+    {% endif %}
+{% endfor %}
+<div class="pull-right">
+    <button class="btn btn-sm btn-success">{{ button_label|default('save'|trans([],'nomenclador')) }}</button>
+</div>
 {{ form_end(form) }}

@@ -49,6 +49,7 @@ class NomencladorType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Nomenclador::class,
             'translation_domain' => 'nomenclador',
+            'attr' => ['class' => 'form-horizontal'],
         ]);
     }
 }

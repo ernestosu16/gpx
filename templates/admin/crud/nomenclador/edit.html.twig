@@ -3,6 +3,9 @@
 {% block panel_title %}{{ title|trans([],config.translation_domain) }}{% endblock %}
 {% block panel_body %}
     {{ include('admin/crud/nomenclador/_form.html.twig', {'button_label': 'save'|trans([],'nomenclador')}) }}
+
+<div class="pull-right">
     <a class="btn btn-sm btn-default" href="{{ path(config.routes.index) }}">{{ 'back to list'|trans([],'nomenclador') }}</a>
+</div>
     {{ include('admin/crud/nomenclador/_delete_form.html.twig') }}
 {% endblock %}
