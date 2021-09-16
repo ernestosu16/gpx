@@ -1,4 +1,18 @@
 services:
+    App\Manager\_Manager_:
+        abstract: true
+        calls:
+            -   setContainer: [ '@service_container' ]
+            -   setLogger: [ '@logger' ]
+
     app.manager.persona:
+        parent: App\Manager\_Manager_
         class: App\Manager\PersonaManager
         public: true
+
+    app.manager.route:
+        parent: App\Manager\_Manager_
+        class: App\Manager\RouteManager
+        public: true
+        calls:
+            -   setRoute: [ '@router' ]

@@ -21,6 +21,9 @@ class TrabajadorCredencial implements UserInterface
     #[ORM\Column(type: 'string', length: 100)]
     private ?string $contrasena = null;
 
+    #[ORM\Column(type: 'string', length: 128)]
+    private ?string $session;
+
     public function getUsuario(): ?string
     {
         return $this->usuario;
@@ -54,6 +57,17 @@ class TrabajadorCredencial implements UserInterface
     {
         $this->trabajador = $trabajador;
 
+        return $this;
+    }
+
+    public function getSession(): ?string
+    {
+        return $this->session;
+    }
+
+    public function setSession(?string $session): TrabajadorCredencial
+    {
+        $this->session = $session;
         return $this;
     }
 

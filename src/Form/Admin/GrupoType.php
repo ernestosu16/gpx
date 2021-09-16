@@ -26,6 +26,7 @@ class GrupoType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Grupo::class,
+            'translation_domain' => 'nomenclador',
         ]);
     }
 }

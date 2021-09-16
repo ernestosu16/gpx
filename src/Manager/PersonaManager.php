@@ -5,7 +5,7 @@ namespace App\Manager;
 use App\Entity\Persona;
 use JetBrains\PhpStorm\Pure;
 
-class PersonaManager
+class PersonaManager extends _Manager_
 {
     #[Pure] public function generarHash(Persona $persona): string
     {
