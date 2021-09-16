@@ -4,9 +4,8 @@
     {% if fv.vars.name != '_token' %}
         <div class="form-group">
             {{ form_label(fv) }}
-            <div class="col-sm-10">
-                {{ form_widget(fv) }}
-            </div>
+            <div class="col-sm-10">{{ form_widget(fv) }}</div>
+            {{ form_errors(fv) }}
         </div>
     {% endif %}
 {% endfor %}
