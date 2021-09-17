@@ -2,10 +2,12 @@
     <!-- Navigation -->
     <aside id="menu">
         <div id="navigation">
+            <!-- Profile -->
             <div class="profile-picture">
                 <div class="stats-label text-color">
                     <span class="font-extra-bold font-uppercase">Username</span>
 
+                    <!-- Dropdown -->
                     <div class="dropdown">
                         <a class="dropdown-toggle" href="#" data-toggle="dropdown">
                             <small class="text-muted">Links <b class="caret"></b></small>
@@ -18,18 +20,9 @@
                 </div>
             </div>
 
+            <!-- Menu -->
             <ul class="nav" id="side-menu">
-                <li class="active">
-                    <a href="#" aria-expanded="true">
-                        <span class="nav-label">Administración</span><span class="fa arrow"></span>
-                    </a>
-                    <ul class="nav nav-second-level collapse in" aria-expanded="true" style="">
-                        <li><a href="{{ path('admin_trabajador_index') }}"><span class="fa fa-user"></span> Trabajadores</a></li>
-                        <li><a href="{{ path('admin_grupo_index') }}"><span class="fa fa-group"></span> Grupos</a></li>
-                        <li><a href="{{ path('admin_menu_index') }}"><span class="fa fa-list"></span> Menú</a></li>
-                        <li><a href="{{ path('admin_nomenclador_index') }}"><span class="fa fa-wrench"></span> Nomencladores</a></li>
-                    </ul>
-                </li>
+                {{ knp_menu_render('main', {'allow_safe_labels': true}) }}
             </ul>
         </div>
     </aside>
