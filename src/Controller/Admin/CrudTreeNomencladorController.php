@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Config\Nomenclador\_Nomenclador_;
 use App\Entity\Nomenclador;
 use App\Repository\_Repository_;
+use App\Repository\NomencladorRepository;
 use Doctrine\ORM\EntityRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,6 +14,9 @@ use Symfony\Component\Routing\Annotation\Route;
 
 abstract class CrudTreeNomencladorController extends CrudController
 {
+    const MOVE_UP = 'move_up';
+    const MOVE_DOWN = 'move_down';
+
     abstract static protected function parent(): _Nomenclador_;
 
     protected function getParent(): _Nomenclador_
@@ -56,7 +60,6 @@ abstract class CrudTreeNomencladorController extends CrudController
             'nomencladores' => $nomenclador->getChildren(),
         ]);
     }
-
 
     #[Route('/{parent}/new', name: '_new', defaults: ['parent' => ''], methods: ['GET', 'POST'])]
     #[Entity(data: 'nomencladorParent', expr: 'repository.findOneByCodigo(parent)')]
@@ -153,4 +156,33 @@ abstract class CrudTreeNomencladorController extends CrudController
         );
     }
 
+    #[Route('/{parent}/{id}/up', name: '_move_up', methods: ['GET'])]
+    #[Entity(data: 'nomencladorParent', expr: 'repository.findOneByCodigo(parent)')]
+    public function childUp(Nomenclador $nomencladorParent, Nomenclador $nomenclador): Response
+    {
+        /** @var NomencladorRepository $repository */
+        $repository = $this->getDoctrine()->getRepository(static::entity());
+        $repository->moveUp($nomenclador);
+
+        return $this->redirectToRoute(
+            $this->getRoute(self::INDEX),
+            ['parent' => $nomencladorParent->getCodigo()],
+            Response::HTTP_SEE_OTHER
+        );
+    }
+
+    #[Route('/{parent}/{id}/down', name: '_move_down', methods: ['GET'])]
+    #[Entity(data: 'nomencladorParent', expr: 'repository.findOneByCodigo(parent)')]
+    public function childDown(Nomenclador $nomencladorParent, Nomenclador $nomenclador): Response
+    {
+        /** @var NomencladorRepository $repository */
+        $repository = $this->getDoctrine()->getRepository(static::entity());
+        $repository->moveDown($nomenclador);
+
+        return $this->redirectToRoute(
+            $this->getRoute(self::INDEX),
+            ['parent' => $nomencladorParent->getCodigo()],
+            Response::HTTP_SEE_OTHER
+        );
+    }
 }

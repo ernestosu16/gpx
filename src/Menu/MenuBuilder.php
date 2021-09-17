@@ -36,12 +36,15 @@ final class MenuBuilder extends _Menu_
 
     private function getRoot(): ?Menu
     {
-        return $this->getEntityManager()->getRepository(Menu::class)->findOneByCodigo(MenuNomenclador::code());
+        return $this
+            ->getEntityManager()
+            ->getRepository(Menu::class)
+            ->findOneByCodigo(MenuNomenclador::code());
     }
 
     private function createItem(ItemInterface $item, ?Menu $menu): ItemInterface
     {
-        if (!$menu)
+        if (!$menu || !$menu->getHabilitado())
             return $item;
 
         if ($menu->getChildren()->count()) {
@@ -66,7 +69,7 @@ final class MenuBuilder extends _Menu_
 
 
             $icon = ($menu->getIcon()) ? sprintf('<span class="%s"></span>', $menu->getIcon()) : '';
-            $notify = ($menu->getNotify()) ? '</span><span class="label label-success pull-right">N</span>' : '';
+            $notify = ($menu->checkNotify()) ? '</span><span class="label label-success pull-right">N</span>' : '';
             $label = sprintf(
                 '%s <span class="nav-label" title="%s">%s</span> %s',
                 $icon,

@@ -3,7 +3,9 @@
 namespace App\Entity;
 
 use App\Repository\MenuRepository;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Exception;
 
 #[ORM\Entity(repositoryClass: MenuRepository::class)]
 class Menu extends Nomenclador
@@ -44,17 +46,33 @@ class Menu extends Nomenclador
         return $this;
     }
 
-    public function getNotify(): ?\DateTime
+    /**
+     * @throws Exception
+     */
+    public function getNotify(): ?DateTime
     {
         $v = $this->getParametro('notify');
 
-        return $v ? new \DateTime($v) : null;
+        return $v ? new DateTime($v) : null;
     }
 
-    public function setNotify(?\DateTime $v): Menu
+    public function setNotify(?DateTime $v): Menu
     {
         $this->setParametro('notify', $v?->format('Y-m-d'));
 
         return $this;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function checkNotify(): bool
+    {
+        $notify = $this->getNotify();
+
+        if (!$notify)
+            return false;
+
+        return $notify >= new DateTime();
     }
 }

@@ -19,4 +19,9 @@ abstract class _NestedTreeRepository_ extends NestedTreeRepository
     {
         return $this->findOneBy(['codigo' => $code]);
     }
+
+    public function findOneByCodigoHabilitado(string $code): ?Nomenclador
+    {
+        return $this->findOneBy(['codigo' => $code, 'habilitado' => true]);
+    }
 }

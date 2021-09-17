@@ -22,10 +22,24 @@
                 <td>{{ nomenclador.children.count }}</td>
                 <td>{{ nomenclador.habilitado ? 'Yes'|trans([],'nomenclador') : 'No'|trans([],'nomenclador') }}</td>
                 <td>
-                    <a href="{{ path(config.routes.show, {'parent': nomencladorParent.codigo,'id': nomenclador.id}) }}"
-                       class="btn btn-xs btn-default" title="{{ 'show'|trans([],'nomenclador') }}">
-                        <i class="fa fa-eye"></i>
-                    </a>
+                    {% if config.routes.move_up is defined %}
+                        <a href="{{ path(config.routes.move_up, {'parent': nomencladorParent.codigo,'id': nomenclador.id}) }}"
+                           class="btn btn-xs btn-default" title="{{ 'edit'|trans([],'nomenclador') }}">
+                            <i class="fa fa-arrow-up"></i>
+                        </a>
+                    {% endif %}
+                    {% if config.routes.move_down is defined %}
+                        <a href="{{ path(config.routes.move_down, {'parent': nomencladorParent.codigo,'id': nomenclador.id}) }}"
+                           class="btn btn-xs btn-default" title="{{ 'edit'|trans([],'nomenclador') }}">
+                            <i class="fa fa-arrow-down"></i>
+                        </a>
+                    {% endif %}
+                    {% if config.routes.show is defined %}
+                        <a href="{{ path(config.routes.show, {'parent': nomencladorParent.codigo,'id': nomenclador.id}) }}"
+                           class="btn btn-xs btn-default" title="{{ 'show'|trans([],'nomenclador') }}">
+                            <i class="fa fa-eye"></i>
+                        </a>
+                    {% endif %}
                     <a href="{{ path(config.routes.edit, {'parent': nomencladorParent.codigo,'id': nomenclador.id}) }}"
                        class="btn btn-xs btn-default" title="{{ 'edit'|trans([],'nomenclador') }}">
                         <i class="fa fa-pencil-square-o"></i>
@@ -49,7 +63,8 @@
         {{ 'create new'|trans([],'nomenclador') }}</a>
 
     {% if nomencladorParent.parent %}
-        <a class="btn btn-sm btn-default" href="{{ path(config.routes.index, {'parent': nomencladorParent.parent.codigo}) }}">
+        <a class="btn btn-sm btn-default"
+           href="{{ path(config.routes.index, {'parent': nomencladorParent.parent.codigo}) }}">
             {{ 'back to'|trans({'%name%': nomencladorParent.parent.nombre},'nomenclador') }}</a>
     {% endif %}
 {% endblock %}

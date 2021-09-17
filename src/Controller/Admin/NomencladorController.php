@@ -40,6 +40,8 @@ final class NomencladorController extends CrudTreeNomencladorController
                 self::EDIT => 'admin_nomenclador_edit',
                 self::SHOW => 'admin_nomenclador_show',
                 self::DELETE => 'admin_nomenclador_delete',
+                self::MOVE_UP => 'admin_nomenclador_move_up',
+                self::MOVE_DOWN => 'admin_nomenclador_move_down',
             ],
         ];
     }
