@@ -7,7 +7,7 @@ use App\Manager\PersonaManager;
 use Doctrine\ORM\Events;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 
-class PersonaSubscriber extends _Subscriber_
+final class PersonaSubscriber extends _Subscriber_
 {
     public function getSubscribedEvents(): array
     {

@@ -9,6 +9,9 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -36,7 +39,7 @@ class MenuType extends AbstractType
                 'label_attr' => ['class' => 'col-sm-2 control-label'],
                 'attr' => ['autocomplete' => 'off', 'class' => 'form-control input-sm']
             ])
-            ->add('descripcion', TextType::class, [
+            ->add('descripcion', TextareaType::class, [
                 'required' => false,
                 'label' => 'description',
                 'label_attr' => ['class' => 'col-sm-2 control-label'],
@@ -44,7 +47,7 @@ class MenuType extends AbstractType
                 'empty_data' => '',
             ])
             ->add('route', ChoiceType::class, [
-                'required' => true,
+                'required' => false,
                 'label' => 'route',
                 'label_attr' => ['class' => 'col-sm-2 control-label'],
                 'choices' => $routeManager->findAll(),
@@ -54,13 +57,21 @@ class MenuType extends AbstractType
             ->add('class', TextType::class, [
                 'label' => 'class',
                 'label_attr' => ['class' => 'col-sm-2 control-label'],
-                'attr' => ['autocomplete' => 'off', 'class' => 'form-control input-sm'],
+                'attr' => ['autocomplete' => 'on', 'class' => 'form-control input-sm'],
                 'required' => false,
             ])
             ->add('icon', TextType::class, [
                 'label' => 'icon',
                 'label_attr' => ['class' => 'col-sm-2 control-label'],
-                'attr' => ['autocomplete' => 'off', 'class' => 'form-control input-sm'],
+                'attr' => ['autocomplete' => 'on', 'class' => 'form-control input-sm'],
+                'required' => false,
+            ])
+            ->add('notify', DateType::class, [
+                'label' => 'notify',
+                'label_attr' => ['class' => 'col-sm-2 control-label'],
+                'html5' => false,
+                'widget' => 'single_text',
+                'attr' => ['class' => 'form-control input-sm js-datepicker'],
                 'required' => false,
             ])
             ->add('habilitado', CheckboxType::class, [
@@ -84,14 +95,15 @@ class MenuType extends AbstractType
     private function setModelTransformer(FormBuilderInterface $builder): FormBuilderInterface
     {
         $builder->get('route')->addModelTransformer(new CallbackTransformer(
-            function ($path): ?Route {
+            function ($key): ?Route {
                 /** @var RouteManager $routeManager */
                 $routeManager = $this->container->get('app.manager.route');
-
-                return $routeManager->findOneByPatch($path);
+                return $key ? $routeManager->find($key) : null;
             },
-            function (Route $route) {
-                return $route->getPath();
+            function (?Route $route) {
+                /** @var RouteManager $routeManager */
+                $routeManager = $this->container->get('app.manager.route');
+                return $routeManager->lookForTheKeyOfARoute($route?->getPath());
             }
         ));
 

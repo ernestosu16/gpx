@@ -33,4 +33,15 @@ class RouteManager extends _Manager_
         }
         return null;
     }
+
+    public function lookForTheKeyOfARoute(?string $path): int|string|null
+    {
+        if ($path)
+            /** @var Route $route */
+            foreach ($this->findAll() as $key => $route) {
+                if ($path === $route->getPath())
+                    return $key;
+            }
+        return null;
+    }
 }

@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: MenuRepository::class)]
 class Menu extends Nomenclador
 {
-    public function getRoute(): string
+    public function getRoute(): ?string
     {
         return $this->getParametro('route');
     }
@@ -40,6 +40,20 @@ class Menu extends Nomenclador
     public function setIcon(?string $v): Menu
     {
         $this->setParametro('icon', $v);
+
+        return $this;
+    }
+
+    public function getNotify(): ?\DateTime
+    {
+        $v = $this->getParametro('notify');
+
+        return $v ? new \DateTime($v) : null;
+    }
+
+    public function setNotify(?\DateTime $v): Menu
+    {
+        $this->setParametro('notify', $v?->format('Y-m-d'));
 
         return $this;
     }
