@@ -28,28 +28,44 @@ class MenuType extends AbstractType
         $builder
             ->add('codigo', TextType::class, [
                 'label' => 'code',
+                'label_attr' => ['class' => 'col-sm-2 control-label'],
                 'attr' => ['autocomplete' => 'off', 'class' => 'form-control input-sm'],
             ])
             ->add('nombre', TextType::class, [
                 'label' => 'name',
+                'label_attr' => ['class' => 'col-sm-2 control-label'],
                 'attr' => ['autocomplete' => 'off', 'class' => 'form-control input-sm']
             ])
             ->add('descripcion', TextType::class, [
+                'required' => false,
                 'label' => 'description',
-                'attr' => ['autocomplete' => 'off', 'class' => 'form-control input-sm']
+                'label_attr' => ['class' => 'col-sm-2 control-label'],
+                'attr' => ['autocomplete' => 'off', 'class' => 'form-control input-sm'],
+                'empty_data' => '',
             ])
             ->add('route', ChoiceType::class, [
                 'required' => true,
                 'label' => 'route',
+                'label_attr' => ['class' => 'col-sm-2 control-label'],
                 'choices' => $routeManager->findAll(),
-                'choice_value' => 'path'
+                'choice_value' => 'path',
+                'attr' => ['autocomplete' => 'off', 'class' => 'form-control input-sm select2'],
             ])
             ->add('class', TextType::class, [
                 'label' => 'class',
-                'attr' => ['autocomplete' => 'off'],
+                'label_attr' => ['class' => 'col-sm-2 control-label'],
+                'attr' => ['autocomplete' => 'off', 'class' => 'form-control input-sm'],
+                'required' => false,
+            ])
+            ->add('icon', TextType::class, [
+                'label' => 'icon',
+                'label_attr' => ['class' => 'col-sm-2 control-label'],
+                'attr' => ['autocomplete' => 'off', 'class' => 'form-control input-sm'],
+                'required' => false,
             ])
             ->add('habilitado', CheckboxType::class, [
                 'label' => 'enabled',
+                'label_attr' => ['class' => 'col-sm-2 control-label'],
                 'required' => false,
             ]);
 
@@ -61,6 +77,7 @@ class MenuType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Menu::class,
             'translation_domain' => 'nomenclador',
+            'attr' => ['class' => 'form-horizontal'],
         ]);
     }
 

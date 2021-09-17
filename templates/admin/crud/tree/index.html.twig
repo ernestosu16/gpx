@@ -8,7 +8,7 @@
             <th>{{ 'code'|trans([],'nomenclador') }}</th>
             <th>{{ 'name'|trans([],'nomenclador') }}</th>
             <th>{{ 'description'|trans([],'nomenclador') }}</th>
-            <th>{{ 'parameters'|trans([],'nomenclador') }}</th>
+            <th>{{ 'children'|trans([],'nomenclador') }}</th>
             <th>{{ 'enabled'|trans([],'nomenclador') }}</th>
             <th></th>
         </tr>
@@ -19,7 +19,7 @@
                 <td>{{ nomenclador.codigo }}</td>
                 <td>{{ nomenclador.nombre }}</td>
                 <td>{{ nomenclador.descripcion }}</td>
-                <td>{{ nomenclador.parametros ? nomenclador.parametros|json_encode : '' }}</td>
+                <td>{{ nomenclador.children.count }}</td>
                 <td>{{ nomenclador.habilitado ? 'Yes'|trans([],'nomenclador') : 'No'|trans([],'nomenclador') }}</td>
                 <td>
                     <a href="{{ path(config.routes.show, {'parent': nomencladorParent.codigo,'id': nomenclador.id}) }}"

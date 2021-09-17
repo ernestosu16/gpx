@@ -1,8 +1,9 @@
 {% extends 'homer-theme/layout.html.twig' %}
-{% block title %}Edit Trabajador{% endblock %}
-{% block panel_title %}Edit Trabajador{% endblock %}
+{% block title %}Editar Trabajador{% endblock %}
+{% block panel_title %}Editar Trabajador{% endblock %}
 {% block panel_body %}
-    {{ include('admin/trabajador/_form.html.twig', {'button_label': 'Update'}) }}
-    <a href="{{ path('trabajador_index') }}">{{ 'back to list'|trans({},'nomenclador') }}</a>
-    {{ include('admin/trabajador/_delete_form.html.twig') }}
+    {{ include('admin/trabajador/_form.html.twig', {'button_label': 'save'|trans({},'nomenclador')}) }}
+    <div class="pull-right">
+        {{ include('admin/trabajador/_delete_form.html.twig') }}
+    </div>
 {% endblock %}

@@ -3,5 +3,4 @@
 {% block panel_title %}{{ title|trans([],config.translation_domain) }}{% endblock %}
 {% block panel_body %}
     {{ include('admin/crud/nomenclador/_form.html.twig') }}
-    <a href="{{ path(config.routes.index) }}" class="btn btn-sm btn-default">{{ 'back to list'|trans([],'nomenclador') }}</a>
 {% endblock %}

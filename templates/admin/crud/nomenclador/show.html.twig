@@ -30,11 +30,12 @@
         </tr>
         </tbody>
     </table>
+    <a class="btn btn-sm btn-default" href="{{ path(config.routes.index) }}">
+        {{ 'back to list'|trans([],'nomenclador') }}</a>
+    <a class="btn btn-sm btn-primary" href="{{ path(config.routes.edit, {'id': nomenclador.id}) }}">
+        {{ 'edit'|trans([],'nomenclador') }}</a>
+
     <div class="pull-right">
-        <a class="btn btn-sm btn-default" href="{{ path(config.routes.index) }}">
-            {{ 'back to list'|trans([],'nomenclador') }}</a>
-        <a class="btn btn-sm btn-primary" href="{{ path(config.routes.edit, {'id': nomenclador.id}) }}">
-            {{ 'edit'|trans([],'nomenclador') }}</a>
+        {{ include('admin/crud/nomenclador/_delete_form.html.twig') }}
     </div>
-    {{ include('admin/crud/nomenclador/_delete_form.html.twig') }}
 {% endblock %}

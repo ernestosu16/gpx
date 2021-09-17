@@ -16,19 +16,25 @@ class GrupoType extends AbstractType
         $builder
             ->add('codigo', TextType::class, [
                 'attr' => ['class' => 'form-control input-sm'],
+                'label' => 'code',
                 'label_attr' => ['class' => 'col-sm-2 control-label'],
             ])
             ->add('nombre', TextType::class, [
                 'attr' => ['class' => 'form-control input-sm'],
+                'label' => 'name',
                 'label_attr' => ['class' => 'col-sm-2 control-label'],
             ])
             ->add('descripcion', TextareaType::class, [
                 'required' => false,
                 'empty_data' => '',
-                'attr' => ['class' => 'form-control input-sm'],
+                'label' => 'description',
                 'label_attr' => ['class' => 'col-sm-2 control-label'],
+                'attr' => ['class' => 'form-control input-sm'],
             ])
-            ->add('habilitado');
+            ->add('habilitado', null, [
+                'label' => 'enabled',
+                'label_attr' => ['class' => 'col-sm-2 control-label'],
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

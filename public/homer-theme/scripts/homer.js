@@ -98,6 +98,7 @@ $(document).ready(function () {
     // Fix Bootstrap backdrop issu with animation.css
     $('.modal').appendTo("body")
 
+    $('.select2').select2();
 });
 
 $(window).bind("load", function () {

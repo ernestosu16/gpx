@@ -4,9 +4,6 @@
 {% block panel_body %}
     {{ include('admin/crud/tree/_form.html.twig', {'button_label': 'save'|trans([],'nomenclador')}) }}
     <div class="pull-right">
-        <a class="btn btn-sm btn-default" href="{{ path(config.routes.index,{'parent': nomencladorParent.codigo}) }}">
-            {{ 'back to list'|trans([],'nomenclador') }}
-        </a>
+        {{ include('admin/crud/tree/_delete_form.html.twig') }}
     </div>
-    {{ include('admin/crud/tree/_delete_form.html.twig') }}
 {% endblock %}

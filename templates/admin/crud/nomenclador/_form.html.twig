@@ -9,7 +9,9 @@
         </div>
     {% endif %}
 {% endfor %}
-<div class="pull-right">
-    <button class="btn btn-sm btn-success">{{ button_label|default('save'|trans([],'nomenclador')) }}</button>
-</div>
+<button class="btn btn-sm btn-success">{{ button_label|default('save'|trans([],'nomenclador')) }}</button>
+
+<a href="{{ path(config.routes.index) }}"
+   class="btn btn-sm btn-default">{{ 'back to list'|trans([],'nomenclador') }}</a>
+
 {{ form_end(form) }}

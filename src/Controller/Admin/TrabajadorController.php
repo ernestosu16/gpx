@@ -9,10 +9,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route(path: '/trabajador')]
+#[Route(path: '/trabajador', name: 'admin_trabajador_')]
 class TrabajadorController extends _Controller_
 {
-    #[Route('/', name: 'trabajador_index', methods: ['GET'])]
+    #[Route('/', name: 'index', methods: ['GET'])]
     public function index(): Response
     {
         $trabajadors = $this->getDoctrine()
@@ -24,7 +24,7 @@ class TrabajadorController extends _Controller_
         ]);
     }
 
-    #[Route('/new', name: 'trabajador_new', methods: ['GET', 'POST'])]
+    #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
         $trabajador = new Trabajador();
@@ -36,7 +36,7 @@ class TrabajadorController extends _Controller_
             $entityManager->persist($trabajador);
             $entityManager->flush();
 
-            return $this->redirectToRoute('trabajador_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('admin_trabajador_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('admin/trabajador/new.html.twig', [
@@ -45,7 +45,7 @@ class TrabajadorController extends _Controller_
         ]);
     }
 
-    #[Route('/{trabajador}', name: 'trabajador_show', methods: ['GET'])]
+    #[Route('/{trabajador}', name: 'show', methods: ['GET'])]
     public function show(Trabajador $trabajador): Response
     {
         return $this->render('admin/trabajador/show.html.twig', [
@@ -53,7 +53,7 @@ class TrabajadorController extends _Controller_
         ]);
     }
 
-    #[Route('/{trabajador}/edit', name: 'trabajador_edit', methods: ['GET', 'POST'])]
+    #[Route('/{trabajador}/edit', name: 'edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Trabajador $trabajador): Response
     {
         $form = $this->createForm(TrabajadorType::class, $trabajador);
@@ -62,7 +62,7 @@ class TrabajadorController extends _Controller_
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('trabajador_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('admin_trabajador_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('admin/trabajador/edit.html.twig', [
@@ -71,13 +71,13 @@ class TrabajadorController extends _Controller_
         ]);
     }
 
-    #[Route('/{trabajador}', name: 'trabajador_delete', methods: ['POST'])]
+    #[Route('/{trabajador}', name: 'delete', methods: ['POST'])]
     public function delete(Request $request, Trabajador $trabajador): Response
     {
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->remove($trabajador);
         $entityManager->flush();
 
-        return $this->redirectToRoute('trabajador_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('admin_trabajador_index', [], Response::HTTP_SEE_OTHER);
     }
 }

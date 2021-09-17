@@ -9,7 +9,9 @@
         </div>
     {% endif %}
 {% endfor %}
-<div class="pull-right">
-    <button class="btn btn-sm btn-success">{{ button_label|default('save'|trans([],'nomenclador')) }}</button>
-</div>
+<button class="btn btn-sm btn-success">{{ button_label|default('save'|trans([],'nomenclador')) }}</button>
+
+<a class="btn btn-sm btn-default" href="{{ path(config.routes.index,{'parent': nomencladorParent.codigo}) }}">
+    {{ 'back to list'|trans([],'nomenclador') }}
+</a>
 {{ form_end(form) }}

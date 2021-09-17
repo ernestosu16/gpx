@@ -3,7 +3,6 @@
     <aside id="menu">
         <div id="navigation">
             <div class="profile-picture">
-
                 <div class="stats-label text-color">
                     <span class="font-extra-bold font-uppercase">Username</span>
 
@@ -21,22 +20,15 @@
 
             <ul class="nav" id="side-menu">
                 <li class="active">
-                    <a href="index.html"> <span class="nav-label">Page 1</span> <span class="label label-success pull-right">start</span> </a>
-                </li>
-                <li>
-                    <a href="page2.html"> <span class="nav-label">Page 2</span> </a>
-                </li>
-                <li>
-                    <a href="page2.html"> <span class="nav-label">Page 2</span> </a>
-                </li>
-                <li>
-                    <a href="page2.html"> <span class="nav-label">Page 2</span> </a>
-                </li>
-                <li>
-                    <a href="page2.html"> <span class="nav-label">Page 2</span> </a>
-                </li>
-                <li>
-                    <a href="page2.html"> <span class="nav-label">Page 2</span> </a>
+                    <a href="#" aria-expanded="true">
+                        <span class="nav-label">Administración</span><span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level collapse in" aria-expanded="true" style="">
+                        <li><a href="{{ path('admin_trabajador_index') }}"><span class="fa fa-user"></span> Trabajadores</a></li>
+                        <li><a href="{{ path('admin_grupo_index') }}"><span class="fa fa-group"></span> Grupos</a></li>
+                        <li><a href="{{ path('admin_menu_index') }}"><span class="fa fa-list"></span> Menú</a></li>
+                        <li><a href="{{ path('admin_nomenclador_index') }}"><span class="fa fa-wrench"></span> Nomencladores</a></li>
+                    </ul>
                 </li>
             </ul>
         </div>

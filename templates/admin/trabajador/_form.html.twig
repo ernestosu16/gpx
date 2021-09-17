@@ -51,7 +51,8 @@
         </div>
     </div>
 </div>
-<button class="btn">{{ button_label|default('save'|trans({},'nomenclador')) }}</button>
+<button class="btn btn-sm btn-success">{{ button_label|default('save'|trans({},'nomenclador')) }}</button>
+<a class="btn btn-sm btn-default" href="{{ path('admin_trabajador_index') }}">{{ 'back to list'|trans({},'nomenclador') }}</a>
 {{ form_errors(form) }}
 {{ form_help(form) }}
 {{ form_end(form) }}

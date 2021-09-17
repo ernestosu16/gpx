@@ -20,9 +20,12 @@ class TrabajadorCredencialType extends AbstractType
             ->add('usuario', TextType::class, [
                 'label' => 'trabajador.credencial.username',
                 'label_attr' => ['class' => 'col-sm-4 control-label'],
-                'attr' => ['autocomplete' => 'off', 'class' => 'form-control input-sm'],
+                'attr' => [
+                    'autocomplete' => 'off',
+                    'class' => 'form-control input-sm',
+                    'readonly' => (bool)$data?->getUsuario()
+                ],
                 'required' => false,
-                'disabled' => (bool)$data?->getUsuario(),
             ])
             ->add('contrasena', RepeatedType::class, [
                 'type' => PasswordType::class,

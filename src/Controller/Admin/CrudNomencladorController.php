@@ -66,7 +66,7 @@ abstract class CrudNomencladorController extends CrudController
         }
 
         return $this->renderForm($this->getTemplate(self::NEW), [
-            'title' => $this->getTitle(self::EDIT),
+            'title' => $this->getTitle(self::NEW),
             'nomenclador' => $nomenclador,
             'form' => $form,
             'config' => $this->getConfig(),

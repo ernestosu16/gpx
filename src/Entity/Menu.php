@@ -8,40 +8,38 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: MenuRepository::class)]
 class Menu extends Nomenclador
 {
-    /**
-     * @return string
-     */
     public function getRoute(): string
     {
         return $this->getParametro('route');
     }
 
-    /**
-     * @param string|null $href
-     * @return Menu
-     */
-    public function setRoute(?string $href): Menu
+    public function setRoute(?string $v): Menu
     {
-        $this->setParametro('route', $href);
+        $this->setParametro('route', $v);
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getClass(): string
     {
         return $this->getParametro('class');
     }
 
-    /**
-     * @param string|null $href
-     * @return Menu
-     */
-    public function setClass(?string $href): Menu
+    public function setClass(?string $v): Menu
     {
-        $this->setParametro('class', $href);
+        $this->setParametro('class', $v);
+
+        return $this;
+    }
+
+    public function getIcon(): string
+    {
+        return $this->getParametro('icon');
+    }
+
+    public function setIcon(?string $v): Menu
+    {
+        $this->setParametro('icon', $v);
 
         return $this;
     }

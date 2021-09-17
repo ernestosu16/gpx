@@ -4,8 +4,6 @@ namespace App\Controller\Admin;
 
 use App\Config\Nomenclador\_Nomenclador_;
 use App\Entity\Nomenclador;
-use App\Form\Admin\NomencladorType;
-use App\Repository\_NestedTreeRepository_;
 use App\Repository\_Repository_;
 use Doctrine\ORM\EntityRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
@@ -52,7 +50,7 @@ abstract class CrudTreeNomencladorController extends CrudController
         }
 
         return $this->render($this->getTemplate(self::INDEX), [
-            'title' => $this->getTitle(self::INDEX),
+            'title' => $this->getTitle(self::INDEX) . ' (' . $nomencladorParent?->getNombre() . ')',
             'config' => $this->getConfig(),
             'nomencladorParent' => $nomencladorParent ?? $nomenclador,
             'nomencladores' => $nomenclador->getChildren(),
