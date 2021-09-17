@@ -5,7 +5,7 @@ services:
 #            - { db_table: 'trabajador_credencial', db_id_col: 'session' }
     app.menu_builder:
         class: App\Menu\MenuBuilder
-        arguments: ["@knp_menu.factory"]
+        arguments: ["@knp_menu.factory", '@Doctrine\ORM\EntityManagerInterface', '@service_container']
 
     app.main_menu:
         class: Knp\Menu\MenuItem # the service definition requires setting the class

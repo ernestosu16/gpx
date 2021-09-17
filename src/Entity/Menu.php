@@ -32,7 +32,7 @@ class Menu extends Nomenclador
         return $this;
     }
 
-    public function getIcon(): string
+    public function getIcon(): ?string
     {
         return $this->getParametro('icon');
     }
