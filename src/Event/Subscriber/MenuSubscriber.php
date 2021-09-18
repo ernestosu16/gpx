@@ -22,9 +22,11 @@ final class MenuSubscriber extends _Subscriber_
         if (!$object instanceof Menu)
             return;
 
-        $prefix = null;
+        $code = [];
         if ($parent = $object->getParent())
-            $prefix = $parent->getCodigo();
-        $object->setCodigo($prefix . '_' . $object->getCodigo());
+            $code = $parent->getCodigo();
+
+        $code[] = $object->getCodigo();
+        $object->setCodigo(implode('_', $code));
     }
 }
