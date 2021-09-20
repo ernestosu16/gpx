@@ -7,11 +7,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity]
-class Empresa extends _Entity_
+class Empresa extends Estructura
 {
-    #[ORM\Column(type: 'string', length: 50)]
-    private string $nombre;
-
     #[ORM\Column(type: "string", length: 11, unique: true)]
     #[Assert\NotNull]
     #[Assert\Regex(pattern: RegexUtil::CODIGO_REEUP)]

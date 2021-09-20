@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route(path: '/localizacion', name: 'admin_localizacion_')]
-class LocalizacionController extends _Controller_
+final class LocalizacionController extends _Controller_
 {
     #[Route('/{tipo}/{parent}', name: 'index', defaults: ['tipo' => LocalizacionTipo::PROVINCIA, 'parent' => null], methods: ['GET'])]
     #[Entity(data: 'tipo', expr: 'repository.findOneByCodigo(tipo)', class: LocalizacionTipo::class)]

@@ -13,6 +13,12 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity]
 #[ORM\Index(columns: ['parent_id'], name: 'IDX_PARENT_ID')]
 #[ORM\Index(columns: ['root_id'], name: 'IDX_ROOT_ID')]
+#[ORM\Index(columns: ['discr'], name: 'IDX_DISCR')]
+#[ORM\InheritanceType("JOINED")]
+#[ORM\DiscriminatorColumn(name: 'discr', type: 'string', length: 17)]
+#[ORM\DiscriminatorMap(value: [
+    "cliente" => Empresa::class,
+])]
 class Estructura extends BaseNestedTree
 {
     /** @Gedmo\TreeRoot() */
@@ -49,4 +55,8 @@ class Estructura extends BaseNestedTree
     #[Assert\Length(min: 5, max: 5)]
     #[Assert\Regex(pattern: RegexUtil::SOLO_NUMERO)]
     private ?string $codigo_postal;
+
+    #[ORM\Column(type: 'json')]
+    private array $parametros = array();
+
 }
