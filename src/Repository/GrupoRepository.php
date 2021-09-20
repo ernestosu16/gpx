@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Config\Nomenclador\Grupo as GrupoNomenclador;
+use App\Config\Data\Nomenclador\GrupoData;
 use App\Entity\Grupo;
 use Doctrine\ORM\QueryBuilder;
 
@@ -21,7 +21,7 @@ final class GrupoRepository extends NomencladorRepository
 
     public function createQueryBuilder($alias, $indexBy = null): QueryBuilder
     {
-        $parent = $this->findOneByCodigo(GrupoNomenclador::code());
+        $parent = $this->findOneByCodigo(GrupoData::code());
         $query = parent::createQueryBuilder($alias, $indexBy);
         $query->where($alias . '.parent = :parent')
             ->setParameter('parent', $parent)

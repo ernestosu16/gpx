@@ -30,10 +30,15 @@ final class LocalizacionCommand extends BaseCommand implements BaseCommandInterf
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $data = Yaml::parseFile($this->getKernel()->getProjectDir() . '/src/Config/Fixtures/localizacion.yaml');
+        /** @var array $localizacionTipo */
+        $localizacionTipo = Yaml::parseFile($this->getKernel()->getProjectDir() . '/src/Config/Fixtures/localizacion_tipo.yaml');
 
-        if ($data)
-            $this->procesando($data);
+        $this->procesandoTipo($localizacionTipo);
+
+        $localizacion = Yaml::parseFile($this->getKernel()->getProjectDir() . '/src/Config/Fixtures/localizacion.yaml');
+
+        if ($localizacion)
+            $this->procesando($localizacion);
 
         return Command::SUCCESS;
     }
@@ -86,5 +91,27 @@ final class LocalizacionCommand extends BaseCommand implements BaseCommandInterf
         }
 
         $em->commit();
+    }
+
+    /**
+     * @throws OptimisticLockException|ORMException
+     */
+    private function procesandoTipo(array $tipos)
+    {
+        $em = $this->getEntityManager();
+        foreach ($tipos['tipos'] as $tipo) {
+            $tipoEntity = new LocalizacionTipo();
+
+            if ($parent = $em->getRepository(LocalizacionTipo::class)->findOneByCodigo($tipo['parent']))
+                $tipoEntity->setParent($parent);
+
+            $tipoEntity->setNombre($tipo['nombre']);
+            $tipoEntity->setDescripcion($tipo['descripcion']);
+            $tipoEntity->setCodigo($tipo['codigo']);
+
+            $em->persist($tipoEntity);
+            $em->flush();
+
+        }
     }
 }

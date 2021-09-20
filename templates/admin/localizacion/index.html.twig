@@ -42,7 +42,7 @@
     </table>
 
     {% set prentCodigo = null %}
-    {% if parent.parent is defined %}
+    {% if parent.parent.codigo is defined %}
         {% set prentCodigo = parent.parent.codigo %}
     {% endif %}
 
@@ -53,9 +53,4 @@
             <i class="fa fa-arrow-left"></i> Regresar a la lista de {{ parent.tipo.nombre }}
         </a>
     {% endif %}
-
-    <a class="btn btn-sm btn-primary"
-       href="{{ path('admin_localizacion_new', {'tipo': tipo.codigo}) }}">
-        {{ 'create new'|trans([],'nomenclador') }}
-    </a>
 {% endblock %}

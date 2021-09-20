@@ -1,0 +1,10 @@
+tipos:
+    -   parent: 'TIPO_LOCALIZACION'
+        nombre: 'Provincia'
+        descripcion: ''
+        codigo: 'PROVINCIA'
+
+    -   parent: 'PROVINCIA'
+        nombre: 'Municipio'
+        descripcion: ''
+        codigo: 'MUNICIPIO'
