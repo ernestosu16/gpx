@@ -4,8 +4,10 @@ namespace App\Command\Configurar;
 
 use App\Command\BaseCommand;
 use App\Command\BaseCommandInterface;
+use App\Config\Data\Nomenclador\EstructuraTipoData;
 use App\Config\Data\Nomenclador\GrupoData;
 use App\Config\Data\Nomenclador\MenuData;
+use App\Entity\EstructuraTipo;
 use App\Entity\Grupo;
 use App\Entity\Localizacion;
 use App\Entity\LocalizacionTipo;
@@ -34,6 +36,8 @@ final class FixtureCommand extends BaseCommand implements BaseCommandInterface
         $this->configurarLocalizaciones();
 
         $this->configurarMenu();
+
+        $this->configurarEstructuraTipo();
 
         return Command::SUCCESS;
     }
@@ -140,14 +144,15 @@ final class FixtureCommand extends BaseCommand implements BaseCommandInterface
 
     private function configurarMenu()
     {
-
-        $menu = Yaml::parseFile($this->getKernel()->getProjectDir() . '/src/Config/Fixtures/menu.yaml');
-
         $em = $this->getEntityManager();
 
         /** @var ?Menu $root */
         $root = $em->getRepository(Menu::class)->findOneByCodigo(MenuData::code());
 
+        if ($root->getChildren()->count())
+            return;
+
+        $menu = Yaml::parseFile($this->getKernel()->getProjectDir() . '/src/Config/Fixtures/menu.yaml');
         foreach ($menu['menu'] as $menu) {
             if ($em->getRepository(Menu::class)->findOneByCodigo($menu['codigo']))
                 continue;
@@ -160,6 +165,8 @@ final class FixtureCommand extends BaseCommand implements BaseCommandInterface
             $menuEntity->setIcon($menu['icon']);
 
             foreach ($menu['children'] as $child) {
+                if ($em->getRepository(Menu::class)->findOneByCodigo($child['codigo']))
+                    continue;
                 $menuChildEntity = new Menu();
                 $menuChildEntity->setRoot($root);
                 $menuChildEntity->setCodigo($child['codigo']);
@@ -170,8 +177,47 @@ final class FixtureCommand extends BaseCommand implements BaseCommandInterface
             }
 
             $root->addChild($menuEntity);
-            $em->persist($root);
         }
+        $em->persist($root);
         $em->flush();
+    }
+
+    private function configurarEstructuraTipo()
+    {
+        /** @var array $localizacionTipo */
+        $tipos = Yaml::parseFile($this->getKernel()->getProjectDir() . '/src/Config/Fixtures/estructura_tipo.yaml');
+
+
+        $em = $this->getEntityManager();
+        /** @var ?EstructuraTipo $root */
+        $root = $em->getRepository(EstructuraTipo::class)->findOneByCodigo(EstructuraTipoData::code());
+
+        foreach ($tipos['tipos'] as $tipo) {
+            if ($em->getRepository(EstructuraTipo::class)->findOneByCodigo($tipo['codigo']))
+                continue;
+
+            $root = $this->procesarEstructuraTipo($root, $tipo);
+        }
+        $em->persist($root);
+        $em->flush();
+    }
+
+    private function procesarEstructuraTipo(?EstructuraTipo $estructuraTipo, array $tipo)
+    {
+        $tipoEntity = new EstructuraTipo();
+        $tipoEntity->setNombre($tipo['nombre']);
+        $tipoEntity->setDescripcion($tipo['descripcion']);
+        $tipoEntity->setCodigo($tipo['codigo']);
+
+        if (isset($tipo['children'])) {
+            foreach ($tipo['children'] as $child) {
+                $tipoEntity = $this->procesarEstructuraTipo($tipoEntity, $child);
+            }
+        } else {
+            $tipoEntity->setEnd(true);
+        }
+        $estructuraTipo->addChild($tipoEntity);
+
+        return $estructuraTipo;
     }
 }
