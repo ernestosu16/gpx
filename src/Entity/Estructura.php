@@ -32,12 +32,12 @@ class Estructura extends BaseNestedTree
 
     #[ORM\Column(type: 'string', length: 100, unique: true)]
     #[Assert\NotBlank]
-    #[Assert\Regex(pattern: RegexUtil::CODIGO, message: 'regex.codigo')]
+    #[Assert\Regex(pattern: RegexUtil::CODIGO)]
     private string $codigo;
 
     #[ORM\Column(type: 'string', length: 50)]
     #[Assert\NotBlank]
-    #[Assert\Regex(pattern: RegexUtil::TEXTO_ACENTO_ESPACIO, message: 'regex.nombre')]
+    #[Assert\Regex(pattern: RegexUtil::TEXTO_ACENTO_ESPACIO)]
     #[Assert\Length(min: 3, max: 100)]
     private string $nombre;
 

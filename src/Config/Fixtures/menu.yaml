@@ -38,3 +38,7 @@ menu:
                 nombre: 'Tipos de localizaciones'
                 route: 'admin_localizacion_tipo_index'
                 icon: null
+            -   codigo: 'ADMIN_ESTRUCTURA_TIPO'
+                nombre: 'Tipos de estructuras'
+                route: 'admin_estructura_tipo_index'
+                icon: null
