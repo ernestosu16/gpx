@@ -2,7 +2,7 @@
 
 namespace App\Controller\Admin;
 
-use App\Config\Nomenclador\Grupo as GrupoNomenclador;
+use App\Config\Data\Nomenclador\GrupoData;
 use App\Entity\Grupo;
 use App\Form\Admin\GrupoType;
 use JetBrains\PhpStorm\ArrayShape;
@@ -25,7 +25,7 @@ final class GrupoController extends CrudNomencladorController
     protected static function config(): array
     {
         return [
-            'parent' => GrupoNomenclador::newInstance(),
+            'parent' => GrupoData::newInstance(),
             'title' => [
                 self::INDEX => 'Lista de grupos',
                 self::NEW => 'Nuevo grupo',

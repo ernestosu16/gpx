@@ -2,7 +2,7 @@
 
 namespace App\Menu;
 
-use App\Config\Nomenclador\Menu as MenuNomenclador;
+use App\Config\Data\Nomenclador\MenuData;
 use App\Entity\Menu;
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
@@ -39,7 +39,7 @@ final class MenuBuilder extends _Menu_
         return $this
             ->getEntityManager()
             ->getRepository(Menu::class)
-            ->findOneByCodigo(MenuNomenclador::code());
+            ->findOneByCodigo(MenuData::code());
     }
 
     private function createItem(ItemInterface $item, ?Menu $menu): ItemInterface
@@ -47,10 +47,15 @@ final class MenuBuilder extends _Menu_
         if (!$menu || !$menu->getHabilitado())
             return $item;
 
+        $icon = ($menu->getIcon()) ? sprintf('<span class="%s"></span>', $menu->getIcon()) : '<span class="fa fa-list"></span>';
+        $notify = ($menu->checkNotify()) ? '</span><span class="label label-success pull-right">N</span>' : '';
+
         if ($menu->getChildren()->count()) {
 
+            $label = sprintf('<span class="nav-label" title="%s">%s</span><span class="fa arrow"></span> %s',
+                $menu->getDescripcion(), $menu->getNombre(), $notify);
             $root = $item->addChild($menu->getCodigo(), array(
-                'label' => sprintf('<span class="nav-label">%s</span><span class="fa arrow"></span>', $menu->getNombre()),
+                'label' => $label,
                 'uri' => '#',
                 'extras' => ['safe_label' => true, 'translation_domain' => false],
                 'attributes' => ['aria-expanded' => 'true'/*, 'class' => 'active'*/],
@@ -63,20 +68,14 @@ final class MenuBuilder extends _Menu_
         } else {
             /** @var RequestStack $requestStack */
             $requestStack = $this->get('request_stack');
+
             if ($requestStack->getCurrentRequest()->get('_route') === $menu->getRoute()) {
-                $item->setAttribute('class', 'active');
+                $this->itemClassActive($item);
             }
 
+            $label = sprintf('%s <span class="nav-label" title="%s">%s</span> %s',
+                $icon, $menu->getDescripcion(), $menu->getNombre(), $notify);
 
-            $icon = ($menu->getIcon()) ? sprintf('<span class="%s"></span>', $menu->getIcon()) : '';
-            $notify = ($menu->checkNotify()) ? '</span><span class="label label-success pull-right">N</span>' : '';
-            $label = sprintf(
-                '%s <span class="nav-label" title="%s">%s</span> %s',
-                $icon,
-                $menu->getDescripcion(),
-                $menu->getNombre(),
-                $notify
-            );
             $item->addChild($menu->getCodigo(), [
                 'route' => $menu->getRoute() ?? null,
                 'label' => $label,
@@ -129,5 +128,15 @@ final class MenuBuilder extends _Menu_
         ]);
 
         return $item;
+    }
+
+    private function itemClassActive(ItemInterface $item)
+    {
+        if ($parent = $item->getParent()) {
+            $item->setAttribute('class', 'active');
+            $this->itemClassActive($parent);
+        }
+
+        $item->setAttribute('class', 'active');
     }
 }

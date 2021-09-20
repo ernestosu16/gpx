@@ -2,7 +2,7 @@
 
 namespace App\Controller\Admin;
 
-use App\Config\Nomenclador\_Nomenclador_;
+use App\Config\Data\_Data_;
 use App\Controller\_Controller_;
 use JetBrains\PhpStorm\ArrayShape;
 
@@ -59,7 +59,7 @@ abstract class CrudController extends _Controller_
         return $config[$key] ?? $config;
     }
 
-    protected function getParent(): _Nomenclador_
+    protected function getParent(): _Data_
     {
         return $this->getConfig('parent');
     }

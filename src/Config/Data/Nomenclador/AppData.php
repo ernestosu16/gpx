@@ -1,29 +1,30 @@
 <?php
 
-namespace App\Config\Nomenclador;
+namespace App\Config\Data\Nomenclador;
 
+use App\Config\Data\_Data_;
 use App\Entity\Nomenclador;
 
-final class Envio extends _Nomenclador_
+final class AppData extends _Data_
 {
     static function parent(): ?string
     {
-        return App::class;
+        return null;
     }
 
     static function code(): string
     {
-        return 'ENVIO';
+        return 'APP';
     }
 
     static function name(): string
     {
-        return 'Envío';
+        return 'Aplicación';
     }
 
     static function description(): string
     {
-        return 'Datos configuración del modulo de Envío';
+        return 'Datos de la aplicación';
     }
 
     static function discriminator(): string

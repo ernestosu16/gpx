@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Event\Subscriber;
+namespace App\Event\Subscriber\Admin;
 
 use App\Entity\Persona;
+use App\Event\Subscriber\_Subscriber_;
 use App\Manager\PersonaManager;
 use Doctrine\ORM\Events;
 use Doctrine\Persistence\Event\LifecycleEventArgs;

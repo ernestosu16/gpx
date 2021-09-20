@@ -4,7 +4,7 @@ namespace App\Command\Configurar;
 
 use App\Command\BaseCommand;
 use App\Command\BaseCommandInterface;
-use App\Config\Nomenclador\_Nomenclador_;
+use App\Config\Data\_Data_;
 use App\Entity\Nomenclador;
 use App\Repository\NomencladorRepository;
 use App\Util\ClassFinderUtil;
@@ -34,11 +34,11 @@ final class NomencladorCommand extends BaseCommand implements BaseCommandInterfa
     {
         $nomenclador = [];
 
-        $MyClassesNamespace = ClassFinderUtil::getClassesInNamespace('App\\Config\\Nomenclador');
+        $MyClassesNamespace = ClassFinderUtil::getClassesInNamespace('App\\Config\\Data\\Nomenclador');
         foreach ($MyClassesNamespace as $item) {
             $classReflection = new ReflectionClass($item);
             if ($classReflection->isAbstract()) continue;
-            /** @var _Nomenclador_ $className */
+            /** @var _Data_ $className */
             $className = $classReflection->getName();
             $nomenclador[] = $className::newInstance();
         }
@@ -59,7 +59,7 @@ final class NomencladorCommand extends BaseCommand implements BaseCommandInterfa
         $section = $output->section();
         $section->writeln('Creando la lista de nomencladores por defecto');
 
-        /** @var _Nomenclador_ $nomenclador */
+        /** @var _Data_ $nomenclador */
         foreach (self::nomencladores() as $nomenclador) {
             $nomencladorEntity = $this->generarNomencladorEntity($nomenclador);
             if ($nomencladorEntity) {
@@ -76,7 +76,7 @@ final class NomencladorCommand extends BaseCommand implements BaseCommandInterfa
     }
 
 
-    private function generarNomencladorEntity(_Nomenclador_ $nomenclador): ?Nomenclador
+    private function generarNomencladorEntity(_Data_ $nomenclador): ?Nomenclador
     {
         $this->codigo = [];
         $codigo_parent = [];
@@ -105,14 +105,14 @@ final class NomencladorCommand extends BaseCommand implements BaseCommandInterfa
         return $this->newEntityNomenclador($codigo, $nomenclador, $parent);
     }
 
-    private function generarNomenclador(_Nomenclador_ $nomenclador)
+    private function generarNomenclador(_Data_ $nomenclador)
     {
         if ($nomenclador->getParent())
             $this->generarNomenclador($nomenclador->getParent());
         $this->codigo[] = $nomenclador->getCode();
     }
 
-    private function newEntityNomenclador($codigo, _Nomenclador_ $nomenclador, $parent): Nomenclador
+    private function newEntityNomenclador($codigo, _Data_ $nomenclador, $parent): Nomenclador
     {
         $class = $nomenclador->getDiscriminator();
         $entity = new $class();

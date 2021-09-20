@@ -16,3 +16,9 @@ services:
         public: true
         calls:
             -   setRoute: [ '@router' ]
+
+    app.manager.fixture:
+        class: App\Manager\FixtureManager
+        parent: App\Manager\_Manager_
+        arguments: [ '%kernel.project_dir%/src/Config/Fixtures' ]
+        public: true

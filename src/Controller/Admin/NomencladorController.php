@@ -2,7 +2,7 @@
 
 namespace App\Controller\Admin;
 
-use App\Config\Nomenclador\App as AppNomenclador;
+use App\Config\Data\Nomenclador\AppData;
 use App\Entity\Nomenclador;
 use App\Form\Admin\NomencladorType;
 use Symfony\Component\Routing\Annotation\Route;
@@ -10,9 +10,9 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route(path: '/nomenclador', name: 'admin_nomenclador')]
 final class NomencladorController extends CrudTreeNomencladorController
 {
-    protected static function parent(): AppNomenclador
+    protected static function parent(): AppData
     {
-        return AppNomenclador::newInstance();
+        return AppData::newInstance();
     }
 
     protected static function entity(): string

@@ -2,7 +2,6 @@
 
 namespace App\Repository;
 
-use App\Entity\Nomenclador;
 use Doctrine\ORM\EntityManagerInterface;
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 
@@ -15,12 +14,12 @@ abstract class _NestedTreeRepository_ extends NestedTreeRepository
         parent::__construct($em, $em->getClassMetadata(static::classEntity()));
     }
 
-    public function findOneByCodigo(string $code): ?Nomenclador
+    public function findOneByCodigo(?string $code): ?object
     {
-        return $this->findOneBy(['codigo' => $code]);
+        return $code ? $this->findOneBy(['codigo' => $code]) : null;
     }
 
-    public function findOneByCodigoHabilitado(string $code): ?Nomenclador
+    public function findOneByCodigoHabilitado(string $code): ?object
     {
         return $this->findOneBy(['codigo' => $code, 'habilitado' => true]);
     }

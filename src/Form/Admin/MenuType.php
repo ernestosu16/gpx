@@ -51,7 +51,7 @@ class MenuType extends AbstractType
                 'label' => 'route',
                 'label_attr' => ['class' => 'col-sm-2 control-label'],
                 'choices' => $routeManager->findAll(),
-                'choice_value' => 'path',
+//                'choice_value' => 'path',
                 'attr' => ['autocomplete' => 'off', 'class' => 'form-control input-sm select2'],
             ])
             ->add('class', TextType::class, [

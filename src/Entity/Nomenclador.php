@@ -21,11 +21,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\UniqueConstraint(name: 'UNQ_CODIGO', fields: ['codigo'])]
 #[UniqueEntity(fields: ['codigo'])]
 #[ORM\InheritanceType("SINGLE_TABLE")]
-#[ORM\DiscriminatorColumn(name: 'discr', type: 'string', length: 11)]
+#[ORM\DiscriminatorColumn(name: 'discr', type: 'string', length: 17)]
 #[ORM\DiscriminatorMap(value: [
     "nomenclador" => Nomenclador::class,
     "grupo" => Grupo::class,
-    "menu" => Menu::class
+    "menu" => Menu::class,
+    "estructura_tipo" => EstructuraTipo::class,
+    "localizacion_tipo" => LocalizacionTipo::class,
 ])]
 class Nomenclador extends BaseNestedTree
 {

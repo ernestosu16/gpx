@@ -34,11 +34,6 @@ class NomencladorRepository extends _NestedTreeRepository_
         return $entity;
     }
 
-    public function findOneByCodigo(string $code): ?Nomenclador
-    {
-        return $this->findOneBy(['codigo' => $code]);
-    }
-
     public static function newInstance(string $codigo, string $nombre, string $descripcion, ?Nomenclador $parent = null): Nomenclador
     {
         $class = static::classEntity();

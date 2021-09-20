@@ -2,7 +2,7 @@
 
 namespace App\Controller\Admin;
 
-use App\Config\Nomenclador\Menu as MenuNomenclador;
+use App\Config\Data\Nomenclador\MenuData;
 use App\Entity\Menu;
 use App\Form\Admin\MenuType;
 use Symfony\Component\Routing\Annotation\Route;
@@ -10,9 +10,9 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route(path: '/menu', name: 'admin_menu')]
 final class MenuNomencladorController extends CrudTreeNomencladorController
 {
-    protected static function parent(): MenuNomenclador
+    protected static function parent(): MenuData
     {
-        return MenuNomenclador::newInstance();
+        return MenuData::newInstance();
     }
 
     protected static function entity(): string

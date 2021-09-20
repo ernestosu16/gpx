@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Config\Nomenclador;
+namespace App\Config\Data;
 
-abstract class _Nomenclador_
+abstract class _Data_
 {
     private ?string $parent;
     private string $code;
@@ -109,9 +109,9 @@ abstract class _Nomenclador_
 
     /**
      * @param string $discriminator
-     * @return _Nomenclador_
+     * @return _Data_
      */
-    public function setDiscriminator(string $discriminator): _Nomenclador_
+    public function setDiscriminator(string $discriminator): _Data_
     {
         $this->discriminator = $discriminator;
         return $this;

@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Config\Nomenclador;
+namespace App\Config\Data\Nomenclador;
 
-use App\Entity\Nomenclador;
+use App\Config\Data\_Data_;
+use App\Entity\Grupo;
 
-final class App extends _Nomenclador_
+final class GrupoData extends _Data_
 {
     static function parent(): ?string
     {
@@ -13,21 +14,21 @@ final class App extends _Nomenclador_
 
     static function code(): string
     {
-        return 'APP';
+        return 'GRUPO';
     }
 
     static function name(): string
     {
-        return 'Aplicación';
+        return 'Grupos de Usuarios';
     }
 
     static function description(): string
     {
-        return 'Datos de la aplicación';
+        return 'Listado de los grupos de la aplicación';
     }
 
     static function discriminator(): string
     {
-        return Nomenclador::class;
+        return Grupo::class;
     }
 }

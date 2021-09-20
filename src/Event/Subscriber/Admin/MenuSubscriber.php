@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Event\Subscriber;
+namespace App\Event\Subscriber\Admin;
 
 use App\Entity\Menu;
+use App\Event\Subscriber\_Subscriber_;
 use Doctrine\ORM\Events;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 
@@ -24,9 +25,10 @@ final class MenuSubscriber extends _Subscriber_
 
         $code = [];
         if ($parent = $object->getParent())
-            $code = $parent->getCodigo();
+            $code[] = $parent->getCodigo();
 
-        $code[] = $object->getCodigo();
+        if ($object->getCodigo())
+            $code[] = $object->getCodigo();
         $object->setCodigo(implode('_', $code));
     }
 }

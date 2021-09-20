@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Config\Nomenclador;
+namespace App\Config\Data\Nomenclador;
 
-use App\Entity\Menu as MenuEntity;
+use App\Config\Data\_Data_;
+use App\Entity\EstructuraTipo;
 
-final class Menu extends _Nomenclador_
+final class EstructuraTipoData extends _Data_
 {
     static function parent(): ?string
     {
@@ -13,21 +14,21 @@ final class Menu extends _Nomenclador_
 
     static function code(): string
     {
-        return 'MENU';
+        return 'ESTRUCTURA_TIPO';
     }
 
     static function name(): string
     {
-        return 'Menú';
+        return 'Tipo de estructura';
     }
 
     static function description(): string
     {
-        return 'Listado de Menú de la aplicación';
+        return 'Tipos de estructura';
     }
 
     static function discriminator(): string
     {
-        return MenuEntity::class;
+        return EstructuraTipo::class;
     }
 }

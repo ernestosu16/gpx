@@ -1,0 +1,61 @@
+{% extends 'homer-theme/layout.html.twig' %}
+{% block title %}Lista de {{ tipo.nombre }}(s){% endblock %}
+{% block panel_title %}Lista de {{ tipo.nombre }}(s){% endblock %}
+{% block panel_body %}
+    <table class="table table-hover table-bordered table-striped">
+        <thead>
+        <tr>
+            <th>{{ 'name'|trans([],'nomenclador') }}</th>
+            <th>{{ 'description'|trans([],'nomenclador') }}</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {# @var localizacion \App\Entity\Localizacion #}
+        {% for  localizacion in localizaciones %}
+            <tr>
+                <td>{{ localizacion.nombre }}</td>
+                <td>{{ localizacion.descripcion }}</td>
+                <td>
+                    <div class="pull-right">
+                        {% for tipo in localizacion.tipo.children %}
+                            <a class="btn btn-xs btn-default"
+                               href="{{ path('admin_localizacion_index', {'tipo':tipo.codigo,'parent': localizacion.codigo}) }}"
+                               title="{{ tipo.nombre }}">
+                                <i class="fa fa-list"></i> Lista de {{ tipo.nombre }}
+                                <span class="label label-info">{{ localizacion.children.count }}</span>
+                            </a>
+                        {% endfor %}
+                    </div>
+                    {# <a class="btn btn-xs btn-default" href="{{ path('admin_localizacion_edit', {'id': localizacion.id}) }}" #}
+                    {# title="{{ 'edit'|trans([],'nomenclador') }}"> #}
+                    {# <i class="fa fa-pencil-square-o"></i> #}
+                    {# </a> #}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">{{ 'no records found'|trans([],'nomenclador') }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {% set prentCodigo = null %}
+    {% if parent.parent is defined %}
+        {% set prentCodigo = parent.parent.codigo %}
+    {% endif %}
+
+    {% if parent is not null %}
+        <a class="btn btn-sm btn-default"
+           href="{{ path('admin_localizacion_index', {'tipo': parent.tipo.codigo, 'parent': prentCodigo}) }}"
+           title="{{ parent.tipo.nombre }}">
+            <i class="fa fa-arrow-left"></i> Regresar a la lista de {{ parent.tipo.nombre }}
+        </a>
+    {% endif %}
+
+    <a class="btn btn-sm btn-primary"
+       href="{{ path('admin_localizacion_new', {'tipo': tipo.codigo}) }}">
+        {{ 'create new'|trans([],'nomenclador') }}
+    </a>
+{% endblock %}

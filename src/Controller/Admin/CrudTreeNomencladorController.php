@@ -2,7 +2,7 @@
 
 namespace App\Controller\Admin;
 
-use App\Config\Nomenclador\_Nomenclador_;
+use App\Config\Data\_Data_;
 use App\Entity\Nomenclador;
 use App\Repository\_Repository_;
 use App\Repository\NomencladorRepository;
@@ -17,9 +17,9 @@ abstract class CrudTreeNomencladorController extends CrudController
     const MOVE_UP = 'move_up';
     const MOVE_DOWN = 'move_down';
 
-    abstract static protected function parent(): _Nomenclador_;
+    abstract static protected function parent(): _Data_;
 
-    protected function getParent(): _Nomenclador_
+    protected function getParent(): _Data_
     {
         return static::parent();
     }
@@ -54,7 +54,7 @@ abstract class CrudTreeNomencladorController extends CrudController
         }
 
         return $this->render($this->getTemplate(self::INDEX), [
-            'title' => $this->getTitle(self::INDEX) . ' (' . $nomencladorParent?->getNombre() . ')',
+            'title' => $this->getTitle(self::INDEX) . ' "' . $nomencladorParent?->getNombre() . '"',
             'config' => $this->getConfig(),
             'nomencladorParent' => $nomencladorParent ?? $nomenclador,
             'nomencladores' => $nomenclador->getChildren(),
