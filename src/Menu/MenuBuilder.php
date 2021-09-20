@@ -10,13 +10,16 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 final class MenuBuilder extends _Menu_
 {
+    /**
+     * @throws \Exception
+     */
     public function createMainMenu(RequestStack $requestStack): ItemInterface
     {
         $factory = $this->getFactory();
         $root = $this->getRoot();
 
         if (!$root || !$root->getChildren()->count())
-            return $this->default($factory);
+            throw new \Exception('Ejecute el comando "bin/console app:configurar:fixture"');
 
         $item = $factory->createItem($root->getCodigo(), [
             'currentClass' => 'active',

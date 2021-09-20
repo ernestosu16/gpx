@@ -15,12 +15,12 @@ menu:
                 icon: 'fa fa-group'
 
             -   codigo: 'ADMIN_MENU'
-                nombre: 'Grupos'
+                nombre: 'Menú'
                 route: 'admin_menu_index'
                 icon: null
 
-            -   codigo: 'ADMIN_NOMENCLADOR'
-                nombre: 'Nomencladores'
+            -   codigo: 'ADMIN_CONFIGURACION'
+                nombre: 'Configuraciones'
                 route: 'admin_nomenclador_index'
                 icon: 'fa fa-wrench'
 
@@ -29,8 +29,12 @@ menu:
                 route: 'admin_localizacion_index'
                 icon: null
 
+    -   codigo: 'NOMENCLADORES'
+        nombre: 'Nomencladores'
+        route: null
+        icon: null
+        children:
             -   codigo: 'ADMIN_LOCALIZACION_TIPO'
                 nombre: 'Tipos de localizaciones'
                 route: 'admin_localizacion_tipo_index'
                 icon: null
-
