@@ -8,7 +8,7 @@ use App\Form\Admin\EstructuraTipoType;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route(path: '/tipo/estructura', name: 'admin_estructura_tipo')]
-class EstructuraTipoController extends CrudTreeNomencladorController
+final class EstructuraTipoController extends CrudTreeNomencladorController
 {
     protected static function entity(): string
     {
