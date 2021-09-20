@@ -5,9 +5,11 @@ namespace App\Command\Configurar;
 use App\Command\BaseCommand;
 use App\Command\BaseCommandInterface;
 use App\Config\Data\Nomenclador\GrupoData;
+use App\Config\Data\Nomenclador\MenuData;
 use App\Entity\Grupo;
 use App\Entity\Localizacion;
 use App\Entity\LocalizacionTipo;
+use App\Entity\Menu;
 use App\Repository\LocalizacionRepository;
 use App\Repository\LocalizacionTipoRepository;
 use Doctrine\ORM\ORMException;
@@ -30,6 +32,8 @@ final class FixtureCommand extends BaseCommand implements BaseCommandInterface
         $this->configurarLocalizacionTipos();
 
         $this->configurarLocalizaciones();
+
+        $this->configurarMenu();
 
         return Command::SUCCESS;
     }
@@ -132,5 +136,42 @@ final class FixtureCommand extends BaseCommand implements BaseCommandInterface
         }
 
         $em->commit();
+    }
+
+    private function configurarMenu()
+    {
+
+        $menu = Yaml::parseFile($this->getKernel()->getProjectDir() . '/src/Config/Fixtures/menu.yaml');
+
+        $em = $this->getEntityManager();
+
+        /** @var ?Menu $root */
+        $root = $em->getRepository(Menu::class)->findOneByCodigo(MenuData::code());
+
+        foreach ($menu['menu'] as $menu) {
+            if ($em->getRepository(Menu::class)->findOneByCodigo($menu['codigo']))
+                continue;
+
+            $menuEntity = new Menu();
+            $menuEntity->setRoot($root);
+            $menuEntity->setCodigo($menu['codigo']);
+            $menuEntity->setNombre($menu['nombre']);
+            $menuEntity->setRoute($menu['route']);
+            $menuEntity->setIcon($menu['icon']);
+
+            foreach ($menu['children'] as $child) {
+                $menuChildEntity = new Menu();
+                $menuChildEntity->setRoot($root);
+                $menuChildEntity->setCodigo($child['codigo']);
+                $menuChildEntity->setNombre($child['nombre']);
+                $menuChildEntity->setRoute($child['route']);
+                $menuChildEntity->setIcon($child['icon']);
+                $menuEntity->addChild($menuChildEntity);
+            }
+
+            $root->addChild($menuEntity);
+            $em->persist($root);
+        }
+        $em->flush();
     }
 }

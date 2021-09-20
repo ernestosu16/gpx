@@ -1,0 +1,36 @@
+menu:
+    -   codigo: 'ADMINISTRACION'
+        nombre: 'Administración'
+        route: null
+        icon: null
+        children:
+            -   codigo: 'ADMIN_TRABAJADOR'
+                nombre: 'Trabajadores'
+                route: 'admin_trabajador_index'
+                icon: 'fa fa-user'
+
+            -   codigo: 'ADMIN_GRUPO'
+                nombre: 'Grupos'
+                route: 'admin_grupo_index'
+                icon: 'fa fa-group'
+
+            -   codigo: 'ADMIN_MENU'
+                nombre: 'Grupos'
+                route: 'admin_menu_index'
+                icon: null
+
+            -   codigo: 'ADMIN_NOMENCLADOR'
+                nombre: 'Nomencladores'
+                route: 'admin_nomenclador_index'
+                icon: 'fa fa-wrench'
+
+            -   codigo: 'ADMIN_LOCALIZACION'
+                nombre: 'Localizaciones'
+                route: 'admin_localizacion_index'
+                icon: null
+
+            -   codigo: 'ADMIN_LOCALIZACION_TIPO'
+                nombre: 'Tipos de localizaciones'
+                route: 'admin_localizacion_tipo_index'
+                icon: null
+

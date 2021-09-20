@@ -31,7 +31,7 @@ abstract class CrudTreeNomencladorController extends CrudController
         self::SHOW => 'admin/crud/tree/show.html.twig',
     ];
 
-    #[Route('/{parent}', name: '_index', defaults: ['parent' => ''], methods: ['GET'])]
+    #[Route('/{parent}', name: '_index', defaults: ['parent' => null], methods: ['GET'])]
     #[Entity(data: 'nomencladorParent', expr: 'repository.findOneByCodigo(parent)')]
     public function index(?Nomenclador $nomencladorParent): Response
     {

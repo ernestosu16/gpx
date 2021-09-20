@@ -7,8 +7,8 @@ use App\Entity\LocalizacionTipo;
 use App\Form\Admin\LocalizacionTipoType;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route(path: '/tipo/localizacion', name: 'admin_tipo_localizacion')]
-final class TipoLocalizacionController extends CrudTreeNomencladorController
+#[Route(path: '/tipo/localizacion', name: 'admin_localizacion_tipo')]
+final class LocalizacionTipoController extends CrudTreeNomencladorController
 {
     protected static function entity(): string
     {
@@ -30,13 +30,13 @@ final class TipoLocalizacionController extends CrudTreeNomencladorController
                 self::SHOW => 'Mostrar localización',
             ],
             'routes' => [
-                self::INDEX => 'admin_tipo_localizacion_index',
-                self::NEW => 'admin_tipo_localizacion_new',
-                self::EDIT => 'admin_tipo_localizacion_edit',
-                self::SHOW => 'admin_tipo_localizacion_show',
-                self::DELETE => 'admin_tipo_localizacion_delete',
-                self::MOVE_UP => 'admin_tipo_localizacion_move_up',
-                self::MOVE_DOWN => 'admin_tipo_localizacion_move_down',
+                self::INDEX => 'admin_localizacion_tipo_index',
+                self::NEW => 'admin_localizacion_tipo_new',
+                self::EDIT => 'admin_localizacion_tipo_edit',
+                self::SHOW => 'admin_localizacion_tipo_show',
+                self::DELETE => 'admin_localizacion_tipo_delete',
+                self::MOVE_UP => 'admin_localizacion_tipo_move_up',
+                self::MOVE_DOWN => 'admin_localizacion_tipo_move_down',
             ],
         ];
     }

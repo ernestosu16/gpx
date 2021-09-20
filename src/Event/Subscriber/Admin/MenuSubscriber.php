@@ -24,8 +24,8 @@ final class MenuSubscriber extends _Subscriber_
             return;
 
         $code = [];
-        if ($parent = $object->getParent())
-            $code[] = $parent->getCodigo();
+        if ($root = $object->getRoot())
+            $code[] = $root->getCodigo();
 
         if ($object->getCodigo())
             $code[] = $object->getCodigo();

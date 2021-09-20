@@ -34,7 +34,7 @@ class Nomenclador extends BaseNestedTree
     /** @Gedmo\TreeRoot() */
     #[ORM\ManyToOne(targetEntity: Nomenclador::class)]
     #[ORM\JoinColumn(onDelete: 'CASCADE')]
-    private Nomenclador $root;
+    private ?Nomenclador $root = null;
 
     /** @Gedmo\TreeParent() */
     #[ORM\ManyToOne(targetEntity: Nomenclador::class, inversedBy: 'children')]
