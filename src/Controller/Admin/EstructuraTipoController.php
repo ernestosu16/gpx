@@ -30,13 +30,13 @@ class EstructuraTipoController extends CrudTreeNomencladorController
                 self::SHOW => 'Mostrar  tipo estructura',
             ],
             'routes' => [
-                self::INDEX => 'admin_localizacion_tipo_index',
-                self::NEW => 'admin_localizacion_tipo_new',
-                self::EDIT => 'admin_localizacion_tipo_edit',
-                self::SHOW => 'admin_localizacion_tipo_show',
-                self::DELETE => 'admin_localizacion_tipo_delete',
-                self::MOVE_UP => 'admin_localizacion_tipo_move_up',
-                self::MOVE_DOWN => 'admin_localizacion_tipo_move_down',
+                self::INDEX => 'admin_estructura_tipo_index',
+                self::NEW => 'admin_estructura_tipo_new',
+                self::EDIT => 'admin_estructura_tipo_edit',
+                self::SHOW => 'admin_estructura_tipo_show',
+                self::DELETE => 'admin_estructura_tipo_delete',
+                self::MOVE_UP => 'admin_estructura_tipo_move_up',
+                self::MOVE_DOWN => 'admin_estructura_tipo_move_down',
             ],
         ];
     }
