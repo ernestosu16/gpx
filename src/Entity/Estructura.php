@@ -103,6 +103,9 @@ class Estructura extends BaseNestedTree
         return $this;
     }
 
+    /**
+     * @return Collection|Estructura[]
+     */
     public function getChildren(): Collection
     {
         return $this->children;
@@ -130,6 +133,9 @@ class Estructura extends BaseNestedTree
         return $this;
     }
 
+    /**
+     * @return Collection|EstructuraTipo[]
+     */
     public function getLocalizaciones(): Collection
     {
         return $this->localizaciones;
@@ -151,6 +157,9 @@ class Estructura extends BaseNestedTree
         return $this;
     }
 
+    /**
+     * @return Collection|EstructuraTipo[]
+     */
     public function getTipos(): Collection
     {
         return $this->tipos;
@@ -237,9 +246,10 @@ class Estructura extends BaseNestedTree
         return $this->habilitado;
     }
 
-    public function setHabilitado(bool $habilitado): Estructura
+    public function setHabilitado(bool $habilitado): self
     {
         $this->habilitado = $habilitado;
+
         return $this;
     }
 

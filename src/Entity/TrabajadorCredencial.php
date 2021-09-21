@@ -29,7 +29,7 @@ class TrabajadorCredencial implements UserInterface
         return $this->usuario;
     }
 
-    public function setUsuario(?string $usuario): self
+    public function setUsuario(string $usuario): self
     {
         $this->usuario = $usuario;
 
@@ -41,7 +41,7 @@ class TrabajadorCredencial implements UserInterface
         return $this->contrasena;
     }
 
-    public function setContrasena(?string $contrasena): self
+    public function setContrasena(string $contrasena): self
     {
         $this->contrasena = $contrasena;
 
@@ -65,9 +65,10 @@ class TrabajadorCredencial implements UserInterface
         return $this->session;
     }
 
-    public function setSession(?string $session): TrabajadorCredencial
+    public function setSession(?string $session): self
     {
         $this->session = $session;
+
         return $this;
     }
 

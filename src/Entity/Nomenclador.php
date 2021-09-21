@@ -108,7 +108,7 @@ class Nomenclador extends BaseNestedTree
     /**
      * @return Collection|Nomenclador[]
      */
-    public function getChildren(): ?Collection
+    public function getChildren(): Collection
     {
         return $this->children;
     }
@@ -203,13 +203,10 @@ class Nomenclador extends BaseNestedTree
         return $this->end;
     }
 
-    /**
-     * @param bool $end
-     * @return Nomenclador
-     */
-    public function setEnd(bool $end): Nomenclador
+    public function setEnd(bool $end): self
     {
         $this->end = $end;
+
         return $this;
     }
 

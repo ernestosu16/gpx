@@ -54,7 +54,7 @@ class Persona extends _Entity_
         $this->nombre_segundo = null;
     }
 
-    public function getHash(): string
+    public function getHash(): ?string
     {
         return $this->hash;
     }
@@ -90,39 +90,27 @@ class Persona extends _Entity_
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getNombrePrimero(): string
+    public function getNombrePrimero(): ?string
     {
         return $this->nombre_primero;
     }
 
-    /**
-     * @param string $nombre_primero
-     * @return Persona
-     */
-    public function setNombrePrimero(string $nombre_primero): Persona
+    public function setNombrePrimero(string $nombre_primero): self
     {
         $this->nombre_primero = $nombre_primero;
+
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getNombreSegundo(): ?string
     {
         return $this->nombre_segundo;
     }
 
-    /**
-     * @param string|null $nombre_segundo
-     * @return Persona
-     */
-    public function setNombreSegundo(?string $nombre_segundo): Persona
+    public function setNombreSegundo(?string $nombre_segundo): self
     {
         $this->nombre_segundo = $nombre_segundo;
+
         return $this;
     }
 
@@ -138,7 +126,7 @@ class Persona extends _Entity_
         return $this;
     }
 
-    public function getApellidoSegundo(): string
+    public function getApellidoSegundo(): ?string
     {
         return $this->apellido_segundo;
     }
@@ -150,7 +138,7 @@ class Persona extends _Entity_
         return $this;
     }
 
-    public function getEsExtranjero(): bool
+    public function getEsExtranjero(): ?bool
     {
         return $this->esExtranjero;
     }
@@ -162,7 +150,7 @@ class Persona extends _Entity_
         return $this;
     }
 
-    public function getEsValido(): bool
+    public function getEsValido(): ?bool
     {
         return $this->esValido;
     }

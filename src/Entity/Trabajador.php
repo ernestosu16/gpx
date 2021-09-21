@@ -101,17 +101,21 @@ class Trabajador extends _Entity_
         return $this;
     }
 
-    public function getEstructura(): Estructura
+    public function getEstructura(): ?Estructura
     {
         return $this->estructura;
     }
 
-    public function setEstructura(Estructura $estructura): Trabajador
+    public function setEstructura(?Estructura $estructura): self
     {
         $this->estructura = $estructura;
+
         return $this;
     }
 
+    /**
+     * @return Collection|Nomenclador[]
+     */
     public function getGrupos(): Collection
     {
         return $this->grupos;
