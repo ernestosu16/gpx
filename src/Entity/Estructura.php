@@ -33,7 +33,7 @@ class Estructura extends BaseNestedTree
     #[MaxDepth(1)]
     protected Collection $children;
 
-    #[ORM\ManyToMany(targetEntity: EstructuraTipo::class)]
+    #[ORM\ManyToMany(targetEntity: Localizacion::class)]
     #[ORM\JoinTable(name: 'estructura_localizacion_asignada')]
     private Collection $localizaciones;
 
@@ -134,14 +134,14 @@ class Estructura extends BaseNestedTree
     }
 
     /**
-     * @return Collection|EstructuraTipo[]
+     * @return Collection|Localizacion[]
      */
     public function getLocalizaciones(): Collection
     {
         return $this->localizaciones;
     }
 
-    public function addLocalizacione(EstructuraTipo $localizacione): self
+    public function addLocalizacione(Localizacion $localizacione): self
     {
         if (!$this->localizaciones->contains($localizacione)) {
             $this->localizaciones[] = $localizacione;
@@ -150,7 +150,7 @@ class Estructura extends BaseNestedTree
         return $this;
     }
 
-    public function removeLocalizacione(EstructuraTipo $localizacione): self
+    public function removeLocalizacione(Localizacion $localizacione): self
     {
         $this->localizaciones->removeElement($localizacione);
 

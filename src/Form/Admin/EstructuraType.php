@@ -51,6 +51,11 @@ class EstructuraType extends AbstractType
                 'label' => 'tipos',
                 'attr' => ['class' => 'form-control input-sm select2'],
                 'label_attr' => ['class' => 'col-sm-2 control-label'],
+            ])
+            ->add('localizaciones', null, [
+                'label' => 'localizaciones',
+                'attr' => ['class' => 'form-control input-sm select2'],
+                'label_attr' => ['class' => 'col-sm-2 control-label'],
             ]);
     }
 
