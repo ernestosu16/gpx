@@ -20,8 +20,6 @@ final class LocalizacionController extends _Controller_
     #[Entity(data: 'parent', expr: 'repository.findOneByCodigo(parent)', class: Localizacion::class)]
     public function index(LocalizacionTipo $tipo, ?Localizacion $parent): Response
     {
-        dump($parent);
-        dump($tipo);
         /** @var LocalizacionRepository $localizacionRepository */
         $localizacionRepository = $this->getDoctrine()->getRepository(Localizacion::class);
 
