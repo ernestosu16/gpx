@@ -43,7 +43,7 @@ $(document).ready(function () {
         setTimeout(function () {
             hpanel.resize();
             hpanel.find('[id^=map-]').resize();
-        }, 50);
+        }, 0);
     });
 
     // Function for close hpanel
@@ -63,7 +63,7 @@ $(document).ready(function () {
         hpanel.toggleClass('fullscreen');
         setTimeout(function() {
             $(window).trigger('resize');
-        }, 100);
+        }, 0);
     });
 
     // Open close right sidebar
@@ -115,7 +115,7 @@ $(window).bind("resize click", function () {
     // Waint until metsiMenu, collapse and other effect finish and set wrapper height
     setTimeout(function () {
         fixWrapperHeight();
-    }, 300);
+    }, 0);
 });
 
 function fixWrapperHeight() {
