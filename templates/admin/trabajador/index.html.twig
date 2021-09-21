@@ -7,6 +7,7 @@
         <tr>
             <th>Número de Identidad</th>
             <th>Nombre</th>
+            <th>Estructura</th>
             <th>Cargo</th>
             <th>Habilitado</th>
             <th></th>
@@ -17,6 +18,7 @@
             <tr>
                 <td>{{ trabajador.persona.numeroIdentidad }}</td>
                 <td>{{ trabajador.persona }}</td>
+                <td>{{ trabajador.estructura }}</td>
                 <td>{{ trabajador.cargo }}</td>
                 <td>{{ trabajador.habilitado ? 'Yes'|trans({},'nomenclador') : 'No'|trans({},'nomenclador') }}</td>
                 <td>

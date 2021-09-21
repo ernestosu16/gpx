@@ -21,6 +21,10 @@ class Trabajador extends _Entity_
     #[Assert\Valid]
     private ?TrabajadorCredencial $credencial = null;
 
+    #[ORM\ManyToOne(targetEntity: Estructura::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private Estructura $estructura;
+
     #[ORM\ManyToMany(targetEntity: Nomenclador::class)]
     #[ORM\JoinTable(name: 'trabajador_grupo_asignado')]
     #[ORM\JoinColumn(name: 'trabajador_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
@@ -97,9 +101,17 @@ class Trabajador extends _Entity_
         return $this;
     }
 
-    /**
-     * @return Collection
-     */
+    public function getEstructura(): Estructura
+    {
+        return $this->estructura;
+    }
+
+    public function setEstructura(Estructura $estructura): Trabajador
+    {
+        $this->estructura = $estructura;
+        return $this;
+    }
+
     public function getGrupos(): Collection
     {
         return $this->grupos;

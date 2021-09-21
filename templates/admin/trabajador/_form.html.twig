@@ -63,6 +63,14 @@
             </div>
         </div>
         <div class="form-group">
+            {{ form_label(form.estructura) }}
+            <div class="col-sm-8">
+                {{ form_widget(form.estructura) }}
+                {{ form_help(form.estructura) }}
+                {{ form_errors(form.estructura) }}
+            </div>
+        </div>
+        <div class="form-group">
             {{ form_label(form.grupos) }}
             <div class="col-sm-8">
                 {{ form_widget(form.grupos) }}

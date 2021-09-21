@@ -2,6 +2,7 @@
 
 namespace App\Form\Admin;
 
+use App\Entity\Estructura;
 use App\Entity\Grupo;
 use App\Entity\Trabajador;
 use App\Form\Admin\Event\TrabajadorTypeSubscriber;
@@ -34,6 +35,12 @@ class TrabajadorType extends AbstractType
                 'label' => 'trabajador.credencial.label',
                 'data' => $data->getCredencial(),
                 'attr' => ['autocomplete' => 'off'],
+            ])
+            ->add('estructura', EntityType::class,[
+                'class' => Estructura::class,
+                'label' => 'trabajador.estructura',
+                'label_attr' => ['class' => 'col-sm-4 control-label'],
+                'attr' => ['class' => 'form-control input-sm select2'],
             ])
             ->add('grupos', EntityType::class, [
                 'class' => Grupo::class,

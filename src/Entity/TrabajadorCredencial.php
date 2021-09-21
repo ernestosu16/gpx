@@ -21,7 +21,7 @@ class TrabajadorCredencial implements UserInterface
     #[ORM\Column(type: 'string', length: 100)]
     private ?string $contrasena = null;
 
-    #[ORM\Column(type: 'string', length: 128)]
+    #[ORM\Column(type: 'string', length: 128, nullable: true)]
     private ?string $session;
 
     public function getUsuario(): ?string

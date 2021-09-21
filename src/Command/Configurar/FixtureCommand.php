@@ -7,6 +7,7 @@ use App\Command\BaseCommandInterface;
 use App\Config\Data\Nomenclador\EstructuraTipoData;
 use App\Config\Data\Nomenclador\GrupoData;
 use App\Config\Data\Nomenclador\MenuData;
+use App\Entity\Estructura;
 use App\Entity\EstructuraTipo;
 use App\Entity\Grupo;
 use App\Entity\Localizacion;
@@ -14,9 +15,11 @@ use App\Entity\LocalizacionTipo;
 use App\Entity\Menu;
 use App\Repository\LocalizacionRepository;
 use App\Repository\LocalizacionTipoRepository;
+use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\ConsoleSectionOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Yaml;
 
@@ -27,32 +30,52 @@ final class FixtureCommand extends BaseCommand implements BaseCommandInterface
         return 'app:configurar:fixture';
     }
 
+    /**
+     * @throws OptimisticLockException|ORMException
+     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        /** @var ConsoleSectionOutput $section */
+        $section = $output->section();
+
+        $section->writeln('* Iniciando el comando de creación de datos por defecto');
+
+        $this->getEntityManager()->beginTransaction();
+        $section->writeln('  Creando la lista de grupos');
         $this->configurarGrupos();
 
+        $section->writeln('  Creando la lista de tipos de localizaciones');
         $this->configurarLocalizacionTipos();
 
+        $section->writeln('  Creando la lista de localizaciones');
         $this->configurarLocalizaciones();
 
+        $section->writeln('  Creando la lista de menu por defecto');
         $this->configurarMenu();
 
+        $section->writeln('  Creando los tipos de estructuras');
         $this->configurarEstructuraTipo();
+
+
+        $section->writeln('  Creando las estructuras');
+        $this->configurarEstructura();
+        $this->getEntityManager()->commit();
 
         return Command::SUCCESS;
     }
 
+    /**
+     * @throws OptimisticLockException|ORMException
+     */
     private function configurarGrupos()
     {
-        $em = $this->getEntityManager();
-
-        $root = $em->getRepository(Grupo::class)->findOneByCodigo(GrupoData::code());
+        $root = $this->getRepository(Grupo::class)->findOneByCodigo(GrupoData::code());
 
         /** @var array $localizacionTipo */
         $grupo = Yaml::parseFile($this->getKernel()->getProjectDir() . '/src/Config/Fixtures/grupo.yaml');
 
         foreach ($grupo['grupos'] as $grupo) {
-            if ($em->getRepository(Grupo::class)->findOneByCodigo($grupo['codigo']))
+            if ($this->getRepository(Grupo::class)->findOneByCodigo($grupo['codigo']))
                 continue;
 
             $grupoEntity = new Grupo();
@@ -61,10 +84,10 @@ final class FixtureCommand extends BaseCommand implements BaseCommandInterface
             $grupoEntity->setDescripcion($grupo['descripcion']);
 
             $root->addChild($grupoEntity);
-            $em->persist($root);
+            $this->getEntityManager()->persist($root);
         }
 
-        $em->flush();
+        $this->getEntityManager()->flush();
     }
 
     private function configurarLocalizacionTipos()
@@ -72,40 +95,37 @@ final class FixtureCommand extends BaseCommand implements BaseCommandInterface
         /** @var array $localizacionTipo */
         $tipos = Yaml::parseFile($this->getKernel()->getProjectDir() . '/src/Config/Fixtures/localizacion_tipo.yaml');
 
-
-        $em = $this->getEntityManager();
         foreach ($tipos['tipos'] as $tipo) {
-            if ($em->getRepository(LocalizacionTipo::class)->findOneByCodigo($tipo['codigo']))
+            if ($this->getRepository(LocalizacionTipo::class)->findOneByCodigo($tipo['codigo']))
                 continue;
 
             $tipoEntity = new LocalizacionTipo();
 
-            if ($parent = $em->getRepository(LocalizacionTipo::class)->findOneByCodigo($tipo['parent']))
+            if ($parent = $this->getRepository(LocalizacionTipo::class)->findOneByCodigo($tipo['parent']))
                 $tipoEntity->setParent($parent);
 
             $tipoEntity->setNombre($tipo['nombre']);
             $tipoEntity->setDescripcion($tipo['descripcion']);
             $tipoEntity->setCodigo($tipo['codigo']);
 
-            $em->persist($tipoEntity);
-            $em->flush();
+            $this->getEntityManager()->persist($tipoEntity);
+            $this->getEntityManager()->flush();
 
         }
     }
 
+    /**
+     * @throws OptimisticLockException|ORMException
+     */
     private function configurarLocalizaciones()
     {
         $localizacion = Yaml::parseFile($this->getKernel()->getProjectDir() . '/src/Config/Fixtures/localizacion.yaml');
 
-        $em = $this->getEntityManager();
-
-        $em->beginTransaction();
-
         /** @var LocalizacionRepository $localizacionRepository */
-        $localizacionRepository = $em->getRepository(Localizacion::class);
+        $localizacionRepository = $this->getRepository(Localizacion::class);
 
         /** @var LocalizacionTipoRepository $tipoRepository */
-        $tipoRepository = $em->getRepository(LocalizacionTipo::class);
+        $tipoRepository = $this->getRepository(LocalizacionTipo::class);
         foreach ($localizacion['provincias'] as $provincia) {
             if ($localizacionRepository->findOneByCodigo($provincia['codigo']))
                 continue;
@@ -116,8 +136,8 @@ final class FixtureCommand extends BaseCommand implements BaseCommandInterface
             $entity->setCodigo($provincia['codigo']);
             $entity->setTipo($tipoRepository->getTipoProvincia());
 
-            $em->persist($entity);
-            $em->flush();
+            $this->getEntityManager()->persist($entity);
+            $this->getEntityManager()->flush();
 
             foreach ($localizacion['municipios'][$provincia['codigo']] as $municipio) {
                 $provinciaEntity = $localizacionRepository->findOneByCodigo($provincia['codigo']);
@@ -134,27 +154,23 @@ final class FixtureCommand extends BaseCommand implements BaseCommandInterface
                 $entity->setCodigo($municipio['codigo']);
                 $entity->setTipo($tipoRepository->getTipoMunicipio());
 
-                $em->persist($entity);
+                $this->getEntityManager()->persist($entity);
             }
-            $em->flush();
+            $this->getEntityManager()->flush();
         }
-
-        $em->commit();
     }
 
     private function configurarMenu()
     {
-        $em = $this->getEntityManager();
-
         /** @var ?Menu $root */
-        $root = $em->getRepository(Menu::class)->findOneByCodigo(MenuData::code());
+        $root = $this->getRepository(Menu::class)->findOneByCodigo(MenuData::code());
 
         if ($root->getChildren()->count())
             return;
 
         $menu = Yaml::parseFile($this->getKernel()->getProjectDir() . '/src/Config/Fixtures/menu.yaml');
         foreach ($menu['menu'] as $menu) {
-            if ($em->getRepository(Menu::class)->findOneByCodigo($menu['codigo']))
+            if ($this->getRepository(Menu::class)->findOneByCodigo($menu['codigo']))
                 continue;
 
             $menuEntity = new Menu();
@@ -165,7 +181,7 @@ final class FixtureCommand extends BaseCommand implements BaseCommandInterface
             $menuEntity->setIcon($menu['icon']);
 
             foreach ($menu['children'] as $child) {
-                if ($em->getRepository(Menu::class)->findOneByCodigo($child['codigo']))
+                if ($this->getRepository(Menu::class)->findOneByCodigo($child['codigo']))
                     continue;
                 $menuChildEntity = new Menu();
                 $menuChildEntity->setRoot($root);
@@ -178,8 +194,8 @@ final class FixtureCommand extends BaseCommand implements BaseCommandInterface
 
             $root->addChild($menuEntity);
         }
-        $em->persist($root);
-        $em->flush();
+        $this->getEntityManager()->persist($root);
+        $this->getEntityManager()->flush();
     }
 
     private function configurarEstructuraTipo()
@@ -187,22 +203,20 @@ final class FixtureCommand extends BaseCommand implements BaseCommandInterface
         /** @var array $localizacionTipo */
         $tipos = Yaml::parseFile($this->getKernel()->getProjectDir() . '/src/Config/Fixtures/estructura_tipo.yaml');
 
-
-        $em = $this->getEntityManager();
         /** @var ?EstructuraTipo $root */
-        $root = $em->getRepository(EstructuraTipo::class)->findOneByCodigo(EstructuraTipoData::code());
+        $root = $this->getRepository(EstructuraTipo::class)->findOneByCodigo(EstructuraTipoData::code());
 
         foreach ($tipos['tipos'] as $tipo) {
-            if ($em->getRepository(EstructuraTipo::class)->findOneByCodigo($tipo['codigo']))
+            if ($this->getRepository(EstructuraTipo::class)->findOneByCodigo($tipo['codigo']))
                 continue;
 
             $root = $this->procesarEstructuraTipo($root, $tipo);
         }
-        $em->persist($root);
-        $em->flush();
+        $this->getEntityManager()->persist($root);
+        $this->getEntityManager()->flush();
     }
 
-    private function procesarEstructuraTipo(?EstructuraTipo $estructuraTipo, array $tipo)
+    private function procesarEstructuraTipo(?EstructuraTipo $estructuraTipo, array $tipo): ?EstructuraTipo
     {
         $tipoEntity = new EstructuraTipo();
         $tipoEntity->setNombre($tipo['nombre']);
@@ -219,5 +233,44 @@ final class FixtureCommand extends BaseCommand implements BaseCommandInterface
         $estructuraTipo->addChild($tipoEntity);
 
         return $estructuraTipo;
+    }
+
+    /**
+     * @throws OptimisticLockException|ORMException
+     */
+    private function configurarEstructura()
+    {
+        /** @var array $localizacionTipo */
+        $estructuras = Yaml::parseFile($this->getKernel()->getProjectDir() . '/src/Config/Fixtures/estructura.yaml');
+
+        foreach ($estructuras['estructuras'] as $estructura) {
+            if ($this->getRepository(Estructura::class)->findOneByCodigo($estructura['codigo']))
+                continue;
+
+            $this->getEntityManager()->persist($this->procesarEstructura($estructura));
+        }
+        $this->getEntityManager()->flush();
+    }
+
+    private function procesarEstructura(array $datos): ?Estructura
+    {
+        $estructura = $root ?? new Estructura();
+        $estructura->setNombre($datos['nombre']);
+        $estructura->setCodigoPostal($datos['codigo_postal']);
+        $estructura->setDescripcion($datos['descripcion']);
+        $estructura->setCodigo($datos['codigo']);
+
+        /** @var EstructuraTipo $tipo */
+        $tipo = $this->getRepository(EstructuraTipo::class)->findOneByCodigo($datos['tipo']);
+        $estructura->addTipo($tipo);
+
+        if (isset($datos['children'])) {
+            foreach ($datos['children'] as $child) {
+                $child = $this->procesarEstructura($child);
+                $estructura->addChild($child);
+            }
+        }
+
+        return $estructura;
     }
 }

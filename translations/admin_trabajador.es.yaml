@@ -11,6 +11,7 @@ trabajador:
         username: 'Usuario'
         password: 'Contraseña'
         repeat_password: 'Repita la contraseña'
+    estructura: 'Estructura'
     cargo: 'Cargo'
     grupos: 'Grupos'
     habilitado: 'Habilitado'

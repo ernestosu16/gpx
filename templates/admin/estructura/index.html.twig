@@ -1,0 +1,33 @@
+{% extends 'homer-theme/layout.html.twig' %}
+{% block title %}Listado de los trabajadores{% endblock %}
+{% block panel_title %}Listado de los trabajadores{% endblock %}
+{% block panel_body %}
+    <table class="table table-hover table-bordered table-striped">
+        <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Descripcion</th>
+            <th>Código Postal</th>
+            <th>Habilitado</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for estructura in estructuras %}
+            <tr>
+                <td>{{ estructura.nombre }}</td>
+                <td>{{ estructura.descripcion }}</td>
+                <td>{{ estructura.codigoPostal }}</td>
+                <td>{{ estructura.habilitado }}</td>
+                <td></td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">{{ 'no records found'|trans({},'nomenclador') }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <a class="btn btn-sm btn-primary" href="{{ path('admin_trabajador_new') }}">
+        {{ 'new'|trans([],'admin_trabajador') }}</a>
+{% endblock %}
