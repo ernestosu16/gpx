@@ -14,20 +14,25 @@ menu:
                 route: 'admin_grupo_index'
                 icon: 'fa fa-group'
 
-            -   codigo: 'ADMIN_MENU'
-                nombre: 'Menú'
-                route: 'admin_menu_index'
-                icon: null
-
             -   codigo: 'ADMIN_CONFIGURACION'
                 nombre: 'Configuraciones'
                 route: 'admin_nomenclador_index'
                 icon: 'fa fa-wrench'
 
+            -   codigo: 'ADMIN_MENU'
+                nombre: 'Menú'
+                route: 'admin_menu_index'
+                icon: 'fa fa-link'
+
             -   codigo: 'ADMIN_LOCALIZACION'
                 nombre: 'Localizaciones'
                 route: 'admin_localizacion_index'
-                icon: null
+                icon: 'fa fa-map'
+
+            -   codigo: 'ADMIN_ESTRUCTURA'
+                nombre: 'Estructuras'
+                route: 'admin_estructura_index'
+                icon: 'fa fa-building'
 
     -   codigo: 'NOMENCLADORES'
         nombre: 'Nomencladores'
