@@ -264,6 +264,11 @@ final class FixtureCommand extends BaseCommand implements BaseCommandInterface
         $tipo = $this->getRepository(EstructuraTipo::class)->findOneByCodigo($datos['tipo']);
         $estructura->addTipo($tipo);
 
+        /** @var Localizacion $municipio */
+        $municipio = $this->getRepository(Localizacion::class)->findOneByCodigo($datos['municipio']);
+
+        $estructura->setMunicipio($municipio);
+
         if (isset($datos['children'])) {
             foreach ($datos['children'] as $child) {
                 $child = $this->procesarEstructura($child);

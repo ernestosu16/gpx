@@ -4,15 +4,18 @@ estructuras:
         codigo_postal: '10600'
         codigo: 'MINISTERIO_DE_LAS_COMUNICACIONES'
         tipo: 'MINISTERIO'
+        municipio: 'MUNICIPIO_PLAZA_DE_LA_REVOLUCION'
         children:
             -   nombre: 'Grupo Empresarial Correos de Cuba'
                 descripcion: 'Entidad estatal de servicios de mayor capilaridad del país. Es el Operador Designado por el Estado cubano para garantizar el Servicio Postal Universal (SPU) en todo el territorio nacional.'
                 codigo_postal: '10800'
                 codigo: 'GECC'
                 tipo: 'OSDE'
+                municipio: 'MUNICIPIO_BOYEROS'
                 children:
                     -   nombre: 'Empresa de Mensajería y Cambio Internacional'
                         descripcion: 'Entidad estatal que brinda servicios de importación y exportación de correspondencia, envíos postales internacionales, mensajería y paquetería expresa, así como servicios aduanales y transitario.'
                         codigo_postal: '13400'
                         codigo: 'EMCI'
                         tipo: 'EMPRESA'
+                        municipio: 'MUNICIPIO_CERRO'

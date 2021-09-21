@@ -7,6 +7,7 @@ use App\Util\RegexUtil;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\ORMException;
 use Gedmo\Mapping\Annotation as Gedmo;
 use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
@@ -33,7 +34,7 @@ class Estructura extends BaseNestedTree
     #[MaxDepth(1)]
     protected Collection $children;
 
-    #[ORM\ManyToMany(targetEntity: Localizacion::class)]
+    #[ORM\ManyToMany(targetEntity: Localizacion::class, cascade: ['persist'])]
     #[ORM\JoinTable(name: 'estructura_localizacion_asignada')]
     private Collection $localizaciones;
 
@@ -141,18 +142,18 @@ class Estructura extends BaseNestedTree
         return $this->localizaciones;
     }
 
-    public function addLocalizacione(Localizacion $localizacione): self
+    public function addLocalizacion(Localizacion $localizacion): self
     {
-        if (!$this->localizaciones->contains($localizacione)) {
-            $this->localizaciones[] = $localizacione;
+        if (!$this->localizaciones->contains($localizacion)) {
+            $this->localizaciones[] = $localizacion;
         }
 
         return $this;
     }
 
-    public function removeLocalizacione(Localizacion $localizacione): self
+    public function removeLocalizacion(Localizacion $localizacion): self
     {
-        $this->localizaciones->removeElement($localizacione);
+        $this->localizaciones->removeElement($localizacion);
 
         return $this;
     }
@@ -256,5 +257,32 @@ class Estructura extends BaseNestedTree
     public function getHabilitado(): ?bool
     {
         return $this->habilitado;
+    }
+
+    #[Pure] public function getMunicipio(): ?Localizacion
+    {
+
+        foreach ($this->getLocalizaciones() as $localizacion) {
+            if ($localizacion->getTipo() && $localizacion->getTipo()->getCodigo() == LocalizacionTipo::MUNICIPIO)
+                return $localizacion;
+        }
+        return null;
+    }
+
+    /**
+     * @throws ORMException
+     */
+    public function setMunicipio(Localizacion $municipio): self
+    {
+        foreach ($this->getLocalizaciones() as $localizacion) {
+            if ($localizacion->getTipo()->getCodigo() === LocalizacionTipo::MUNICIPIO)
+                $this->removeLocalizacion($localizacion);
+        }
+
+        if ($municipio->getCodigo() === LocalizacionTipo::MUNICIPIO)
+            throw new ORMException('La localización no es de tipo Municipio');
+
+        $this->addLocalizacion($municipio);
+        return $this;
     }
 }

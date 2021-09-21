@@ -4,6 +4,8 @@ namespace App\Repository;
 
 use App\Entity\Localizacion;
 use App\Entity\LocalizacionTipo;
+use Doctrine\ORM\ORMException;
+use Doctrine\ORM\QueryBuilder;
 
 class LocalizacionRepository extends _NestedTreeRepository_
 {
@@ -24,9 +26,25 @@ class LocalizacionRepository extends _NestedTreeRepository_
         return $this->findBy(['tipo' => $tipo]);
     }
 
-    public function findByTipoAndParent(LocalizacionTipo $tipo, ?Localizacion $parent)
+    public function findByTipoAndParent(LocalizacionTipo $tipo, ?Localizacion $parent): array
     {
-        $em = $this->getEntityManager();
         return $this->findBy(['parent' => $parent, 'tipo' => $tipo]);
+    }
+
+    /**
+     * @throws ORMException
+     */
+    public function createQueryBuilderMunicipio(string $alias = 'l'): QueryBuilder
+    {
+        $tipo = $this->getEntityManager()
+            ->getRepository(LocalizacionTipo::class)
+            ->findOneByCodigoHabilitado(LocalizacionTipo::MUNICIPIO);
+
+        if (!$tipo)
+            throw new ORMException('Error no se encuentro el tipo "' . LocalizacionTipo::MUNICIPIO . '"');
+
+        return $this->createQueryBuilder($alias)
+            ->where($alias . '.tipo = :tipo')
+            ->setParameter('tipo', $tipo);
     }
 }

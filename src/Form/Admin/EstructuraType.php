@@ -3,7 +3,12 @@
 namespace App\Form\Admin;
 
 use App\Entity\Estructura;
+use App\Entity\Localizacion;
+use App\Entity\LocalizacionTipo;
+use App\Repository\LocalizacionRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\ChoiceList\ChoiceList;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -16,7 +21,7 @@ class EstructuraType extends AbstractType
     {
         $builder
             ->add('parent', null, [
-                'required' => true,
+                'required' => false,
                 'label' => 'pertenece',
                 'attr' => ['class' => 'form-control input-sm select2'],
                 'label_attr' => ['class' => 'col-sm-2 control-label'],
@@ -52,8 +57,14 @@ class EstructuraType extends AbstractType
                 'attr' => ['class' => 'form-control input-sm select2'],
                 'label_attr' => ['class' => 'col-sm-2 control-label'],
             ])
-            ->add('localizaciones', null, [
-                'label' => 'localizaciones',
+            ->add('municipio', EntityType::class, [
+                'class' => Localizacion::class,
+                'multiple' => false,
+                'query_builder' => function (LocalizacionRepository $r) {
+                    return $r->createQueryBuilderMunicipio();
+                },
+                'group_by' => ChoiceList::groupBy($this, 'parent'),
+                'label' => 'municipio',
                 'attr' => ['class' => 'form-control input-sm select2'],
                 'label_attr' => ['class' => 'col-sm-2 control-label'],
             ]);
