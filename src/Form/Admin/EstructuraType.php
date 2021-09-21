@@ -16,7 +16,7 @@ class EstructuraType extends AbstractType
     {
         $builder
             ->add('parent', null, [
-                'required' => false,
+                'required' => true,
                 'label' => 'pertenece',
                 'attr' => ['class' => 'form-control input-sm select2'],
                 'label_attr' => ['class' => 'col-sm-2 control-label'],
