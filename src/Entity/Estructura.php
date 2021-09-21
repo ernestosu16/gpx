@@ -34,6 +34,10 @@ class Estructura extends BaseNestedTree
     protected Collection $children;
 
     #[ORM\ManyToMany(targetEntity: EstructuraTipo::class)]
+    #[ORM\JoinTable(name: 'estructura_localizacion_asignada')]
+    private Collection $localizaciones;
+
+    #[ORM\ManyToMany(targetEntity: EstructuraTipo::class)]
     #[ORM\JoinTable(name: 'estructura_tipo_asignado')]
     private Collection $tipos;
 
@@ -67,11 +71,105 @@ class Estructura extends BaseNestedTree
     {
         $this->children = new ArrayCollection();
         $this->tipos = new ArrayCollection();
+        $this->localizaciones = new ArrayCollection();
     }
 
     public function __toString(): string
     {
         return $this->nombre;
+    }
+
+    public function getRoot(): ?self
+    {
+        return $this->root;
+    }
+
+    public function setRoot(?self $root): self
+    {
+        $this->root = $root;
+
+        return $this;
+    }
+
+    public function getParent(): ?self
+    {
+        return $this->parent;
+    }
+
+    public function setParent(?self $parent): self
+    {
+        $this->parent = $parent;
+
+        return $this;
+    }
+
+    public function getChildren(): Collection
+    {
+        return $this->children;
+    }
+
+    public function addChild(Estructura $child): self
+    {
+        if (!$this->children->contains($child)) {
+            $this->children[] = $child;
+            $child->setParent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeChild(Estructura $child): self
+    {
+        if ($this->children->removeElement($child)) {
+            // set the owning side to null (unless already changed)
+            if ($child->getParent() === $this) {
+                $child->setParent(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getLocalizaciones(): Collection
+    {
+        return $this->localizaciones;
+    }
+
+    public function addLocalizacione(EstructuraTipo $localizacione): self
+    {
+        if (!$this->localizaciones->contains($localizacione)) {
+            $this->localizaciones[] = $localizacione;
+        }
+
+        return $this;
+    }
+
+    public function removeLocalizacione(EstructuraTipo $localizacione): self
+    {
+        $this->localizaciones->removeElement($localizacione);
+
+        return $this;
+    }
+
+    public function getTipos(): Collection
+    {
+        return $this->tipos;
+    }
+
+    public function addTipo(EstructuraTipo $tipo): self
+    {
+        if (!$this->tipos->contains($tipo)) {
+            $this->tipos[] = $tipo;
+        }
+
+        return $this;
+    }
+
+    public function removeTipo(EstructuraTipo $tipo): self
+    {
+        $this->tipos->removeElement($tipo);
+
+        return $this;
     }
 
     public function getCodigo(): ?string
@@ -134,84 +232,6 @@ class Estructura extends BaseNestedTree
         return $this;
     }
 
-    public function getRoot(): ?self
-    {
-        return $this->root;
-    }
-
-    public function setRoot(?self $root): self
-    {
-        $this->root = $root;
-
-        return $this;
-    }
-
-    public function getParent(): ?self
-    {
-        return $this->parent;
-    }
-
-    public function setParent(?self $parent): self
-    {
-        $this->parent = $parent;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection
-     */
-    public function getChildren(): Collection
-    {
-        return $this->children;
-    }
-
-    public function addChild(Estructura $child): self
-    {
-        if (!$this->children->contains($child)) {
-            $this->children[] = $child;
-            $child->setParent($this);
-        }
-
-        return $this;
-    }
-
-    public function removeChild(Estructura $child): self
-    {
-        if ($this->children->removeElement($child)) {
-            // set the owning side to null (unless already changed)
-            if ($child->getParent() === $this) {
-                $child->setParent(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection
-     */
-    public function getTipos(): Collection
-    {
-        return $this->tipos;
-    }
-
-    public function addTipo(EstructuraTipo $tipo): self
-    {
-        if (!$this->tipos->contains($tipo)) {
-            $this->tipos[] = $tipo;
-        }
-
-        return $this;
-    }
-
-    public function removeTipo(EstructuraTipo $tipo): self
-    {
-        $this->tipos->removeElement($tipo);
-
-        return $this;
-    }
-
     public function isHabilitado(): bool
     {
         return $this->habilitado;
@@ -221,5 +241,10 @@ class Estructura extends BaseNestedTree
     {
         $this->habilitado = $habilitado;
         return $this;
+    }
+
+    public function getHabilitado(): ?bool
+    {
+        return $this->habilitado;
     }
 }

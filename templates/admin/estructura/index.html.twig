@@ -1,33 +1,39 @@
 {% extends 'homer-theme/layout.html.twig' %}
-{% block title %}Listado de los trabajadores{% endblock %}
-{% block panel_title %}Listado de los trabajadores{% endblock %}
+{% block title %}Listado de las estructuras{% endblock %}
+{% block panel_title %}Listado de las estructuras{% endblock %}
 {% block panel_body %}
     <table class="table table-hover table-bordered table-striped">
         <thead>
         <tr>
-            <th>Nombre</th>
-            <th>Descripcion</th>
-            <th>Código Postal</th>
-            <th>Habilitado</th>
-            <th>Actions</th>
+            <th>{{ 'nombre'|trans([],'admin') }}</th>
+            <th>{{ 'codigo_postal'|trans([],'admin') }}</th>
+            <th>{{ 'pertenece'|trans([],'admin') }}</th>
+            <th>{{ 'habilitado'|trans([],'admin') }}</th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
         {% for estructura in estructuras %}
             <tr>
                 <td>{{ estructura.nombre }}</td>
-                <td>{{ estructura.descripcion }}</td>
                 <td>{{ estructura.codigoPostal }}</td>
-                <td>{{ estructura.habilitado }}</td>
-                <td></td>
+                <td>{{ estructura.parent }}</td>
+                <td>{{ estructura.habilitado ? 'si'|trans([],'admin') : 'no'|trans([],'admin') }}</td>
+                <td>
+
+                    <a class="btn btn-xs btn-default" href="{{ path('admin_estructura_edit', {'id': estructura.id}) }}"
+                       title="{{ 'editar'|trans([],'admin') }}">
+                        <i class="fa fa-pencil-square-o"></i>
+                    </a>
+                </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="3">{{ 'no records found'|trans({},'nomenclador') }}</td>
+                <td colspan="3">{{ 'No se encontraron registros'|trans({},'admin') }}</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-    <a class="btn btn-sm btn-primary" href="{{ path('admin_trabajador_new') }}">
-        {{ 'new'|trans([],'admin_trabajador') }}</a>
+    <a class="btn btn-sm btn-primary" href="{{ path('admin_estructura_new') }}">
+        Nueva estructura</a>
 {% endblock %}

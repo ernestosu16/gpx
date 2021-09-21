@@ -47,7 +47,7 @@ class TrabajadorType extends AbstractType
                 'label' => 'trabajador.grupos',
                 'label_attr' => ['class' => 'col-sm-4 control-label'],
                 'multiple' => true,
-                'attr' => ['autocomplete' => 'off', 'class' => 'form-control input-sm select2'],
+                'attr' => ['class' => 'form-control input-sm select2'],
                 'query_builder' => function (GrupoRepository $gr) {
                     return $gr->createQueryBuilder('grupo');
                 },

@@ -1,0 +1,10 @@
+{% extends 'homer-theme/layout.html.twig' %}
+{% block title %}Editar estructura{% endblock %}
+{% block panel_title %}Editar estructura{% endblock %}
+{% block panel_body %}
+    {{ include('admin/estructura/_form.html.twig', {'button_label': 'save'|trans([],'nomenclador')}) }}
+
+    <div class="pull-right">
+        {{ include('admin/estructura/_delete_form.html.twig') }}
+    </div>
+{% endblock %}

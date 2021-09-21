@@ -1,0 +1,21 @@
+{{ form_start(form) }}
+{# @var fv \Symfony\Component\Form\FormView #}
+{% for fv in form %}
+    {% if fv.vars.name != '_token' %}
+        <div class="form-group">
+            {{ form_label(fv) }}
+            <div class="col-sm-10">
+                {{ form_widget(fv) }}
+                {{ form_help(fv) }}
+                {{ form_errors(fv) }}
+            </div>
+        </div>
+    {% endif %}
+{% endfor %}
+<button class="btn btn-sm btn-success">{{ button_label|default('guardar'|trans([],'admin')) }}</button>
+
+<a href="{{ path('admin_estructura_index') }}"
+   class="btn btn-sm btn-default">{{ 'volver a la lista'|trans([],'admin') }}
+</a>
+
+{{ form_end(form) }}
