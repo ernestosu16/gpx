@@ -42,7 +42,7 @@
                     {% endif %}
                     <a href="{{ path(config.routes.edit, {'parent': nomencladorParent.codigo,'id': nomenclador.id}) }}"
                        class="btn btn-xs btn-default" title="{{ 'editar'|trans([],'admin') }}">
-                        <i class="fa fa-pencil-square-o"></i>
+                        <i class="fa fa-pencil"></i>
                     </a>
                     {% if nomenclador.parent.end == false %}
                         <a href="{{ path(config.routes.index,{'parent': nomenclador.codigo}) }}"

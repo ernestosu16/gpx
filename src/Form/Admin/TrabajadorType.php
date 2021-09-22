@@ -28,7 +28,7 @@ class TrabajadorType extends AbstractType
 
         $builder
             ->add('persona', PersonaType::class, [
-                'label' => 'trabajador.persona.label',
+                'label' => 'datos personales',
                 'attr' => ['autocomplete' => 'off'],
             ])
             ->add('credencial', TrabajadorCredencialType::class, [
