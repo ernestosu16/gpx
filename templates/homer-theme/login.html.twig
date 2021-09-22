@@ -1,0 +1,53 @@
+{% extends 'homer-theme/base.html.twig' %}
+{% block bodyClass %}blank{% endblock %}
+{% block layout %}
+    <div class="back-link">
+        <a href="{{ path('welcome') }}" class="btn btn-primary">Volver a la pagina de inicio</a>
+    </div>
+
+    <div class="login-container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="text-center m-b-md">
+                    <h3>POR FAVOR INGRESE SUS DATOS</h3>
+                </div>
+                <div class="hpanel">
+                    <div class="panel-body">
+                        <form method="post">
+                            {% if error %}
+                                <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                            {% endif %}
+                            <div class="form-group">
+                                <label class="control-label" for="username">Usuario</label>
+                                <input type="text" placeholder="Nombre de usuario"
+                                       title="Por favor, introduzca su nombre de usuario" required autofocus
+                                       value="{{ last_username }}" name="username" id="username" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label" for="password">Contraseña</label>
+                                <input type="password" title="Por favor, introduzca su contraseña" placeholder="******"
+                                       required="" value="" name="password" id="inputPassword" class="form-control">
+                                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                            </div>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="_remember_me"  class="i-checks">
+                                    Recordar sesión
+                                </label>
+                                <p class="help-block small">(Si es una computadora privada)</p>
+                            </div>
+                            <button class="btn btn-success btn-block">Login</button>
+{#                            <a class="btn btn-default btn-block" href="#">Register</a>#}
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 text-center">
+                Sistema de Gestión Paquetería Express<br/>
+                {{ 'now'|date('Y')}} | Derecho de autor Centro Principal Tecnológico Postal (<strong>CPTP</strong>)
+            </div>
+        </div>
+    </div>
+{% endblock %}
