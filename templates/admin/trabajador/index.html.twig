@@ -5,11 +5,11 @@
     <table class="table table-hover table-bordered table-striped">
         <thead>
         <tr>
-            <th>Número de Identidad</th>
-            <th>Nombre</th>
-            <th>Estructura</th>
-            <th>Cargo</th>
-            <th>Habilitado</th>
+            <th>{{ 'numero de identidad'|trans({},'admin') }}</th>
+            <th>{{ 'nombre'|trans({},'admin') }}</th>
+            <th>{{ 'estructura'|trans({},'admin') }}</th>
+            <th>{{ 'cargo'|trans({},'admin') }}</th>
+            <th>{{ 'habilitado'|trans({},'admin') }}</th>
             <th></th>
         </tr>
         </thead>
@@ -20,25 +20,25 @@
                 <td>{{ trabajador.persona }}</td>
                 <td>{{ trabajador.estructura }}</td>
                 <td>{{ trabajador.cargo }}</td>
-                <td>{{ trabajador.habilitado ? 'Yes'|trans({},'nomenclador') : 'No'|trans({},'nomenclador') }}</td>
+                <td>{{ trabajador.habilitado ? 'si'|trans({},'admin') : 'no'|trans({},'admin') }}</td>
                 <td>
                     <a href="{{ path('admin_trabajador_show', {'trabajador': trabajador.id}) }}"
-                       class="btn btn-xs btn-default" title="{{ 'show'|trans([],'nomenclador') }}">
+                       class="btn btn-xs btn-default" title="{{ 'mostrar'|trans([],'admin') }}">
                         <i class="fa fa-eye"></i>
                     </a>
                     <a href="{{ path('admin_trabajador_edit', {'trabajador': trabajador.id}) }}"
-                       class="btn btn-xs btn-default" title="{{ 'edit'|trans([],'nomenclador') }}">
+                       class="btn btn-xs btn-default" title="{{ 'editar'|trans([],'admin') }}">
                         <i class="fa fa-pencil-square-o"></i>
                     </a>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="6">{{ 'no records found'|trans({},'nomenclador')}}</td>
+                <td colspan="6">{{ 'No se encontraron registros'|trans({},'admin')}}</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
     <a class="btn btn-sm btn-primary" href="{{ path('admin_trabajador_new') }}">
-        {{ 'new'|trans([],'admin_trabajador') }}</a>
+        {{ 'nuevo'|trans([],'admin') }}</a>
 {% endblock %}

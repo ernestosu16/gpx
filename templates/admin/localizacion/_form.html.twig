@@ -12,10 +12,10 @@
     {% endif %}
 {% endfor %}
 
-<button class="btn btn-sm btn-success">{{ button_label|default('save'|trans([],'nomenclador')) }}</button>
+<button class="btn btn-sm btn-success">{{ button_label|default('guardar'|trans([],'admin')) }}</button>
 
 <a href="{{ path('admin_localizacion_index') }}"
-   class="btn btn-sm btn-default">{{ 'back to list'|trans([],'nomenclador') }}
+   class="btn btn-sm btn-default">{{ 'No se encontraron registros'|trans([],'admin') }}
 </a>
 
 {{ form_errors(form) }}

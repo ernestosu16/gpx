@@ -5,8 +5,8 @@
     <table class="table table-hover table-bordered table-striped">
         <thead>
         <tr>
-            <th>{{ 'name'|trans([],'nomenclador') }}</th>
-            <th>{{ 'description'|trans([],'nomenclador') }}</th>
+            <th>{{ 'nombre'|trans([],'admin') }}</th>
+            <th>{{ 'descripcion'|trans([],'admin') }}</th>
             <th></th>
         </tr>
         </thead>
@@ -28,14 +28,14 @@
                         {% endfor %}
                     </div>
                     {# <a class="btn btn-xs btn-default" href="{{ path('admin_localizacion_edit', {'id': localizacion.id}) }}" #}
-                    {# title="{{ 'edit'|trans([],'nomenclador') }}"> #}
+                    {# title="{{ 'editar'|trans([],'admin') }}"> #}
                     {# <i class="fa fa-pencil-square-o"></i> #}
                     {# </a> #}
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="3">{{ 'no records found'|trans([],'nomenclador') }}</td>
+                <td colspan="3">{{ 'No se encontraron registros'|trans([],'admin') }}</td>
             </tr>
         {% endfor %}
         </tbody>

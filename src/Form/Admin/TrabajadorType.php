@@ -38,13 +38,13 @@ class TrabajadorType extends AbstractType
             ])
             ->add('estructura', EntityType::class,[
                 'class' => Estructura::class,
-                'label' => 'trabajador.estructura',
+                'label' => 'estructura',
                 'label_attr' => ['class' => 'col-sm-4 control-label'],
                 'attr' => ['class' => 'form-control input-sm select2'],
             ])
             ->add('grupos', EntityType::class, [
                 'class' => Grupo::class,
-                'label' => 'trabajador.grupos',
+                'label' => 'grupos',
                 'label_attr' => ['class' => 'col-sm-4 control-label'],
                 'multiple' => true,
                 'attr' => ['class' => 'form-control input-sm select2'],
@@ -53,12 +53,12 @@ class TrabajadorType extends AbstractType
                 },
             ])
             ->add('cargo', TextType::class, [
-                'label' => 'trabajador.cargo',
+                'label' => 'cargo',
                 'label_attr' => ['class' => 'col-sm-4 control-label'],
                 'attr' => ['class' => 'form-control input-sm'],
             ])
             ->add('habilitado', CheckboxType::class, [
-                'label' => 'trabajador.habilitado',
+                'label' => 'habilitado',
                 'label_attr' => ['class' => 'col-sm-4 control-label'],
             ]);
 
@@ -69,7 +69,7 @@ class TrabajadorType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Trabajador::class,
-            'translation_domain' => 'admin_trabajador',
+            'translation_domain' => 'admin',
             'attr' => ['class' => 'form-horizontal'],
         ]);
     }

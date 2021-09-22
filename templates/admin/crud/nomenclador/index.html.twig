@@ -5,11 +5,11 @@
     <table class="table table-hover table-bordered table-striped">
         <thead>
         <tr>
-            <th>{{ 'code'|trans([],'nomenclador') }}</th>
-            <th>{{ 'name'|trans([],'nomenclador') }}</th>
-            <th>{{ 'description'|trans([],'nomenclador') }}</th>
-            <th>{{ 'parameters'|trans([],'nomenclador') }}</th>
-            <th>{{ 'enabled'|trans([],'nomenclador') }}</th>
+            <th>{{ 'codigo'|trans([],'admin') }}</th>
+            <th>{{ 'nombre'|trans([],'admin') }}</th>
+            <th>{{ 'descripcion'|trans([],'admin') }}</th>
+            <th>{{ 'parametros'|trans([],'admin') }}</th>
+            <th>{{ 'habilitado'|trans([],'admin') }}</th>
             <th></th>
         </tr>
         </thead>
@@ -20,27 +20,27 @@
                 <td>{{ nomenclador.nombre }}</td>
                 <td>{{ nomenclador.descripcion }}</td>
                 <td>{{ nomenclador.parametros ? nomenclador.parametros|json_encode : '' }}</td>
-                <td>{{ nomenclador.habilitado ? 'Yes'|trans([],'nomenclador') : 'No'|trans([],'nomenclador') }}</td>
+                <td>{{ nomenclador.habilitado ? 'si'|trans([],'admin') : 'no'|trans([],'admin') }}</td>
                 <td>
                     <a class="btn btn-default btn-xs" href="{{ path(config.routes.show, {'id': nomenclador.id}) }}"
-                       title="{{ 'show'|trans([],'nomenclador') }}">
+                       title="{{ 'mostrar'|trans([],'admin') }}">
                         <i class="fa fa-eye"></i>
                     </a>
                     <a class="btn btn-xs btn-default" href="{{ path(config.routes.edit, {'id': nomenclador.id}) }}"
-                       title="{{ 'edit'|trans([],'nomenclador') }}">
+                       title="{{ 'editar'|trans([],'admin') }}">
                         <i class="fa fa-pencil-square-o"></i>
                     </a>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="10">{{ 'no records found'|trans([],'nomenclador') }}</td>
+                <td colspan="6">{{ 'No se encontraron registros'|trans([],'admin') }}</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
     <a class="btn btn-sm btn-primary" href="{{ path(config.routes.new) }}">
-        {{ 'create new'|trans([],'nomenclador') }}
+        {{ 'nuevo'|trans([],'admin') }}
     </a>
 {% endblock %}

@@ -9,31 +9,31 @@
             <td>{{ nomenclador.id }}</td>
         </tr>
         <tr>
-            <th>{{ 'code'|trans([],'nomenclador') }}</th>
+            <th>{{ 'codigo'|trans([],'admin') }}</th>
             <td>{{ nomenclador.codigo }}</td>
         </tr>
         <tr>
-            <th>{{ 'name'|trans([],'nomenclador') }}</th>
+            <th>{{ 'nombre'|trans([],'admin') }}</th>
             <td>{{ nomenclador.nombre }}</td>
         </tr>
         <tr>
-            <th>{{ 'description'|trans([],'nomenclador') }}</th>
+            <th>{{ 'descripcion'|trans([],'admin') }}</th>
             <td>{{ nomenclador.descripcion }}</td>
         </tr>
         <tr>
-            <th>{{ 'parameters'|trans([],'nomenclador') }}</th>
+            <th>{{ 'parametros'|trans([],'admin') }}</th>
             <td>{{ nomenclador.parametros ? nomenclador.parametros|json_encode : '' }}</td>
         </tr>
         <tr>
-            <th>{{ 'enabled'|trans([],'nomenclador') }}</th>
-            <td>{{ nomenclador.habilitado ? 'Yes'|trans([],'nomenclador') : 'No'|trans([],'nomenclador') }}</td>
+            <th>{{ 'habilitado'|trans([],'admin') }}</th>
+            <td>{{ nomenclador.habilitado ? 'si'|trans([],'admin') : 'no'|trans([],'admin') }}</td>
         </tr>
         </tbody>
     </table>
     <a class="btn btn-sm btn-default" href="{{ path(config.routes.index) }}">
-        {{ 'back to list'|trans([],'nomenclador') }}</a>
+        {{ 'No se encontraron registros'|trans([],'admin') }}</a>
     <a class="btn btn-sm btn-primary" href="{{ path(config.routes.edit, {'id': nomenclador.id}) }}">
-        {{ 'edit'|trans([],'nomenclador') }}</a>
+        {{ 'editar'|trans([],'admin') }}</a>
 
     <div class="pull-right">
         {{ include('admin/crud/nomenclador/_delete_form.html.twig') }}

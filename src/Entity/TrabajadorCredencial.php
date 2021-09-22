@@ -7,7 +7,7 @@ use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity]
-#[ORM\UniqueConstraint(name: 'UNQ_USUARIO', fields: ['usuario'])]
+#[ORM\UniqueConstraint(name: 'UNIQ_USUARIO', fields: ['usuario'])]
 class TrabajadorCredencial implements UserInterface
 {
     #[ORM\Id]

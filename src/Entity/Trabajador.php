@@ -10,6 +10,8 @@ use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TrabajadorRepository::class)]
+#[ORM\UniqueConstraint(name: 'UNIQ_PERSONA_ID', columns: ['persona_id'])]
+#[ORM\Index(columns: ['estructura_id'], name: 'IDX_ESTRUCTURA_ID')]
 class Trabajador extends _Entity_
 {
     #[ORM\OneToOne(targetEntity: Persona::class, cascade: ['persist'])]

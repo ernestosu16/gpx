@@ -3,6 +3,8 @@
 namespace App\Form\Admin;
 
 use App\Entity\Grupo;
+use App\Entity\Menu;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -16,23 +18,31 @@ class GrupoType extends AbstractType
         $builder
             ->add('codigo', TextType::class, [
                 'attr' => ['class' => 'form-control input-sm'],
-                'label' => 'code',
+                'label' => 'codigo',
                 'label_attr' => ['class' => 'col-sm-2 control-label'],
             ])
             ->add('nombre', TextType::class, [
                 'attr' => ['class' => 'form-control input-sm'],
-                'label' => 'name',
+                'label' => 'nombre',
                 'label_attr' => ['class' => 'col-sm-2 control-label'],
             ])
             ->add('descripcion', TextareaType::class, [
                 'required' => false,
                 'empty_data' => '',
-                'label' => 'description',
+                'label' => 'descripcion',
                 'label_attr' => ['class' => 'col-sm-2 control-label'],
                 'attr' => ['class' => 'form-control input-sm'],
             ])
+            ->add('menus', EntityType::class, [
+                'class' => Menu::class,
+                'required' => false,
+                'multiple' => true,
+                'attr' => ['class' => 'form-control input-sm select2'],
+                'label' => 'menu',
+                'label_attr' => ['class' => 'col-sm-2 control-label'],
+            ])
             ->add('habilitado', null, [
-                'label' => 'enabled',
+                'label' => 'habilitado',
                 'label_attr' => ['class' => 'col-sm-2 control-label'],
             ]);
     }
@@ -41,7 +51,7 @@ class GrupoType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Grupo::class,
-            'translation_domain' => 'nomenclador',
+            'translation_domain' => 'admin',
             'attr' => ['class' => 'form-horizontal'],
         ]);
     }

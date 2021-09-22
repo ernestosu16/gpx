@@ -2,7 +2,7 @@
 {% block title %}{{ title|trans([],config.translation_domain) }}{% endblock %}
 {% block panel_title %}{{ title|trans([],config.translation_domain) }}{% endblock %}
 {% block panel_body %}
-    {{ include('admin/crud/tree/_form.html.twig', {'button_label': 'save'|trans([],'nomenclador')}) }}
+    {{ include('admin/crud/tree/_form.html.twig', {'button_label': 'guardar'|trans([],'admin')}) }}
     <div class="pull-right">
         {{ include('admin/crud/tree/_delete_form.html.twig') }}
     </div>

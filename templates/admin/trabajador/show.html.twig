@@ -39,10 +39,10 @@
         </tbody>
     </table>
     <a class="btn btn-sm btn-default"
-       href="{{ path('admin_trabajador_index') }}">{{ 'back to list'|trans({},'nomenclador') }}</a>
+       href="{{ path('admin_trabajador_index') }}">{{ 'No se encontraron registros'|trans({},'admin') }}</a>
 
     <a class="btn btn-sm btn-primary" href="{{ path('admin_trabajador_edit', {'trabajador': trabajador.id}) }}">
-        {{ 'edit'|trans({},'nomenclador') }}
+        {{ 'editar'|trans({},'admin') }}
     </a>
     <div class="pull-right">
         {{ include('admin/trabajador/_delete_form.html.twig') }}

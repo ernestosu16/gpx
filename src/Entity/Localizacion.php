@@ -14,8 +14,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /** @Gedmo\Tree(type="nested") */
 #[ORM\Entity(repositoryClass: LocalizacionRepository::class)]
-#[ORM\Index(columns: ['parent_id'], name: 'IDX_PARENT_ID')]
+#[ORM\UniqueConstraint(name: 'UNIQ_CODIGO', columns: ['codigo'])]
 #[ORM\Index(columns: ['root_id'], name: 'IDX_ROOT_ID')]
+#[ORM\Index(columns: ['parent_id'], name: 'IDX_PARENT_ID')]
+#[ORM\Index(columns: ['localizacion_tipo_id'], name: 'IDX_LOCALIZACION_TIPO_ID')]
 class Localizacion extends BaseNestedTree
 {
     /** @Gedmo\TreeRoot() */

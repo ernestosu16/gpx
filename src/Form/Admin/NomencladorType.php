@@ -18,17 +18,17 @@ class NomencladorType extends AbstractType
 
         $builder
             ->add('codigo', TextType::class, [
-                'label' => 'code',
+                'label' => 'codigo',
                 'label_attr' => ['class' => 'col-sm-2 control-label'],
                 'attr' => ['autocomplete' => 'off', 'class' => 'form-control input-sm'],
             ])
             ->add('nombre', TextType::class, [
-                'label' => 'name',
+                'label' => 'nombre',
                 'label_attr' => ['class' => 'col-sm-2 control-label'],
                 'attr' => ['autocomplete' => 'off', 'class' => 'form-control input-sm'],
             ])
             ->add('descripcion', TextareaType::class, [
-                'label' => 'description',
+                'label' => 'descripcion',
                 'label_attr' => ['class' => 'col-sm-2 control-label'],
                 'empty_data' => '',
                 'required' => false,
@@ -36,11 +36,12 @@ class NomencladorType extends AbstractType
             ])
             ->add('end', null, [
                 'required' => false,
+                'label' => 'end',
                 'label_attr' => ['class' => 'col-sm-2 control-label'],
             ])
             ->add('habilitado', null, [
                 'required' => false,
-                'label' => 'enabled',
+                'label' => 'habilitado',
                 'label_attr' => ['class' => 'col-sm-2 control-label'],
             ]);
     }
@@ -49,7 +50,7 @@ class NomencladorType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Nomenclador::class,
-            'translation_domain' => 'nomenclador',
+            'translation_domain' => 'admin',
             'attr' => ['class' => 'form-horizontal'],
         ]);
     }
