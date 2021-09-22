@@ -1,8 +1,4 @@
 services:
-#    Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler:
-#        arguments:
-#            - '%env(DATABASE_URL)%'
-#            - { db_table: 'trabajador_credencial', db_id_col: 'session' }
     app.menu_builder:
         class: App\Menu\MenuBuilder
         arguments: ["@knp_menu.factory", '@Doctrine\ORM\EntityManagerInterface', '@service_container']

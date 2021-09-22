@@ -2,13 +2,15 @@
 
 namespace App\Entity;
 
+use App\Repository\TrabajadorCredencialRepository;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\Pure;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: TrabajadorCredencialRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_USUARIO', fields: ['usuario'])]
-class TrabajadorCredencial implements UserInterface
+class TrabajadorCredencial implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\OneToOne(inversedBy: 'credencial', targetEntity: Trabajador::class)]
@@ -18,11 +20,11 @@ class TrabajadorCredencial implements UserInterface
     #[ORM\Column(type: 'string', length: 50, unique: true)]
     private ?string $usuario = null;
 
-    #[ORM\Column(type: 'string', length: 100)]
+    #[ORM\Column(type: 'string', length: 60)]
     private ?string $contrasena = null;
 
-    #[ORM\Column(type: 'string', length: 128, nullable: true)]
-    private ?string $session;
+    #[ORM\Column(type: 'string')]
+    private string $salt;
 
     public function getUsuario(): ?string
     {
@@ -74,12 +76,15 @@ class TrabajadorCredencial implements UserInterface
 
     #[Pure] public function getUsername(): ?string
     {
-        return $this->getUsuario();
+        return $this->usuario;
     }
 
-    #[Pure] public function getPassword(): ?string
+    /**
+     * @see PasswordAuthenticatedUserInterface
+     */
+    public function getPassword(): string
     {
-        return $this->getContrasena();
+        return $this->contrasena;
     }
 
 
@@ -93,9 +98,14 @@ class TrabajadorCredencial implements UserInterface
         return ['ROLE_USER'];
     }
 
-    public function getSalt()
+    public function setSalt()
     {
-        // TODO: Implement getSalt() method.
+        return $this->salt;
+    }
+
+    public function getSalt(): ?string
+    {
+        return $this->salt;
     }
 
     public function eraseCredentials()

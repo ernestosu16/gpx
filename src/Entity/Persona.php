@@ -163,16 +163,28 @@ class Persona extends _Entity_
 
     #[Pure] public function getNombre(): string
     {
-        return $this->getNombrePrimero() . ' ' . $this->getNombreSegundo();
+        $n[] = $this->getNombrePrimero();
+        if ($this->getNombreSegundo())
+            $n[] = $this->getNombreSegundo();
+
+        return implode(' ', $n);
     }
 
     #[Pure] public function getApellidos(): string
     {
-        return $this->getApellidoPrimero() . ' ' . $this->getApellidoSegundo();
+        $a[] = $this->getApellidoPrimero();
+        if ($this->getApellidoSegundo())
+            $a[] = $this->getApellidoSegundo();
+
+        return implode(' ', $a);
     }
 
     #[Pure] public function getNombreCompleto(): string
     {
-        return $this->getNombre() . ' ' . $this->getApellidos();
+        $c[] = $this->getNombre();
+        if ($this->getApellidos())
+            $c[] = $this->getApellidos();
+
+        return implode(' ', $c);
     }
 }

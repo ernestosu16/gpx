@@ -7,8 +7,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class DefaultController extends _Controller_
 {
-    #[Route('/', name: 'welcome')]
-    public function welcome(): Response
+    #[Route('/', name: 'app_home')]
+    public function home(): Response
     {
         return $this->render('homer-theme/landing.twig', []);
     }
