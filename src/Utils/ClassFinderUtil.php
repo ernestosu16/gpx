@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Util;
+namespace App\Utils;
 
 final class ClassFinderUtil
 {

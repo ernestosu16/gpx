@@ -99,8 +99,7 @@ $(document).ready(function () {
     $('.modal').appendTo("body")
 
     let select2 = $('.select2');
-    if (typeof select2 !== "undefined")
-        select2.select2();
+    if (select2.length) select2.select2();
 });
 
 $(window).bind("load", function () {

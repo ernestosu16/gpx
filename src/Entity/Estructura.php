@@ -3,7 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\EstructuraRepository;
-use App\Util\RegexUtil;
+use App\Utils\RegexUtil;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -38,7 +38,7 @@ class Estructura extends BaseNestedTree
     #[ORM\JoinTable(name: 'estructura_localizacion_asignada')]
     private Collection $localizaciones;
 
-    #[ORM\ManyToMany(targetEntity: EstructuraTipo::class)]
+    #[ORM\ManyToMany(targetEntity: EstructuraTipo::class, inversedBy: 'estructuras')]
     #[ORM\JoinTable(name: 'estructura_tipo_asignado')]
     private Collection $tipos;
 

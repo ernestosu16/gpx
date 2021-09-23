@@ -3,7 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\PersonaRepository;
-use App\Util\RegexUtil;
+use App\Utils\RegexUtil;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Validator\Constraints as Assert;

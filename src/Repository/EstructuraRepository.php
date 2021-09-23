@@ -10,4 +10,5 @@ class EstructuraRepository extends _NestedTreeRepository_
     {
         return Estructura::class;
     }
+
 }
