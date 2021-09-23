@@ -26,6 +26,11 @@ class TrabajadorCredencial implements UserInterface, PasswordAuthenticatedUserIn
     #[ORM\Column(type: 'string')]
     private string $salt;
 
+    public function __construct()
+    {
+        $this->salt = '';
+    }
+
     public function getUsuario(): ?string
     {
         return $this->usuario;
