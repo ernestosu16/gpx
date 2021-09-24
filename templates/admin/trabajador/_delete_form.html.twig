@@ -1,5 +1,4 @@
-<form method="post" action="{{ path('admin_trabajador_delete', {'trabajador': trabajador.id}) }}"
-      onsubmit="return confirm('Are you sure you want to delete this item?');">
+<form method="post" action="{{ path('admin_trabajador_delete', {'trabajador': trabajador.id}) }}">
     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ trabajador.id) }}">
-    <button class="btn btn-sm btn-danger">{{ 'eliminar'|trans({},'admin') }}</button>
+    <button class="btn btn-sm btn-danger delete">{{ 'eliminar'|trans({},'admin') }}</button>
 </form>

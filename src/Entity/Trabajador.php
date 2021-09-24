@@ -42,6 +42,7 @@ class Trabajador extends _Entity_
 
     #[Pure] public function __construct()
     {
+        $this->persona = new Persona();
         $this->grupos = new ArrayCollection();
     }
 

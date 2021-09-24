@@ -7,3 +7,31 @@
         {{ include('admin/trabajador/_delete_form.html.twig') }}
     </div>
 {% endblock %}
+{% block javascripts %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('form').validate();
+
+            let btn = $('.delete');
+            let form = btn.parent('form');
+            btn.click(function () {
+                swal({
+                        title: "Estas seguro",
+                        text: "¡No podrá recuperar los datos del trabajador!",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Si, bórralo!",
+                        cancelButtonText: "Cancelar"
+                    },
+                    function (isConfirm) {
+                        console.log(form);
+                        if (isConfirm) form[0].submit();
+                    });
+            });
+            form.on('submit', function (e) {
+                e.preventDefault();
+            });
+        });
+    </script>
+{% endblock %}

@@ -184,7 +184,7 @@ class NuevoCommand extends Command
         $this->entityManager->persist($trabajador);
         $this->entityManager->flush();
 
-        $this->io->success(sprintf('%s fue creado con éxito: %s (%s)', 'Usuario', $trabajador->getNombre(), $usuario));
+        $this->io->success(sprintf('El trabajador fue creado con éxito: %s (%s)', $trabajador->getNombre(), $usuario));
 
         $event = $stopwatch->stop('app:trabajador:nuevo');
 

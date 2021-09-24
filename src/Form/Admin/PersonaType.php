@@ -12,12 +12,16 @@ class PersonaType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+
+        /** @var Persona $data */
+        $data = $builder->getData();
         $builder
             ->add('numero_identidad', TextType::class, [
                 'required' => true,
                 'label' => 'numero de identidad',
                 'label_attr' => ['class' => 'col-sm-4 control-label'],
                 'attr' => ['autocomplete' => 'off', 'class' => 'form-control input-sm'],
+                'disabled' => (bool)$data?->getId()
             ])
             ->add('nombre_primero', TextType::class, [
                 'label' => 'nombre',
