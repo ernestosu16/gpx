@@ -144,6 +144,11 @@ class Trabajador extends _Entity_
         return $this;
     }
 
+    #[Pure] public function getNombre(): string
+    {
+        return $this->getPersona()->getNombre();
+    }
+
     public function setDatoCredencial($username, $password): self
     {
         $credencial = new TrabajadorCredencial();

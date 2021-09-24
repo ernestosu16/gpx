@@ -19,6 +19,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Stopwatch\Stopwatch;
 
 class NuevoCommand extends Command
 {
@@ -61,7 +62,7 @@ class NuevoCommand extends Command
             ['name' => 'apellido-segundo', 'mode' => InputOption::VALUE_REQUIRED, 'description' => 'Segundo apellido del trabajador', 'label' => 'Segundo Apellido', 'validator' => 'validatePalabra'],
             ['name' => 'cargo', 'mode' => InputOption::VALUE_REQUIRED, 'description' => 'Cargo que ocupa el trabajador', 'label' => 'Cargo'],
             ['name' => 'usuario', 'mode' => InputOption::VALUE_REQUIRED, 'description' => 'Usuario', 'label' => 'Usuario', 'invoke' => 'invokeValidateUsername'],
-            ['name' => 'password', 'mode' => InputOption::VALUE_REQUIRED, 'description' => 'Contraseña', 'label' => 'Contraseña', 'question' => ['hidden' => true], 'validator' => 'validatePassword'],
+            ['name' => 'password', 'mode' => InputOption::VALUE_REQUIRED, 'description' => 'Contraseña', 'label' => 'Contraseña', 'invoke' => 'invokeValidatePassword'],
             ['name' => 'estructura', 'mode' => InputOption::VALUE_REQUIRED, 'description' => 'Lugar donde trabaja', 'label' => 'Estructura', 'invoke' => 'invokeValidateEstructura'],
             ['name' => 'grupo', 'mode' => InputOption::VALUE_REQUIRED, 'description' => 'Grupo principal del trabajador', 'label' => 'Grupo', 'invoke' => 'invokeValidateGrupo'],
         ];
@@ -140,7 +141,6 @@ class NuevoCommand extends Command
         });
     }
 
-
     private function invokeValidateUsername(InputInterface $input, OutputInterface $output): string
     {
         return $this->io->ask('Usuario', null, function ($usuario) {
@@ -151,8 +151,19 @@ class NuevoCommand extends Command
         });
     }
 
+    private function invokeValidatePassword(InputInterface $input, OutputInterface $output)
+    {
+        return $this->io->askHidden('Contraseña', function ($password) {
+            $this->validator->validatePassword($password);
+            return $password;
+        });
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $stopwatch = new Stopwatch();
+        $stopwatch->start('app:trabajador:nuevo');
+
         $numeroIdentidad = $input->getOption('numero-identidad');
         $nombre = $input->getOption('nombre');
         $apellidoPrimero = $input->getOption('apellido-primero');
@@ -172,6 +183,14 @@ class NuevoCommand extends Command
 
         $this->entityManager->persist($trabajador);
         $this->entityManager->flush();
+
+        $this->io->success(sprintf('%s fue creado con éxito: %s (%s)', 'Usuario', $trabajador->getNombre(), $usuario));
+
+        $event = $stopwatch->stop('app:trabajador:nuevo');
+
+        if ($output->isVerbose())
+            $this->io->comment(sprintf('Trabajador ID: %s / Tiempo transcurrido: %.2f ms / Memoria consumida: %.2f MB', $trabajador->getId(), $event->getDuration(), $event->getMemory() / (1024 ** 2)));
+
         return Command::SUCCESS;
     }
 }
