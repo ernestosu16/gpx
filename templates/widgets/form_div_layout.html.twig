@@ -1,0 +1,10 @@
+{%- block form_errors -%}
+    {%- if errors|length > 0 -%}
+        {# @var \Symfony\Component\Form\FormError error #}
+        {%- for error in errors -%}
+            <label id="{{ error.origin.name }}-error" for="{{ error.origin.name }}" class="error">
+                {{ error.message }}
+            </label>
+        {%- endfor -%}
+    {%- endif -%}
+{%- endblock form_errors -%}

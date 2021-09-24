@@ -7,6 +7,7 @@ use App\Utils\RegexUtil;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Validator\Constraints as Assert;
+use function Symfony\Component\String\u;
 
 #[ORM\Entity(repositoryClass: PersonaRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_PERSONA', columns: ['hash'])]
@@ -25,15 +26,19 @@ class Persona extends _Entity_
     private ?string $numero_pasaporte;
 
     #[ORM\Column(type: 'string', length: 50)]
+    #[Assert\Regex(pattern: RegexUtil::TEXTO_ACENTO_SIN_ESPACIO, message: 'El nombre solo puede contener letras.')]
     private string $nombre_primero;
 
     #[ORM\Column(type: 'string', length: 80, nullable: true)]
+    #[Assert\Regex(pattern: RegexUtil::TEXTO_ACENTO_SIN_ESPACIO, message: 'El nombre solo puede contener letras.')]
     private ?string $nombre_segundo;
 
     #[ORM\Column(type: 'string', length: 50)]
+    #[Assert\Regex(pattern: RegexUtil::TEXTO_ACENTO_SIN_ESPACIO, message: 'El nombre solo puede contener letras.')]
     private string $apellido_primero;
 
     #[ORM\Column(type: 'string', length: 50)]
+    #[Assert\Regex(pattern: RegexUtil::TEXTO_ACENTO_SIN_ESPACIO, message: 'El nombre solo puede contener letras.')]
     private string $apellido_segundo;
 
     #[ORM\Column(type: 'boolean')]
@@ -84,7 +89,7 @@ class Persona extends _Entity_
 
     public function setNumeroPasaporte(?string $numero_pasaporte): self
     {
-        $this->numero_pasaporte = $numero_pasaporte;
+        $this->numero_pasaporte = u($numero_pasaporte)->upper();
 
         return $this;
     }
@@ -96,7 +101,7 @@ class Persona extends _Entity_
 
     public function setNombrePrimero(string $nombre_primero): self
     {
-        $this->nombre_primero = $nombre_primero;
+        $this->nombre_primero = u($nombre_primero)->title();
 
         return $this;
     }
@@ -108,7 +113,7 @@ class Persona extends _Entity_
 
     public function setNombreSegundo(?string $nombre_segundo): self
     {
-        $this->nombre_segundo = $nombre_segundo;
+        $this->nombre_segundo = u($nombre_segundo)->title();
 
         return $this;
     }
@@ -120,7 +125,7 @@ class Persona extends _Entity_
 
     public function setApellidoPrimero(string $apellido_primero): self
     {
-        $this->apellido_primero = $apellido_primero;
+        $this->apellido_primero = u($apellido_primero)->title();
 
         return $this;
     }
@@ -132,7 +137,7 @@ class Persona extends _Entity_
 
     public function setApellidoSegundo(string $apellido_segundo): self
     {
-        $this->apellido_segundo = $apellido_segundo;
+        $this->apellido_segundo = u($apellido_segundo)->title();
 
         return $this;
     }
