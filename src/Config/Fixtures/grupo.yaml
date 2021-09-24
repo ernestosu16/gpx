@@ -1,6 +1,7 @@
 grupos:
     -   nombre: 'Administrador'
         descripcion: 'Administrador principal del sistema'
+        roles: [ 'ROLE_ADMIN' ]
         codigo: 'GRUPO_ADMINISTRADOR'
     -   nombre: 'Recepción de Paquetería'
         descripcion: ''

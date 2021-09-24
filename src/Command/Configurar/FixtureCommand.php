@@ -83,6 +83,9 @@ final class FixtureCommand extends BaseCommand implements BaseCommandInterface
             $grupoEntity->setNombre($grupo['nombre']);
             $grupoEntity->setDescripcion($grupo['descripcion']);
 
+            if (isset($grupo['roles']) && is_array($grupo['roles']))
+                $grupoEntity->setRoles($grupo['roles']);
+
             $root->addChild($grupoEntity);
             $this->getEntityManager()->persist($root);
         }

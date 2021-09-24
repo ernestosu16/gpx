@@ -34,7 +34,7 @@ class Trabajador extends _Entity_
     #[Assert\Valid]
     private Collection $grupos;
 
-    #[ORM\Column(type: 'string', length: 11)]
+    #[ORM\Column(type: 'string', length: 100)]
     private string $cargo;
 
     #[ORM\Column(type: 'boolean')]

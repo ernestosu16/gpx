@@ -67,16 +67,19 @@ class TrabajadorCredencial implements UserInterface, PasswordAuthenticatedUserIn
         return $this;
     }
 
-    public function getSession(): ?string
+    #[Pure] public function getPersona(): ?Persona
     {
-        return $this->session;
+        return $this->getTrabajador()?->getPersona();
     }
 
-    public function setSession(?string $session): self
+    #[Pure] public function getNombre(): ?string
     {
-        $this->session = $session;
+        return $this->getPersona()?->getNombre();
+    }
 
-        return $this;
+    #[Pure] public function getCargo(): ?string
+    {
+        return $this->getTrabajador()?->getCargo();
     }
 
     #[Pure] public function getUsername(): ?string
@@ -92,7 +95,6 @@ class TrabajadorCredencial implements UserInterface, PasswordAuthenticatedUserIn
         return $this->contrasena;
     }
 
-
     #[Pure] public function getUserIdentifier(): string
     {
         return $this->getUsuario();
@@ -100,12 +102,22 @@ class TrabajadorCredencial implements UserInterface, PasswordAuthenticatedUserIn
 
     public function getRoles(): array
     {
-        return ['ROLE_USER'];
+        $roles = [];
+        /** @var Grupo[] $grupos */
+        $grupos = $this->getTrabajador()->getGrupos();
+
+        foreach ($grupos as $grupo) {
+            $roles = array_merge($roles, $grupo->getRoles());
+        }
+
+        return $roles;
     }
 
-    public function setSalt()
+    public function setSalt(string $salt): self
     {
-        return $this->salt;
+        $this->salt = $salt;
+
+        return $this;
     }
 
     public function getSalt(): ?string

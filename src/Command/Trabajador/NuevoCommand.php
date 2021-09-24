@@ -8,6 +8,8 @@ use App\Entity\Grupo;
 use App\Entity\Trabajador;
 use App\Repository\EstructuraTipoRepository;
 use App\Repository\GrupoRepository;
+use App\Repository\TrabajadorCredencialRepository;
+use App\Repository\TrabajadorRepository;
 use App\Utils\Validator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -23,10 +25,12 @@ class NuevoCommand extends Command
     private SymfonyStyle $io;
 
     public function __construct(
-        private EntityManagerInterface   $entityManager,
-        private Validator                $validator,
-        private EstructuraTipoRepository $estructuraTipo,
-        private GrupoRepository          $grupo,
+        private EntityManagerInterface         $entityManager,
+        private Validator                      $validator,
+        private TrabajadorRepository           $trabajador,
+        private TrabajadorCredencialRepository $credencial,
+        private EstructuraTipoRepository       $estructuraTipo,
+        private GrupoRepository                $grupo,
     )
     {
         parent::__construct();
@@ -51,12 +55,12 @@ class NuevoCommand extends Command
     private static function options(): array
     {
         return [
-            ['name' => 'numero-identidad', 'mode' => InputOption::VALUE_REQUIRED, 'description' => 'Número del Carné de Identidad', 'label' => 'Número de Identidad', 'validator' => 'validateNumeroIdentidad'],
+            ['name' => 'numero-identidad', 'mode' => InputOption::VALUE_REQUIRED, 'description' => 'Número del Carné de Identidad', 'label' => 'Número de Identidad', 'invoke' => 'invokeValidateNumeroIdentidad'],
             ['name' => 'nombre', 'mode' => InputOption::VALUE_REQUIRED, 'description' => 'Nombre del trabajado', 'label' => 'Nombre', 'validator' => 'validatePalabra'],
             ['name' => 'apellido-primero', 'mode' => InputOption::VALUE_REQUIRED, 'description' => 'Segundo apellido del trabajador', 'label' => 'Primer Apellido', 'validator' => 'validatePalabra'],
             ['name' => 'apellido-segundo', 'mode' => InputOption::VALUE_REQUIRED, 'description' => 'Segundo apellido del trabajador', 'label' => 'Segundo Apellido', 'validator' => 'validatePalabra'],
             ['name' => 'cargo', 'mode' => InputOption::VALUE_REQUIRED, 'description' => 'Cargo que ocupa el trabajador', 'label' => 'Cargo'],
-            ['name' => 'usuario', 'mode' => InputOption::VALUE_REQUIRED, 'description' => 'Usuario', 'label' => 'Usuario', 'validator' => 'validateUsername'],
+            ['name' => 'usuario', 'mode' => InputOption::VALUE_REQUIRED, 'description' => 'Usuario', 'label' => 'Usuario', 'invoke' => 'invokeValidateUsername'],
             ['name' => 'password', 'mode' => InputOption::VALUE_REQUIRED, 'description' => 'Contraseña', 'label' => 'Contraseña', 'question' => ['hidden' => true], 'validator' => 'validatePassword'],
             ['name' => 'estructura', 'mode' => InputOption::VALUE_REQUIRED, 'description' => 'Lugar donde trabaja', 'label' => 'Estructura', 'invoke' => 'invokeValidateEstructura'],
             ['name' => 'grupo', 'mode' => InputOption::VALUE_REQUIRED, 'description' => 'Grupo principal del trabajador', 'label' => 'Grupo', 'invoke' => 'invokeValidateGrupo'],
@@ -124,6 +128,27 @@ class NuevoCommand extends Command
         $grupo = $helper->ask($input, $output, $question);
         $this->io->text('<info>' . $grupo . '</info>');
         return $grupo;
+    }
+
+    private function invokeValidateNumeroIdentidad(InputInterface $input, OutputInterface $output): string
+    {
+        return $this->io->ask('Número de identidad', null, function ($numeroIdentidad) {
+            $this->validator->validateNumeroIdentidad($numeroIdentidad);
+            if ($this->trabajador->findOneByNumeroIdentidad($numeroIdentidad))
+                throw new InvalidOptionException(sprintf('El numero de identidad "%s" ya existe en el sistema.', $numeroIdentidad));
+            return $numeroIdentidad;
+        });
+    }
+
+
+    private function invokeValidateUsername(InputInterface $input, OutputInterface $output): string
+    {
+        return $this->io->ask('Usuario', null, function ($usuario) {
+            $this->validator->validateUsername($usuario);
+            if ($this->credencial->findOneByUsuario($usuario))
+                throw new InvalidOptionException(sprintf('El usuario "%s" ya existe en el sistema.', $usuario));
+            return $usuario;
+        });
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

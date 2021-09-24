@@ -10,4 +10,9 @@ class TrabajadorCredencialRepository extends _Repository_
     {
         return TrabajadorCredencial::class;
     }
+
+    public function findOneByUsuario(string $usuario): ?TrabajadorCredencial
+    {
+        return $this->findOneBy(['usuario' => $usuario]);
+    }
 }
