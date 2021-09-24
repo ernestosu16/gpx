@@ -1,3 +1,4 @@
 imports:
     - { resource: 'manager.yaml' }
+    - { resource: 'menu.yaml' }
     - { resource: 'services.yaml' }
