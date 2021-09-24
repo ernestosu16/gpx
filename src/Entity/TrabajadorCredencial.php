@@ -20,8 +20,8 @@ class TrabajadorCredencial implements UserInterface, PasswordAuthenticatedUserIn
     #[ORM\Column(type: 'string', length: 50, unique: true)]
     private ?string $usuario = null;
 
-    #[ORM\Column(type: 'string', length: 60)]
-    private ?string $contrasena = null;
+    #[ORM\Column(type: 'string', length: 60, nullable: false)]
+    private string $contrasena;
 
     #[ORM\Column(type: 'string')]
     private string $salt;
@@ -43,14 +43,15 @@ class TrabajadorCredencial implements UserInterface, PasswordAuthenticatedUserIn
         return $this;
     }
 
-    public function getContrasena(): ?string
+    public function getContrasena(): string
     {
         return $this->contrasena;
     }
 
-    public function setContrasena(string $contrasena): self
+    public function setContrasena(?string $contrasena): self
     {
-        $this->contrasena = $contrasena;
+        if ($contrasena)
+            $this->contrasena = $contrasena;
 
         return $this;
     }
