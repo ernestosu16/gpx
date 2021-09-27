@@ -35,14 +35,6 @@ class GrupoType extends AbstractType
                 'label_attr' => ['class' => 'col-sm-2 control-label'],
                 'attr' => ['class' => 'form-control input-sm'],
             ])
-            ->add('estructuras', EntityType::class, [
-                'class' => Estructura::class,
-                'required' => false,
-                'multiple' => true,
-                'attr' => ['class' => 'form-control input-sm select2'],
-                'label' => 'estructuras',
-                'label_attr' => ['class' => 'col-sm-2 control-label'],
-            ])
             ->add('menus', EntityType::class, [
                 'class' => Menu::class,
                 'required' => false,

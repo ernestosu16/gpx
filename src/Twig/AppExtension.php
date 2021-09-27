@@ -5,6 +5,7 @@ namespace App\Twig;
 
 
 use App\Entity\_Entity_;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
@@ -26,17 +27,25 @@ class AppExtension extends AbstractExtension
     public function callField(_Entity_ $object, string $method): mixed
     {
         $method = u($method)->camel()->title()->prepend('get')->toString();
+        $value = $object->$method();
 
+        if (!is_object($value) && is_array($value)) {
+            return $this->convert_multi_array($value);
+        }
 
-        if (!is_object($object->$method()) && is_array($object->$method())) {
-            return $this->convert_multi_array($object->$method());
+        if ($value instanceof Collection) {
+            $lista = [];
+            foreach ($value as $row) {
+                $lista[] = (string)$row;
+            }
+            return implode(', ', $lista);
         }
 
 
-        if (is_bool($object->$method()))
-            return $this->translator->trans((string)$object->$method() ? 'si' : 'no', [], 'admin');
+        if (is_bool($value))
+            return $this->translator->trans((string)$value ? 'si' : 'no', [], 'admin');
 
-        return $object->$method();
+        return $value;
     }
 
     function convert_multi_array($array)

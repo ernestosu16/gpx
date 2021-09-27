@@ -18,9 +18,10 @@ final class GrupoController extends _CrudController_
     {
         return GrupoType::class;
     }
+
     protected static function fields(): array
     {
-        return ['nombre','descripcion', 'parametros','habilitado'];
+        return ['nombre', 'descripcion', 'parametros', 'estructuras', 'habilitado'];
     }
 
     protected static function config(): array

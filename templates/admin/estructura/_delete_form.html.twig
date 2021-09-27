@@ -1,5 +1,0 @@
-<form method="post" action="{{ path('admin_estructura_delete', {'id': estructura.id}) }}"
-      onsubmit="return confirm('¿Estás seguro de que quieres eliminarlo?');">
-    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ estructura.id) }}">
-    <button class="btn btn-sm btn-danger">{{ 'eliminar'|trans([],'admin') }}</button>
-</form>

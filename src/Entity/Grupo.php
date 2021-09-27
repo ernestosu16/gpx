@@ -17,7 +17,7 @@ class Grupo extends Nomenclador
     #[ORM\InverseJoinColumn(onDelete: 'CASCADE')]
     private Collection $menus;
 
-    #[ORM\ManyToMany(targetEntity: Estructura::class, mappedBy: 'grupos')]
+    #[ORM\ManyToMany(targetEntity: Estructura::class, mappedBy: 'grupos', cascade: ['persist'])]
     private Collection $estructuras;
 
     #[Pure] public function __construct()

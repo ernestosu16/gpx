@@ -139,6 +139,8 @@ abstract class _CrudController_ extends _Controller_
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $entity = $form->getData();
+            $this->getDoctrine()->getManager()->persist($entity);
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute($settings['routes'][self::INDEX], [], Response::HTTP_SEE_OTHER);
