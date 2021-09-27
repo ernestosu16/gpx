@@ -52,6 +52,17 @@ class Pais extends _Entity_
         return $this;
     }
 
+    public function getCodigoAduana(): ?string
+    {
+        return $this->codigo_aduana;
+    }
+
+    public function setCodigoAduana(string $codigo_aduana): self
+    {
+        $this->codigo_aduana = u($codigo_aduana)->upper();
+        return $this;
+    }
+
     function getHabilitado(): bool
     {
         return $this->habilitado;
