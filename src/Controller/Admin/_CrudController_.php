@@ -99,18 +99,6 @@ abstract class _CrudController_ extends _Controller_
     public function index(): Response
     {
         $settings = $this->settings();
-
-
-        $array = $this->getDoctrine()->getRepository(static::entity())->findAll();
-        $this->get('serializer')->encode($array[0],'json');
-        foreach ($array as $v){
-
-            dump($this->get('serializer')->encode($v,'json'));
-        }
-//        $yaml = Yaml::dump((\stdClass::array)$array[0]);
-//dump($yaml);exit;
-//        file_put_contents('/path/to/file.yaml', $yaml);
-
         return $this->render($settings['templates'][self::INDEX], [
             'settings' => $settings,
             'collection' => $this->getDoctrine()->getRepository(static::entity())->findAll(),

@@ -4,7 +4,6 @@ namespace App\Form\Admin;
 
 use App\Entity\Estructura;
 use App\Entity\Localizacion;
-use App\Entity\LocalizacionTipo;
 use App\Repository\LocalizacionRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -53,7 +52,14 @@ class EstructuraType extends AbstractType
                 'label_attr' => ['class' => 'col-sm-2 control-label'],
             ])
             ->add('tipos', null, [
+                'required' => true,
                 'label' => 'tipos',
+                'attr' => ['class' => 'form-control input-sm select2'],
+                'label_attr' => ['class' => 'col-sm-2 control-label'],
+            ])
+            ->add('grupos', null, [
+                'required' => true,
+                'label' => 'grupos',
                 'attr' => ['class' => 'form-control input-sm select2'],
                 'label_attr' => ['class' => 'col-sm-2 control-label'],
             ])

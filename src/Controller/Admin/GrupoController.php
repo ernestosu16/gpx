@@ -2,14 +2,12 @@
 
 namespace App\Controller\Admin;
 
-use App\Config\Data\Nomenclador\GrupoData;
 use App\Entity\Grupo;
 use App\Form\Admin\GrupoType;
-use JetBrains\PhpStorm\ArrayShape;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route(path: '/grupo', name: 'admin_grupo')]
-final class GrupoController extends CrudNomencladorController
+final class GrupoController extends _CrudController_
 {
     protected static function entity(): string
     {
@@ -20,18 +18,14 @@ final class GrupoController extends CrudNomencladorController
     {
         return GrupoType::class;
     }
+    protected static function fields(): array
+    {
+        return ['nombre','descripcion', 'parametros','habilitado'];
+    }
 
-    #[ArrayShape(['parent' => "\App\Config\Nomenclador\Grupo", 'title' => "string[]", 'routes' => "string[]"])]
     protected static function config(): array
     {
         return [
-            'parent' => GrupoData::newInstance(),
-            'title' => [
-                self::INDEX => 'Lista de grupos',
-                self::NEW => 'Nuevo grupo',
-                self::EDIT => 'Editar grupo',
-                self::SHOW => 'Mostrar grupo',
-            ],
             'routes' => [
                 self::INDEX => 'admin_grupo_index',
                 self::NEW => 'admin_grupo_new',

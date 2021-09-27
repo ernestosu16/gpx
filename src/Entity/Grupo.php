@@ -17,10 +17,14 @@ class Grupo extends Nomenclador
     #[ORM\InverseJoinColumn(onDelete: 'CASCADE')]
     private Collection $menus;
 
+    #[ORM\ManyToMany(targetEntity: Estructura::class, mappedBy: 'grupos')]
+    private Collection $estructuras;
+
     #[Pure] public function __construct()
     {
         parent::__construct();
         $this->menus = new ArrayCollection();
+        $this->estructuras = new ArrayCollection();
     }
 
     /**
@@ -55,6 +59,33 @@ class Grupo extends Nomenclador
     public function setRoles(array $roles): self
     {
         $this->setParametro('roles', $roles);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Estructura[]
+     */
+    public function getEstructuras(): Collection
+    {
+        return $this->estructuras;
+    }
+
+    public function addEstructura(Estructura $estructura): self
+    {
+        if (!$this->estructuras->contains($estructura)) {
+            $this->estructuras[] = $estructura;
+            $estructura->addGrupo($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEstructura(Estructura $estructura): self
+    {
+        if ($this->estructuras->removeElement($estructura)) {
+            $estructura->removeGrupo($this);
+        }
 
         return $this;
     }

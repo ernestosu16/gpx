@@ -45,6 +45,12 @@ class Estructura extends BaseNestedTree
     #[ORM\JoinTable(name: 'estructura_tipo_asignado')]
     private Collection $tipos;
 
+    #[ORM\ManyToMany(targetEntity: Grupo::class, inversedBy: 'estructuras')]
+    #[ORM\JoinTable(name: 'estructura_grupo_asignado')]
+    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(onDelete: 'CASCADE')]
+    private Collection $grupos;
+
     #[ORM\Column(type: 'string', length: 100, unique: true)]
     #[Assert\NotBlank]
     #[Assert\Regex(pattern: RegexUtil::CODIGO)]
@@ -76,6 +82,7 @@ class Estructura extends BaseNestedTree
         $this->children = new ArrayCollection();
         $this->tipos = new ArrayCollection();
         $this->localizaciones = new ArrayCollection();
+        $this->grupos = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -286,6 +293,46 @@ class Estructura extends BaseNestedTree
             throw new ORMException('La localización no es de tipo Municipio');
 
         $this->addLocalizacion($municipio);
+        return $this;
+    }
+
+    public function addLocalizacione(Localizacion $localizacione): self
+    {
+        if (!$this->localizaciones->contains($localizacione)) {
+            $this->localizaciones[] = $localizacione;
+        }
+
+        return $this;
+    }
+
+    public function removeLocalizacione(Localizacion $localizacione): self
+    {
+        $this->localizaciones->removeElement($localizacione);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Grupo[]
+     */
+    public function getGrupos(): Collection
+    {
+        return $this->grupos;
+    }
+
+    public function addGrupo(Grupo $grupo): self
+    {
+        if (!$this->grupos->contains($grupo)) {
+            $this->grupos[] = $grupo;
+        }
+
+        return $this;
+    }
+
+    public function removeGrupo(Grupo $grupo): self
+    {
+        $this->grupos->removeElement($grupo);
+
         return $this;
     }
 }

@@ -3,6 +3,9 @@ grupos:
         descripcion: 'Administrador principal del sistema'
         roles: [ 'ROLE_ADMIN' ]
         codigo: 'GRUPO_ADMINISTRADOR'
+    -   nombre: 'Administrador de los trabajadores'
+        descripcion: 'Administra los trabajadores subordinados'
+        codigo: 'GRUPO_ADMINISTRADOR_TRABAJADOR'
     -   nombre: 'Recepción de Paquetería'
         descripcion: ''
         codigo: 'GRUPO_RECEPCION_DE_PAQUETERIA'

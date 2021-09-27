@@ -2,6 +2,7 @@
 
 namespace App\Form\Admin;
 
+use App\Entity\Estructura;
 use App\Entity\Grupo;
 use App\Entity\Menu;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -34,6 +35,22 @@ class GrupoType extends AbstractType
                 'label_attr' => ['class' => 'col-sm-2 control-label'],
                 'attr' => ['class' => 'form-control input-sm'],
             ])
+            ->add('estructuras', EntityType::class, [
+                'class' => Estructura::class,
+                'required' => false,
+                'multiple' => true,
+                'attr' => ['class' => 'form-control input-sm select2'],
+                'label' => 'estructuras',
+                'label_attr' => ['class' => 'col-sm-2 control-label'],
+            ])
+            ->add('menus', EntityType::class, [
+                'class' => Menu::class,
+                'required' => false,
+                'multiple' => true,
+                'attr' => ['class' => 'form-control input-sm select2'],
+                'label' => 'menu',
+                'label_attr' => ['class' => 'col-sm-2 control-label'],
+            ])
             ->add('roles', ChoiceType::class, [
                 'required' => false,
                 'multiple' => true,
@@ -44,14 +61,6 @@ class GrupoType extends AbstractType
                 'label' => 'roles',
                 'label_attr' => ['class' => 'col-sm-2 control-label'],
                 'attr' => ['class' => 'form-control input-sm select2'],
-            ])
-            ->add('menus', EntityType::class, [
-                'class' => Menu::class,
-                'required' => false,
-                'multiple' => true,
-                'attr' => ['class' => 'form-control input-sm select2'],
-                'label' => 'menu',
-                'label_attr' => ['class' => 'col-sm-2 control-label'],
             ])
             ->add('habilitado', null, [
                 'label' => 'habilitado',
