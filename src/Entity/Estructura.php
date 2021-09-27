@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Traits\VersionTrait;
 use App\Repository\EstructuraRepository;
 use App\Utils\RegexUtil;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -19,6 +20,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(columns: ['root_id'], name: 'IDX_ROOT_ID')]
 class Estructura extends BaseNestedTree
 {
+    use VersionTrait;
+
     /** @Gedmo\TreeRoot() */
     #[ORM\ManyToOne(targetEntity: Estructura::class)]
     #[ORM\JoinColumn(onDelete: 'CASCADE')]

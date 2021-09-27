@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Traits\VersionTrait;
 use App\Repository\LocalizacionRepository;
 use App\Utils\RegexUtil;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -20,6 +21,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(columns: ['localizacion_tipo_id'], name: 'IDX_LOCALIZACION_TIPO_ID')]
 class Localizacion extends BaseNestedTree
 {
+    use VersionTrait;
+
     /** @Gedmo\TreeRoot() */
     #[ORM\ManyToOne(targetEntity: Localizacion::class)]
     #[ORM\JoinColumn(onDelete: 'CASCADE')]

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Traits\VersionTrait;
 use App\Repository\NomencladorRepository;
 use App\Utils\RegexUtil;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -31,6 +32,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 ])]
 class Nomenclador extends BaseNestedTree
 {
+    use VersionTrait;
+
     /** @Gedmo\TreeRoot() */
     #[ORM\ManyToOne(targetEntity: Nomenclador::class)]
     #[ORM\JoinColumn(onDelete: 'CASCADE')]
