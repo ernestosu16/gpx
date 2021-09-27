@@ -27,7 +27,7 @@ menu:
             -   codigo: 'ADMIN_PAIS'
                 nombre: 'Países'
                 route: 'admin_pais_index'
-                icon: 'fa fa-map'
+                icon: 'fa fa-globe'
 
             -   codigo: 'ADMIN_LOCALIZACION'
                 nombre: 'Localizaciones'
