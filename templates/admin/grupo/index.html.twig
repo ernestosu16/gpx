@@ -21,18 +21,20 @@
                 <td>{{ grupo.nombre }}</td>
                 <td>{{ grupo.descripcion }}</td>
                 <td>
-                    <ul class="list-inline inline">
+                    <ul class="inline">
                         {% for rol in grupo.roles %}
                             <li>{{ rol }}</li>
                         {% endfor %}
                     </ul>
                 </td>
                 <td>
-                    <ul class="inline">
-                        {% for menu in grupo.menus %}
-                            <li>{{ menu }}</li>
-                        {% endfor %}
-                    </ul>
+                    <div class="article">
+                        <ul class="inline ">
+                            {% for menu in grupo.menus %}
+                                <li>{{ menu }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
                 </td>
                 <td>
                     <ul class="inline">
@@ -59,4 +61,16 @@
     </table>
     <a class="btn btn-sm btn-primary" href="{{ path('admin_grupo_new') }}">
         Nueva estructura</a>
+{% endblock %}
+{% block javascripts %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.article').readmore({
+                collapsedHeight: 0,
+                moreLink: '<a href="#">Ver más...</a>',
+                lessLink: '<a href="#">Ver menos</a>',
+                embedCSS: true,
+            });
+        });
+    </script>
 {% endblock %}

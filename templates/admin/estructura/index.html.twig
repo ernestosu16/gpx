@@ -24,11 +24,13 @@
                 <td>{{ estructura.municipio }}</td>
                 <td>{{ estructura.parent }}</td>
                 <td>
-                    <ul class="inline">
-                        {% for grupo in estructura.grupos %}
-                            <li>{{ grupo }}</li>
-                        {% endfor %}
-                    </ul>
+                    <div class="article">
+                        <ul class="inline">
+                            {% for grupo in estructura.grupos %}
+                                <li>{{ grupo }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
                 </td>
                 <td>{{ estructura.habilitado ? 'si'|trans([],'admin') : 'no'|trans([],'admin') }}</td>
                 <td>
@@ -48,4 +50,16 @@
     </table>
     <a class="btn btn-sm btn-primary" href="{{ path('admin_estructura_new') }}">
         Nueva estructura</a>
+{% endblock %}
+{% block javascripts %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.article').readmore({
+                collapsedHeight: 0,
+                moreLink: '<a href="#">Ver más...</a>',
+                lessLink: '<a href="#">Ver menos</a>',
+                embedCSS: true,
+            });
+        });
+    </script>
 {% endblock %}
