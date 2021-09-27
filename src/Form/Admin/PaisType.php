@@ -18,20 +18,12 @@ class PaisType extends AbstractType
                 'label' => 'nombre',
                 'attr' => ['autocomplete' => 'off', 'class' => 'form-control input-sm'],
             ])
-            ->add('codigo_aduana', TextType::class, [
-                'label' => 'codigo_aduana',
-                'attr' => ['autocomplete' => 'off', 'class' => 'form-control input-sm'],
-            ])
-            ->add('codigo_operador', TextType::class, [
-                'label' => 'codigo_operador',
-                'attr' => ['autocomplete' => 'off', 'class' => 'form-control input-sm'],
-            ])
-            ->add('identificador', TextType::class, [
-                'label' => 'identificador',
-                'attr' => ['autocomplete' => 'off', 'class' => 'form-control input-sm'],
-            ])
             ->add('iata', TextType::class, [
                 'label' => 'iata',
+                'attr' => ['autocomplete' => 'off', 'class' => 'form-control input-sm'],
+            ])
+            ->add('codigo_aduana', TextType::class, [
+                'label' => 'codigo_aduana',
                 'attr' => ['autocomplete' => 'off', 'class' => 'form-control input-sm'],
             ])
             ->add('habilitado', CheckboxType::class, [
