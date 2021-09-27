@@ -19,14 +19,15 @@ final class GrupoController extends _CrudController_
         return GrupoType::class;
     }
 
-    protected static function fields(): array
-    {
-        return ['nombre', 'descripcion', 'parametros', 'estructuras', 'habilitado'];
-    }
-
     protected static function config(): array
     {
         return [
+            'titles' => [
+                self::INDEX => 'Listado de los grupos',
+            ],
+            'templates' => [
+                self::INDEX => 'admin/grupo/index.html.twig',
+            ],
             'routes' => [
                 self::INDEX => 'admin_grupo_index',
                 self::NEW => 'admin_grupo_new',

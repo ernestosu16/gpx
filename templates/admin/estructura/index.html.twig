@@ -1,6 +1,6 @@
 {% extends 'homer-theme/layout.html.twig' %}
-{% block title %}Listado de las estructuras{% endblock %}
-{% block panel_title %}Listado de las estructuras{% endblock %}
+{% block title %}{{ settings.titles.index }}{% endblock %}
+{% block panel_title %}{{ settings.titles.index }}{% endblock %}
 {% block panel_body %}
     <table class="table table-hover table-bordered table-striped">
         <thead>
@@ -10,6 +10,7 @@
             <th>{{ 'provincia'|trans([],'admin') }}</th>
             <th>{{ 'municipio'|trans([],'admin') }}</th>
             <th>{{ 'pertenece'|trans([],'admin') }}</th>
+            <th>{{ 'grupos'|trans([],'admin') }}</th>
             <th>{{ 'habilitado'|trans([],'admin') }}</th>
             <th></th>
         </tr>
@@ -22,6 +23,13 @@
                 <td>{{ estructura.municipio.parent }}</td>
                 <td>{{ estructura.municipio }}</td>
                 <td>{{ estructura.parent }}</td>
+                <td>
+                    <ul class="inline">
+                        {% for grupo in estructura.grupos %}
+                            <li>{{ grupo }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
                 <td>{{ estructura.habilitado ? 'si'|trans([],'admin') : 'no'|trans([],'admin') }}</td>
                 <td>
 

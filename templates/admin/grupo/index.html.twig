@@ -1,0 +1,62 @@
+{% extends 'homer-theme/layout.html.twig' %}
+{% block title %}{{ settings.titles.index }}{% endblock %}
+{% block panel_title %}{{ settings.titles.index }}{% endblock %}
+{% block panel_body %}
+    <table class="table table-hover table-bordered table-striped">
+        <thead>
+        <tr>
+            <th>{{ 'nombre'|trans([],'admin') }}</th>
+            <th>{{ 'descripcion'|trans([],'admin') }}</th>
+            <th>{{ 'roles'|trans([],'admin') }}</th>
+            <th>{{ 'menu'|trans([],'admin') }}</th>
+            <th>{{ 'estructuras'|trans([],'admin') }}</th>
+            <th>{{ 'habilitado'|trans([],'admin') }}</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {# @var grupo \App\Entity\Grupo #}
+        {% for grupo in collection %}
+            <tr>
+                <td>{{ grupo.nombre }}</td>
+                <td>{{ grupo.descripcion }}</td>
+                <td>
+                    <ul class="list-inline inline">
+                        {% for rol in grupo.roles %}
+                            <li>{{ rol }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+                <td>
+                    <ul class="inline">
+                        {% for menu in grupo.menus %}
+                            <li>{{ menu }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+                <td>
+                    <ul class="inline">
+                        {% for estructura in grupo.estructuras %}
+                            <li>{{ estructura }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+                <td>{{ grupo.habilitado ? 'si'|trans([],'admin') : 'no'|trans([],'admin') }}</td>
+                <td>
+
+                    <a class="btn btn-xs btn-default" href="{{ path('admin_grupo_edit', {'id': grupo.id}) }}"
+                       title="{{ 'editar'|trans([],'admin') }}">
+                        <i class="fa fa-pencil"></i>
+                    </a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">{{ 'No se encontraron registros'|trans({},'admin') }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <a class="btn btn-sm btn-primary" href="{{ path('admin_grupo_new') }}">
+        Nueva estructura</a>
+{% endblock %}
