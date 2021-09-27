@@ -9,10 +9,16 @@ use App\Command\BaseCommandInterface;
 use App\Config\Nomenclador\_Nomenclador_;
 use App\Entity\Nomenclador;
 use Doctrine\ORM\ORMException;
+use Symfony\Component\Config\Util\XmlUtils;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use phpseclib3\Net\SFTP;
 use phpseclib3\Net\SSH2;
+use Symfony\Component\Finder\Finder;
+
+
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\Translation\Exception\InvalidResourceException;
 
 final class ImportarManifiestoEnvioCommand extends BaseCommand implements BaseCommandInterface
 {
@@ -59,6 +65,7 @@ final class ImportarManifiestoEnvioCommand extends BaseCommand implements BaseCo
     {
         $ftpConfi = $this->getFTPConfi();
 
+        $dir = "/app/public/download/envioManifiesto";
         //dump($ftpConfi);exit;
 
         //$sftp = new SFTP($ftpConfi['host'],21);
@@ -75,6 +82,73 @@ final class ImportarManifiestoEnvioCommand extends BaseCommand implements BaseCo
             throw new \Exception('Login failed');
         }*/
 
-        dump('ok');exit;
+
+        $finder = new Finder();
+        // find all files in the current directory
+        //$finder->files()->in($dir);
+        $finder->depth(0);
+
+        $directories = $finder->directories()->in($dir);
+
+        // check if there are any search results
+        if ($directories->hasResults()) {
+            foreach ($directories as $directory) {
+                $absoluteDirectoriesPath = $directory->getRealPath();
+                $directoriesNameWithExtension = $directory->getRelativePathname();
+
+                //dump($absoluteDirectoriesPath);
+                //dump($directoriesNameWithExtension);
+
+                $files = $finder->files()->in($absoluteDirectoriesPath)->name(['*.xml','*.XML']);
+                if($files->hasResults()){
+                    foreach ($files as $file) {
+                        $absoluteFilePath = $file->getRealPath();
+                        $fileNameWithExtension = $file->getRelativePathname();
+
+                        $this->readManifiestoXML($absoluteFilePath, $fileNameWithExtension);
+
+                        //dump($fileNameWithExtension);
+                    }
+                }
+            }
+        }
+
+        exit;
+
+
+
+//        try {
+//            $dom = XmlUtils::loadFile($file);
+//        } catch (\InvalidArgumentException $e) {
+//            throw new InvalidResourceException(sprintf('Unable to load "%s": %s', $file, $e->getMessage()), $e->getCode(), $e);
+//        }
+
+        //XmlUtils::loadFile("/app/public/download/Manifiesto202108080340SA.xml");
+
+//        $envios = $dom->getElementsByTagName( "envio");
+//        foreach ($envios as $envio) {
+//            //echo $envio->nodeValue, PHP_EOL;
+//            //dump($item++);
+//        }
+
+        exit;
+        //dump();exit;
+    }
+
+    protected function readManifiestoXML(string $absoluteFilePath, string $fileNameWithExtension){
+        //libxml_use_internal_errors(true);
+        $xml = simplexml_load_file($absoluteFilePath);
+        if ($xml === false) {
+            echo "Error cargando XML\n";
+            //throw new \Exception('Error cargando el fichero ');
+            /*foreach(libxml_get_errors() as $error) {
+                echo "\t", $error->message;
+            }*/
+        }else{
+            $guia = $xml->noGA;
+            $agencia = $xml->agenciaOrigen;
+            $no_vuelo = $xml->noVuelo;
+        }
+        dump($xml);exit;
     }
 }

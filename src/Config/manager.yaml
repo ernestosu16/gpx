@@ -22,3 +22,8 @@ services:
         parent: App\Manager\_Manager_
         arguments: [ '%kernel.project_dir%/src/Config/Fixtures' ]
         public: true
+
+    app.manager.envio_manifiesto:
+        class: App\Manager\EnvioManifiestoManager
+        parent: App\Manager\_Manager_
+        public: true

@@ -3,8 +3,10 @@
 
 namespace App\Manager;
 
+use App\Entity\EnvioManifiesto;
 
-class EnvioManifiestoManager
+class EnvioManifiestoManager extends _Manager_
 {
+
 
 }
