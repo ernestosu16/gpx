@@ -9,7 +9,7 @@ use Twig\TwigFunction;
 class CallStaticExtension extends AbstractExtension
 {
 
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new TwigFunction('callstatic', [$this, 'callStatic']),

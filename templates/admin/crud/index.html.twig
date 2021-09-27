@@ -1,0 +1,39 @@
+{% extends 'homer-theme/layout.html.twig' %}
+{% block title %}{{ settings.titles.index|trans([],settings.translation_domain) }}{% endblock %}
+{% block panel_title %}{{ settings.titles.index|trans([],settings.translation_domain) }}{% endblock %}
+{% block panel_body %}
+    <table class="table table-hover table-bordered table-striped">
+        <thead>
+        <tr>
+            {% for field in settings.fields %}
+                <th>{{ field|trans([],settings.translation_domain) }}</th>
+            {% endfor %}
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for  row in collection %}
+            <tr>
+                {% for field in settings.fields %}
+                    <td>{{ callField(row,field) }}</td>
+                {% endfor %}
+                <td>
+                    <a class="btn btn-xs btn-default" href="{{ path(settings.routes.edit, {'id': row.id}) }}"
+                       title="{{ 'editar'|trans([],settings.translation_domain) }}">
+                        <i class="fa fa-pencil"></i>
+                    </a>
+                </td>
+            </tr>
+        {% else %}
+            {% set count = field|length + 1 %}
+            <tr>
+                <td colspan="{{ count }}">{{ 'No se encontraron registros'|trans([],settings.translation_domain) }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a class="btn btn-sm btn-primary" href="{{ path(settings.routes.new) }}">
+        {{ 'nuevo'|trans([],settings.translation_domain) }}
+    </a>
+{% endblock %}
