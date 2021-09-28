@@ -96,8 +96,9 @@ abstract class _CrudController_ extends _Controller_
     }
 
     #[Route('/', name: '_index', methods: ['GET'])]
-    public function index(): Response
+    public function index(Request $request): Response
     {
+        $this->denyAccessUnlessGranted([], $request);
         $settings = $this->settings();
         return $this->render($settings['templates'][self::INDEX], [
             'settings' => $settings,
@@ -109,6 +110,7 @@ abstract class _CrudController_ extends _Controller_
     #[Route('/new', name: '_new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
+        $this->denyAccessUnlessGranted([], $request);
         $settings = $this->settings();
         $class = static::entity();
         $entity = new $class();
@@ -133,6 +135,7 @@ abstract class _CrudController_ extends _Controller_
     #[Route('/{id}/edit', name: '_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, string $id): Response
     {
+        $this->denyAccessUnlessGranted([], $request);
         $entity = $this->getDoctrine()->getRepository(static::entity())->find($id);
         $settings = $this->settings();
         $form = $this->createForm(static::formType(), $entity);
@@ -155,6 +158,7 @@ abstract class _CrudController_ extends _Controller_
     #[Route('/{id}', name: '_delete', methods: ['POST'])]
     public function delete(Request $request, $id): Response
     {
+        $this->denyAccessUnlessGranted([], $request);
         $entity = $this->getDoctrine()->getRepository(static::entity())->find($id);
         if ($this->isCsrfTokenValid('delete' . $entity->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();

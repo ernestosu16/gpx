@@ -1,6 +1,7 @@
 doctrine:
     orm:
-        auto_generate_proxy_classes: false
+        # TODO Revisar esta opción ya que viene desactivada por defecto
+        auto_generate_proxy_classes: true
         query_cache_driver:
             type: pool
             pool: doctrine.system_cache_pool

@@ -18,11 +18,6 @@ framework:
     php_errors:
         log: true
 
-    cache:
-        pools:
-            doctrine.second_level_cache_pool:
-                adapter: cache.app
-
 when@test:
     framework:
         test: true

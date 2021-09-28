@@ -89,4 +89,16 @@ class Grupo extends Nomenclador
 
         return $this;
     }
+
+    public function getAccesos(): array
+    {
+        return $this->hasParametro('accesos') ? $this?->getParametro('accesos') : [];
+    }
+
+    public function setAccesos(array $routes): self
+    {
+        $this->setParametro('accesos', $routes);
+
+        return $this;
+    }
 }

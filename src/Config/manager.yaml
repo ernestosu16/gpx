@@ -22,3 +22,8 @@ services:
         parent: App\Manager\_Manager_
         arguments: [ '%kernel.project_dir%/src/Config/Fixtures' ]
         public: true
+
+    app.manager.grupo:
+        class: App\Manager\GrupoManager
+        arguments: [ '%security.role_hierarchy.roles%' ]
+        public: true

@@ -4,28 +4,15 @@ namespace App\Menu;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Menu\FactoryInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 abstract class _Menu_
 {
-    protected ContainerInterface $container;
     protected FactoryInterface $factory;
     protected EntityManagerInterface $entityManager;
-
-    public function setContainer(ContainerInterface $container): void
-    {
-        $this->container = $container;
-    }
-
-    public function getContainer(): ContainerInterface
-    {
-        return $this->container;
-    }
-
-    public function getFactory(): FactoryInterface
-    {
-        return $this->factory;
-    }
+    protected RequestStack $requestStack;
+    protected TokenStorageInterface $storage;
 
     /**
      * @param FactoryInterface $factory
@@ -40,13 +27,15 @@ abstract class _Menu_
         $this->entityManager = $entityManager;
     }
 
-    public function getEntityManager(): EntityManagerInterface
+    public function setRequestStack(RequestStack $requestStack): _Menu_
     {
-        return $this->entityManager;
+        $this->requestStack = $requestStack;
+        return $this;
     }
 
-    public function get(string $id, int $invalidBehavior = ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE): ?object
+    public function setStorage(TokenStorageInterface $storage): _Menu_
     {
-        return $this->container->get($id, $invalidBehavior);
+        $this->storage = $storage;
+        return $this;
     }
 }

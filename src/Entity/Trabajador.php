@@ -122,14 +122,14 @@ class Trabajador extends _Entity_
     }
 
     /**
-     * @return Collection|Nomenclador[]
+     * @return Collection|Grupo[]
      */
     public function getGrupos(): Collection
     {
         return $this->grupos;
     }
 
-    public function addGrupo(Nomenclador $grupo): self
+    public function addGrupo(Grupo $grupo): self
     {
         if (!$this->grupos->contains($grupo)) {
             $this->grupos[] = $grupo;
@@ -138,7 +138,7 @@ class Trabajador extends _Entity_
         return $this;
     }
 
-    public function removeGrupo(Nomenclador $grupo): self
+    public function removeGrupo(Grupo $grupo): self
     {
         $this->grupos->removeElement($grupo);
 

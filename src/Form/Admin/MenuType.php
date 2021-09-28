@@ -80,7 +80,7 @@ class MenuType extends AbstractType
                 'required' => false,
             ]);
 
-        $builder = $this->setModelTransformer($builder);
+        $this->setModelTransformer($builder);
     }
 
     public function configureOptions(OptionsResolver $resolver)
@@ -92,7 +92,7 @@ class MenuType extends AbstractType
         ]);
     }
 
-    private function setModelTransformer(FormBuilderInterface $builder): FormBuilderInterface
+    private function setModelTransformer(FormBuilderInterface $builder): void
     {
         $builder->get('route')->addModelTransformer(new CallbackTransformer(
             function ($key): ?Route {
@@ -106,7 +106,5 @@ class MenuType extends AbstractType
                 return $routeManager->lookForTheKeyOfARoute($route?->getPath());
             }
         ));
-
-        return $builder;
     }
 }

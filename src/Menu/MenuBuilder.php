@@ -6,16 +6,15 @@ use App\Config\Data\Nomenclador\MenuData;
 use App\Entity\Menu;
 use Exception;
 use Knp\Menu\ItemInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
 
 final class MenuBuilder extends _Menu_
 {
     /**
      * @throws Exception
      */
-    public function createMainMenu(RequestStack $requestStack): ItemInterface
+    public function createMainMenu(): ItemInterface
     {
-        $factory = $this->getFactory();
+        $factory = $this->factory;
         $root = $this->getRoot();
 
         if (!$root || !$root->getChildren()->count())
@@ -42,10 +41,7 @@ final class MenuBuilder extends _Menu_
 
     private function getRoot(): ?Menu
     {
-        return $this
-            ->getEntityManager()
-            ->getRepository(Menu::class)
-            ->findOneByCodigo(MenuData::code());
+        return $this->entityManager->getRepository(Menu::class)->findOneByCodigo(MenuData::code());
     }
 
     /**
@@ -75,10 +71,8 @@ final class MenuBuilder extends _Menu_
                 $this->createItem($root, $child);
             }
         } else {
-            /** @var RequestStack $requestStack */
-            $requestStack = $this->get('request_stack');
 
-            if ($requestStack->getCurrentRequest()->get('_route') === $menu->getRoute()) {
+            if ($this->requestStack->getCurrentRequest()->get('_route') === $menu->getRoute()) {
                 $this->itemClassActive($item);
             }
 
@@ -89,7 +83,7 @@ final class MenuBuilder extends _Menu_
                 'route' => $menu->getRoute() ?? null,
                 'label' => $label,
                 'extras' => ['safe_label' => true, 'translation_domain' => false],
-                'attributes' => ['class' => $requestStack->getCurrentRequest()->get('_route') === $menu->getRoute() ? 'active' : ''],
+                'attributes' => ['class' => $this->requestStack->getCurrentRequest()->get('_route') === $menu->getRoute() ? 'active' : ''],
             ]);
         }
 

@@ -16,18 +16,23 @@ class PaisType extends AbstractType
         $builder
             ->add('nombre', TextType::class, [
                 'label' => 'nombre',
+                'label_attr' => ['class' => 'col-sm-2 control-label'],
                 'attr' => ['autocomplete' => 'off', 'class' => 'form-control input-sm'],
             ])
             ->add('iata', TextType::class, [
                 'label' => 'iata',
+                'label_attr' => ['class' => 'col-sm-2 control-label'],
                 'attr' => ['autocomplete' => 'off', 'class' => 'form-control input-sm'],
             ])
             ->add('codigo_aduana', TextType::class, [
                 'label' => 'codigo_aduana',
+                'label_attr' => ['class' => 'col-sm-2 control-label'],
                 'attr' => ['autocomplete' => 'off', 'class' => 'form-control input-sm'],
             ])
             ->add('habilitado', CheckboxType::class, [
                 'label' => 'habilitado',
+                'label_attr' => ['class' => 'col-sm-2 control-label'],
+                'attr' => ['autocomplete' => 'off', 'class' => 'checkbox'],
             ]);
     }
 

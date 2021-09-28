@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Controller\_Controller_;
 use App\Entity\Trabajador;
 use App\Form\Admin\TrabajadorType;
+use App\Security\Voter\TrabajadorVoter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -13,11 +14,13 @@ use Symfony\Component\Routing\Annotation\Route;
 final class TrabajadorController extends _Controller_
 {
     #[Route('/', name: 'index', methods: ['GET'])]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         $trabajadors = $this->getDoctrine()
             ->getRepository(Trabajador::class)
             ->findAll();
+
+        $this->denyAccessUnlessGranted([], $request);
 
         return $this->render('admin/trabajador/index.html.twig', [
             'trabajadors' => $trabajadors,
@@ -30,6 +33,8 @@ final class TrabajadorController extends _Controller_
         $trabajador = new Trabajador();
         $form = $this->createForm(TrabajadorType::class, $trabajador);
         $form->handleRequest($request);
+
+        $this->denyAccessUnlessGranted([], $request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
@@ -46,8 +51,9 @@ final class TrabajadorController extends _Controller_
     }
 
     #[Route('/{trabajador}', name: 'show', methods: ['GET'])]
-    public function show(Trabajador $trabajador): Response
+    public function show(Request $request, Trabajador $trabajador): Response
     {
+        $this->denyAccessUnlessGranted([], $request);
         return $this->render('admin/trabajador/show.html.twig', [
             'trabajador' => $trabajador,
         ]);
@@ -56,6 +62,8 @@ final class TrabajadorController extends _Controller_
     #[Route('/{trabajador}/edit', name: 'edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Trabajador $trabajador): Response
     {
+        $this->denyAccessUnlessGranted([], $request);
+
         $form = $this->createForm(TrabajadorType::class, $trabajador);
         $form->handleRequest($request);
 
@@ -74,6 +82,8 @@ final class TrabajadorController extends _Controller_
     #[Route('/{trabajador}', name: 'delete', methods: ['POST'])]
     public function delete(Request $request, Trabajador $trabajador): Response
     {
+        $this->denyAccessUnlessGranted([], $request);
+
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->remove($trabajador);
         $entityManager->flush();

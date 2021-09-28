@@ -1,0 +1,18 @@
+{% extends 'homer-theme/base.html.twig' %}
+{% block title %}Error 403{% endblock %}
+{% block bodyClass %}blank{% endblock %}
+{% block layout %}
+    <!--[if lt IE 7]>
+    <p class="alert alert-danger">You are using an <strong>outdated</strong> browser. Please <a
+            href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+    <div class="error-container">
+        <i class="pe-7s-way text-success big-icon"></i>
+        <h1>403</h1>
+        <strong>Acceso denegado</strong>
+        <p>
+            Lo sentimos, no tiene acceso a esta opción de sistema.
+        </p>
+        <a href="javascript: history.go(-1)" class="btn btn-xs btn-success">Volver atrás</a>
+    </div>
+{% endblock %}
