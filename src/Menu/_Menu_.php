@@ -2,17 +2,20 @@
 
 namespace App\Menu;
 
+use App\Entity\Trabajador;
+use App\Entity\TrabajadorCredencial;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Menu\FactoryInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 abstract class _Menu_
 {
     protected FactoryInterface $factory;
     protected EntityManagerInterface $entityManager;
     protected RequestStack $requestStack;
-    protected TokenStorageInterface $storage;
+    protected TokenStorageInterface $tokenStorage;
 
     /**
      * @param FactoryInterface $factory
@@ -33,9 +36,19 @@ abstract class _Menu_
         return $this;
     }
 
-    public function setStorage(TokenStorageInterface $storage): _Menu_
+    public function setStorage(TokenStorageInterface $tokenStorage): _Menu_
     {
-        $this->storage = $storage;
+        $this->tokenStorage = $tokenStorage;
         return $this;
+    }
+
+    protected function getCredencial(): TrabajadorCredencial|UserInterface
+    {
+        return $this->tokenStorage->getToken()->getUser();
+    }
+
+    protected function getTrabajador(): ?Trabajador
+    {
+        return $this->getCredencial()->getTrabajador();
     }
 }

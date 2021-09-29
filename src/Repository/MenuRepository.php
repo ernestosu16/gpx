@@ -16,4 +16,21 @@ final class MenuRepository extends _NestedTreeRepository_
     {
         return Menu::class;
     }
+
+    public function buildTreeHierarchyEntity(array $nodes): ?Menu
+    {
+        /** @var Menu $tree */
+        $tree = $this->childrenHierarchyEntity();
+        if (!$tree)
+            return null;
+
+        $listNodes = [];
+        foreach ($nodes as $item) {
+            $listNodes = array_merge($listNodes, $this->getPath($item));
+        }
+
+        /** @var Menu $menus */
+        $menus = $this->buildTreeEntity(array_unique($listNodes));
+        return $menus;
+    }
 }

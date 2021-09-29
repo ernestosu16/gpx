@@ -4,6 +4,7 @@ namespace App\Menu;
 
 use App\Config\Data\Nomenclador\MenuData;
 use App\Entity\Menu;
+use App\Repository\MenuRepository;
 use Exception;
 use Knp\Menu\ItemInterface;
 
@@ -41,7 +42,14 @@ final class MenuBuilder extends _Menu_
 
     private function getRoot(): ?Menu
     {
-        return $this->entityManager->getRepository(Menu::class)->findOneByCodigo(MenuData::code());
+        /** @var MenuRepository $repository */
+        $repository = $this->entityManager->getRepository(Menu::class);
+
+        if (in_array('ROLE_ADMIN', $this->getCredencial()->getRoles()))
+            return $repository->findOneByCodigo(MenuData::code());
+
+
+        return $repository->buildTreeHierarchyEntity($this->getTrabajador()->getMenus()->toArray());
     }
 
     /**

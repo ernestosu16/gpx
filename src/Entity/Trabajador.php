@@ -184,4 +184,13 @@ class Trabajador extends _Entity_
         $this->setPersona($persona);
         return $this;
     }
+
+    public function getMenus(): Collection
+    {
+        $menus = [];
+        foreach ($this->getGrupos() as $grupo) {
+            $menus = array_merge($menus, $grupo->getMenus()->toArray());
+        }
+        return new ArrayCollection($menus);
+    }
 }
