@@ -94,6 +94,26 @@
     "gedmo/doctrine-extensions": {
         "version": "v3.1.0"
     },
+    "jms/metadata": {
+        "version": "2.5.1"
+    },
+    "jms/serializer": {
+        "version": "3.14.0"
+    },
+    "jms/serializer-bundle": {
+        "version": "3.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "3.0",
+            "ref": "384cec52df45f3bfd46a09930d6960a58872b268"
+        },
+        "files": [
+            "config/packages/dev/jms_serializer.yaml",
+            "config/packages/jms_serializer.yaml",
+            "config/packages/prod/jms_serializer.yaml"
+        ]
+    },
     "knplabs/knp-menu": {
         "version": "v3.2.0"
     },
@@ -112,12 +132,6 @@
     "nikic/php-parser": {
         "version": "v4.12.0"
     },
-    "paragonie/constant_time_encoding": {
-        "version": "v2.4.0"
-    },
-    "paragonie/random_compat": {
-        "version": "v9.99.100"
-    },
     "phar-io/manifest": {
         "version": "2.0.3"
     },
@@ -133,11 +147,11 @@
     "phpdocumentor/type-resolver": {
         "version": "1.4.0"
     },
-    "phpseclib/phpseclib": {
-        "version": "3.0.10"
-    },
     "phpspec/prophecy": {
         "version": "1.13.0"
+    },
+    "phpstan/phpdoc-parser": {
+        "version": "0.5.7"
     },
     "phpunit/php-code-coverage": {
         "version": "9.2.6"

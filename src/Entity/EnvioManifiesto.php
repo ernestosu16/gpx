@@ -4,92 +4,155 @@ namespace App\Entity;
 
 use App\Repository\EnvioManifiestoRepository;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\SerializedName;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: EnvioManifiestoRepository::class)]
 class EnvioManifiesto extends _Entity_
 {
-    #[ORM\Column(type: 'string', length: 15)]
+    #[ORM\Column(type: 'string', length: 15, nullable: false)]
+    #[SerializedName('noEnvio')]
     private string $codigo;
 
-    #[ORM\Column(type: 'float')]
+    #[ORM\Column(type: 'float', nullable: false)]
+    #[SerializedName('peso')]
     private float $peso;
 
-    private \DateTime $fecha;
+    #[ORM\Column(type: 'string', length: 20, nullable: false)]
+    #[SerializedName('fechaImposicion')]
+    private string $fecha;
 
-    #[ORM\Column(type: 'string', length: 20)]
+    #[ORM\Column(type: 'string', length: 20, nullable: false)]
     private string $agencia_origen;
 
-    #[ORM\Column(type: 'string', length: 20)]
+    #[ORM\Column(type: 'string', length: 20, nullable: false)]
     private string $no_guia_aerea;
 
-    #[ORM\Column(type: 'string', length: 20)]
+    #[ORM\Column(type: 'string', length: 20, nullable: false)]
     private string $no_vuelo;
 
-    #[ORM\Column(type: 'string', length: 30)]
+    #[ORM\Column(type: 'string', length: 30, nullable: false)]
+    #[SerializedName('paisOrigen-Destino')]
     private string $pais_origen;
 
-    #[ORM\Column(type: 'string', length: 50)]
+    #[ORM\Column(type: 'string', length: 50, nullable: false)]
+    #[SerializedName('descripcion')]
     private string $descripcion;
 
     #[ORM\ManyToOne(targetEntity: Persona::class)]
-    #[ORM\JoinColumn(name: 'destinatario_id', referencedColumnName: 'id', nullable: false)]
+    #[ORM\JoinColumn(name: 'destinatario_id', referencedColumnName: 'id')]
     private Persona $destinatario;
 
-    #[ORM\Column(type: 'string', length: 5)]
+    #[ORM\Column(type: 'string', length: 5, nullable: false)]
+    #[SerializedName('nacionalidad')]
     private string $nacionalidad_destinatario;
 
-    #[ORM\Column(type: 'datetime')]
-    #[Assert\NotBlank]
-    private \DateTime $fecha_nacimiento_destinatario;
+    #[ORM\Column(type: 'string', length: 20, nullable: false)]
+    //#[Assert\NotBlank]
+    private string $fecha_nacimiento_destinatario;
 
-    #[ORM\Column(type: 'string', length: 15)]
+    #[ORM\Column(type: 'string', length: 15, nullable: false)]
     private string $telefono_destinatario;
 
-    #[ORM\Column(type: 'string', length: 25)]
+    #[ORM\Column(type: 'string', length: 50, nullable: false)]
     private string $calle_destinatario;
 
-    #[ORM\Column(type: 'string', length: 25)]
+    #[ORM\Column(type: 'string', length: 50, nullable: false)]
     private string $entre_calle_destinatario;
 
-    #[ORM\Column(type: 'string', length: 25)]
+    #[ORM\Column(type: 'string', length: 50, nullable: false)]
     private string $y_calle_destinatario;
 
-    #[ORM\Column(type: 'string', length: 10)]
+    #[ORM\Column(type: 'string', length: 10, nullable: false)]
     private string $no_destinatario;
 
-    #[ORM\Column(type: 'string', length: 10)]
+    #[ORM\Column(type: 'string', length: 10, nullable: false)]
     private string $piso_destinatario;
 
-    #[ORM\Column(type: 'string', length: 10)]
+    #[ORM\Column(type: 'string', length: 10, nullable: false)]
     private string $apto_destinatario;
 
-    #[ORM\Column(type: 'string', length: 10)]
+    #[ORM\Column(type: 'string', length: 10, nullable: false)]
     private string $provincia_destinatario;
 
-    #[ORM\Column(type: 'string', length: 10)]
+    #[ORM\Column(type: 'string', length: 10, nullable: false)]
     private string $municipio_destinatario;
 
     #[ORM\ManyToOne(targetEntity: Persona::class)]
     #[ORM\JoinColumn(name: 'remitente_id', referencedColumnName: 'id', nullable: false)]
     private Persona $remitente;
 
-    #[ORM\Column(type: 'string', length: 11)]
+    #[ORM\Column(type: 'string', length: 11, nullable: false)]
     private string $nacionalidad_remitente;
 
-    #[ORM\Column(type: 'datetime')]
-    #[Assert\NotBlank]
-    private \DateTime $fecha_nacimiento_remitente;
+    #[ORM\Column(type: 'string', length: 20, nullable: false)]
+    //#[Assert\NotBlank]
+    private string $fecha_nacimiento_remitente;
 
-    #[ORM\Column(type: 'boolean')]
+    #[ORM\Column(type: 'boolean', nullable: false)]
     private bool $recepcionado;
 
     #[ORM\Column(type: 'boolean')]
     private bool $interes_aduana;
 
+    #[ORM\Column(type: 'boolean')]
+    private bool $arancel;
+
     #[ORM\ManyToOne(targetEntity: Estructura::class)]
     #[ORM\JoinColumn(name: 'empresa_id', referencedColumnName: 'id', nullable: false)]
     private Estructura $empresa;
+
+    /**
+     * EnvioManifiesto constructor.
+     * @param string $codigo
+     * @param float $peso
+     * @param string $fecha
+     * @param string $agencia_origen
+     * @param string $no_guia_aerea
+     * @param string $no_vuelo
+     * @param string $pais_origen
+     * @param string $descripcion
+     * @param string $nacionalidad_destinatario
+     * @param string $fecha_nacimiento_destinatario
+     * @param string $telefono_destinatario
+     * @param string $calle_destinatario
+     * @param string $entre_calle_destinatario
+     * @param string $y_calle_destinatario
+     * @param string $no_destinatario
+     * @param string $piso_destinatario
+     * @param string $apto_destinatario
+     * @param string $provincia_destinatario
+     * @param string $municipio_destinatario
+     * @param string $nacionalidad_remitente
+     * @param string $fecha_nacimiento_remitente
+     */
+    public function __construct(string $codigo, float $peso, string $fecha, string $agencia_origen, string $no_guia_aerea, string $no_vuelo, string $pais_origen, string $descripcion, string $nacionalidad_destinatario, string $fecha_nacimiento_destinatario, string $telefono_destinatario, string $calle_destinatario, string $entre_calle_destinatario, string $y_calle_destinatario, string $no_destinatario, string $piso_destinatario, string $apto_destinatario, string $provincia_destinatario, string $municipio_destinatario, string $nacionalidad_remitente, string $fecha_nacimiento_remitente)
+    {
+        $this->codigo = $codigo;
+        $this->peso = $peso;
+        $this->fecha = $fecha;
+        $this->agencia_origen = $agencia_origen;
+        $this->no_guia_aerea = $no_guia_aerea;
+        $this->no_vuelo = $no_vuelo;
+        $this->pais_origen = $pais_origen;
+        $this->descripcion = $descripcion;
+        $this->nacionalidad_destinatario = $nacionalidad_destinatario;
+        $this->fecha_nacimiento_destinatario = $fecha_nacimiento_destinatario;
+        $this->telefono_destinatario = $telefono_destinatario;
+        $this->calle_destinatario = $calle_destinatario;
+        $this->entre_calle_destinatario = $entre_calle_destinatario;
+        $this->y_calle_destinatario = $y_calle_destinatario;
+        $this->no_destinatario = $no_destinatario;
+        $this->piso_destinatario = $piso_destinatario;
+        $this->apto_destinatario = $apto_destinatario;
+        $this->provincia_destinatario = $provincia_destinatario;
+        $this->municipio_destinatario = $municipio_destinatario;
+        $this->nacionalidad_remitente = $nacionalidad_remitente;
+        $this->fecha_nacimiento_remitente = $fecha_nacimiento_remitente;
+        $this->recepcionado = false;
+        $this->interes_aduana = false;
+    }
+
 
     /**
      * @return string
@@ -126,15 +189,15 @@ class EnvioManifiesto extends _Entity_
     /**
      * @return \DateTime
      */
-    public function getFecha(): \DateTime
+    public function getFecha(): string
     {
         return $this->fecha;
     }
 
     /**
-     * @param \DateTime $fecha
+     * @param string $fecha
      */
-    public function setFecha(\DateTime $fecha): void
+    public function setFecha(string $fecha): void
     {
         $this->fecha = $fecha;
     }
@@ -252,17 +315,17 @@ class EnvioManifiesto extends _Entity_
     }
 
     /**
-     * @return \DateTime
+     * @return string
      */
-    public function getFechaNacimientoDestinatario(): \DateTime
+    public function getFechaNacimientoDestinatario(): string
     {
         return $this->fecha_nacimiento_destinatario;
     }
 
     /**
-     * @param \DateTime $fecha_nacimiento_destinatario
+     * @param string $fecha_nacimiento_destinatario
      */
-    public function setFechaNacimientoDestinatario(\DateTime $fecha_nacimiento_destinatario): void
+    public function setFechaNacimientoDestinatario(string $fecha_nacimiento_destinatario): void
     {
         $this->fecha_nacimiento_destinatario = $fecha_nacimiento_destinatario;
     }
@@ -444,17 +507,17 @@ class EnvioManifiesto extends _Entity_
     }
 
     /**
-     * @return \DateTime
+     * @return string
      */
-    public function getFechaNacimientoRemitente(): \DateTime
+    public function getFechaNacimientoRemitente(): string
     {
         return $this->fecha_nacimiento_remitente;
     }
 
     /**
-     * @param \DateTime $fecha_nacimiento_remitente
+     * @param string $fecha_nacimiento_remitente
      */
-    public function setFechaNacimientoRemitente(\DateTime $fecha_nacimiento_remitente): void
+    public function setFechaNacimientoRemitente(string $fecha_nacimiento_remitente): void
     {
         $this->fecha_nacimiento_remitente = $fecha_nacimiento_remitente;
     }
@@ -505,6 +568,22 @@ class EnvioManifiesto extends _Entity_
     public function setEmpresa(Estructura $empresa): void
     {
         $this->empresa = $empresa;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isArancel(): bool
+    {
+        return $this->arancel;
+    }
+
+    /**
+     * @param bool $arancel
+     */
+    public function setArancel(bool $arancel): void
+    {
+        $this->arancel = $arancel;
     }
 
 
