@@ -7,7 +7,6 @@ use App\Entity\Grupo;
 use App\Entity\Localizacion;
 use App\Repository\LocalizacionRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\ChoiceList\ChoiceList;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -15,7 +14,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class EstructuraType extends AbstractType
+class EstructuraType extends BaseAdminType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -25,6 +24,7 @@ class EstructuraType extends AbstractType
                 'label' => 'pertenece',
                 'attr' => ['class' => 'form-control input-sm select2'],
                 'label_attr' => ['class' => 'col-sm-2 control-label'],
+                'choices' => $this->getChoiceEstructuras(),
             ])
             ->add('codigo', TextType::class, [
                 'attr' => ['class' => 'form-control input-sm'],

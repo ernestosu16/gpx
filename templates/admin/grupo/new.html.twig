@@ -1,0 +1,6 @@
+{% extends 'homer-theme/layout.html.twig' %}
+{% block title %}{{ settings.titles.new|trans([],settings.translation_domain) }}{% endblock %}
+{% block panel_title %}{{ settings.titles.new|trans([],settings.translation_domain) }}{% endblock %}
+{% block body %}
+    {{ include('admin/grupo/_form.html.twig') }}
+{% endblock %}

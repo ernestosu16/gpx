@@ -28,10 +28,10 @@ $(document).ready(function () {
     // Function for collapse hpanel
     $('.showhide').on('click', function (event) {
         event.preventDefault();
-        let hpanel = $(this).closest('div.hpanel');
-        let icon = $(this).find('i:first');
-        let body = hpanel.find('div.panel-body');
-        let footer = hpanel.find('div.panel-footer');
+        var hpanel = $(this).closest('div.hpanel');
+        var icon = $(this).find('i:first');
+        var body = hpanel.find('div.panel-body');
+        var footer = hpanel.find('div.panel-footer');
         body.slideToggle(300);
         footer.slideToggle(200);
 
@@ -47,7 +47,7 @@ $(document).ready(function () {
     // Function for close hpanel
     $('.closebox').on('click', function (event) {
         event.preventDefault();
-        let hpanel = $(this).closest('div.hpanel');
+        var hpanel = $(this).closest('div.hpanel');
         hpanel.remove();
         if ($('body').hasClass('fullscreen-panel-mode')) {
             $('body').removeClass('fullscreen-panel-mode');
@@ -56,8 +56,8 @@ $(document).ready(function () {
 
     // Fullscreen for fullscreen hpanel
     $('.fullscreen').on('click', function () {
-        let hpanel = $(this).closest('div.hpanel');
-        let icon = $(this).find('i:first');
+        var hpanel = $(this).closest('div.hpanel');
+        var icon = $(this).find('i:first');
         $('body').toggleClass('fullscreen-panel-mode');
         icon.toggleClass('fa-expand').toggleClass('fa-compress');
         hpanel.toggleClass('fullscreen');
@@ -74,8 +74,8 @@ $(document).ready(function () {
     // Function for small header
     $('.small-header-action').on('click', function (event) {
         event.preventDefault();
-        let icon = $(this).find('i:first');
-        let breadcrumb = $(this).parent().find('#hbreadcrumb');
+        var icon = $(this).find('i:first');
+        var breadcrumb  = $(this).parent().find('#hbreadcrumb');
         $(this).parent().parent().parent().toggleClass('small-header');
         breadcrumb.toggleClass('m-t-lg');
         icon.toggleClass('fa-arrow-up').toggleClass('fa-arrow-down');
@@ -121,9 +121,9 @@ $(window).bind("resize click", function () {
 function fixWrapperHeight() {
 
     // Get and set current height
-    let headerH = 62;
-    let navigationH = $("#navigation").height();
-    let contentH = $(".content").height();
+    var headerH = 62;
+    var navigationH = $("#navigation").height();
+    var contentH = $(".content").height();
 
     // Set new height when contnet height is less then navigation
     if (contentH < navigationH) {
@@ -154,10 +154,10 @@ function setBodySmall() {
 // Animate panel function
 $.fn['animatePanel'] = function () {
 
-    let element = $(this);
-    let effect = $(this).data('effect');
-    let delay = $(this).data('delay');
-    let child = $(this).data('child');
+    var element = $(this);
+    var effect = $(this).data('effect');
+    var delay = $(this).data('delay');
+    var child = $(this).data('child');
 
     // Set default values for attrs
     if (!effect) {
@@ -175,24 +175,24 @@ $.fn['animatePanel'] = function () {
     }
 
     //Set defaul values for start animation and delay
-    let startAnimation = 0;
-    let start = Math.abs(delay) + startAnimation;
+    var startAnimation = 0;
+    var start = Math.abs(delay) + startAnimation;
 
     // Get all visible element and set opacity to 0
-    let panel = element.find(child);
+    var panel = element.find(child);
     panel.addClass('opacity-0');
 
     // Get all elements and add effect class
     panel = element.find(child);
     panel.addClass('stagger').addClass('animated-panel').addClass(effect);
 
-    let panelsCount = panel.length + 10;
-    let animateTime = (panelsCount * delay * 10000) / 10;
+    var panelsCount = panel.length + 10;
+    var animateTime = (panelsCount * delay * 10000) / 10;
 
     // Add delay for each child elements
     panel.each(function (i, elm) {
         start += delay;
-        let rounded = Math.round(start * 10) / 10;
+        var rounded = Math.round(start * 10) / 10;
         $(elm).css('animation-delay', rounded + 's');
         // Remove opacity 0 after finish
         $(elm).removeClass('opacity-0');

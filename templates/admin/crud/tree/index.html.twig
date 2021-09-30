@@ -2,63 +2,67 @@
 {% block title %}{{ title|trans([],config.translation_domain) }}{% endblock %}
 {% block panel_title %}{{ title|trans([],config.translation_domain) }}{% endblock %}
 {% block panel_body %}
-    <table class="table table-hover table-bordered table-striped">
-        <thead>
-        <tr>
-            <th>{{ 'codigo'|trans([],'admin') }}</th>
-            <th>{{ 'nombre'|trans([],'admin') }}</th>
-            <th>{{ 'descripcion'|trans([],'admin') }}</th>
-            <th>{{ 'hijos'|trans([],'admin') }}</th>
-            <th>{{ 'habilitado'|trans([],'admin') }}</th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for  nomenclador in nomencladores %}
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered table-striped">
+            <thead>
             <tr>
-                <td>{{ nomenclador.codigo }}</td>
-                <td>{{ nomenclador.nombre }}</td>
-                <td>{{ nomenclador.descripcion }}</td>
-                <td>{{ nomenclador.children.count }}</td>
-                <td>{{ nomenclador.habilitado ? 'si'|trans([],'admin') : 'no'|trans([],'admin') }}</td>
-                <td>
-                    {% if config.routes.move_up is defined %}
-                        <a href="{{ path(config.routes.move_up, {'parent': nomencladorParent.codigo,'id': nomenclador.id}) }}"
-                           class="btn btn-xs btn-default" title="{{ 'editar'|trans([],'admin') }}">
-                            <i class="fa fa-arrow-up"></i>
-                        </a>
-                    {% endif %}
-                    {% if config.routes.move_down is defined %}
-                        <a href="{{ path(config.routes.move_down, {'parent': nomencladorParent.codigo,'id': nomenclador.id}) }}"
-                           class="btn btn-xs btn-default" title="{{ 'editar'|trans([],'admin') }}">
-                            <i class="fa fa-arrow-down"></i>
-                        </a>
-                    {% endif %}
-                    {% if config.routes.show is defined %}
-                        <a href="{{ path(config.routes.show, {'parent': nomencladorParent.codigo,'id': nomenclador.id}) }}"
-                           class="btn btn-xs btn-default" title="{{ 'mostrar'|trans([],'admin') }}">
-                            <i class="fa fa-eye"></i>
-                        </a>
-                    {% endif %}
-                    <a href="{{ path(config.routes.edit, {'parent': nomencladorParent.codigo,'id': nomenclador.id}) }}"
-                       class="btn btn-xs btn-default" title="{{ 'editar'|trans([],'admin') }}">
-                        <i class="fa fa-pencil"></i>
-                    </a>
-                    {% if nomenclador.parent.end == false %}
-                        <a href="{{ path(config.routes.index,{'parent': nomenclador.codigo}) }}"
-                           class="btn btn-xs btn-default" title="{{ 'No se encontraron registros'|trans([],'admin') }}">
-                            <i class="fa fa-list"></i>
-                        </a>
-                    {% endif %}
-                </td>
+                <th>{{ 'codigo'|trans([],'admin') }}</th>
+                <th>{{ 'nombre'|trans([],'admin') }}</th>
+                <th>{{ 'descripcion'|trans([],'admin') }}</th>
+                <th>{{ 'hijos'|trans([],'admin') }}</th>
+                <th>{{ 'habilitado'|trans([],'admin') }}</th>
+                <th></th>
             </tr>
-        {% else %}
-            <tr>
-                <td colspan="10">{{ 'No se encontraron registros'|trans([],'admin') }}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+            {% for  nomenclador in nomencladores %}
+                <tr>
+                    <td>{{ nomenclador.codigo }}</td>
+                    <td>{{ nomenclador.nombre }}</td>
+                    <td>{{ nomenclador.descripcion }}</td>
+                    <td>{{ nomenclador.children.count }}</td>
+                    <td>{{ nomenclador.habilitado ? 'si'|trans([],'admin') : 'no'|trans([],'admin') }}</td>
+                    <td>
+                        {% if config.routes.move_up is defined %}
+                            <a href="{{ path(config.routes.move_up, {'parent': nomencladorParent.codigo,'id': nomenclador.id}) }}"
+                               class="btn btn-xs btn-default" title="{{ 'editar'|trans([],'admin') }}">
+                                <i class="fa fa-arrow-up"></i>
+                            </a>
+                        {% endif %}
+                        {% if config.routes.move_down is defined %}
+                            <a href="{{ path(config.routes.move_down, {'parent': nomencladorParent.codigo,'id': nomenclador.id}) }}"
+                               class="btn btn-xs btn-default" title="{{ 'editar'|trans([],'admin') }}">
+                                <i class="fa fa-arrow-down"></i>
+                            </a>
+                        {% endif %}
+                        {% if config.routes.show is defined %}
+                            <a href="{{ path(config.routes.show, {'parent': nomencladorParent.codigo,'id': nomenclador.id}) }}"
+                               class="btn btn-xs btn-default" title="{{ 'mostrar'|trans([],'admin') }}">
+                                <i class="fa fa-eye"></i>
+                            </a>
+                        {% endif %}
+                        <a href="{{ path(config.routes.edit, {'parent': nomencladorParent.codigo,'id': nomenclador.id}) }}"
+                           class="btn btn-xs btn-default" title="{{ 'editar'|trans([],'admin') }}">
+                            <i class="fa fa-pencil"></i>
+                        </a>
+                        {% if nomenclador.parent.end == false %}
+                            <a href="{{ path(config.routes.index,{'parent': nomenclador.codigo}) }}"
+                               class="btn btn-xs btn-default"
+                               title="{{ 'No se encontraron registros'|trans([],'admin') }}">
+                                <i class="fa fa-list"></i>
+                            </a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="10">{{ 'No se encontraron registros'|trans([],'admin') }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
     <a class="btn btn-sm btn-primary" href="{{ path(config.routes.new,{'parent': nomencladorParent.codigo}) }}">
         {{ 'nuevo'|trans([],'admin') }}</a>
 

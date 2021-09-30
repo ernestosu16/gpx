@@ -27,6 +27,8 @@ final class GrupoController extends _CrudController_
             ],
             'templates' => [
                 self::INDEX => 'admin/grupo/index.html.twig',
+                self::NEW => 'admin/grupo/new.html.twig',
+                self::EDIT => 'admin/grupo/edit.html.twig',
             ],
             'routes' => [
                 self::INDEX => 'admin_grupo_index',

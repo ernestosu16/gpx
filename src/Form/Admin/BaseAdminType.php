@@ -33,10 +33,10 @@ abstract class BaseAdminType extends AbstractType
         $credencial = $this->tokenStorage->getToken()->getUser();
 
         # listado de estructura
-        return array_merge(
+        return array_unique(array_merge(
             [$credencial->getEstructura()],
             $this->estructuraRepository->children($credencial->getEstructura())
-        );
+        ));
     }
 
     protected function getChoiceGrupos(): array
@@ -51,6 +51,6 @@ abstract class BaseAdminType extends AbstractType
             $grupos = array_merge($grupos, $estructura->getGrupos()->toArray());
         }
 
-        return $grupos;
+        return array_unique($grupos);
     }
 }

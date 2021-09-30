@@ -17,6 +17,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\Route;
+use function Symfony\Component\String\u;
 
 class GrupoType extends AbstractType
 {
@@ -71,10 +72,32 @@ class GrupoType extends AbstractType
             ->add('accesos', ChoiceType::class, [
                 'required' => false,
                 'multiple' => true,
+                'expanded' => true,
                 'choices' => $routeManager->findAll(),
-                'label' => 'accesos',
-                'label_attr' => ['class' => 'col-sm-2 control-label'],
-                'attr' => ['class' => 'form-control input-sm select2'],
+                'choice_label' => function (Route $route, $key) {
+                    $textSplit = u($key)->split('_');
+                    $count = count($textSplit);
+                    if ($count > 2) {
+                        $textSplit = array_slice($textSplit, $count - 2);
+                        return implode('_', $textSplit);
+                    }
+                    return $key;
+
+                },
+                'group_by' => function (Route $choice, $key, $value): string {
+                    $textSplit = u($key)->split('_');
+                    $count = count($textSplit);
+                    if ($count > 3) {
+                        array_splice($textSplit, 2 - $count);
+                        return implode('_', $textSplit);
+                    } else if ($count > 2) {
+                        array_pop($textSplit);
+                        return implode('_', $textSplit);
+                    }
+                    return 'Defecto';
+                },
+                'label' => 'rutas de accesos',
+                'label_attr' => ['class' => 'control-label'],
             ])
             ->add('habilitado', null, [
                 'label' => 'habilitado',

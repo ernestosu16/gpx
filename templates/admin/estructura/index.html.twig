@@ -2,62 +2,66 @@
 {% block title %}{{ settings.titles.index }}{% endblock %}
 {% block panel_title %}{{ settings.titles.index }}{% endblock %}
 {% block panel_body %}
-    <table class="table table-hover table-bordered table-striped">
-        <thead>
-        <tr>
-            <th>{{ 'nombre'|trans([],'admin') }}</th>
-            <th>{{ 'codigo_postal'|trans([],'admin') }}</th>
-            <th>{{ 'provincia'|trans([],'admin') }}</th>
-            <th>{{ 'municipio'|trans([],'admin') }}</th>
-            <th>{{ 'pertenece'|trans([],'admin') }}</th>
-            <th>{{ 'grupos'|trans([],'admin') }}</th>
-            <th>{{ 'tipos'|trans([],'admin') }}</th>
-            <th>{{ 'habilitado'|trans([],'admin') }}</th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for estructura in collection %}
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered table-striped">
+            <thead>
             <tr>
-                <td>{{ estructura.nombre }}</td>
-                <td>{{ estructura.codigoPostal }}</td>
-                <td>{{ estructura.municipio.parent }}</td>
-                <td>{{ estructura.municipio }}</td>
-                <td>{{ estructura.parent }}</td>
-                <td>
-                    <div class="article">
+                <th>{{ 'nombre'|trans([],'admin') }}</th>
+                <th>{{ 'codigo_postal'|trans([],'admin') }}</th>
+                <th>{{ 'provincia'|trans([],'admin') }}</th>
+                <th>{{ 'municipio'|trans([],'admin') }}</th>
+                <th>{{ 'pertenece'|trans([],'admin') }}</th>
+                <th>{{ 'grupos permitidos'|trans([],'admin') }}</th>
+                <th>{{ 'tipos'|trans([],'admin') }}</th>
+                <th>{{ 'habilitado'|trans([],'admin') }}</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for estructura in collection %}
+                <tr>
+                    <td>{{ estructura.nombre }}</td>
+                    <td>{{ estructura.codigoPostal }}</td>
+                    <td>{{ estructura.municipio.parent }}</td>
+                    <td>{{ estructura.municipio }}</td>
+                    <td>{{ estructura.parent }}</td>
+                    <td>
+                        {# <div class="article"> #}
                         <ul class="inline">
                             {% for grupo in estructura.grupos %}
                                 <li>{{ grupo }}</li>
                             {% endfor %}
                         </ul>
-                    </div>
-                </td>
-                <td>
-                    <ul class="inline">
-                        {% for tipo in estructura.tipos %}
-                            <li>{{ tipo }}</li>
-                        {% endfor %}
-                    </ul>
-                </td>
-                <td>{{ estructura.habilitado ? 'si'|trans([],'admin') : 'no'|trans([],'admin') }}</td>
-                <td>
+                        {# </div> #}
+                    </td>
+                    <td>
+                        <ul class="inline">
+                            {% for tipo in estructura.tipos %}
+                                <li>{{ tipo }}</li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                    <td>{{ estructura.habilitado ? 'si'|trans([],'admin') : 'no'|trans([],'admin') }}</td>
+                    <td>
 
-                    <a class="btn btn-xs btn-default" href="{{ path('admin_estructura_edit', {'id': estructura.id}) }}"
-                       title="{{ 'editar'|trans([],'admin') }}">
-                        <i class="fa fa-pencil"></i>
-                    </a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="3">{{ 'No se encontraron registros'|trans({},'admin') }}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+                        <a class="btn btn-xs btn-default"
+                           href="{{ path('admin_estructura_edit', {'id': estructura.id}) }}"
+                           title="{{ 'editar'|trans([],'admin') }}">
+                            <i class="fa fa-pencil"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="3">{{ 'No se encontraron registros'|trans({},'admin') }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
     <a class="btn btn-sm btn-primary" href="{{ path('admin_estructura_new') }}">
-        Nueva estructura</a>
+        Nueva estructura
+    </a>
 {% endblock %}
 {% block javascripts %}
     <script type="text/javascript">
