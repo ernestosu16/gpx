@@ -1,0 +1,23 @@
+{% extends 'homer-theme/layout.html.twig' %}
+{% block body %}
+    <div class="hpanel blog-box">
+
+        <div class="panel-body">
+            {{ form_start(form) }}
+            <div class="col-md-2 border-right">
+                <img src="{{ asset('homer-theme/images/profile.png') }}" width="150px">
+            </div>
+            <div class="col-md-5 border-right">
+                {{ form_row(form.persona) }}
+                {{ form_row(form.cargo) }}
+                {{ form_row(form.estructura) }}
+                {{ form_row(form.grupos) }}
+            </div>
+            <div class="col-md-5 border-right">
+                {{ form_row(form.credencial) }}
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
+

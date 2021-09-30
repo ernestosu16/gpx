@@ -31,6 +31,11 @@ class TrabajadorCredencial implements UserInterface, PasswordAuthenticatedUserIn
         $this->salt = '';
     }
 
+    public function __toString(): string
+    {
+        return $this->usuario;
+    }
+
     public function getUsuario(): ?string
     {
         return $this->usuario;

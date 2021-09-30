@@ -30,7 +30,7 @@ final class MenuBuilder extends _Menu_
         ]);
 
         $item->addChild('Dashboard', [
-            'route' => 'dashboard',
+            'route' => 'app_dashboard',
             'extras' => ['translation_domain' => false]
         ]);
         foreach ($root->getChildren() as $child) {
