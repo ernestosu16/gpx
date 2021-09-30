@@ -2,10 +2,12 @@
 
 namespace App\Form\Admin;
 
+use App\Entity\Estructura;
 use App\Entity\Grupo;
 use App\Entity\Menu;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -40,6 +42,17 @@ class GrupoType extends AbstractType
                 'attr' => ['class' => 'form-control input-sm select2'],
                 'label' => 'menu',
                 'label_attr' => ['class' => 'col-sm-2 control-label'],
+            ])
+            ->add('roles', ChoiceType::class, [
+                'required' => false,
+                'multiple' => true,
+                'choices' => [
+                    'ROLE_ADMIN' => 'ROLE_ADMIN',
+                    'ROLE_USER' => 'ROLE_USER',
+                ],
+                'label' => 'roles',
+                'label_attr' => ['class' => 'col-sm-2 control-label'],
+                'attr' => ['class' => 'form-control input-sm select2'],
             ])
             ->add('habilitado', null, [
                 'label' => 'habilitado',

@@ -4,7 +4,6 @@ namespace App\Form\Admin;
 
 use App\Entity\Estructura;
 use App\Entity\Localizacion;
-use App\Entity\LocalizacionTipo;
 use App\Repository\LocalizacionRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -48,12 +47,15 @@ class EstructuraType extends AbstractType
                 'label' => 'codigo_postal',
                 'label_attr' => ['class' => 'col-sm-2 control-label'],
             ])
-            ->add('habilitado', CheckboxType::class, [
-                'label' => 'habilitado',
+            ->add('tipos', null, [
+                'required' => true,
+                'label' => 'tipos',
+                'attr' => ['class' => 'form-control input-sm select2'],
                 'label_attr' => ['class' => 'col-sm-2 control-label'],
             ])
-            ->add('tipos', null, [
-                'label' => 'tipos',
+            ->add('grupos', null, [
+                'required' => true,
+                'label' => 'grupos',
                 'attr' => ['class' => 'form-control input-sm select2'],
                 'label_attr' => ['class' => 'col-sm-2 control-label'],
             ])
@@ -66,6 +68,10 @@ class EstructuraType extends AbstractType
                 'group_by' => ChoiceList::groupBy($this, 'parent'),
                 'label' => 'municipio',
                 'attr' => ['class' => 'form-control input-sm select2'],
+                'label_attr' => ['class' => 'col-sm-2 control-label'],
+            ])
+            ->add('habilitado', CheckboxType::class, [
+                'label' => 'habilitado',
                 'label_attr' => ['class' => 'col-sm-2 control-label'],
             ]);
     }

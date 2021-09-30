@@ -4488,3 +4488,12 @@ ul.h-list li:hover a {
   display: inline;
   color: #e32;
 }
+
+ul.inline {
+  padding-right: 5px;
+  padding-left: 20px;
+}
+
+ul.inline > li {
+  list-style-type: circle;
+}

@@ -9,7 +9,6 @@ use Doctrine\ORM\QueryBuilder;
 /**
  * @method Grupo|null find($id, $lockMode = null, $lockVersion = null)
  * @method Grupo|null findOneBy(array $criteria, array $orderBy = null)
- * @method Grupo[]    findAll()
  * @method Grupo[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 final class GrupoRepository extends NomencladorRepository
@@ -27,5 +26,13 @@ final class GrupoRepository extends NomencladorRepository
             ->setParameter('parent', $parent)
             ->orderBy($alias . '.nombre', 'ASC');;
         return $query;
+    }
+
+    /**
+     * @return Grupo[]
+     */
+    public function findAll(): array
+    {
+        return $this->createQueryBuilder('g')->getQuery()->getResult();
     }
 }

@@ -3,23 +3,23 @@
 namespace App\Menu;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\EntityRepository;
 use Knp\Menu\FactoryInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 abstract class _Menu_
 {
-    public function __construct(
-        private FactoryInterface       $factory,
-        private EntityManagerInterface $entityManager,
-        private ContainerInterface     $container
-    )
+    protected ContainerInterface $container;
+    protected FactoryInterface $factory;
+    protected EntityManagerInterface $entityManager;
+
+    public function setContainer(ContainerInterface $container): void
     {
+        $this->container = $container;
     }
 
-    public function get(string $id, int $invalidBehavior = ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE): ?object
+    public function getContainer(): ContainerInterface
     {
-        return $this->container->get($id, $invalidBehavior);
+        return $this->container;
     }
 
     public function getFactory(): FactoryInterface
@@ -27,8 +27,26 @@ abstract class _Menu_
         return $this->factory;
     }
 
+    /**
+     * @param FactoryInterface $factory
+     */
+    public function setFactory(FactoryInterface $factory): void
+    {
+        $this->factory = $factory;
+    }
+
+    public function setEntityManager(EntityManagerInterface $entityManager): void
+    {
+        $this->entityManager = $entityManager;
+    }
+
     public function getEntityManager(): EntityManagerInterface
     {
         return $this->entityManager;
+    }
+
+    public function get(string $id, int $invalidBehavior = ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE): ?object
+    {
+        return $this->container->get($id, $invalidBehavior);
     }
 }

@@ -38,13 +38,40 @@
         </tr>
         </tbody>
     </table>
-    <a class="btn btn-sm btn-default"
-       href="{{ path('admin_trabajador_index') }}">{{ 'No se encontraron registros'|trans({},'admin') }}</a>
-
     <a class="btn btn-sm btn-primary" href="{{ path('admin_trabajador_edit', {'trabajador': trabajador.id}) }}">
         {{ 'editar'|trans({},'admin') }}
     </a>
+    <a class="btn btn-sm btn-default"
+       href="{{ path('admin_trabajador_index') }}">{{ 'No se encontraron registros'|trans({},'admin') }}</a>
+
     <div class="pull-right">
         {{ include('admin/trabajador/_delete_form.html.twig') }}
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            let btn = $('.delete');
+            let form = btn.parent('form');
+            btn.click(function () {
+                swal({
+                        title: "Estás seguro",
+                        text: "¡No podrá recuperar los datos del trabajador!",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Si, bórralo!",
+                        cancelButtonText: "Cancelar"
+                    },
+                    function (isConfirm) {
+                        console.log(form);
+                        if (isConfirm) form[0].submit();
+                    });
+            });
+            form.on('submit', function (e) {
+                e.preventDefault();
+            });
+        });
+    </script>
 {% endblock %}

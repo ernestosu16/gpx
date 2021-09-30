@@ -8,9 +8,12 @@ RUN apt-get -y update && \
 RUN docker-php-ext-configure intl && \
     docker-php-ext-install intl
 
+RUN docker-php-ext-configure opcache --enable-opcache \
+    && docker-php-ext-install opcache
+
 # Install symfony
-RUN curl -sS https://get.symfony.com/cli/installer | bash && \
-    mv /root/.symfony/bin/symfony /usr/local/bin/symfony
+#RUN curl -sS https://get.symfony.com/cli/installer | bash && \
+#    mv /root/.symfony/bin/symfony /usr/local/bin/symfony
 
 # APACHE y PHP
 COPY ./conf/apache/ /etc/apache2

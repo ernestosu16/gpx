@@ -4,14 +4,14 @@ namespace App\Menu;
 
 use App\Config\Data\Nomenclador\MenuData;
 use App\Entity\Menu;
-use Knp\Menu\FactoryInterface;
+use Exception;
 use Knp\Menu\ItemInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 final class MenuBuilder extends _Menu_
 {
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function createMainMenu(RequestStack $requestStack): ItemInterface
     {
@@ -19,7 +19,7 @@ final class MenuBuilder extends _Menu_
         $root = $this->getRoot();
 
         if (!$root || !$root->getChildren()->count())
-            throw new \Exception('Ejecute el comando "bin/console app:configurar:fixture"');
+            throw new Exception('Ejecute el comando "bin/console app:configurar:fixture"');
 
         $item = $factory->createItem($root->getCodigo(), [
             'currentClass' => 'active',
@@ -29,7 +29,10 @@ final class MenuBuilder extends _Menu_
             ],
         ]);
 
-        $item->addChild('Dashboard', ['route' => 'dashboard']);
+        $item->addChild('Dashboard', [
+            'route' => 'dashboard',
+            'extras' => ['translation_domain' => false]
+        ]);
         foreach ($root->getChildren() as $child) {
             $item = $this->createItem($item, $child);
         }
@@ -45,6 +48,9 @@ final class MenuBuilder extends _Menu_
             ->findOneByCodigo(MenuData::code());
     }
 
+    /**
+     * @throws Exception
+     */
     private function createItem(ItemInterface $item, ?Menu $menu): ItemInterface
     {
         if (!$menu || !$menu->getHabilitado())
@@ -86,49 +92,6 @@ final class MenuBuilder extends _Menu_
                 'attributes' => ['class' => $requestStack->getCurrentRequest()->get('_route') === $menu->getRoute() ? 'active' : ''],
             ]);
         }
-
-        return $item;
-    }
-
-    private function default(FactoryInterface $factory): ItemInterface
-    {
-        $item = $factory->createItem('root', array(
-            'currentClass' => 'active',
-            'childrenAttributes' => array(
-                'class' => 'nav',
-                'id' => 'side-menu'
-            ),
-        ));
-
-        $item->addChild('Dashboard', ['route' => 'dashboard']);
-
-        $item->addChild('administrator', array(
-            'label' => '<span class="nav-label">Administración</span><span class="fa arrow"></span>',
-            'uri' => '#',
-            'extras' => ['safe_label' => true, 'translation_domain' => false],
-            'attributes' => ['aria-expanded' => 'true', 'class' => 'active'],
-            'childrenAttributes' => ['class' => 'nav nav-second-level collapse', 'aria-expanded' => true]
-        ));
-        $item['administrator']->addChild('Trabajadores', [
-            'route' => 'admin_trabajador_index',
-            'label' => '<span class="fa fa-user"></span>  Trabajadores',
-            'extras' => ['safe_label' => true, 'translation_domain' => false],
-        ]);
-        $item['administrator']->addChild('Grupos', [
-            'route' => 'admin_grupo_index',
-            'label' => '<span class="fa fa-group"></span> Grupos',
-            'extras' => ['safe_label' => true, 'translation_domain' => false],
-        ]);
-        $item['administrator']->addChild('Menu', [
-            'route' => 'admin_menu_index',
-            'label' => '<span class="fa fa-list"></span> Menú',
-            'extras' => ['safe_label' => true, 'translation_domain' => false],
-        ]);
-        $item['administrator']->addChild('Nomencladores', [
-            'route' => 'admin_nomenclador_index',
-            'label' => '<span class="fa fa-wrench"></span> Nomenclador',
-            'extras' => ['safe_label' => true, 'translation_domain' => false],
-        ]);
 
         return $item;
     }

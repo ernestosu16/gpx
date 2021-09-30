@@ -7,7 +7,7 @@ use App\Command\BaseCommandInterface;
 use App\Config\Data\_Data_;
 use App\Entity\Nomenclador;
 use App\Repository\NomencladorRepository;
-use App\Util\ClassFinderUtil;
+use App\Utils\ClassFinderUtil;
 use Doctrine\ORM\ORMException;
 use ReflectionClass;
 use ReflectionException;

@@ -10,4 +10,13 @@ final class EstructuraTipoRepository extends NomencladorRepository
     {
         return EstructuraTipo::class;
     }
+
+    /**
+     * @return EstructuraTipo[]
+     */
+    public function findAll(): array
+    {
+        return $this->createQueryBuilder('q')
+            ->where('q.parent is not null')->getQuery()->getResult();
+    }
 }

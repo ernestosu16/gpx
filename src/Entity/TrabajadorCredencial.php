@@ -2,13 +2,15 @@
 
 namespace App\Entity;
 
+use App\Repository\TrabajadorCredencialRepository;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\Pure;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: TrabajadorCredencialRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_USUARIO', fields: ['usuario'])]
-class TrabajadorCredencial implements UserInterface
+class TrabajadorCredencial implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\OneToOne(inversedBy: 'credencial', targetEntity: Trabajador::class)]
@@ -18,11 +20,16 @@ class TrabajadorCredencial implements UserInterface
     #[ORM\Column(type: 'string', length: 50, unique: true)]
     private ?string $usuario = null;
 
-    #[ORM\Column(type: 'string', length: 100)]
-    private ?string $contrasena = null;
+    #[ORM\Column(type: 'string', length: 60, nullable: false)]
+    private string $contrasena;
 
-    #[ORM\Column(type: 'string', length: 128, nullable: true)]
-    private ?string $session;
+    #[ORM\Column(type: 'string')]
+    private string $salt;
+
+    public function __construct()
+    {
+        $this->salt = '';
+    }
 
     public function getUsuario(): ?string
     {
@@ -36,14 +43,15 @@ class TrabajadorCredencial implements UserInterface
         return $this;
     }
 
-    public function getContrasena(): ?string
+    public function getContrasena(): string
     {
         return $this->contrasena;
     }
 
-    public function setContrasena(string $contrasena): self
+    public function setContrasena(?string $contrasena): self
     {
-        $this->contrasena = $contrasena;
+        if ($contrasena)
+            $this->contrasena = $contrasena;
 
         return $this;
     }
@@ -60,28 +68,33 @@ class TrabajadorCredencial implements UserInterface
         return $this;
     }
 
-    public function getSession(): ?string
+    #[Pure] public function getPersona(): ?Persona
     {
-        return $this->session;
+        return $this->getTrabajador()?->getPersona();
     }
 
-    public function setSession(?string $session): self
+    #[Pure] public function getNombre(): ?string
     {
-        $this->session = $session;
+        return $this->getPersona()?->getNombre();
+    }
 
-        return $this;
+    #[Pure] public function getCargo(): ?string
+    {
+        return $this->getTrabajador()?->getCargo();
     }
 
     #[Pure] public function getUsername(): ?string
     {
-        return $this->getUsuario();
+        return $this->usuario;
     }
 
-    #[Pure] public function getPassword(): ?string
+    /**
+     * @see PasswordAuthenticatedUserInterface
+     */
+    public function getPassword(): string
     {
-        return $this->getContrasena();
+        return $this->contrasena;
     }
-
 
     #[Pure] public function getUserIdentifier(): string
     {
@@ -90,12 +103,27 @@ class TrabajadorCredencial implements UserInterface
 
     public function getRoles(): array
     {
-        return ['ROLE_USER'];
+        $roles = [];
+        /** @var Grupo[] $grupos */
+        $grupos = $this->getTrabajador()->getGrupos();
+
+        foreach ($grupos as $grupo) {
+            $roles = array_merge($roles, $grupo->getRoles());
+        }
+
+        return $roles;
     }
 
-    public function getSalt()
+    public function setSalt(string $salt): self
     {
-        // TODO: Implement getSalt() method.
+        $this->salt = $salt;
+
+        return $this;
+    }
+
+    public function getSalt(): ?string
+    {
+        return $this->salt;
     }
 
     public function eraseCredentials()

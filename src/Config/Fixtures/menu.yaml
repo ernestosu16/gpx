@@ -24,6 +24,11 @@ menu:
                 route: 'admin_menu_index'
                 icon: 'fa fa-link'
 
+            -   codigo: 'ADMIN_PAIS'
+                nombre: 'Países'
+                route: 'admin_pais_index'
+                icon: 'fa fa-globe'
+
             -   codigo: 'ADMIN_LOCALIZACION'
                 nombre: 'Localizaciones'
                 route: 'admin_localizacion_index'

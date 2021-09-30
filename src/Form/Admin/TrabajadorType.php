@@ -30,13 +30,14 @@ class TrabajadorType extends AbstractType
             ->add('persona', PersonaType::class, [
                 'label' => 'datos personales',
                 'attr' => ['autocomplete' => 'off'],
+                'data' => $data?->getPersona(),
             ])
             ->add('credencial', TrabajadorCredencialType::class, [
                 'label' => 'trabajador.credencial.label',
                 'data' => $data->getCredencial(),
                 'attr' => ['autocomplete' => 'off'],
             ])
-            ->add('estructura', EntityType::class,[
+            ->add('estructura', EntityType::class, [
                 'class' => Estructura::class,
                 'label' => 'estructura',
                 'label_attr' => ['class' => 'col-sm-4 control-label'],
@@ -60,6 +61,7 @@ class TrabajadorType extends AbstractType
             ->add('habilitado', CheckboxType::class, [
                 'label' => 'habilitado',
                 'label_attr' => ['class' => 'col-sm-4 control-label'],
+                'required' => false,
             ]);
 
         $builder->addEventSubscriber(new TrabajadorTypeSubscriber($this->entityManager));

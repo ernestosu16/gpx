@@ -34,7 +34,7 @@ class Trabajador extends _Entity_
     #[Assert\Valid]
     private Collection $grupos;
 
-    #[ORM\Column(type: 'string', length: 11)]
+    #[ORM\Column(type: 'string', length: 100)]
     private string $cargo;
 
     #[ORM\Column(type: 'boolean')]
@@ -42,7 +42,13 @@ class Trabajador extends _Entity_
 
     #[Pure] public function __construct()
     {
+        $this->persona = new Persona();
         $this->grupos = new ArrayCollection();
+    }
+
+    #[Pure] public function __toString(): string
+    {
+        return (string)'';
     }
 
     public function getCargo(): ?string
@@ -136,6 +142,46 @@ class Trabajador extends _Entity_
     {
         $this->grupos->removeElement($grupo);
 
+        return $this;
+    }
+
+    #[Pure] public function getNombre(): string
+    {
+        return $this->getPersona()->getNombre();
+    }
+
+    public function setDatoCredencial($username, $password): self
+    {
+        $credencial = new TrabajadorCredencial();
+        $credencial->setUsuario($username);
+        $credencial->setContrasena($password);
+
+        $this->setCredencial($credencial);
+        return $this;
+    }
+
+    public function setDatoPersona(
+        string $numeroIdentidad,
+        string $nombrePrimero,
+        string $nombreSegundo,
+        string $apellidoPrimero,
+        string $apellidoSegundo,
+        bool   $esExtranjero = false,
+    ): self
+    {
+        $persona = new Persona();
+
+        if ($esExtranjero)
+            $persona->setNumeroPasaporte($numeroIdentidad);
+        else
+            $persona->setNumeroIdentidad($numeroIdentidad);
+        $persona->setNombrePrimero($nombrePrimero);
+        $persona->setNombreSegundo($nombreSegundo);
+        $persona->setApellidoPrimero($apellidoPrimero);
+        $persona->setApellidoSegundo($apellidoSegundo);
+        $persona->setEsExtranjero($esExtranjero);
+
+        $this->setPersona($persona);
         return $this;
     }
 }
