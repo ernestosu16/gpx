@@ -11,6 +11,7 @@
             <th>{{ 'municipio'|trans([],'admin') }}</th>
             <th>{{ 'pertenece'|trans([],'admin') }}</th>
             <th>{{ 'grupos'|trans([],'admin') }}</th>
+            <th>{{ 'tipos'|trans([],'admin') }}</th>
             <th>{{ 'habilitado'|trans([],'admin') }}</th>
             <th></th>
         </tr>
@@ -31,6 +32,13 @@
                             {% endfor %}
                         </ul>
                     </div>
+                </td>
+                <td>
+                    <ul class="inline">
+                        {% for tipo in estructura.tipos %}
+                            <li>{{ tipo }}</li>
+                        {% endfor %}
+                    </ul>
                 </td>
                 <td>{{ estructura.habilitado ? 'si'|trans([],'admin') : 'no'|trans([],'admin') }}</td>
                 <td>

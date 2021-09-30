@@ -54,7 +54,7 @@ abstract class _CrudController_ extends _Controller_
 
     abstract protected static function config(): array;
 
-    private function settings(): array
+    protected function settings(): array
     {
         $fields = static::fields();
         if (empty($fields)) {

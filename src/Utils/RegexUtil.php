@@ -4,7 +4,7 @@ namespace App\Utils;
 
 final class RegexUtil
 {
-    const CODIGO = '/^[a-zA-Z_]+$/';
+    const CODIGO = '/^[a-zA-Z_0-9]+$/';
     const CODIGO_REEUP = '/^[\d]{3}\.[\d]{1}\.[\d]{5}$/';
     const CODIGO_NIT = '/^[0-9]+$/';
     const TEXTO_ACENTO_ESPACIO = '/^[A-Za-zÁÉÍÓÚáéíóúñÑ ]+$/';

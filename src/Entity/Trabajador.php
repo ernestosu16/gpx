@@ -51,6 +51,30 @@ class Trabajador extends _Entity_
         return (string)'';
     }
 
+    /**
+     * @return Collection|Grupo[]
+     */
+    public function getGrupos(): Collection
+    {
+        return $this->grupos;
+    }
+
+    public function addGrupo(Grupo $grupo): self
+    {
+        if (!$this->grupos->contains($grupo)) {
+            $this->grupos[] = $grupo;
+        }
+
+        return $this;
+    }
+
+    public function removeGrupo(Grupo $grupo): self
+    {
+        $this->grupos->removeElement($grupo);
+
+        return $this;
+    }
+
     public function getCargo(): ?string
     {
         return $this->cargo;
@@ -117,30 +141,6 @@ class Trabajador extends _Entity_
     public function setEstructura(?Estructura $estructura): self
     {
         $this->estructura = $estructura;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Grupo[]
-     */
-    public function getGrupos(): Collection
-    {
-        return $this->grupos;
-    }
-
-    public function addGrupo(Grupo $grupo): self
-    {
-        if (!$this->grupos->contains($grupo)) {
-            $this->grupos[] = $grupo;
-        }
-
-        return $this;
-    }
-
-    public function removeGrupo(Grupo $grupo): self
-    {
-        $this->grupos->removeElement($grupo);
 
         return $this;
     }

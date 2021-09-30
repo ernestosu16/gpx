@@ -83,6 +83,11 @@ class TrabajadorCredencial implements UserInterface, PasswordAuthenticatedUserIn
         return $this->getTrabajador()?->getCargo();
     }
 
+    #[Pure] public function getEstructura(): ?Estructura
+    {
+        return $this->getTrabajador()?->getEstructura();
+    }
+
     #[Pure] public function getUsername(): ?string
     {
         return $this->usuario;

@@ -7,19 +7,19 @@
         <tr>
             <th>{{ 'numero de identidad'|trans({},'admin') }}</th>
             <th>{{ 'nombre'|trans({},'admin') }}</th>
-            <th>{{ 'estructura'|trans({},'admin') }}</th>
             <th>{{ 'cargo'|trans({},'admin') }}</th>
+            <th>{{ 'estructura'|trans({},'admin') }}</th>
             <th>{{ 'habilitado'|trans({},'admin') }}</th>
             <th></th>
         </tr>
         </thead>
         <tbody>
-        {% for trabajador in trabajadors %}
+        {% for trabajador in trabajadores %}
             <tr>
                 <td>{{ trabajador.persona.numeroIdentidad }}</td>
                 <td>{{ trabajador.persona }}</td>
-                <td>{{ trabajador.estructura }}</td>
                 <td>{{ trabajador.cargo }}</td>
+                <td>{{ trabajador.estructura }}</td>
                 <td>{{ trabajador.habilitado ? 'si'|trans({},'admin') : 'no'|trans({},'admin') }}</td>
                 <td>
                     <a href="{{ path('admin_trabajador_show', {'trabajador': trabajador.id}) }}"

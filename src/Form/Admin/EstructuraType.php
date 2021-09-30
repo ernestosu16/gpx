@@ -3,6 +3,7 @@
 namespace App\Form\Admin;
 
 use App\Entity\Estructura;
+use App\Entity\Grupo;
 use App\Entity\Localizacion;
 use App\Repository\LocalizacionRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -52,12 +53,16 @@ class EstructuraType extends AbstractType
                 'label' => 'tipos',
                 'attr' => ['class' => 'form-control input-sm select2'],
                 'label_attr' => ['class' => 'col-sm-2 control-label'],
+                'help' => 'Tipo de estructura. Puede ser una o varios.'
             ])
-            ->add('grupos', null, [
-                'required' => true,
+            ->add('grupos', EntityType::class, [
+                'class' => Grupo::class,
+                'required' => false,
                 'label' => 'grupos',
+                'multiple' => true,
                 'attr' => ['class' => 'form-control input-sm select2'],
                 'label_attr' => ['class' => 'col-sm-2 control-label'],
+                'help' => 'Grupos validos que admite esta estructura.'
             ])
             ->add('municipio', EntityType::class, [
                 'class' => Localizacion::class,
@@ -69,6 +74,7 @@ class EstructuraType extends AbstractType
                 'label' => 'municipio',
                 'attr' => ['class' => 'form-control input-sm select2'],
                 'label_attr' => ['class' => 'col-sm-2 control-label'],
+                'help' => 'Municipio el que pertenece la estructura.'
             ])
             ->add('habilitado', CheckboxType::class, [
                 'label' => 'habilitado',
