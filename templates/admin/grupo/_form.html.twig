@@ -10,7 +10,7 @@
             <div class="tab-content">
                 <div id="tab-1" class="tab-pane active">
                     <div class="panel-body">
-                            {% set fields = ['codigo', 'nombre','descripcion', 'menus', 'roles', 'habilitado'] %}
+                            {% set fields = ['codigo', 'nombre','descripcion', 'menus', 'habilitado'] %}
                             {% for field in fields %}
                                 <div class="form-group">
                                     {{ form_label(form[field]) }}

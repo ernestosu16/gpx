@@ -1,9 +1,4 @@
 grupos:
-    -   nombre: 'SuperAdmin'
-        descripcion: 'SuperAdmin acceso total y sin limite al sistema.'
-        codigo: 'GRUPO_SUPER_ADMIN'
-        roles: [ 'ROLE_ADMIN' ]
     -   nombre: 'Administrador'
         descripcion: 'Gestiona sus trabajadores y configura algunas opciones del sistema.'
         codigo: 'GRUPO_ADMINISTRADOR'
-        roles: [ 'ROLE_USER' ]

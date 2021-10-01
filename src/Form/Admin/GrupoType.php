@@ -61,14 +61,6 @@ class GrupoType extends AbstractType
                         ->orderBy('m.nombre', 'ASC');
                 },
             ])
-            ->add('roles', ChoiceType::class, [
-                'required' => false,
-                'multiple' => true,
-                'choices' => $grupoManager->getRoles(),
-                'label' => 'roles',
-                'label_attr' => ['class' => 'col-sm-2 control-label'],
-                'attr' => ['class' => 'form-control input-sm select2'],
-            ])
             ->add('accesos', ChoiceType::class, [
                 'required' => false,
                 'multiple' => true,

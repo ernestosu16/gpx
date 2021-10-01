@@ -51,18 +51,6 @@ class Grupo extends Nomenclador
         return $this;
     }
 
-    public function getRoles(): array
-    {
-        return $this->hasParametro('roles') ? $this?->getParametro('roles') : [];
-    }
-
-    public function setRoles(array $roles): self
-    {
-        $this->setParametro('roles', $roles);
-
-        return $this;
-    }
-
     /**
      * @return Collection|Estructura[]
      */

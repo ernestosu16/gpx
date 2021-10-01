@@ -8,7 +8,6 @@
             <tr>
                 <th>{{ 'nombre'|trans([],'admin') }}</th>
                 <th>{{ 'descripcion'|trans([],'admin') }}</th>
-                <th>{{ 'roles'|trans([],'admin') }}</th>
                 <th>{{ 'menu'|trans([],'admin') }}</th>
                 <th>{{ 'estructuras'|trans([],'admin') }}</th>
                 <th>{{ 'habilitado'|trans([],'admin') }}</th>
@@ -21,13 +20,6 @@
                 <tr>
                     <td>{{ grupo.nombre }}</td>
                     <td>{{ grupo.descripcion }}</td>
-                    <td>
-                        <ul class="inline">
-                            {% for rol in grupo.roles %}
-                                <li>{{ rol }}</li>
-                            {% endfor %}
-                        </ul>
-                    </td>
                     <td>
                         <div class="article">
                             <ul class="inline ">
@@ -62,7 +54,7 @@
         </table>
     </div>
     <a class="btn btn-sm btn-primary" href="{{ path('admin_grupo_new') }}">
-        Nueva estructura</a>
+        {{ 'crear grupo'|trans({}, 'admin') }}</a>
 {% endblock %}
 {% block javascripts %}
     <script type="text/javascript">

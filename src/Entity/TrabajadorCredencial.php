@@ -23,11 +23,15 @@ class TrabajadorCredencial implements UserInterface, PasswordAuthenticatedUserIn
     #[ORM\Column(type: 'string', length: 60, nullable: false)]
     private string $contrasena;
 
+    #[ORM\Column(type: 'boolean')]
+    private bool $admin;
+
     #[ORM\Column(type: 'string')]
     private string $salt;
 
     public function __construct()
     {
+        $this->admin = 0;
         $this->salt = '';
     }
 
@@ -59,6 +63,22 @@ class TrabajadorCredencial implements UserInterface, PasswordAuthenticatedUserIn
             $this->contrasena = $contrasena;
 
         return $this;
+    }
+
+    public function getAdmin(): bool
+    {
+        return $this->admin;
+    }
+
+    public function setAdmin(bool $admin): TrabajadorCredencial
+    {
+        $this->admin = $admin;
+        return $this;
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->admin;
     }
 
     public function getTrabajador(): ?Trabajador
@@ -111,15 +131,12 @@ class TrabajadorCredencial implements UserInterface, PasswordAuthenticatedUserIn
         return $this->getUsuario();
     }
 
-    public function getRoles(): array
+    #[Pure] public function getRoles(): array
     {
-        $roles = [];
-        /** @var Grupo[] $grupos */
-        $grupos = $this->getTrabajador()->getGrupos();
+        $roles = ['ROLE_USER'];
 
-        foreach ($grupos as $grupo) {
-            $roles = array_merge($roles, $grupo->getRoles());
-        }
+        if ($this->isAdmin())
+            $roles[] = 'ROLE_ADMIN';
 
         return $roles;
     }

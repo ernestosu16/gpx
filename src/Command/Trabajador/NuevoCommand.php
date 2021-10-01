@@ -21,7 +21,7 @@ use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Stopwatch\Stopwatch;
 
-class NuevoCommand extends Command
+final class NuevoCommand extends Command
 {
     private SymfonyStyle $io;
 
@@ -65,6 +65,7 @@ class NuevoCommand extends Command
             ['name' => 'password', 'mode' => InputOption::VALUE_REQUIRED, 'description' => 'Contraseña', 'label' => 'Contraseña', 'invoke' => 'invokeValidatePassword'],
             ['name' => 'estructura', 'mode' => InputOption::VALUE_REQUIRED, 'description' => 'Lugar donde trabaja', 'label' => 'Estructura', 'invoke' => 'invokeValidateEstructura'],
             ['name' => 'grupo', 'mode' => InputOption::VALUE_REQUIRED, 'description' => 'Grupo principal del trabajador', 'label' => 'Grupo', 'invoke' => 'invokeValidateGrupo'],
+            ['name' => 'admin', 'mode' => InputOption::VALUE_REQUIRED, 'description' => 'Administrador general del sistema', 'label' => 'Administrador', 'invoke' => 'invokeValidateAdmin'],
         ];
     }
 
@@ -159,6 +160,22 @@ class NuevoCommand extends Command
         });
     }
 
+    private function invokeValidateAdmin(InputInterface $input, OutputInterface $output)
+    {
+        return $this->io->ask('Administrador General del Sistema', false, function ($admin) {
+            if (!is_string($admin))
+                throw new InvalidOptionException('Solo se admite Y o N');
+
+            if ($admin == 'y')
+                return true;
+
+            if ($admin == 'n')
+                return false;
+
+            throw new InvalidOptionException('Solo se admite Y o N');
+        });
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $stopwatch = new Stopwatch();
@@ -173,10 +190,11 @@ class NuevoCommand extends Command
         $password = $input->getOption('password');
         $estructura = $input->getOption('estructura');
         $grupo = $input->getOption('grupo');
+        $admin = $input->getOption('admin');
 
         $trabajador = new Trabajador();
         $trabajador->setDatoPersona($numeroIdentidad, $nombre, '', $apellidoPrimero, $apellidoSegundo);
-        $trabajador->setDatoCredencial($usuario, $password);
+        $trabajador->setDatoCredencial($usuario, $password, $admin);
         $trabajador->setEstructura($estructura);
         $trabajador->addGrupo($grupo);
         $trabajador->setCargo($cargo);

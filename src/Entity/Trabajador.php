@@ -166,11 +166,12 @@ class Trabajador extends _Entity_
         return $this->getPersona()->getNacimiento();
     }
 
-    public function setDatoCredencial($username, $password): self
+    public function setDatoCredencial($username, $password, bool $isAdmin = false): self
     {
         $credencial = new TrabajadorCredencial();
         $credencial->setUsuario($username);
         $credencial->setContrasena($password);
+        $credencial->setAdmin($isAdmin);
 
         $this->setCredencial($credencial);
         return $this;
