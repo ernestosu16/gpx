@@ -23,17 +23,14 @@ class TrabajadorCredencial implements UserInterface, PasswordAuthenticatedUserIn
     #[ORM\Column(type: 'string', length: 60, nullable: false)]
     private string $contrasena;
 
-    #[ORM\Column(type: 'boolean')]
-    private bool $admin;
+    #[ORM\Column(name: 'es_admin', type: 'boolean')]
+    private bool $admin = false;
 
-    #[ORM\Column(type: 'string')]
-    private string $salt;
+    #[ORM\Column(type: 'string', length: 120)]
+    private string $navegador;
 
-    public function __construct()
-    {
-        $this->admin = 0;
-        $this->salt = '';
-    }
+    #[ORM\Column(type: 'json')]
+    private array $ultima_conexion;
 
     public function __toString(): string
     {
@@ -80,6 +77,31 @@ class TrabajadorCredencial implements UserInterface, PasswordAuthenticatedUserIn
     {
         return $this->admin;
     }
+
+    public function getNavegador(): string
+    {
+        return $this->navegador;
+    }
+
+
+    public function setNavegador(string $navegador): TrabajadorCredencial
+    {
+        $this->navegador = $navegador;
+        return $this;
+    }
+
+    public function getUltimaConexion(): array
+    {
+        return $this->ultima_conexion;
+    }
+
+    public function setUltimaConexion(array $ultima_conexion): TrabajadorCredencial
+    {
+        $this->ultima_conexion = $ultima_conexion;
+        return $this;
+    }
+
+
 
     public function getTrabajador(): ?Trabajador
     {
@@ -150,12 +172,12 @@ class TrabajadorCredencial implements UserInterface, PasswordAuthenticatedUserIn
 
     public function getSalt(): ?string
     {
-        return $this->salt;
+        return null;
     }
 
     public function eraseCredentials()
     {
-        // TODO: Implement eraseCredentials() method.
+        return null;
     }
 
 
