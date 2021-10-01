@@ -23,7 +23,7 @@ $(document).ready(function () {
     // });
 
     // Initialize animate panel function
-    $('.animate-panel').animatePanel();
+    //$('.animate-panel').animatePanel();
 
     // Function for collapse hpanel
     $('.showhide').on('click', function (event) {
