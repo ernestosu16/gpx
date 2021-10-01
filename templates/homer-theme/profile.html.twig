@@ -7,15 +7,27 @@
             <div class="col-md-2 border-right">
                 <img src="{{ asset('homer-theme/images/profile.png') }}" width="150px">
             </div>
-            <div class="col-md-5 border-right">
-                {{ form_row(form.persona) }}
-                {{ form_row(form.cargo) }}
+            <div class="col-md-5">
+                {{ form_label(form.persona) }}
+                <div class="row">
+                    <div class="col-sm-6">{{ form_row(form.persona.numero_identidad) }}</div>
+                    <div class="col-sm-6">{{ form_row(form.cargo) }}</div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">{{ form_row(form.persona.nombre_primero) }}</div>
+                    <div class="col-sm-6">{{ form_row(form.persona.nombre_segundo) }}</div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">{{ form_row(form.persona.apellido_primero) }}</div>
+                    <div class="col-sm-6">{{ form_row(form.persona.apellido_segundo) }}</div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                {{ form_row(form.credencial) }}
                 {{ form_row(form.estructura) }}
                 {{ form_row(form.grupos) }}
             </div>
-            <div class="col-md-5 border-right">
-                {{ form_row(form.credencial) }}
-            </div>
+            <button class="btn btn-sm btn-success">{{ 'guardar'|trans({},'admin') }}</button>
             {{ form_end(form) }}
         </div>
     </div>

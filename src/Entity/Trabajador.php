@@ -150,6 +150,16 @@ class Trabajador extends _Entity_
         return $this->getPersona()->getNombre();
     }
 
+    #[Pure] public function getNombreCompleto(): string
+    {
+        return $this->getPersona()->getNombreCompleto();
+    }
+
+    public function getSexo(): string
+    {
+        return $this->getPersona()->getSexo();
+    }
+
     public function setDatoCredencial($username, $password): self
     {
         $credencial = new TrabajadorCredencial();

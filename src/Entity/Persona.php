@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\PersonaRepository;
 use App\Utils\RegexUtil;
+use App\Utils\SigloUtil;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -14,6 +16,9 @@ use function Symfony\Component\String\u;
 #[ORM\Index(fields: ['numero_identidad'], name: 'IDX_NUMERO_IDENTIDAD')]
 class Persona extends _Entity_
 {
+    const HOMBRE = 'hombre';
+    const MUJER = 'mujer';
+
     #[ORM\Column(type: 'string', length: 32, unique: true)]
     private string $hash;
 
@@ -191,5 +196,56 @@ class Persona extends _Entity_
             $c[] = $this->getApellidos();
 
         return implode(' ', $c);
+    }
+
+    public function getSiglo(): int
+    {
+        $numeroSiglo = (int)u($this->getNumeroIdentidad())->slice(6, -4)->toString();
+
+        if (0 <= $numeroSiglo && $numeroSiglo <= 5)
+            return SigloUtil::XX;
+
+        if (6 <= $numeroSiglo && $numeroSiglo <= 8)
+            return SigloUtil::XXI;
+
+        return SigloUtil::XIX;
+    }
+
+    public function getNacimiento(): DateTime
+    {
+        $longevidadMaxima = 119;
+        $nacimiento = null;
+        $dateNow = new DateTime('now');
+        $numeroNacimiento = u($this->getNumeroIdentidad())->slice(0, -5)->chunk(2);
+
+        $years = SigloUtil::getTablaSiglo($this->getSiglo(), true);
+        foreach ($years as $year) {
+            $fechaToString = u($year)
+                ->slice(0, -2)->append($numeroNacimiento[0])
+                ->append('-')->append($numeroNacimiento[1])
+                ->append('-')->append($numeroNacimiento[2])
+                ->toString();
+            $fecha = new DateTime($fechaToString);
+
+            $interval = $dateNow->diff($fecha);
+
+            # Comprobar que la fecha no rebase a la fecha actual
+            # y que los annos no superen al tiempo maximo de vida registrado
+            if ($fecha > $dateNow || $interval->y > $longevidadMaxima)
+                continue;
+
+            $nacimiento = new DateTime($fechaToString);
+
+        }
+
+        return $nacimiento;
+    }
+
+    public function getSexo(): string
+    {
+        $numeroSexo = (int)u($this->getNumeroIdentidad())->slice(9, -1)->toString();
+
+        $sexo = ($numeroSexo % 2) ? self::MUJER : self::HOMBRE;
+        return u($sexo)->title()->toString();
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form\Admin;
+namespace App\Form\Security;
 
 use App\Entity\TrabajadorCredencial;
 use Symfony\Component\Form\AbstractType;
@@ -19,7 +19,7 @@ class TrabajadorCredencialType extends AbstractType
         $builder
             ->add('usuario', TextType::class, [
                 'label' => 'usuario',
-                'label_attr' => ['class' => 'col-sm-4 control-label'],
+                'label_attr' => ['class' => 'control-label'],
                 'attr' => ['autocomplete' => 'off', 'class' => 'form-control input-sm'],
                 'disabled' => (bool)$data?->getUsuario(),
                 'required' => false,
@@ -31,11 +31,11 @@ class TrabajadorCredencialType extends AbstractType
                 'options' => ['attr' => ['class' => 'form-control input-sm password-field']],
                 'first_options' => [
                     'label' => 'contrasena',
-                    'label_attr' => ['class' => 'col-sm-4 control-label'],
+                    'label_attr' => ['class' => 'control-label'],
                 ],
                 'second_options' => [
                     'label' => 'repetir contrasena',
-                    'label_attr' => ['class' => 'col-sm-4 control-label'],
+                    'label_attr' => ['class' => 'control-label'],
                 ],
             ]);
     }

@@ -50,7 +50,6 @@ class SecurityController extends AbstractController
 
             return $this->redirectToRoute('app_profile', [], Response::HTTP_SEE_OTHER);
         }
-        dump($form);
 
         return $this->renderForm('homer-theme/profile.html.twig', [
             'trabajador' => $credencial->getTrabajador(),
