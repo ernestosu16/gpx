@@ -15,6 +15,7 @@
         <a href="{{ path(settings.routes.index) }}" class="btn btn-sm btn-default">
             {{ 'volver a la lista'|trans([],'admin') }}
         </a>
+
         {% if(entity.id) %}
             <div class="pull-right">{{ include('admin/grupo/_delete_form.html.twig') }}</div>
         {% endif %}
