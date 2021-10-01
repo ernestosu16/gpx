@@ -3,11 +3,11 @@
 namespace App\Controller\Admin;
 
 use App\Controller\_Controller_;
+use Doctrine\ORM\ORMInvalidArgumentException;
 use ReflectionProperty;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Yaml\Yaml;
 
 abstract class _CrudController_ extends _Controller_
 {
@@ -46,6 +46,11 @@ abstract class _CrudController_ extends _Controller_
     protected static function fields(): array
     {
         return [];
+    }
+
+    protected static function parentCode(): ?string
+    {
+        return null;
     }
 
     abstract protected static function entity(): string;
@@ -118,6 +123,14 @@ abstract class _CrudController_ extends _Controller_
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            if (static::parentCode()) {
+                $parent = $this->getDoctrine()->getManager()->getRepository($class)->findOneByCodigo(static::parentCode());
+                if (!$parent)
+                    throw new ORMInvalidArgumentException(sprintf("No se encontró el padre el código \"%s\" buscado", static::parentCode()));
+                $entity->setParent($parent);
+            }
+
             $this->getDoctrine()->getManager()->persist($entity);
             $this->getDoctrine()->getManager()->flush();
 

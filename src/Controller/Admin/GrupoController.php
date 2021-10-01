@@ -2,8 +2,10 @@
 
 namespace App\Controller\Admin;
 
+use App\Config\Data\Nomenclador\GrupoData;
 use App\Entity\Grupo;
 use App\Form\Admin\GrupoType;
+use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route(path: '/grupo', name: 'admin_grupo')]
@@ -17,6 +19,11 @@ final class GrupoController extends _CrudController_
     protected static function formType(): string
     {
         return GrupoType::class;
+    }
+
+    #[Pure] protected static function parentCode(): ?string
+    {
+        return GrupoData::code();
     }
 
     protected static function config(): array

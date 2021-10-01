@@ -2,5 +2,20 @@
 {% block title %}{{ settings.titles.new|trans([],settings.translation_domain) }}{% endblock %}
 {% block panel_title %}{{ settings.titles.new|trans([],settings.translation_domain) }}{% endblock %}
 {% block body %}
-    {{ include('admin/grupo/_form.html.twig') }}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="hpanel">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a data-toggle="tab" href="#tab-1"> Datos</a></li>
+                    <li class=""><a data-toggle="tab" href="#tab-2">Permisos</a></li>
+                </ul>
+                {{ form_start(form) }}
+                {{ form_errors(form) }}
+                <div class="tab-content">
+                    {{ include('admin/grupo/_form.html.twig') }}
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
 {% endblock %}
