@@ -3,10 +3,11 @@
 namespace App\Controller\Admin;
 
 use App\Controller\_Controller_;
-use App\Entity\Estructura;
 use App\Entity\Trabajador;
 use App\Entity\TrabajadorCredencial;
 use App\Form\Admin\TrabajadorType;
+use App\Repository\EstructuraRepository;
+use App\Repository\TrabajadorRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -14,6 +15,13 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route(path: '/trabajador', name: 'admin_trabajador_')]
 final class TrabajadorController extends _Controller_
 {
+    public function __construct(
+        private TrabajadorRepository $trabajadorRepository,
+        private EstructuraRepository $estructuraRepository
+    )
+    {
+    }
+
     #[Route('/', name: 'index', methods: ['GET'])]
     public function index(Request $request): Response
     {
@@ -23,18 +31,18 @@ final class TrabajadorController extends _Controller_
         /** @var TrabajadorCredencial $credencial */
         $credencial = $this->getUser();
 
-        # Obtengo la lista de estructura subordinadas a la principal
-        $estructuras = $this->getDoctrine()->getRepository(Estructura::class)->getChildren(
-            $credencial->getTrabajador()->getEstructura()
-        );
+        if (in_array('ROLE_ADMIN', $credencial->getRoles())) {
+            $trabajadores = $this->trabajadorRepository->findAll();
+        } else {
+            # Obtengo la lista de estructura subordinada a la principal
+            $estructuras = $this->estructuraRepository->getChildren($credencial->getTrabajador()->getEstructura());
 
-        # Agrego la estructura principal a la lista de subordinadas
-        $estructuras[] = $credencial->getTrabajador()->getEstructura();
+            # Agrego la estructura principal a la lista de subordinadas
+            $estructuras[] = $credencial->getTrabajador()->getEstructura();
 
-        # Obtengo la lista de trabajadores de las lista de estructuras
-        $trabajadores = $this->getDoctrine()->getRepository(Trabajador::class)->findByEstructuras(
-            $estructuras
-        );
+            # Obtengo la lista de trabajadores de las lista de estructuras
+            $trabajadores = $this->trabajadorRepository->findByEstructuras($estructuras);
+        }
 
         return $this->render('admin/trabajador/index.html.twig', [
             'trabajadores' => $trabajadores,

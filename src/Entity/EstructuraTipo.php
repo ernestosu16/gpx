@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\Pure;
 
 #[ORM\Entity(repositoryClass: EstructuraTipoRepository::class)]
+#[ORM\Cache]
 class EstructuraTipo extends Nomenclador
 {
     #[ORM\ManyToMany(targetEntity: Estructura::class, mappedBy: 'tipos')]

@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Exception;
 
 #[ORM\Entity(repositoryClass: MenuRepository::class)]
+#[ORM\Cache]
 class Menu extends Nomenclador
 {
     public function getRoute(): ?string
@@ -46,9 +47,6 @@ class Menu extends Nomenclador
         return $this;
     }
 
-    /**
-     * @throws Exception
-     */
     public function getNotify(): ?DateTime
     {
         $v = $this->getParametro('notify');
@@ -63,9 +61,6 @@ class Menu extends Nomenclador
         return $this;
     }
 
-    /**
-     * @throws Exception
-     */
     public function checkNotify(): bool
     {
         $notify = $this->getNotify();

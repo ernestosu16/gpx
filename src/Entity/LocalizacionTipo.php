@@ -6,6 +6,7 @@ use App\Repository\LocalizacionTipoRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: LocalizacionTipoRepository::class)]
+#[ORM\Cache]
 class LocalizacionTipo extends Nomenclador
 {
     const PROVINCIA = 'PROVINCIA';

@@ -27,6 +27,8 @@ final class EstructuraController extends _CrudController_
         return [
             'titles' => [
                 self::INDEX => 'Listado de las estructuras',
+                self::NEW => 'Nueva estructura',
+                self::EDIT => 'Editar estructura',
             ],
             'templates' => [
                 self::INDEX => 'admin/estructura/index.html.twig',
