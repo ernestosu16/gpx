@@ -30,15 +30,16 @@
                         </div>
                     </td>
                     <td>
-                        <ul class="inline">
-                            {% for estructura in grupo.estructuras %}
-                                <li>{{ estructura }}</li>
-                            {% endfor %}
-                        </ul>
+                        <div class="article">
+                            <ul class="inline">
+                                {% for estructura in grupo.estructuras %}
+                                    <li>{{ estructura }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
                     </td>
                     <td>{{ grupo.habilitado ? 'si'|trans([],'admin') : 'no'|trans([],'admin') }}</td>
                     <td>
-
                         <a class="btn btn-xs btn-default" href="{{ path('admin_grupo_edit', {'id': grupo.id}) }}"
                            title="{{ 'editar'|trans([],'admin') }}">
                             <i class="fa fa-pencil"></i>
