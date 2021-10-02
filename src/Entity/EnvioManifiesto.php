@@ -39,17 +39,17 @@ class EnvioManifiesto extends _Entity_
     #[SerializedName('descripcion')]
     private string $descripcion;
 
-    #[ORM\ManyToOne(targetEntity: Persona::class)]
+    #[ORM\ManyToOne(targetEntity: Persona::class, cascade: ['persist'])]
     #[ORM\JoinColumn(name: 'destinatario_id', referencedColumnName: 'id')]
     private Persona $destinatario;
 
-    #[ORM\Column(type: 'string', length: 5, nullable: false)]
-    #[SerializedName('nacionalidad')]
-    private string $nacionalidad_destinatario;
+//    #[ORM\Column(type: 'string', length: 5, nullable: false)]
+//    #[SerializedName('nacionalidad')]
+//    private string $nacionalidad_destinatario;
 
-    #[ORM\Column(type: 'string', length: 20, nullable: false)]
-    //#[Assert\NotBlank]
-    private string $fecha_nacimiento_destinatario;
+//    #[ORM\Column(type: 'string', length: 20, nullable: false)]
+//    //#[Assert\NotBlank]
+//    private string $fecha_nacimiento_destinatario;
 
     #[ORM\Column(type: 'string', length: 15, nullable: false)]
     private string $telefono_destinatario;
@@ -78,16 +78,16 @@ class EnvioManifiesto extends _Entity_
     #[ORM\Column(type: 'string', length: 10, nullable: false)]
     private string $municipio_destinatario;
 
-    #[ORM\ManyToOne(targetEntity: Persona::class)]
+    #[ORM\ManyToOne(targetEntity: Persona::class, cascade: ['persist'])]
     #[ORM\JoinColumn(name: 'remitente_id', referencedColumnName: 'id', nullable: false)]
     private Persona $remitente;
 
-    #[ORM\Column(type: 'string', length: 11, nullable: false)]
-    private string $nacionalidad_remitente;
+//    #[ORM\Column(type: 'string', length: 11, nullable: false)]
+//    private string $nacionalidad_remitente;
 
-    #[ORM\Column(type: 'string', length: 20, nullable: false)]
-    //#[Assert\NotBlank]
-    private string $fecha_nacimiento_remitente;
+//    #[ORM\Column(type: 'string', length: 20, nullable: false)]
+//    //#[Assert\NotBlank]
+//    private string $fecha_nacimiento_remitente;
 
     #[ORM\Column(type: 'boolean', nullable: false)]
     private bool $recepcionado;
@@ -136,8 +136,8 @@ class EnvioManifiesto extends _Entity_
         $this->no_vuelo = $no_vuelo;
         $this->pais_origen = $pais_origen;
         $this->descripcion = $descripcion;
-        $this->nacionalidad_destinatario = $nacionalidad_destinatario;
-        $this->fecha_nacimiento_destinatario = $fecha_nacimiento_destinatario;
+        //$this->nacionalidad_destinatario = $nacionalidad_destinatario;
+        //$this->fecha_nacimiento_destinatario = $fecha_nacimiento_destinatario;
         $this->telefono_destinatario = $telefono_destinatario;
         $this->calle_destinatario = $calle_destinatario;
         $this->entre_calle_destinatario = $entre_calle_destinatario;
@@ -147,10 +147,11 @@ class EnvioManifiesto extends _Entity_
         $this->apto_destinatario = $apto_destinatario;
         $this->provincia_destinatario = $provincia_destinatario;
         $this->municipio_destinatario = $municipio_destinatario;
-        $this->nacionalidad_remitente = $nacionalidad_remitente;
-        $this->fecha_nacimiento_remitente = $fecha_nacimiento_remitente;
+        //$this->nacionalidad_remitente = $nacionalidad_remitente;
+        //$this->fecha_nacimiento_remitente = $fecha_nacimiento_remitente;
         $this->recepcionado = false;
         $this->interes_aduana = false;
+        $this->arancel = '';
     }
 
 
@@ -296,38 +297,6 @@ class EnvioManifiesto extends _Entity_
     public function setDestinatario(Persona $destinatario): void
     {
         $this->destinatario = $destinatario;
-    }
-
-    /**
-     * @return string
-     */
-    public function getNacionalidadDestinatario(): string
-    {
-        return $this->nacionalidad_destinatario;
-    }
-
-    /**
-     * @param string $nacionalidad_destinatario
-     */
-    public function setNacionalidadDestinatario(string $nacionalidad_destinatario): void
-    {
-        $this->nacionalidad_destinatario = $nacionalidad_destinatario;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFechaNacimientoDestinatario(): string
-    {
-        return $this->fecha_nacimiento_destinatario;
-    }
-
-    /**
-     * @param string $fecha_nacimiento_destinatario
-     */
-    public function setFechaNacimientoDestinatario(string $fecha_nacimiento_destinatario): void
-    {
-        $this->fecha_nacimiento_destinatario = $fecha_nacimiento_destinatario;
     }
 
     /**
@@ -488,38 +457,6 @@ class EnvioManifiesto extends _Entity_
     public function setRemitente(Persona $remitente): void
     {
         $this->remitente = $remitente;
-    }
-
-    /**
-     * @return string
-     */
-    public function getNacionalidadRemitente(): string
-    {
-        return $this->nacionalidad_remitente;
-    }
-
-    /**
-     * @param string $nacionalidad_remitente
-     */
-    public function setNacionalidadRemitente(string $nacionalidad_remitente): void
-    {
-        $this->nacionalidad_remitente = $nacionalidad_remitente;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFechaNacimientoRemitente(): string
-    {
-        return $this->fecha_nacimiento_remitente;
-    }
-
-    /**
-     * @param string $fecha_nacimiento_remitente
-     */
-    public function setFechaNacimientoRemitente(string $fecha_nacimiento_remitente): void
-    {
-        $this->fecha_nacimiento_remitente = $fecha_nacimiento_remitente;
     }
 
     /**
