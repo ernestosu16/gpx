@@ -43,6 +43,11 @@ class LocalizacionType extends AbstractType
                 'label_attr' => ['class' => 'col-sm-2 control-label'],
                 'attr' => ['class' => 'form-control input-sm'],
             ])
+            ->add('codigoAduana', TextType::class, [
+                'attr' => ['class' => 'form-control input-sm'],
+                'label' => 'codigo',
+                'label_attr' => ['class' => 'col-sm-2 control-label'],
+            ])
             ->add('tipo', EntityType::class, [
                 'class' => LocalizacionTipo::class,
                 'label' => 'tipo',

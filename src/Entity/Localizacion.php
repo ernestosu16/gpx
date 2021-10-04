@@ -53,6 +53,10 @@ class Localizacion extends BaseNestedTree
     #[Assert\Length(max: 500)]
     protected string $descripcion = '';
 
+    #[ORM\Column(type: 'text', length: 2)]
+    #[Assert\Length(max: 2)]
+    protected string $codigo_aduana = '';
+
     #[ORM\ManyToOne(targetEntity: LocalizacionTipo::class)]
     #[ORM\JoinColumn(name: 'localizacion_tipo_id', nullable: false)]
     protected ?LocalizacionTipo $tipo;
@@ -166,6 +170,17 @@ class Localizacion extends BaseNestedTree
     {
         $this->tipo = $tipo;
 
+        return $this;
+    }
+
+    public function getCodigoAduana(): string
+    {
+        return $this->codigo_aduana;
+    }
+
+    public function setCodigoAduana(string $codigo_aduana): Localizacion
+    {
+        $this->codigo_aduana = $codigo_aduana;
         return $this;
     }
 }
