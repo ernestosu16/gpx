@@ -39,6 +39,11 @@ menu:
                 route: 'admin_estructura_index'
                 icon: 'fa fa-building'
 
+            -   codigo: 'ADMIN_AGENCIA'
+                nombre: 'Agencias'
+                route: 'admin_agencia_index'
+                icon: 'fa fa-plane'
+
     -   codigo: 'NOMENCLADORES'
         nombre: 'Nomencladores'
         route: null
