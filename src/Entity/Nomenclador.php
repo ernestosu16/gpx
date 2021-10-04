@@ -30,6 +30,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     "menu" => Menu::class,
     "estructura_tipo" => EstructuraTipo::class,
     "localizacion_tipo" => LocalizacionTipo::class,
+    "agencia" => Agencia::class,
 ])]
 class Nomenclador extends BaseNestedTree
 {
