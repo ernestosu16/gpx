@@ -9,7 +9,7 @@ use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route(path: '/agencia', name: 'admin_agencia')]
-class AgenciaController extends _CrudController_
+final class AgenciaController extends _CrudController_
 {
     protected static function entity(): string
     {

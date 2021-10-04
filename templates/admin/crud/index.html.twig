@@ -13,7 +13,7 @@
             </tr>
             </thead>
             <tbody>
-            {% for  row in collection %}
+            {% for  row in pagination %}
                 <tr>
                     {% for field in settings.fields %}
                         <td>{{ callField(row,field) }}</td>
@@ -35,6 +35,9 @@
             {% endfor %}
             </tbody>
         </table>
+    </div>
+    <div class="pull-right">
+        <div class="navigation">{{ knp_pagination_render(pagination) }}</div>
     </div>
     {% if settings.routes.new %}
         <a class="btn btn-sm btn-primary" href="{{ path(settings.routes.new) }}">

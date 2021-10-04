@@ -16,7 +16,7 @@
             </thead>
             <tbody>
             {# @var grupo \App\Entity\Grupo #}
-            {% for grupo in collection %}
+            {% for grupo in pagination %}
                 <tr>
                     <td>{{ grupo.nombre }}</td>
                     <td>{{ grupo.descripcion }}</td>
@@ -48,11 +48,14 @@
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="3">{{ 'No se encontraron registros'|trans({},'admin') }}</td>
+                    <td colspan="6">{{ 'No se encontraron registros'|trans({},'admin') }}</td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
+    </div>
+    <div class="pull-right">
+        <div class="navigation">{{ knp_pagination_render(pagination) }}</div>
     </div>
     <a class="btn btn-sm btn-primary" href="{{ path('admin_grupo_new') }}">
         {{ 'crear grupo'|trans({}, 'admin') }}</a>

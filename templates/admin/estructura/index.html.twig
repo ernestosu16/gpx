@@ -17,7 +17,7 @@
             </tr>
             </thead>
             <tbody>
-            {% for estructura in collection %}
+            {% for estructura in pagination %}
                 <tr>
                     <td>{{ estructura.nombre }}</td>
                     <td>{{ estructura.codigoPostal }}</td>
@@ -56,6 +56,9 @@
             {% endfor %}
             </tbody>
         </table>
+    </div>
+    <div class="pull-right">
+        <div class="navigation">{{ knp_pagination_render(pagination) }}</div>
     </div>
     <a class="btn btn-sm btn-primary" href="{{ path('admin_estructura_new') }}">
         Nueva estructura
