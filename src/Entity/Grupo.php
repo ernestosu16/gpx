@@ -51,18 +51,6 @@ class Grupo extends Nomenclador
         return $this;
     }
 
-    public function getRoles(): array
-    {
-        return $this->hasParametro('roles') ? $this?->getParametro('roles') : [];
-    }
-
-    public function setRoles(array $roles): self
-    {
-        $this->setParametro('roles', $roles);
-
-        return $this;
-    }
-
     /**
      * @return Collection|Estructura[]
      */
@@ -86,6 +74,18 @@ class Grupo extends Nomenclador
         if ($this->estructuras->removeElement($estructura)) {
             $estructura->removeGrupo($this);
         }
+
+        return $this;
+    }
+
+    public function getAccesos(): array
+    {
+        return $this->hasParametro('accesos') ? $this?->getParametro('accesos') : [];
+    }
+
+    public function setAccesos(array $routes): self
+    {
+        $this->setParametro('accesos', $routes);
 
         return $this;
     }

@@ -3,7 +3,9 @@
 namespace App\Controller\Admin;
 
 use App\Controller\_Controller_;
+use App\Entity\Estructura;
 use App\Entity\Trabajador;
+use App\Entity\TrabajadorCredencial;
 use App\Form\Admin\TrabajadorType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,20 +15,38 @@ use Symfony\Component\Routing\Annotation\Route;
 final class TrabajadorController extends _Controller_
 {
     #[Route('/', name: 'index', methods: ['GET'])]
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $trabajadors = $this->getDoctrine()
-            ->getRepository(Trabajador::class)
-            ->findAll();
+        # Comprobando si el trabajador tiene acceso a esta opción
+        $this->denyAccessUnlessGranted([], $request);
+
+        /** @var TrabajadorCredencial $credencial */
+        $credencial = $this->getUser();
+
+        # Obtengo la lista de estructura subordinadas a la principal
+        $estructuras = $this->getDoctrine()->getRepository(Estructura::class)->getChildren(
+            $credencial->getTrabajador()->getEstructura()
+        );
+
+        # Agrego la estructura principal a la lista de subordinadas
+        $estructuras[] = $credencial->getTrabajador()->getEstructura();
+
+        # Obtengo la lista de trabajadores de las lista de estructuras
+        $trabajadores = $this->getDoctrine()->getRepository(Trabajador::class)->findByEstructuras(
+            $estructuras
+        );
 
         return $this->render('admin/trabajador/index.html.twig', [
-            'trabajadors' => $trabajadors,
+            'trabajadores' => $trabajadores,
         ]);
     }
 
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
+        # Comprobando si el trabajador tiene acceso a esta opción
+        $this->denyAccessUnlessGranted([], $request);
+
         $trabajador = new Trabajador();
         $form = $this->createForm(TrabajadorType::class, $trabajador);
         $form->handleRequest($request);
@@ -46,8 +66,9 @@ final class TrabajadorController extends _Controller_
     }
 
     #[Route('/{trabajador}', name: 'show', methods: ['GET'])]
-    public function show(Trabajador $trabajador): Response
+    public function show(Request $request, Trabajador $trabajador): Response
     {
+        $this->denyAccessUnlessGranted([], $request);
         return $this->render('admin/trabajador/show.html.twig', [
             'trabajador' => $trabajador,
         ]);
@@ -56,6 +77,8 @@ final class TrabajadorController extends _Controller_
     #[Route('/{trabajador}/edit', name: 'edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Trabajador $trabajador): Response
     {
+        $this->denyAccessUnlessGranted([], $request);
+
         $form = $this->createForm(TrabajadorType::class, $trabajador);
         $form->handleRequest($request);
 
@@ -74,6 +97,8 @@ final class TrabajadorController extends _Controller_
     #[Route('/{trabajador}', name: 'delete', methods: ['POST'])]
     public function delete(Request $request, Trabajador $trabajador): Response
     {
+        $this->denyAccessUnlessGranted([], $request);
+
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->remove($trabajador);
         $entityManager->flush();

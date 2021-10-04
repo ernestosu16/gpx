@@ -2,45 +2,46 @@
 {% block title %}Lista de {{ tipo.nombre }}(s){% endblock %}
 {% block panel_title %}Lista de {{ tipo.nombre }}(s){% endblock %}
 {% block panel_body %}
-    <table class="table table-hover table-bordered table-striped">
-        <thead>
-        <tr>
-            <th>{{ 'nombre'|trans([],'admin') }}</th>
-            <th>{{ 'descripcion'|trans([],'admin') }}</th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody>
-        {# @var localizacion \App\Entity\Localizacion #}
-        {% for  localizacion in localizaciones %}
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered table-striped">
+            <thead>
             <tr>
-                <td>{{ localizacion.nombre }}</td>
-                <td>{{ localizacion.descripcion }}</td>
-                <td>
-                    <div class="pull-right">
-                        {% for tipo in localizacion.tipo.children %}
-                            <a class="btn btn-xs btn-default"
-                               href="{{ path('admin_localizacion_index', {'tipo':tipo.codigo,'parent': localizacion.codigo}) }}"
-                               title="{{ tipo.nombre }}">
-                                <i class="fa fa-list"></i> Lista de {{ tipo.nombre }}
-                                <span class="label label-info">{{ localizacion.children.count }}</span>
-                            </a>
-                        {% endfor %}
-                    </div>
-                    {# <a class="btn btn-xs btn-default" href="{{ path('admin_localizacion_edit', {'id': localizacion.id}) }}" #}
-                    {# title="{{ 'editar'|trans([],'admin') }}"> #}
-                    {# <i class="fa fa-pencil"></i> #}
-                    {# </a> #}
-                </td>
+                <th>{{ 'nombre'|trans([],'admin') }}</th>
+                <th>{{ 'descripcion'|trans([],'admin') }}</th>
+                <th></th>
             </tr>
-        {% else %}
-            <tr>
-                <td colspan="3">{{ 'No se encontraron registros'|trans([],'admin') }}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
+            </thead>
+            <tbody>
+            {# @var localizacion \App\Entity\Localizacion #}
+            {% for  localizacion in localizaciones %}
+                <tr>
+                    <td>{{ localizacion.nombre }}</td>
+                    <td>{{ localizacion.descripcion }}</td>
+                    <td>
+                        <div class="pull-right">
+                            {% for tipo in localizacion.tipo.children %}
+                                <a class="btn btn-xs btn-default"
+                                   href="{{ path('admin_localizacion_index', {'tipo':tipo.codigo,'parent': localizacion.codigo}) }}"
+                                   title="{{ tipo.nombre }}">
+                                    <i class="fa fa-list"></i> Lista de {{ tipo.nombre }}
+                                    <span class="label label-info">{{ localizacion.children.count }}</span>
+                                </a>
+                            {% endfor %}
+                        </div>
+                        {# <a class="btn btn-xs btn-default" href="{{ path('admin_localizacion_edit', {'id': localizacion.id}) }}" #}
+                        {# title="{{ 'editar'|trans([],'admin') }}"> #}
+                        {# <i class="fa fa-pencil"></i> #}
+                        {# </a> #}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="3">{{ 'No se encontraron registros'|trans([],'admin') }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
     {% set prentCodigo = null %}
     {% if parent.parent.codigo is defined %}
         {% set prentCodigo = parent.parent.codigo %}

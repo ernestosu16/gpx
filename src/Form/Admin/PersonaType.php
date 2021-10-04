@@ -21,7 +21,8 @@ class PersonaType extends AbstractType
                 'label' => 'numero de identidad',
                 'label_attr' => ['class' => 'col-sm-4 control-label'],
                 'attr' => ['autocomplete' => 'off', 'class' => 'form-control input-sm'],
-                'disabled' => (bool)$data?->getId()
+                'disabled' => (bool)$data?->getId(),
+                'help' => 'Número del carné de identidad',
             ])
             ->add('nombre_primero', TextType::class, [
                 'label' => 'nombre',

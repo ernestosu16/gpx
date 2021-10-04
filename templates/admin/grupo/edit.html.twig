@@ -1,0 +1,53 @@
+{% extends 'homer-theme/layout.html.twig' %}
+{% block title %}{{ settings.titles.index|trans([],settings.translation_domain) }}{% endblock %}
+{% block panel_title %}{{ settings.titles.index|trans([],settings.translation_domain) }}{% endblock %}
+{% block body %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="hpanel">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a data-toggle="tab" href="#tab-1"> Datos</a></li>
+                    <li class=""><a data-toggle="tab" href="#tab-2">Permisos</a></li>
+                </ul>
+                {{ form_start(form) }}
+                {{ form_errors(form) }}
+                <div class="tab-content">
+                    {{ include('admin/grupo/_form.html.twig', {'button_label': 'guardar'|trans([],settings.translation_domain)}) }}
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('form').validate();
+
+            let btn = $('.delete');
+            let div = btn.parent('div');
+            btn.click(function () {
+                swal({
+                        title: "Estás seguro",
+                        text: "¡No podrá volver a recuperar los datos!",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Si, bórralo!",
+                        cancelButtonText: "Cancelar"
+                    },
+                    function (isConfirm) {
+                        if (isConfirm) {
+                            let form = document.createElement("form");
+                            form.setAttribute("method", 'post');
+                            form.setAttribute("action", div[0].dataset.action);
+                            form.appendChild(btn.prev()[0]);
+                            document.body.appendChild(form);
+                            form.submit();
+                        }
+                    }
+                )
+            });
+        });
+    </script>
+{% endblock %}

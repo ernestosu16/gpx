@@ -47,7 +47,7 @@ class Nomenclador extends BaseNestedTree
     #[ORM\OneToMany(mappedBy: 'parent', targetEntity: Nomenclador::class, cascade: ['persist'])]
     #[ORM\OrderBy(['lft' => 'ASC'])]
     #[MaxDepth(1)]
-    private ?Collection $children;
+    protected Collection $children;
 
     #[ORM\Column(type: 'string', length: 100, unique: true)]
     #[Assert\NotBlank]

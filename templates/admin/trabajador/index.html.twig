@@ -2,43 +2,50 @@
 {% block title %}Listado de los trabajadores{% endblock %}
 {% block panel_title %}Listado de los trabajadores{% endblock %}
 {% block panel_body %}
-    <table class="table table-hover table-bordered table-striped">
-        <thead>
-        <tr>
-            <th>{{ 'numero de identidad'|trans({},'admin') }}</th>
-            <th>{{ 'nombre'|trans({},'admin') }}</th>
-            <th>{{ 'estructura'|trans({},'admin') }}</th>
-            <th>{{ 'cargo'|trans({},'admin') }}</th>
-            <th>{{ 'habilitado'|trans({},'admin') }}</th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for trabajador in trabajadors %}
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered table-striped">
+            <thead>
             <tr>
-                <td>{{ trabajador.persona.numeroIdentidad }}</td>
-                <td>{{ trabajador.persona }}</td>
-                <td>{{ trabajador.estructura }}</td>
-                <td>{{ trabajador.cargo }}</td>
-                <td>{{ trabajador.habilitado ? 'si'|trans({},'admin') : 'no'|trans({},'admin') }}</td>
-                <td>
-                    <a href="{{ path('admin_trabajador_show', {'trabajador': trabajador.id}) }}"
-                       class="btn btn-xs btn-default" title="{{ 'mostrar'|trans([],'admin') }}">
-                        <i class="fa fa-eye"></i>
-                    </a>
-                    <a href="{{ path('admin_trabajador_edit', {'trabajador': trabajador.id}) }}"
-                       class="btn btn-xs btn-default" title="{{ 'editar'|trans([],'admin') }}">
-                        <i class="fa fa-pencil"></i>
-                    </a>
-                </td>
+                <th>{{ 'numero de identidad'|trans({},'admin') }}</th>
+                <th>{{ 'nombre'|trans({},'admin') }}</th>
+                <th>{{ 'sexo'|trans({},'admin') }}</th>
+                <th>{{ 'cargo'|trans({},'admin') }}</th>
+                <th>{{ 'estructura'|trans({},'admin') }}</th>
+                <th>{{ 'habilitado'|trans({},'admin') }}</th>
+                <th></th>
             </tr>
-        {% else %}
-            <tr>
-                <td colspan="6">{{ 'No se encontraron registros'|trans({},'admin')}}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-    <a class="btn btn-sm btn-primary" href="{{ path('admin_trabajador_new') }}">
-        {{ 'nuevo'|trans([],'admin') }}</a>
+            </thead>
+            <tbody>
+            {% for trabajador in trabajadores %}
+                <tr>
+                    <td>{{ trabajador.persona.numeroIdentidad }}</td>
+                    <td>{{ trabajador.nombreCompleto }}</td>
+                    <td>{{ trabajador.sexo }}</td>
+                    <td>{{ trabajador.cargo }}</td>
+                    <td>{{ trabajador.estructura }}</td>
+                    <td>{{ trabajador.habilitado ? 'si'|trans({},'admin') : 'no'|trans({},'admin') }}</td>
+                    <td>
+                        <a href="{{ path('admin_trabajador_show', {'trabajador': trabajador.id}) }}"
+                           class="btn btn-xs btn-default" title="{{ 'mostrar'|trans([],'admin') }}">
+                            <i class="fa fa-eye"></i>
+                        </a>
+                        <a href="{{ path('admin_trabajador_edit', {'trabajador': trabajador.id}) }}"
+                           class="btn btn-xs btn-default" title="{{ 'editar'|trans([],'admin') }}">
+                            <i class="fa fa-pencil"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6">{{ 'No se encontraron registros'|trans({},'admin') }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <a class="btn btn-sm btn-primary" href="{{ path('admin_trabajador_new') }}">
+            {{ 'nuevo'|trans([],'admin') }}
+        </a>
+    </div>
 {% endblock %}

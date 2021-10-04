@@ -1,1 +1,5 @@
 services:
+    App\Security\Voter\RouteAccessVoter:
+        arguments: ['@doctrine.orm.entity_manager']
+        tags:
+            - 'security.voter'

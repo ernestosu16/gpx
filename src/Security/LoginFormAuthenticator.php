@@ -2,6 +2,8 @@
 
 namespace App\Security;
 
+use App\Entity\TrabajadorCredencial;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,17 +18,18 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\PassportInterface;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
-class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
+final class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
 {
     use TargetPathTrait;
 
     public const LOGIN_ROUTE = 'app_login';
 
-    private UrlGeneratorInterface $urlGenerator;
-
-    public function __construct(UrlGeneratorInterface $urlGenerator)
+    public function __construct(
+        private UrlGeneratorInterface  $urlGenerator,
+        private EntityManagerInterface $entityManager
+    )
     {
-        $this->urlGenerator = $urlGenerator;
+
     }
 
     public function authenticate(Request $request): PassportInterface
@@ -50,13 +53,23 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
             return new RedirectResponse($targetPath);
         }
 
-        // For example:
-        return new RedirectResponse($this->urlGenerator->generate('dashboard'));
-//        throw new \Exception('TODO: provide a valid redirect inside ' . __FILE__);
+        $this->setCredencialTrabajador($token, $request);
+
+        return new RedirectResponse($this->urlGenerator->generate('app_dashboard'));
     }
 
     protected function getLoginUrl(Request $request): string
     {
         return $this->urlGenerator->generate(self::LOGIN_ROUTE);
+    }
+
+    private function setCredencialTrabajador(TokenInterface $token, Request $request)
+    {
+        /** @var TrabajadorCredencial $credencial */
+        $credencial = $token->getUser();
+        $credencial->setUltimaConexion($request->getClientIps());
+        $credencial->setNavegador($request->headers->get('user-agent'));
+        $this->entityManager->persist($credencial);
+        $this->entityManager->flush();
     }
 }

@@ -1,0 +1,4 @@
+<div data-action="{{ path(settings.routes.delete, {'id': entity.id}) }}">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ entity.id) }}">
+    <a class="btn btn-sm btn-danger delete">{{ 'eliminar'|trans([],settings.translation_domain) }}</a>
+</div>

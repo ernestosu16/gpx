@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\TrabajadorRepository;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -49,6 +50,30 @@ class Trabajador extends _Entity_
     #[Pure] public function __toString(): string
     {
         return (string)'';
+    }
+
+    /**
+     * @return Collection|Grupo[]
+     */
+    public function getGrupos(): Collection
+    {
+        return $this->grupos;
+    }
+
+    public function addGrupo(Grupo $grupo): self
+    {
+        if (!$this->grupos->contains($grupo)) {
+            $this->grupos[] = $grupo;
+        }
+
+        return $this;
+    }
+
+    public function removeGrupo(Grupo $grupo): self
+    {
+        $this->grupos->removeElement($grupo);
+
+        return $this;
     }
 
     public function getCargo(): ?string
@@ -121,40 +146,32 @@ class Trabajador extends _Entity_
         return $this;
     }
 
-    /**
-     * @return Collection|Nomenclador[]
-     */
-    public function getGrupos(): Collection
-    {
-        return $this->grupos;
-    }
-
-    public function addGrupo(Nomenclador $grupo): self
-    {
-        if (!$this->grupos->contains($grupo)) {
-            $this->grupos[] = $grupo;
-        }
-
-        return $this;
-    }
-
-    public function removeGrupo(Nomenclador $grupo): self
-    {
-        $this->grupos->removeElement($grupo);
-
-        return $this;
-    }
-
     #[Pure] public function getNombre(): string
     {
         return $this->getPersona()->getNombre();
     }
 
-    public function setDatoCredencial($username, $password): self
+    #[Pure] public function getNombreCompleto(): string
+    {
+        return $this->getPersona()->getNombreCompleto();
+    }
+
+    public function getSexo(): string
+    {
+        return $this->getPersona()->getSexo();
+    }
+
+    public function getNacimiento(): DateTime
+    {
+        return $this->getPersona()->getNacimiento();
+    }
+
+    public function setDatoCredencial($username, $password, bool $isAdmin = false): self
     {
         $credencial = new TrabajadorCredencial();
         $credencial->setUsuario($username);
         $credencial->setContrasena($password);
+        $credencial->setAdmin($isAdmin);
 
         $this->setCredencial($credencial);
         return $this;
@@ -183,5 +200,14 @@ class Trabajador extends _Entity_
 
         $this->setPersona($persona);
         return $this;
+    }
+
+    public function getMenus(): Collection
+    {
+        $menus = [];
+        foreach ($this->getGrupos() as $grupo) {
+            $menus = array_merge($menus, $grupo->getMenus()->toArray());
+        }
+        return new ArrayCollection($menus);
     }
 }

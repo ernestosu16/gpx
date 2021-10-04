@@ -23,8 +23,8 @@ final class GrupoRepository extends NomencladorRepository
         $parent = $this->findOneByCodigo(GrupoData::code());
         $query = parent::createQueryBuilder($alias, $indexBy);
         $query->where($alias . '.parent = :parent')
-            ->setParameter('parent', $parent)
-            ->orderBy($alias . '.nombre', 'ASC');;
+            ->setParameter('parent', $parent->getId())
+            ->orderBy($alias . '.lft', 'ASC');;
         return $query;
     }
 

@@ -1,0 +1,48 @@
+<div id="tab-1" class="tab-pane active">
+    <div class="panel-body">
+        {% set fields = ['codigo', 'nombre','descripcion', 'menus', 'habilitado'] %}
+        {% for field in fields %}
+            <div class="form-group">
+                {{ form_label(form[field]) }}
+                <div class="col-sm-10">
+                    {{ form_widget(form[field]) }}
+                    {{ form_help(form[field]) }}
+                    {{ form_errors(form[field]) }}
+                </div>
+            </div>
+        {% endfor %}
+        <button class="btn btn-sm btn-success">{{ button_label|default('guardar'|trans([],'admin')) }}</button>
+        <a href="{{ path(settings.routes.index) }}" class="btn btn-sm btn-default">
+            {{ 'volver a la lista'|trans([],'admin') }}
+        </a>
+
+        {% if(entity.id) %}
+            <div class="pull-right">{{ include('admin/grupo/_delete_form.html.twig') }}</div>
+        {% endif %}
+    </div>
+</div>
+<div id="tab-2" class="tab-pane">
+    <div class="panel-body">
+        <h3>{{ form_label(form.accesos) }}</h3>
+        <div class="form-group">
+            {% set i = 1 %}
+            {% for group_label, group in form.accesos.vars.choices %}
+                {%- if group is iterable -%}
+                    {% if i == 1 %}<div class="col-sm-12">{% endif %}
+                    <div class="col-sm-3">
+                        <dl>
+                            <dt>{{ group_label }}</dt>
+                            {% for key, choice in group %}
+                                <dd>{{- form_widget(form.accesos[key]) -}}
+                                    &nbsp;&nbsp;{{- form_label(form.accesos[key]) -}}
+                                </dd>
+                            {% endfor %}
+                        </dl>
+                    </div>
+                    {% set i = i + 1 %}
+                    {% if i == 5 %}</div>{% set i = 1 %}{% endif %}
+                {%- endif -%}
+            {% endfor %}
+        </div>
+    </div>
+</div>

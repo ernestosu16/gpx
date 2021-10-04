@@ -27,7 +27,7 @@ class TrabajadorCredencialType extends AbstractType
             ->add('contrasena', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'required' => false,
-                'invalid_message' => 'The password fields must match.',
+                'invalid_message' => 'Los campos de la contraseña deben coincidir.',
                 'options' => ['attr' => ['class' => 'form-control input-sm password-field']],
                 'first_options' => [
                     'label' => 'contrasena',

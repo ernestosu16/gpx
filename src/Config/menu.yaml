@@ -3,8 +3,9 @@ services:
         abstract: true
         calls:
             -   setFactory: [ '@knp_menu.factory' ]
-            -   setContainer: [ '@service_container' ]
             -   setEntityManager: [ '@Doctrine\ORM\EntityManagerInterface' ]
+            -   setRequestStack: [ '@request_stack' ]
+            -   setStorage: [ '@security.token_storage' ]
 
     app.menu_builder:
         class: App\Menu\MenuBuilder
@@ -13,6 +14,5 @@ services:
     app.main_menu:
         class: Knp\Menu\MenuItem # the service definition requires setting the class
         factory: [ "@app.menu_builder", createMainMenu ]
-        arguments: [ "@request_stack" ]
         tags:
             - { name: knp_menu.menu, alias: main } # The alias is what is used to retrieve the menu

@@ -2,25 +2,18 @@
 
 namespace App\Form\Admin;
 
-use App\Entity\Estructura;
 use App\Entity\Grupo;
 use App\Entity\Trabajador;
 use App\Form\Admin\Event\TrabajadorTypeSubscriber;
-use App\Repository\GrupoRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class TrabajadorType extends AbstractType
+class TrabajadorType extends BaseAdminType
 {
-    public function __construct(protected EntityManagerInterface $entityManager)
-    {
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         /** @var Trabajador $data */
@@ -37,21 +30,22 @@ class TrabajadorType extends AbstractType
                 'data' => $data->getCredencial(),
                 'attr' => ['autocomplete' => 'off'],
             ])
-            ->add('estructura', EntityType::class, [
-                'class' => Estructura::class,
+            ->add('estructura', ChoiceType::class, [
                 'label' => 'estructura',
                 'label_attr' => ['class' => 'col-sm-4 control-label'],
                 'attr' => ['class' => 'form-control input-sm select2'],
+                'choices' => $this->getChoiceEstructuras(),
+                'choice_label' => 'nombre',
+                'choice_value' => 'id',
             ])
             ->add('grupos', EntityType::class, [
                 'class' => Grupo::class,
                 'label' => 'grupos',
                 'label_attr' => ['class' => 'col-sm-4 control-label'],
-                'multiple' => true,
                 'attr' => ['class' => 'form-control input-sm select2'],
-                'query_builder' => function (GrupoRepository $gr) {
-                    return $gr->createQueryBuilder('grupo');
-                },
+                'multiple' => true,
+//                'choice_value' => [],
+                'choices' => $this->getChoiceGrupos(),
             ])
             ->add('cargo', TextType::class, [
                 'label' => 'cargo',

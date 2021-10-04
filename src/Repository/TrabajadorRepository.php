@@ -12,6 +12,11 @@ final class TrabajadorRepository extends _Repository_
         return Trabajador::class;
     }
 
+    public function findByEstructuras(array $estructuras): array
+    {
+        return $this->findBy(['estructura' => $estructuras]);
+    }
+
 
     /**
      * @throws NonUniqueResultException

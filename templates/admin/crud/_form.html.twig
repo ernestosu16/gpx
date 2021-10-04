@@ -12,29 +12,6 @@
         </div>
     {% endif %}
 {% endfor %}
-{#{% set i = 0 %}#}
-{#{% for field in settings.fields %}#}
-{#    {% if form[field] is defined %}#}
-{#        <div class="form-group">#}
-{#            <div class="col-sm-2">#}
-{#                {{ form_label(form[field]) }}#}
-{#            </div>#}
-{#            <div class="col-sm-10">#}
-{#                {% if i == 0 %}#}
-{#                    {{ form_widget(form[field], {'attr': {'autofocus': 'autofocus'}}) }}#}
-{#                {% else %}#}
-{#                    {{ form_widget(form[field]) }}#}
-{#                {% endif %}#}
-{#                <small>{{ form_help(form[field]) }}</small>#}
-{#                {% if not form[field].vars.valid %}#}
-{#                    <div class="form-error">{{ form_errors(form[field]) }}</div>#}
-{#                {% endif %}#}
-{#            </div>#}
-{#        </div>#}
-{#        {% set i = i + 1 %}#}
-{#    {% endif %}#}
-{#{% endfor %}#}
-
 <button class="btn btn-sm btn-success">{{ button_label|default('guardar'|trans([],'admin')) }}</button>
 
 <a href="{{ path(settings.routes.index) }}" class="btn btn-sm btn-default">

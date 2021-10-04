@@ -23,12 +23,18 @@ class TrabajadorCredencial implements UserInterface, PasswordAuthenticatedUserIn
     #[ORM\Column(type: 'string', length: 60, nullable: false)]
     private string $contrasena;
 
-    #[ORM\Column(type: 'string')]
-    private string $salt;
+    #[ORM\Column(name: 'es_admin', type: 'boolean')]
+    private bool $admin = false;
 
-    public function __construct()
+    #[ORM\Column(type: 'string', length: 120)]
+    private string $navegador;
+
+    #[ORM\Column(type: 'json')]
+    private array $ultima_conexion;
+
+    public function __toString(): string
     {
-        $this->salt = '';
+        return $this->usuario;
     }
 
     public function getUsuario(): ?string
@@ -55,6 +61,47 @@ class TrabajadorCredencial implements UserInterface, PasswordAuthenticatedUserIn
 
         return $this;
     }
+
+    public function getAdmin(): bool
+    {
+        return $this->admin;
+    }
+
+    public function setAdmin(bool $admin): TrabajadorCredencial
+    {
+        $this->admin = $admin;
+        return $this;
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->admin;
+    }
+
+    public function getNavegador(): string
+    {
+        return $this->navegador;
+    }
+
+
+    public function setNavegador(string $navegador): TrabajadorCredencial
+    {
+        $this->navegador = $navegador;
+        return $this;
+    }
+
+    public function getUltimaConexion(): array
+    {
+        return $this->ultima_conexion;
+    }
+
+    public function setUltimaConexion(array $ultima_conexion): TrabajadorCredencial
+    {
+        $this->ultima_conexion = $ultima_conexion;
+        return $this;
+    }
+
+
 
     public function getTrabajador(): ?Trabajador
     {
@@ -83,6 +130,11 @@ class TrabajadorCredencial implements UserInterface, PasswordAuthenticatedUserIn
         return $this->getTrabajador()?->getCargo();
     }
 
+    #[Pure] public function getEstructura(): ?Estructura
+    {
+        return $this->getTrabajador()?->getEstructura();
+    }
+
     #[Pure] public function getUsername(): ?string
     {
         return $this->usuario;
@@ -101,15 +153,12 @@ class TrabajadorCredencial implements UserInterface, PasswordAuthenticatedUserIn
         return $this->getUsuario();
     }
 
-    public function getRoles(): array
+    #[Pure] public function getRoles(): array
     {
-        $roles = [];
-        /** @var Grupo[] $grupos */
-        $grupos = $this->getTrabajador()->getGrupos();
+        $roles = ['ROLE_USER'];
 
-        foreach ($grupos as $grupo) {
-            $roles = array_merge($roles, $grupo->getRoles());
-        }
+        if ($this->isAdmin())
+            $roles[] = 'ROLE_ADMIN';
 
         return $roles;
     }
@@ -123,12 +172,12 @@ class TrabajadorCredencial implements UserInterface, PasswordAuthenticatedUserIn
 
     public function getSalt(): ?string
     {
-        return $this->salt;
+        return null;
     }
 
     public function eraseCredentials()
     {
-        // TODO: Implement eraseCredentials() method.
+        return null;
     }
 
 

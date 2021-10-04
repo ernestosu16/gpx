@@ -18,16 +18,17 @@ use App\Repository\LocalizacionTipoRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Exception\InvalidOptionException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleSectionOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Yaml;
 
-final class FixtureCommand extends BaseCommand implements BaseCommandInterface
+final class FixturesCommand extends BaseCommand implements BaseCommandInterface
 {
     static function getCommandName(): string
     {
-        return 'app:configurar:fixture';
+        return 'app:configurar:fixtures';
     }
 
     /**
@@ -71,6 +72,9 @@ final class FixtureCommand extends BaseCommand implements BaseCommandInterface
     {
         $root = $this->getRepository(Grupo::class)->findOneByCodigo(GrupoData::code());
 
+        if (!$root)
+            throw new InvalidOptionException(sprintf('Error %s: No existe.', GrupoData::code()));
+
         /** @var array $localizacionTipo */
         $grupo = Yaml::parseFile($this->getKernel()->getProjectDir() . '/src/Config/Fixtures/grupo.yaml');
 
@@ -82,9 +86,6 @@ final class FixtureCommand extends BaseCommand implements BaseCommandInterface
             $grupoEntity->setCodigo($grupo['codigo']);
             $grupoEntity->setNombre($grupo['nombre']);
             $grupoEntity->setDescripcion($grupo['descripcion']);
-
-            if (isset($grupo['roles']) && is_array($grupo['roles']))
-                $grupoEntity->setRoles($grupo['roles']);
 
             $root->addChild($grupoEntity);
             $this->getEntityManager()->persist($root);

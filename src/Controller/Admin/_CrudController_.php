@@ -3,11 +3,11 @@
 namespace App\Controller\Admin;
 
 use App\Controller\_Controller_;
+use Doctrine\ORM\ORMInvalidArgumentException;
 use ReflectionProperty;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Yaml\Yaml;
 
 abstract class _CrudController_ extends _Controller_
 {
@@ -48,13 +48,18 @@ abstract class _CrudController_ extends _Controller_
         return [];
     }
 
+    protected static function parentCode(): ?string
+    {
+        return null;
+    }
+
     abstract protected static function entity(): string;
 
     abstract protected static function formType(): string;
 
     abstract protected static function config(): array;
 
-    private function settings(): array
+    protected function settings(): array
     {
         $fields = static::fields();
         if (empty($fields)) {
@@ -96,8 +101,9 @@ abstract class _CrudController_ extends _Controller_
     }
 
     #[Route('/', name: '_index', methods: ['GET'])]
-    public function index(): Response
+    public function index(Request $request): Response
     {
+        $this->denyAccessUnlessGranted([], $request);
         $settings = $this->settings();
         return $this->render($settings['templates'][self::INDEX], [
             'settings' => $settings,
@@ -109,6 +115,7 @@ abstract class _CrudController_ extends _Controller_
     #[Route('/new', name: '_new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
+        $this->denyAccessUnlessGranted([], $request);
         $settings = $this->settings();
         $class = static::entity();
         $entity = new $class();
@@ -116,6 +123,14 @@ abstract class _CrudController_ extends _Controller_
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            if (static::parentCode()) {
+                $parent = $this->getDoctrine()->getManager()->getRepository($class)->findOneByCodigo(static::parentCode());
+                if (!$parent)
+                    throw new ORMInvalidArgumentException(sprintf("No se encontró el padre el código \"%s\" buscado", static::parentCode()));
+                $entity->setParent($parent);
+            }
+
             $this->getDoctrine()->getManager()->persist($entity);
             $this->getDoctrine()->getManager()->flush();
 
@@ -133,6 +148,7 @@ abstract class _CrudController_ extends _Controller_
     #[Route('/{id}/edit', name: '_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, string $id): Response
     {
+        $this->denyAccessUnlessGranted([], $request);
         $entity = $this->getDoctrine()->getRepository(static::entity())->find($id);
         $settings = $this->settings();
         $form = $this->createForm(static::formType(), $entity);
@@ -155,6 +171,7 @@ abstract class _CrudController_ extends _Controller_
     #[Route('/{id}', name: '_delete', methods: ['POST'])]
     public function delete(Request $request, $id): Response
     {
+        $this->denyAccessUnlessGranted([], $request);
         $entity = $this->getDoctrine()->getRepository(static::entity())->find($id);
         if ($this->isCsrfTokenValid('delete' . $entity->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
