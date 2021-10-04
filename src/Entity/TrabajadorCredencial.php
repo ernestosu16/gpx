@@ -18,19 +18,19 @@ class TrabajadorCredencial implements UserInterface, PasswordAuthenticatedUserIn
     private ?Trabajador $trabajador = null;
 
     #[ORM\Column(type: 'string', length: 50, unique: true)]
-    private ?string $usuario = null;
+    private ?string $usuario;
 
-    #[ORM\Column(type: 'string', length: 60, nullable: false)]
-    private string $contrasena;
+    #[ORM\Column(type: 'string', length: 60)]
+    private ?string $contrasena;
 
     #[ORM\Column(name: 'es_admin', type: 'boolean')]
     private bool $admin = false;
 
-    #[ORM\Column(type: 'string', length: 120)]
-    private string $navegador;
+    #[ORM\Column(type: 'string', length: 120, nullable: false)]
+    private string $navegador = '';
 
     #[ORM\Column(type: 'json')]
-    private array $ultima_conexion;
+    private array $ultima_conexion = [];
 
     public function __toString(): string
     {
@@ -100,7 +100,6 @@ class TrabajadorCredencial implements UserInterface, PasswordAuthenticatedUserIn
         $this->ultima_conexion = $ultima_conexion;
         return $this;
     }
-
 
 
     public function getTrabajador(): ?Trabajador

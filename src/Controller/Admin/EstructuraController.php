@@ -27,6 +27,8 @@ final class EstructuraController extends _CrudController_
         return [
             'titles' => [
                 self::INDEX => 'Listado de las estructuras',
+                self::NEW => 'Nueva estructura',
+                self::EDIT => 'Editar estructura',
             ],
             'templates' => [
                 self::INDEX => 'admin/estructura/index.html.twig',
@@ -46,9 +48,16 @@ final class EstructuraController extends _CrudController_
         $this->denyAccessUnlessGranted([], $request);
 
         $settings = $this->settings();
+
+        $pagination = $this->paginator->paginate(
+            $this->getEstructuras(),
+            $request->query->getInt('page', 1),
+            $settings['page']['limit']
+        );
+
         return $this->render($settings['templates'][self::INDEX], [
             'settings' => $settings,
-            'collection' => $this->getEstructuras(),
+            'pagination' => $pagination,
         ]);
     }
 

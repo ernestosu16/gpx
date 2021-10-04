@@ -1,6 +1,6 @@
 {% extends 'homer-theme/layout.html.twig' %}
-{% block title %}{{ settings.titles.index|trans([],settings.translation_domain) }}{% endblock %}
-{% block panel_title %}{{ settings.titles.index|trans([],settings.translation_domain) }}{% endblock %}
+{% block title %}{{ settings.titles.edit|trans([],settings.translation_domain) }}{% endblock %}
+{% block panel_title %}{{ settings.titles.edit|trans([],settings.translation_domain) }}{% endblock %}
 {% block panel_body %}
     {{ include('admin/crud/_form.html.twig', {'button_label': 'guardar'|trans([],settings.translation_domain)}) }}
     <div class="pull-right">

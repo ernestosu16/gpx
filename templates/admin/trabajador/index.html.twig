@@ -16,7 +16,7 @@
             </tr>
             </thead>
             <tbody>
-            {% for trabajador in trabajadores %}
+            {% for trabajador in pagination %}
                 <tr>
                     <td>{{ trabajador.persona.numeroIdentidad }}</td>
                     <td>{{ trabajador.nombreCompleto }}</td>
@@ -25,11 +25,7 @@
                     <td>{{ trabajador.estructura }}</td>
                     <td>{{ trabajador.habilitado ? 'si'|trans({},'admin') : 'no'|trans({},'admin') }}</td>
                     <td>
-                        <a href="{{ path('admin_trabajador_show', {'trabajador': trabajador.id}) }}"
-                           class="btn btn-xs btn-default" title="{{ 'mostrar'|trans([],'admin') }}">
-                            <i class="fa fa-eye"></i>
-                        </a>
-                        <a href="{{ path('admin_trabajador_edit', {'trabajador': trabajador.id}) }}"
+                        <a href="{{ path('admin_trabajador_edit', {'id': trabajador.id}) }}"
                            class="btn btn-xs btn-default" title="{{ 'editar'|trans([],'admin') }}">
                             <i class="fa fa-pencil"></i>
                         </a>

@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Controller\_Controller_;
 use Doctrine\ORM\ORMInvalidArgumentException;
+use Knp\Component\Pager\PaginatorInterface;
 use ReflectionProperty;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -41,7 +42,13 @@ abstract class _CrudController_ extends _Controller_
         self::DELETE => null
     ];
 
-    private array $page = ['limit' => 50, 'orderBy' => []];
+    private array $page = ['limit' => 20, 'orderBy' => []];
+
+    public function __construct(
+        protected PaginatorInterface $paginator
+    )
+    {
+    }
 
     protected static function fields(): array
     {
@@ -105,9 +112,19 @@ abstract class _CrudController_ extends _Controller_
     {
         $this->denyAccessUnlessGranted([], $request);
         $settings = $this->settings();
+
+        $query = $this->getDoctrine()
+            ->getRepository(static::entity())
+            ->createQueryBuilder('q');
+
+        $pagination = $this->paginator->paginate($query,
+            $request->query->getInt('page', 1),
+            $settings['page']['limit']
+        );
+
         return $this->render($settings['templates'][self::INDEX], [
             'settings' => $settings,
-            'collection' => $this->getDoctrine()->getRepository(static::entity())->findAll(),
+            'pagination' => $pagination
         ]);
     }
 

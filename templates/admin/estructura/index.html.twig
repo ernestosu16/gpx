@@ -10,7 +10,6 @@
                 <th>{{ 'codigo_postal'|trans([],'admin') }}</th>
                 <th>{{ 'provincia'|trans([],'admin') }}</th>
                 <th>{{ 'municipio'|trans([],'admin') }}</th>
-                <th>{{ 'pertenece'|trans([],'admin') }}</th>
                 <th>{{ 'grupos permitidos'|trans([],'admin') }}</th>
                 <th>{{ 'tipos'|trans([],'admin') }}</th>
                 <th>{{ 'habilitado'|trans([],'admin') }}</th>
@@ -18,13 +17,12 @@
             </tr>
             </thead>
             <tbody>
-            {% for estructura in collection %}
+            {% for estructura in pagination %}
                 <tr>
                     <td>{{ estructura.nombre }}</td>
                     <td>{{ estructura.codigoPostal }}</td>
                     <td>{{ estructura.municipio.parent }}</td>
                     <td>{{ estructura.municipio }}</td>
-                    <td>{{ estructura.parent }}</td>
                     <td>
                         {# <div class="article"> #}
                         <ul class="inline">
@@ -58,6 +56,9 @@
             {% endfor %}
             </tbody>
         </table>
+    </div>
+    <div class="pull-right">
+        <div class="navigation">{{ knp_pagination_render(pagination) }}</div>
     </div>
     <a class="btn btn-sm btn-primary" href="{{ path('admin_estructura_new') }}">
         Nueva estructura

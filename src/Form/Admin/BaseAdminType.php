@@ -48,6 +48,9 @@ abstract class BaseAdminType extends AbstractType
 
         $grupos = [];
         foreach ($estructuras as $estructura) {
+            foreach ($estructura->getTipos() as $tipo) {
+                $grupos = array_merge($grupos, $tipo->getGrupos()->toArray());
+            }
             $grupos = array_merge($grupos, $estructura->getGrupos()->toArray());
         }
 

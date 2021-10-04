@@ -5,21 +5,18 @@ namespace App\Menu;
 use App\Config\Data\Nomenclador\MenuData;
 use App\Entity\Menu;
 use App\Repository\MenuRepository;
-use Exception;
 use Knp\Menu\ItemInterface;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 final class MenuBuilder extends _Menu_
 {
-    /**
-     * @throws Exception
-     */
     public function createMainMenu(): ItemInterface
     {
         $factory = $this->factory;
         $root = $this->getRoot();
 
         if (!$root || !$root->getChildren()->count())
-            throw new Exception('Ejecute el comando "bin/console app:configurar:fixture"');
+            return $this->default($factory);
 
         $item = $factory->createItem($root->getCodigo(), [
             'currentClass' => 'active',
@@ -52,9 +49,6 @@ final class MenuBuilder extends _Menu_
         return $repository->buildTreeHierarchyEntity($this->getTrabajador()->getMenus()->toArray());
     }
 
-    /**
-     * @throws Exception
-     */
     private function createItem(ItemInterface $item, ?Menu $menu): ItemInterface
     {
         if (!$menu || !$menu->getHabilitado())
@@ -106,5 +100,22 @@ final class MenuBuilder extends _Menu_
         }
 
         $item->setAttribute('class', 'active');
+    }
+
+    private function default(): ItemInterface
+    {
+        $factory = $this->factory;
+        $item = $factory->createItem('root', [
+            'currentClass' => 'active',
+            'childrenAttributes' => [
+                'class' => 'nav',
+                'id' => 'side-menu'
+            ],
+        ]);
+        $item->addChild('Dashboard', [
+            'route' => 'app_dashboard',
+            'extras' => ['translation_domain' => false]
+        ]);
+        return $item;
     }
 }

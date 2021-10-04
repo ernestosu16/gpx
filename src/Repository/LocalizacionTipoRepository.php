@@ -11,6 +11,15 @@ class LocalizacionTipoRepository extends _NestedTreeRepository_
         return LocalizacionTipo::class;
     }
 
+    /**
+     * @return LocalizacionTipo[]
+     */
+    public function findAll(): array
+    {
+        return $this->createQueryBuilder('q')
+            ->where('q.parent is not null')->getQuery()->getResult();
+    }
+
     public function getTipoProvincia(): ?LocalizacionTipo
     {
         return $this->findOneByCodigo(LocalizacionTipo::PROVINCIA);

@@ -20,6 +20,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(columns: ['root_id'], name: 'IDX_ROOT_ID')]
 #[ORM\Index(columns: ['discr'], name: 'IDX_DISCR')]
 #[ORM\UniqueConstraint(name: 'UNQ_CODIGO', fields: ['codigo'])]
+#[ORM\Cache]
 #[UniqueEntity(fields: ['codigo'])]
 #[ORM\InheritanceType("SINGLE_TABLE")]
 #[ORM\DiscriminatorColumn(name: 'discr', type: 'string', length: 17)]
@@ -29,6 +30,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     "menu" => Menu::class,
     "estructura_tipo" => EstructuraTipo::class,
     "localizacion_tipo" => LocalizacionTipo::class,
+    "agencia" => Agencia::class,
 ])]
 class Nomenclador extends BaseNestedTree
 {

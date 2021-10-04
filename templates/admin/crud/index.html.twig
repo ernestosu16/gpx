@@ -13,16 +13,18 @@
             </tr>
             </thead>
             <tbody>
-            {% for  row in collection %}
+            {% for  row in pagination %}
                 <tr>
                     {% for field in settings.fields %}
                         <td>{{ callField(row,field) }}</td>
                     {% endfor %}
                     <td>
-                        <a class="btn btn-xs btn-default" href="{{ path(settings.routes.edit, {'id': row.id}) }}"
-                           title="{{ 'editar'|trans([],settings.translation_domain) }}">
-                            <i class="fa fa-pencil"></i>
-                        </a>
+                        {% if settings.routes.edit %}
+                            <a class="btn btn-xs btn-default" href="{{ path(settings.routes.edit, {'id': row.id}) }}"
+                               title="{{ 'editar'|trans([],settings.translation_domain) }}">
+                                <i class="fa fa-pencil"></i>
+                            </a>
+                        {% endif %}
                     </td>
                 </tr>
             {% else %}
@@ -34,7 +36,12 @@
             </tbody>
         </table>
     </div>
-    <a class="btn btn-sm btn-primary" href="{{ path(settings.routes.new) }}">
-        {{ 'nuevo'|trans([],settings.translation_domain) }}
-    </a>
+    <div class="pull-right">
+        <div class="navigation">{{ knp_pagination_render(pagination) }}</div>
+    </div>
+    {% if settings.routes.new %}
+        <a class="btn btn-sm btn-primary" href="{{ path(settings.routes.new) }}">
+            {{ 'nuevo'|trans([],settings.translation_domain) }}
+        </a>
+    {% endif %}
 {% endblock %}

@@ -7,7 +7,7 @@ use App\Form\Admin\PaisType;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route(path: '/pais', name: 'admin_pais')]
-class PaisController extends _CrudController_
+final class PaisController extends _CrudController_
 {
     protected static function entity(): string
     {
