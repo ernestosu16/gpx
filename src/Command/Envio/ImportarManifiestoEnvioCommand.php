@@ -14,6 +14,7 @@ use App\Entity\Persona;
 use Doctrine\ORM\ORMException;
 use JMS\Serializer\SerializerBuilder;
 use Symfony\Component\Config\Util\XmlUtils;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use phpseclib3\Net\SFTP;
@@ -102,51 +103,39 @@ final class ImportarManifiestoEnvioCommand extends BaseCommand implements BaseCo
             foreach ($directories as $directory) {
                 $absoluteDirectoriesPath = $directory->getRealPath();
                 $directoriesNameWithExtension = $directory->getRelativePathname();
-
+                //dump("Transitaria - ".$directoriesNameWithExtension);
                 $em = $this->getEntityManager();
                 /** @var Estructura $transitaria */
                 $transitaria = $em->getRepository(Estructura::class)->findOneBy(array('codigo' => $directoriesNameWithExtension));
                 if($transitaria == null){
-                    dump('No existe esta Transitaria');exit;
+                    dump('No existe esta Transitaria');
+                    continue;// salta esta iteracion
+                    dump('Salta esta iteracion');
                 }
 
-                //dump($absoluteDirectoriesPath);
-                //dump($directoriesNameWithExtension);
+                $finderAgencia = new Finder();
+                $finderAgencia->depth(0);
+                $agencias = $finderAgencia->directories()->in($absoluteDirectoriesPath);
 
-                $files = $finder->files()->in($absoluteDirectoriesPath)->name(['*.xml','*.XML']);
-                if($files->hasResults()){
-                    foreach ($files as $file) {
-                        $absoluteFilePath = $file->getRealPath();
-                        $fileNameWithExtension = $file->getRelativePathname();
-
-                        $this->readManifiestoXML($absoluteFilePath, $fileNameWithExtension, $transitaria);
-
-                        //dump($fileNameWithExtension);
+                foreach ($agencias as $agencia){
+                    $agenciaAbsoluteDirectoriesPath = $agencia->getRealPath();
+                    //dump("Agencia - ".$agenciaAbsoluteDirectoriesPath);
+                    $agenciaDirectoriesNameWithExtension = $agencia->getRelativePathname();
+                    $finderManifiesto = new Finder();
+                    $finderManifiesto->depth(0);
+                    $files = $finderManifiesto->files()->in($agenciaAbsoluteDirectoriesPath)->name(['*.xml','*.XML']);
+                    if($files->hasResults()){
+                        foreach ($files as $file) {
+                            $absoluteFilePath = $file->getRealPath();
+                            $fileNameWithExtension = $file->getRelativePathname();
+                            $this->readManifiestoXML($absoluteFilePath, $fileNameWithExtension, $transitaria);
+                        }
                     }
                 }
+
             }
         }
-
-        exit;
-
-
-
-//        try {
-//            $dom = XmlUtils::loadFile($file);
-//        } catch (\InvalidArgumentException $e) {
-//            throw new InvalidResourceException(sprintf('Unable to load "%s": %s', $file, $e->getMessage()), $e->getCode(), $e);
-//        }
-
-        //XmlUtils::loadFile("/app/public/download/Manifiesto202108080340SA.xml");
-
-//        $envios = $dom->getElementsByTagName( "envio");
-//        foreach ($envios as $envio) {
-//            //echo $envio->nodeValue, PHP_EOL;
-//            //dump($item++);
-//        }
-
-        exit;
-        //dump();exit;
+        return Command::SUCCESS;
     }
 
     protected function readManifiestoXML(string $absoluteFilePath, string $fileNameWithExtension, Estructura $transitaria){
@@ -159,7 +148,6 @@ final class ImportarManifiestoEnvioCommand extends BaseCommand implements BaseCo
                 echo "\t", $error->message;
             }*/
         }else{
-
             $guia = (string)$xml->noGA;
             $agencia = (string)$xml->agenciaOrigen;
             $no_vuelo = (string)$xml->noVuelo;
@@ -167,50 +155,36 @@ final class ImportarManifiestoEnvioCommand extends BaseCommand implements BaseCo
 
             foreach ($envios as $env){
                 $newenvio = $this->crearEnvioManifiesto($guia, $agencia, $no_vuelo, $transitaria, $env );
-                dump($newenvio);exit;
+                if($newenvio->getId() == null){
+                    dump('Manifiesto '.$newenvio->getCodigo().' no es valido.');
+                }
+                dump($newenvio->getId());
             }
-
-
-
-
-            //dump($envios[0]);exit;
-            //$classMetadataFactory = new ClassMetadataFactory($loader);
-            //$normalizer = new ObjectNormalizer($classMetadataFactory);
-            //$serializer = new Serializer([$normalizer]);
-
-            //$serializer = SerializerBuilder::create()->build();
-            //$array_direccion = $serializer->toArray($direccion);
-
-
-// this will throw a Symfony\Component\Serializer\Exception\ExtraAttributesException
-// because "city" is not an attribute of the Person class
-            //dump($envios[0]->asXML());
-            //$env = $serializer->deserialize($envios[0]->asXML(), EnvioManifiesto::class, 'xml');
-            //dump($env);
-            exit;
-
         }
-        exit;
     }
 
-    protected function crearEnvioManifiesto(string $guia, string $agencia, string $no_vuelo, Estructura $transitaria, \SimpleXMLElement $env): EnvioManifiesto
+    protected function crearEnvioManifiesto(string $guia, string $agencia, string $no_vuelo, Estructura $transitaria, \SimpleXMLElement $env): ?EnvioManifiesto
     {
+        /**@var $emPersona \App\Manager\PersonaManager **/
+        $emPersona = $this->getContainer()->get('app.manager.persona');
+
         $serializer = SerializerBuilder::create()->build();
         $remitente = $serializer->deserialize($env->remitente->persona->asXML(), Persona::class, 'xml');
         $destinatario = $serializer->deserialize($env->destinatario->persona->asXML(), Persona::class, 'xml');
+
         $remitente->setNumeroPasaporte(null);
         $destinatario->setNumeroPasaporte(null);
         $remitente->setNumeroIdentidad(null);
-//        dump($remitente->setNumeroPasaporte(null));
-//        dump($destinatario->setNumeroPasaporte(null));
-//        exit;
 
-        /**@var $emPersona \App\Manager\PersonaManager **/
+        $existRemitente = $this->getEntityManager()->getRepository(Persona::class)->findOneBy(["hash"=>$emPersona->generarHash($remitente)]);
+        if($existRemitente != null){
+            $remitente = $existRemitente;
+        }
 
-        $emPersona = $this->getContainer()->get('app.manager.persona');
-
-
-        //$remitente = $emPersona->createPersona(new Persona());
+        $existDestinatario = $this->getEntityManager()->getRepository(Persona::class)->findOneBy(["hash"=>$emPersona->generarHash($destinatario)]);
+        if($existDestinatario != null){
+            $destinatario = $existDestinatario;
+        }
 
         $newEnvioManifiesto = new EnvioManifiesto($env->noEnvio,(float)$env->peso,$env->fechaImposicion,$agencia,$guia,$no_vuelo,$env->{"paisOrigen-Destino"},
             $env->descripcion, $env->destinatario->persona->nacionalidad, $env->destinatario->persona->fechaNacimiento,$env->destinatario->contacto->contactosTelefonos->telefono->noTelefono,
@@ -225,9 +199,12 @@ final class ImportarManifiestoEnvioCommand extends BaseCommand implements BaseCo
         $newEnvioManifiesto->setEmpresa($transitaria);
 
         /**@var $emManifiesto \App\Manager\EnvioManifiestoManager **/
-
         $emManifiesto = $this->getContainer()->get('app.manager.envio_manifiesto');
 
-        return $emManifiesto->createEnvioManifiesto($newEnvioManifiesto);;
+        if($emManifiesto->validarEnvioManifiesto($newEnvioManifiesto)){
+            return $emManifiesto->createEnvioManifiesto($newEnvioManifiesto);
+        }
+
+        return $newEnvioManifiesto;
     }
 }
