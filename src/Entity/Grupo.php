@@ -20,11 +20,15 @@ class Grupo extends Nomenclador
     #[ORM\ManyToMany(targetEntity: Estructura::class, mappedBy: 'grupos', cascade: ['persist'])]
     private Collection $estructuras;
 
+    #[ORM\ManyToMany(targetEntity: EstructuraTipo::class, mappedBy: 'grupos', cascade: ['persist'])]
+    private Collection $estructura_tipos;
+
     #[Pure] public function __construct()
     {
         parent::__construct();
         $this->menus = new ArrayCollection();
         $this->estructuras = new ArrayCollection();
+        $this->estructura_tipos = new ArrayCollection();
     }
 
     /**
@@ -86,6 +90,33 @@ class Grupo extends Nomenclador
     public function setAccesos(array $routes): self
     {
         $this->setParametro('accesos', $routes);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|EstructuraTipo[]
+     */
+    public function getEstructuraTipos(): Collection
+    {
+        return $this->estructura_tipos;
+    }
+
+    public function addEstructuraTipo(EstructuraTipo $estructuraTipo): self
+    {
+        if (!$this->estructura_tipos->contains($estructuraTipo)) {
+            $this->estructura_tipos[] = $estructuraTipo;
+            $estructuraTipo->addGrupo($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEstructuraTipo(EstructuraTipo $estructuraTipo): self
+    {
+        if ($this->estructura_tipos->removeElement($estructuraTipo)) {
+            $estructuraTipo->removeGrupo($this);
+        }
 
         return $this;
     }

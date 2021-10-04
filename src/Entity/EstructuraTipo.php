@@ -16,10 +16,17 @@ class EstructuraTipo extends Nomenclador
     #[ORM\JoinTable(name: 'estructura_tipo_asignado')]
     private Collection $estructuras;
 
+    #[ORM\ManyToMany(targetEntity: Grupo::class, inversedBy: 'estructura_tipos')]
+    #[ORM\JoinTable(name: 'estructura_tipo_grupo_asignado')]
+    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(onDelete: 'CASCADE')]
+    private Collection $grupos;
+
     #[Pure] public function __construct()
     {
         parent::__construct();
         $this->estructuras = new ArrayCollection();
+        $this->grupos = new ArrayCollection();
     }
 
     /**
@@ -45,6 +52,30 @@ class EstructuraTipo extends Nomenclador
         if ($this->estructuras->removeElement($estructura)) {
             $estructura->removeTipo($this);
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Grupo[]
+     */
+    public function getGrupos(): Collection
+    {
+        return $this->grupos;
+    }
+
+    public function addGrupo(Grupo $grupo): self
+    {
+        if (!$this->grupos->contains($grupo)) {
+            $this->grupos[] = $grupo;
+        }
+
+        return $this;
+    }
+
+    public function removeGrupo(Grupo $grupo): self
+    {
+        $this->grupos->removeElement($grupo);
 
         return $this;
     }
