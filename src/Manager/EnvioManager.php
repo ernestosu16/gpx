@@ -11,8 +11,8 @@ use App\Repository\EnvioManifiestoRepository;
 use App\Repository\LocalizacionRepository;
 use App\Repository\NomencladorRepository;
 use App\Repository\PaisRepository;
-use App\Util\EnvioDireccion;
-use App\Util\EnvioPreRecepcion;
+use App\Utils\EnvioDireccion;
+use App\Utils\EnvioPreRecepcion;
 
 class EnvioManager extends _Manager_
 {
