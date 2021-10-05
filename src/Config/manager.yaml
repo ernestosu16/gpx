@@ -27,3 +27,8 @@ services:
         class: App\Manager\GrupoManager
         arguments: [ '%security.role_hierarchy.roles%' ]
         public: true
+
+    app.manager.envio_manifiesto:
+        class: App\Manager\EnvioManifiestoManager
+        parent: App\Manager\_Manager_
+        public: true
