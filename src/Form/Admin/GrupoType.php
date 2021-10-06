@@ -29,8 +29,6 @@ class GrupoType extends AbstractType
     {
         /** @var RouteManager $routeManager */
         $routeManager = $this->container->get('app.manager.route');
-        /** @var GrupoManager $grupoManager */
-        $grupoManager = $this->container->get('app.manager.grupo');
         $builder
             ->add('codigo', TextType::class, [
                 'attr' => ['class' => 'form-control input-sm'],
@@ -58,7 +56,15 @@ class GrupoType extends AbstractType
                 'label_attr' => ['class' => 'col-sm-2 control-label'],
                 'query_builder' => function (MenuRepository $menuRepository) {
                     return $menuRepository->createQueryBuilder('m')
-                        ->orderBy('m.nombre', 'ASC');
+                        ->orderBy('m.lft', 'ASC');
+                },
+                'choice_filter' => function (Menu $menu) {
+                    return $menu->getRoute() ? $menu : null;
+                },
+                'group_by' => function (Menu $menu) {
+                    if ($menu->getParent())
+                        return $menu->getParent()->getNombre();
+                    return '';
                 },
             ])
             ->add('accesos', ChoiceType::class, [
