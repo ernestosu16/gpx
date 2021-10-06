@@ -13,7 +13,7 @@ RUN docker-php-ext-configure opcache --enable-opcache \
 
 # APACHE y PHP
 COPY ./docker/app/conf/apache /etc/apache2
-COPY ./docker/app/conf/php/php.ini /usr/local/etc/php/php.ini
+COPY ./docker/app/conf/php/php.ini.dist /usr/local/etc/php/php.ini
 
 # Publicando el proyecto
 RUN ln -s /app /var/www/app
