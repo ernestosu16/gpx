@@ -8,6 +8,9 @@ stages:
 variables:
     MYSQL_ROOT_PASSWORD: "root"
     MYSQL_ROOT_HOST: "%"
+    DOCKER_HOST: tcp://docker_dind:2375
+    DOCKER_TLS_CERTDIR: ""
+
 
 cache:
     key: ${CI_COMMIT_REF_SLUG}
