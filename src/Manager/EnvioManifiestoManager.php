@@ -76,6 +76,11 @@ class EnvioManifiestoManager extends _Manager_
             if (Validator::validarFecha($envioManifiesto->getRemitente()->getFechaNacimiento()) == false) $valido = false;
 
             if (Validator::validarFecha($envioManifiesto->getDestinatario()->getFechaNacimiento()) == false) $valido = false;
+
+            if($envioManifiesto->getProvinciaDestinatario() == null){
+                $valido = false;
+                dump('La provincia del destinatario vacio');
+            }
         }
 
         return $valido;
