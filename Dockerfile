@@ -20,5 +20,5 @@ RUN ln -s /app /var/www/app
 
 EXPOSE 80
 RUN mkdir -p /var/log/supervisor
-COPY ./conf/supervisord.conf /etc/supervisor/supervisord.conf
+COPY ./docker/app/conf/supervisord.conf /etc/supervisor/supervisord.conf
 CMD ["supervisord"]
