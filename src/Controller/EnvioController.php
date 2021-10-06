@@ -71,25 +71,25 @@ class EnvioController extends AbstractController
 
             $provincias = $this->localizacion->findAllProvincia();
 
-            $municipios = $this->localizacion->findByTipo(LocalizacionTipo::MUNICIPIO);
+            $municipios = $this->localizacion->findByTipoCodigo(LocalizacionTipo::MUNICIPIO);
 
-            $anomalias = ["ENVIO FALTANTE",
-                "ENVIO MAL ENCAMINADO",
-                "ENVIO MOJADO",
-                "ENVIO ROTO",
-                "ACCESO AL CONTENIDO",
-                "ENVIO CON PRECINTA",
-                "ENVIO VIOLADO",
-                "ENVIO DE ENTIDAD, BAJO CONTROL ADUANA POSTAL",
-                "ENVIO NO CONTROLADO",
-                "NOTIFICADO A",
-                "CAMBIO TIPO DE PRODUCTO",
-                "CAMBIO SUB TIPO DE PRODUCTO",
-                "GENERADO AVISO",
-                "ELIMINADO AVISO",
-                "ENVIO NO MANIFESTADO",
-                "ENVIO MANIFESTADO EN OTRO MANIFIESTO",
-                "DIFERENCIA DE PESO"];
+            $anomalias = ["envio faltante",
+                "envio mal encaminado",
+                "envio mojado",
+                "envio roto",
+                "acceso al contenido",
+                "envio con precinta",
+                "envio violado",
+                "envio de entidad, bajo control aduana postal",
+                "envio no controlado",
+                "notificado a",
+                "cambio tipo de producto",
+                "cambio sub tipo de producto",
+                "generado aviso",
+                "eliminado aviso",
+                "envio no manifestado",
+                "envio manifestado en otro manifiesto",
+                "diferencia de peso"];
 
             $nacionalidades = ['AFGANISTAN', 'ALBANIA', 'ALEMANIA', 'ANDORRA', 'ANGOLA', 'ANGUILA', 'ANTIGUA Y BARBUDA', 'ANTILLAS NEERLANDESAS', 'ARABIA SAUDITA', 'ARGELIA', 'ARGENTINA', 'BURUNDI', 'CAMBODIA', 'CAMBOYA', 'CAMERUN', 'CANADA', 'CHAD', 'CHILE', 'CHINA', 'CHIPRE', 'COLOMBIA', 'CONGO', 'COSTA DE MARFIL', 'COSTA RICA', 'CROACIA', 'DINAMARCA', 'DOMINICA'];
 
