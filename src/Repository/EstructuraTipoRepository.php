@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\EstructuraTipo;
+use Doctrine\ORM\QueryBuilder;
 
 final class EstructuraTipoRepository extends NomencladorRepository
 {
@@ -11,12 +12,10 @@ final class EstructuraTipoRepository extends NomencladorRepository
         return EstructuraTipo::class;
     }
 
-    /**
-     * @return EstructuraTipo[]
-     */
-    public function findAll(): array
+    public function createQueryBuilder($alias, $indexBy = null): QueryBuilder
     {
-        return $this->createQueryBuilder('q')
-            ->where('q.parent is not null')->getQuery()->getResult();
+        return parent::createQueryBuilder($alias, $indexBy)
+            ->where($alias . '.parent is not null')
+            ->orderBy($alias . '.lft', 'ASC');
     }
 }
