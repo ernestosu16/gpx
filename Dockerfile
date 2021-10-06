@@ -10,7 +10,7 @@ RUN docker-php-ext-configure intl && \
 RUN docker-php-ext-configure opcache --enable-opcache \
     && docker-php-ext-install opcache
 
-COPY [".env", "composer.json", "composer.lock", "symfony.lock", "/app/"]
+COPY [".env", "composer.json", "composer.lock", "symfony.lock", "proyect-init.sh", "/app/"]
 
 COPY bin /app/bin
 COPY config /app/config
@@ -19,6 +19,7 @@ COPY migrations /app/migrations
 COPY public /app/public
 COPY src /app/src
 COPY translations /app/translations
+COPY templates /app/templates
 
 RUN mkdir -p /app/var/cache; \
     mkdir -p /app/var/log;\
