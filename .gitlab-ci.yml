@@ -5,13 +5,6 @@ stages:
     - test
     - release
 
-variables:
-    MYSQL_ROOT_PASSWORD: "root"
-    MYSQL_ROOT_HOST: "%"
-    DOCKER_HOST: tcp://docker_dind:2375
-    DOCKER_TLS_CERTDIR: ""
-
-
 cache:
     key: ${CI_COMMIT_REF_SLUG}
     paths:
@@ -32,6 +25,9 @@ build:
 
 phpunit:
     stage: test
+    variables:
+        MYSQL_ROOT_PASSWORD: "root"
+        MYSQL_ROOT_HOST: "%"
     except:
         - tags
     dependencies:
@@ -47,6 +43,8 @@ phpunit:
 docker-build:
     variables:
         GIT_STRATEGY: clone
+        DOCKER_HOST: tcp://docker_dind:2375
+        DOCKER_TLS_CERTDIR: ""
     stage: release
     services:
         -   name: dap/docker:dind
