@@ -34,7 +34,7 @@ class EnvioManager extends _Manager_
     /***
      * @param string $noGuia
      * @param string $codTracking
-     * @return ?EnvioManifiesto
+     * @return ?EnvioPreRecepcion
      */
     public function obtnerEnvioManifestado(string $noGuia, string $codTracking): ?EnvioPreRecepcion
     {
@@ -50,29 +50,26 @@ class EnvioManager extends _Manager_
             $envioPreRecepcion->setCodTracking($envioManifestado->getCodigo());
             $envioPreRecepcion->setPeso($envioManifestado->getPeso());
 
-            dump('prueba 123');
-
-            //Comprobar que sea asi por codigo de aduana
-            $envioPreRecepcion->setPaisOrigen($envioManifestado->getPaisOrigen());
-            //Hace el metodo para que busque la agencia a partir del codigo dado por manifiesto
-            $envioPreRecepcion->setAgencia(
-
-
+            $envioPreRecepcion->setPaisOrigen(
+                $this->paisRepository->findByCodigoAduana($envioManifestado->getPaisOrigen())->getId()
             );
-            //Comprobar q sea asi realmente
+
+            $envioPreRecepcion->setAgencia(
+                $this->agenciaRepository->findByCodigoAduana($envioManifestado->getAgenciaOrigen())->getId()
+            );
+
             $envioPreRecepcion->setEntidadCtrlAduana($envioManifestado->isInteresAduana());
 
-            //$municipioTemp = //$this->localizacionRepository->findOneMunicipioPOrCodAduanaYCodAduanaProv($envioManifestado->getProvinciaDestinatario(),$envioManifestado->getMunicipioDestinatario())
-
-            //Obtener municipio a partir del codigo dado por manifiesto
-            $envioPreRecepcion->setMunicipio(
-                //$municipioTemp->getCodigo();
-                null
-            );
+            $provDest = $envioManifestado->getProvinciaDestinatario();
             $envioPreRecepcion->setProvincia(
-                //$municipioTemp->getParent()->getCodigo();
-                $envioPreRecepcion->getMunicipio()
+                $provDest ? $provDest->getId() : null
             );
+
+            $munDest = $envioManifestado->getMunicipioDestinatario();
+            $envioPreRecepcion->setMunicipio(
+                $munDest ? $munDest->getId() : null
+            );
+
             $envioPreRecepcion->setPareo("");
 
             $envioPreRecepcion->setIrregularidades([]);
@@ -87,14 +84,17 @@ class EnvioManager extends _Manager_
             $direccion->setNumero($envioManifestado->getNoDestinatario());
             $direccion->setPiso($envioManifestado->getPisoDestinatario());
             $direccion->setApto($envioManifestado->getAptoDestinatario());
-            $direccion->setMunicipio(
-            //$this->localizacionRepository->findOneMunicipioPOrCodAduanaYCodAduanaProv($envioManifestado->getProvinciaDestinatario(),$envioManifestado->getMunicipioDestinatario())
-                null
+            $direccion->setProvincia(
+                $envioManifestado->getProvinciaDestinatario()
             );
-            $direcciones = [];
-            $direcciones[] = $direccion;
+            $direccion->setMunicipio(
+                $envioManifestado->getMunicipioDestinatario()
+            );
 
-            $envioPreRecepcion->setDirecciones($direcciones);
+            $envioPreRecepcion->addDireccion($direccion);
+
+            dump('Envio Pre Recepcion');
+            dump($envioPreRecepcion);
 
         }else{
             $envioPreRecepcion = null;

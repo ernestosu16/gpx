@@ -13,8 +13,7 @@ use App\Manager\EnvioManager;
 use App\Repository\EnvioManifiestoRepository;
 use App\Repository\EnvioRepository;
 use App\Repository\LocalizacionRepository;
-use App\Util\EnvioDireccion;
-use App\Util\MyResponse;
+use App\Utils\MyResponse;
 use JMS\Serializer\SerializerBuilder;
 use phpDocumentor\Reflection\Types\False_;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -205,36 +204,26 @@ class EnvioController extends AbstractController
 
             $envioManifestadoService = $this->envioManager->obtnerEnvioManifestado($guia,$tracking);
 
-            dump("envioManifestadoService");
-            dump($envioManifestadoService);exit;
+            dump('envio $envioManifestadoService');
+            dump($envioManifestadoService);
 
             $miRespuesta = new MyResponse();
 
-            $g = new EnvioManifiesto();
-            $g->setCodigo("123");
-            $g->setNoGuiaAerea("456");
-            $g->setPeso(2.3);
-            //$g->setFecha();
-            $g->setAgenciaOrigen('agencia');
-            $g->setNoGuiaAerea('noguia');
-            $g->setNoVuelo('novuelo');
-            $g->setPaisOrigen('canada');
-            $g->setDescripcion('descrip');
-
-
-
-            if ( !($envioManifestadoService)){
+            //Si no existe el envio
+            if ( ! $envioManifestadoService ){
 
                 $miRespuesta->setEstado(false);
                 $miRespuesta->setData(null);
                 $miRespuesta->setMensaje("No existe el envio en la guia solicitada");
 
-            }else if($envioManifestadoService->isInteresAduana()){
+                //Si existe pero es interes de aduana
+            }else if($envioManifestadoService->isEntidadCtrlAduana()){
 
                 $miRespuesta->setEstado(false);
                 $miRespuesta->setData(null);
                 $miRespuesta->setMensaje("El envio solicitado es interés de aduana, no se puede recepcionar.");
 
+                //Si existe y esta correcto
             }else{
 
                 $miRespuesta->setEstado(true);
