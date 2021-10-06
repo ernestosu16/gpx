@@ -6,9 +6,11 @@ use App\Entity\Traits\VersionTrait;
 use App\Repository\PaisRepository;
 use Doctrine\ORM\Mapping as ORM;
 use function Symfony\Component\String\u;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PaisRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IATA', columns: ['iata'])]
+#[ORM\UniqueConstraint(name: 'UNIQ_CODIGO_ADUANA', columns: ['codigo_aduana'])]
 class Pais extends _Entity_
 {
     use VersionTrait;
@@ -17,9 +19,13 @@ class Pais extends _Entity_
     private string $nombre;
 
     #[ORM\Column(type: 'string', length: 2)]
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 2, max: 2)]
     private string $iata;
 
     #[ORM\Column(type: 'string', length: 3, unique: true, nullable: true)]
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 3, max: 3)]
     private ?string $codigo_aduana;
 
     #[ORM\Column(type: 'boolean')]
@@ -54,7 +60,7 @@ class Pais extends _Entity_
 
     public function getCodigoAduana(): ?string
     {
-        return $this->codigo_aduana;
+        return u($this->codigo_aduana)->upper();
     }
 
     public function setCodigoAduana(string $codigo_aduana): self

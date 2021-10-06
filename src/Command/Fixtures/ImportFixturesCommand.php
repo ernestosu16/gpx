@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Command\Configurar;
+namespace App\Command\Fixtures;
 
 use App\Command\BaseCommand;
 use App\Command\BaseCommandInterface;
@@ -15,6 +15,7 @@ use App\Entity\Grupo;
 use App\Entity\Localizacion;
 use App\Entity\LocalizacionTipo;
 use App\Entity\Menu;
+use App\Entity\Pais;
 use App\Repository\LocalizacionRepository;
 use App\Repository\LocalizacionTipoRepository;
 use Doctrine\ORM\OptimisticLockException;
@@ -25,12 +26,13 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleSectionOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Yaml;
+use function Symfony\Component\String\u;
 
-final class FixturesCommand extends BaseCommand implements BaseCommandInterface
+final class ImportFixturesCommand extends BaseCommand implements BaseCommandInterface
 {
     static function getCommandName(): string
     {
-        return 'app:configurar:fixtures';
+        return 'app:fixtures:import';
     }
 
     /**
@@ -42,6 +44,9 @@ final class FixturesCommand extends BaseCommand implements BaseCommandInterface
         $section = $output->section();
 
         $section->writeln('* Iniciando el comando de creación de datos por defecto');
+
+        $section->writeln('  Creando los países');
+        $this->configurarPaises();
 
         $this->getEntityManager()->beginTransaction();
         $section->writeln('  Creando la lista de grupos');
@@ -88,10 +93,8 @@ final class FixturesCommand extends BaseCommand implements BaseCommandInterface
             if ($this->getRepository(Grupo::class)->findOneByCodigo($grupo['codigo']))
                 continue;
 
-            $grupoEntity = new Grupo();
-            $grupoEntity->setCodigo($grupo['codigo']);
-            $grupoEntity->setNombre($grupo['nombre']);
-            $grupoEntity->setDescripcion($grupo['descripcion']);
+            /** @var Grupo $grupoEntity */
+            $grupoEntity = $this->setter(new Grupo(), $grupo);
 
             $root->addChild($grupoEntity);
             $this->getEntityManager()->persist($root);
@@ -144,6 +147,7 @@ final class FixturesCommand extends BaseCommand implements BaseCommandInterface
             $entity->setNombre($provincia['nombre']);
             $entity->setDescripcion($provincia['descripcion']);
             $entity->setCodigo($provincia['codigo']);
+            $entity->setCodigoAduana($provincia['codigo_aduana']);
             $entity->setTipo($tipoRepository->getTipoProvincia());
 
             $this->getEntityManager()->persist($entity);
@@ -162,6 +166,7 @@ final class FixturesCommand extends BaseCommand implements BaseCommandInterface
                 $entity->setParent($provinciaEntity);
                 $entity->setNombre($municipio['nombre']);
                 $entity->setCodigo($municipio['codigo']);
+                $entity->setCodigoAduana($municipio['codigo_aduana']);
                 $entity->setTipo($tipoRepository->getTipoMunicipio());
 
                 $this->getEntityManager()->persist($entity);
@@ -193,12 +198,10 @@ final class FixturesCommand extends BaseCommand implements BaseCommandInterface
             foreach ($menu['children'] as $child) {
                 if ($this->getRepository(Menu::class)->findOneByCodigo($child['codigo']))
                     continue;
-                $menuChildEntity = new Menu();
+
+                /** @var Menu $menuChildEntity */
+                $menuChildEntity = $this->setter(new Menu(), $child);
                 $menuChildEntity->setRoot($root);
-                $menuChildEntity->setCodigo($child['codigo']);
-                $menuChildEntity->setNombre($child['nombre']);
-                $menuChildEntity->setRoute($child['route']);
-                $menuChildEntity->setIcon($child['icon']);
                 $menuEntity->addChild($menuChildEntity);
             }
 
@@ -289,6 +292,7 @@ final class FixturesCommand extends BaseCommand implements BaseCommandInterface
         return $estructura;
     }
 
+
     private function configurarAgencias()
     {
         /** @var ?Agencia $root */
@@ -312,5 +316,34 @@ final class FixturesCommand extends BaseCommand implements BaseCommandInterface
         }
         $this->getEntityManager()->persist($root);
         $this->getEntityManager()->flush();
+
+    private function configurarPaises()
+    {
+        /** @var array $collection */
+        $collection = Yaml::parseFile($this->getKernel()->getProjectDir() . '/src/Config/Fixtures/pais.yaml');
+
+        foreach ($collection['pais'] as $pais) {
+            if ($this->getRepository(Pais::class)->findOneBy(['nombre' => $pais['nombre']]))
+                continue;
+
+            $entity = $this->setter(new Pais(), $pais);
+            $this->getEntityManager()->persist($entity);
+        }
+    }
+
+    private function setter(object $entity, $row): object
+    {
+        foreach ($row as $key => $value) {
+            $set = u($key)
+                ->replace('_', ' ')
+                ->title(true)
+                ->replace(' ', '')
+                ->prepend('set')
+                ->toString();
+
+            call_user_func([$entity, $set], $value);
+        }
+
+        return $entity;
     }
 }
