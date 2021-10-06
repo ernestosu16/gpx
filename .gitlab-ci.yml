@@ -35,12 +35,11 @@ phpunit:
         - build
     services:
         -   name: dap/mysql:8.0
-            alias: mysql-db
+            alias: db
     script:
         #- sed -i 's/APP_ENV=dev/APP_ENV=test/g' .env
         - ./proyect-init.sh
         - bin/phpunit
-
 
 docker-build:
     variables:
