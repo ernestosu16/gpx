@@ -20,8 +20,6 @@ class EnvioManifiestoManager extends _Manager_
         $em = $this->get('doctrine.orm.default_entity_manager');
         $em->persist($envioManifiesto);
         $em->flush();
-        //dump('took');exit;
-        //$this->get
         return $envioManifiesto;
     }
 

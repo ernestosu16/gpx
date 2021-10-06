@@ -72,11 +72,13 @@ class EnvioManifiesto extends _Entity_
     #[ORM\Column(type: 'string', length: 10, nullable: false)]
     private string $apto_destinatario;
 
-    #[ORM\Column(type: 'string', length: 10, nullable: false)]
-    private string $provincia_destinatario;
+    #[ORM\ManyToOne(targetEntity: Localizacion::class)]
+    #[ORM\JoinColumn(name: '$provincia_destinatario_id', referencedColumnName: 'id')]
+    private ?Localizacion $provincia_destinatario;
 
-    #[ORM\Column(type: 'string', length: 10, nullable: false)]
-    private string $municipio_destinatario;
+    #[ORM\ManyToOne(targetEntity: Localizacion::class)]
+    #[ORM\JoinColumn(name: 'municipio_destinatario_id', referencedColumnName: 'id')]
+    private ?Localizacion $municipio_destinatario;
 
     #[ORM\ManyToOne(targetEntity: Persona::class, cascade: ['persist'])]
     #[ORM\JoinColumn(name: 'remitente_id', referencedColumnName: 'id', nullable: false)]
@@ -126,7 +128,12 @@ class EnvioManifiesto extends _Entity_
      * @param string $nacionalidad_remitente
      * @param string $fecha_nacimiento_remitente
      */
-    public function __construct(string $codigo, float $peso, string $fecha, string $agencia_origen, string $no_guia_aerea, string $no_vuelo, string $pais_origen, string $descripcion, string $nacionalidad_destinatario, string $fecha_nacimiento_destinatario, string $telefono_destinatario, string $calle_destinatario, string $entre_calle_destinatario, string $y_calle_destinatario, string $no_destinatario, string $piso_destinatario, string $apto_destinatario, string $provincia_destinatario, string $municipio_destinatario, string $nacionalidad_remitente, string $fecha_nacimiento_remitente)
+    public function __construct(string $codigo, float $peso, string $fecha, string $agencia_origen, string $no_guia_aerea,
+                                string $no_vuelo, string $pais_origen, string $descripcion, string $nacionalidad_destinatario,
+                                string $fecha_nacimiento_destinatario, string $telefono_destinatario, string $calle_destinatario,
+                                string $entre_calle_destinatario, string $y_calle_destinatario, string $no_destinatario,
+                                string $piso_destinatario, string $apto_destinatario, ?Localizacion $provincia_destinatario,
+                                ?Localizacion $municipio_destinatario, string $nacionalidad_remitente, string $fecha_nacimiento_remitente)
     {
         $this->codigo = $codigo;
         $this->peso = $peso;
@@ -412,33 +419,33 @@ class EnvioManifiesto extends _Entity_
     }
 
     /**
-     * @return string
+     * @return Localizacion|null
      */
-    public function getProvinciaDestinatario(): string
+    public function getProvinciaDestinatario(): ?Localizacion
     {
         return $this->provincia_destinatario;
     }
 
     /**
-     * @param string $provincia_destinatario
+     * @param Localizacion|string $provincia_destinatario
      */
-    public function setProvinciaDestinatario(string $provincia_destinatario): void
+    public function setProvinciaDestinatario(Localizacion $provincia_destinatario): void
     {
         $this->provincia_destinatario = $provincia_destinatario;
     }
 
     /**
-     * @return string
+     * @return Localizacion|null
      */
-    public function getMunicipioDestinatario(): string
+    public function getMunicipioDestinatario(): ?Localizacion
     {
         return $this->municipio_destinatario;
     }
 
     /**
-     * @param string $municipio_destinatario
+     * @param Localizacion $municipio_destinatario
      */
-    public function setMunicipioDestinatario(string $municipio_destinatario): void
+    public function setMunicipioDestinatario(Localizacion $municipio_destinatario): void
     {
         $this->municipio_destinatario = $municipio_destinatario;
     }

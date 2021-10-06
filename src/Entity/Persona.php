@@ -76,6 +76,7 @@ class Persona extends _Entity_
         $this->numero_pasaporte = null;
         $this->nombre_segundo = null;
         $this->nacionalidad = "CUB";
+        $this->fecha_nacimiento = "";
     }
 
     public function getHash(): ?string
