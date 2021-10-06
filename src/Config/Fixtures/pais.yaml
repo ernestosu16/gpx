@@ -1,1 +1,210 @@
 pais:
+    - { nombre: Afganistan, iata: AF, codigo_aduana: AFG }
+    - { nombre: Albania, iata: AL, codigo_aduana: ALB }
+    - { nombre: Alemania, iata: DE, codigo_aduana: DEU }
+    - { nombre: Andorra, iata: AD, codigo_aduana: AND }
+    - { nombre: Angola, iata: AO, codigo_aduana: AGO }
+    - { nombre: Anguila, iata: AI, codigo_aduana: AIA }
+    - { nombre: 'Antigua Y Barbuda', iata: AG, codigo_aduana: ATG }
+    - { nombre: 'Antillas Neerlandesas', iata: AN, codigo_aduana: ANT }
+    - { nombre: 'Arabia Saudita', iata: SA, codigo_aduana: SAU }
+    - { nombre: Argelia, iata: DZ, codigo_aduana: DZA }
+    - { nombre: Argentina, iata: AR, codigo_aduana: ARG }
+    - { nombre: Armenia, iata: AM, codigo_aduana: ARM }
+    - { nombre: Aruba, iata: AW, codigo_aduana: ABW }
+    - { nombre: 'Ary Macedonia', iata: MK, codigo_aduana: MKD }
+    - { nombre: Australia, iata: AU, codigo_aduana: AUS }
+    - { nombre: Austria, iata: AT, codigo_aduana: AUT }
+    - { nombre: Azerbaiyan, iata: AZ, codigo_aduana: AZE }
+    - { nombre: Bahamas, iata: BS, codigo_aduana: BHS }
+    - { nombre: Bahrain, iata: BH, codigo_aduana: BHR }
+    - { nombre: Bangladesh, iata: BD, codigo_aduana: BGD }
+    - { nombre: Barbados, iata: BB, codigo_aduana: BRB }
+    - { nombre: Belgica, iata: BE, codigo_aduana: BEL }
+    - { nombre: Belice, iata: BZ, codigo_aduana: BLZ }
+    - { nombre: Benin, iata: BJ, codigo_aduana: BEN }
+    - { nombre: Bermudas, iata: BM, codigo_aduana: BMU }
+    - { nombre: Bhutan, iata: BT, codigo_aduana: BTN }
+    - { nombre: Bielorrusia, iata: BY, codigo_aduana: BLR }
+    - { nombre: Bolivia, iata: BO, codigo_aduana: BOL }
+    - { nombre: Bonaire, iata: BQ, codigo_aduana: BES }
+    - { nombre: 'Bosnia Y Herzegovina', iata: QN, codigo_aduana: BIH }
+    - { nombre: Botswana, iata: BW, codigo_aduana: BWA }
+    - { nombre: Brasil, iata: BR, codigo_aduana: BRA }
+    - { nombre: Brunei, iata: BN, codigo_aduana: BRN }
+    - { nombre: Bulgaria, iata: BG, codigo_aduana: BGR }
+    - { nombre: 'Burkina Faso', iata: BF, codigo_aduana: BFA }
+    - { nombre: Burundi, iata: BI, codigo_aduana: BDI }
+    - { nombre: 'Cabo Verde ', iata: CV, codigo_aduana: CPV }
+    - { nombre: Camboya, iata: KH, codigo_aduana: KHM }
+    - { nombre: Camerun, iata: CM, codigo_aduana: CMR }
+    - { nombre: Canada, iata: CA, codigo_aduana: CAN }
+    - { nombre: Chad, iata: TD, codigo_aduana: TCD }
+    - { nombre: Chile, iata: CL, codigo_aduana: CHL }
+    - { nombre: China, iata: CN, codigo_aduana: CHN }
+    - { nombre: Chipre, iata: CY, codigo_aduana: CYP }
+    - { nombre: Colombia, iata: CO, codigo_aduana: COL }
+    - { nombre: 'Congo (Republica Democratica)', iata: CD, codigo_aduana: COG }
+    - { nombre: 'Cook Islands', iata: CK, codigo_aduana: COK }
+    - { nombre: 'Costa De Marfil', iata: CI, codigo_aduana: CIV }
+    - { nombre: 'Costa Rica', iata: CR, codigo_aduana: CRI }
+    - { nombre: Croacia, iata: HR, codigo_aduana: HRV }
+    - { nombre: Cuba, iata: CU, codigo_aduana: CUB }
+    - { nombre: Curacao, iata: CW, codigo_aduana: CUW }
+    - { nombre: Dinamarca, iata: DK, codigo_aduana: DNK }
+    - { nombre: Djibouti, iata: DJ, codigo_aduana: DJI }
+    - { nombre: Dominica, iata: DM, codigo_aduana: DMA }
+    - { nombre: Ecuador, iata: EC, codigo_aduana: ECU }
+    - { nombre: Egipto, iata: EG, codigo_aduana: EGY }
+    - { nombre: 'El Salvador', iata: SV, codigo_aduana: SLV }
+    - { nombre: 'Emiratos Árabes Unidos', iata: AE, codigo_aduana: ARE }
+    - { nombre: Eritrea, iata: ER, codigo_aduana: ERI }
+    - { nombre: Eslovaquia, iata: SK, codigo_aduana: SVK }
+    - { nombre: Eslovenia, iata: SI, codigo_aduana: SVN }
+    - { nombre: España, iata: ES, codigo_aduana: ESP }
+    - { nombre: 'Estados Unidos de América', iata: US, codigo_aduana: USA }
+    - { nombre: Estonia, iata: EE, codigo_aduana: EST }
+    - { nombre: Etiopia, iata: ET, codigo_aduana: ETH }
+    - { nombre: Fiji, iata: FJ, codigo_aduana: FJI }
+    - { nombre: Filipinas, iata: PH, codigo_aduana: PHL }
+    - { nombre: Finlandia, iata: FI, codigo_aduana: FIN }
+    - { nombre: Francia, iata: FR, codigo_aduana: FRA }
+    - { nombre: Gabon, iata: GA, codigo_aduana: GAB }
+    - { nombre: Gambia, iata: GM, codigo_aduana: GMB }
+    - { nombre: Georgia, iata: GE, codigo_aduana: GEO }
+    - { nombre: Ghana, iata: GH, codigo_aduana: GHA }
+    - { nombre: Gibraltar, iata: GI, codigo_aduana: GIB }
+    - { nombre: 'Gran Bretaña', iata: GB, codigo_aduana: GBR }
+    - { nombre: Granada, iata: GD, codigo_aduana: GRD }
+    - { nombre: Grecia, iata: GR, codigo_aduana: GRC }
+    - { nombre: Guatemala, iata: GT, codigo_aduana: GTM }
+    - { nombre: Guinea, iata: GN, codigo_aduana: GIN }
+    - { nombre: 'Guinea Bissau', iata: GW, codigo_aduana: GNB }
+    - { nombre: 'Guinea Ecuatorial', iata: GQ, codigo_aduana: GNQ }
+    - { nombre: Guyana, iata: GY, codigo_aduana: GUY }
+    - { nombre: Haiti, iata: HT, codigo_aduana: HTI }
+    - { nombre: Honduras, iata: HN, codigo_aduana: HND }
+    - { nombre: 'Hong Kong', iata: HK, codigo_aduana: HKG }
+    - { nombre: Hungria, iata: HU, codigo_aduana: HUN }
+    - { nombre: India, iata: IN, codigo_aduana: IND }
+    - { nombre: Indonesia, iata: ID, codigo_aduana: IDN }
+    - { nombre: Iran, iata: IR, codigo_aduana: IRN }
+    - { nombre: Iraq, iata: IQ, codigo_aduana: IRQ }
+    - { nombre: Irlanda, iata: IE, codigo_aduana: IRL }
+    - { nombre: Islandia, iata: IS, codigo_aduana: ISL }
+    - { nombre: 'Islas Caiman', iata: KY, codigo_aduana: CYM }
+    - { nombre: 'Islas Malvinas (Falkland Islands)', iata: FK, codigo_aduana: FLK }
+    - { nombre: 'Islas Marshall', iata: MH, codigo_aduana: MHL }
+    - { nombre: 'Islas Salomon', iata: SB, codigo_aduana: SLB }
+    - { nombre: 'Islas Turcas Y Caicos', iata: TC, codigo_aduana: TCA }
+    - { nombre: 'Islas Vírgenes', iata: VG, codigo_aduana: VGB }
+    - { nombre: Israel, iata: IL, codigo_aduana: ISR }
+    - { nombre: Italia, iata: IT, codigo_aduana: ITA }
+    - { nombre: Jamaica, iata: JM, codigo_aduana: JAM }
+    - { nombre: Japon, iata: JP, codigo_aduana: JPN }
+    - { nombre: Jersey, iata: JE, codigo_aduana: JEY }
+    - { nombre: Jordania, iata: JO, codigo_aduana: JOR }
+    - { nombre: Kazajstan, iata: KZ, codigo_aduana: KAZ }
+    - { nombre: Kenia, iata: KE, codigo_aduana: KEN }
+    - { nombre: Kirguistan, iata: KG, codigo_aduana: KGZ }
+    - { nombre: Kiribati, iata: KI, codigo_aduana: KIR }
+    - { nombre: Kuwait, iata: KW, codigo_aduana: KWT }
+    - { nombre: 'Lao Rep. Pop. Dem.', iata: LA, codigo_aduana: LAO }
+    - { nombre: Lesotho, iata: LS, codigo_aduana: LSO }
+    - { nombre: Letonia, iata: LV, codigo_aduana: LVA }
+    - { nombre: Libano, iata: LB, codigo_aduana: LBN }
+    - { nombre: Liberia, iata: LR, codigo_aduana: LBR }
+    - { nombre: Libia, iata: LY, codigo_aduana: LBY }
+    - { nombre: Liechtenstein, iata: LI, codigo_aduana: LIE }
+    - { nombre: Lituania, iata: LT, codigo_aduana: LTU }
+    - { nombre: Luxemburgo, iata: LU, codigo_aduana: LUX }
+    - { nombre: Macao, iata: MO, codigo_aduana: MAC }
+    - { nombre: Madagascar, iata: MG, codigo_aduana: MDG }
+    - { nombre: Malasia, iata: MY, codigo_aduana: MYS }
+    - { nombre: Malawi, iata: MW, codigo_aduana: MWI }
+    - { nombre: Maldiva, iata: MV, codigo_aduana: MDV }
+    - { nombre: Mali, iata: ML, codigo_aduana: MLI }
+    - { nombre: Malta, iata: MT, codigo_aduana: MLT }
+    - { nombre: Marruecos, iata: MA, codigo_aduana: MAR }
+    - { nombre: Mauricio, iata: MU, codigo_aduana: MUS }
+    - { nombre: Mauritania, iata: MR, codigo_aduana: MRT }
+    - { nombre: Mexico, iata: MX, codigo_aduana: MEX }
+    - { nombre: Micronesia, iata: FM, codigo_aduana: FSM }
+    - { nombre: Moldavia, iata: MD, codigo_aduana: MDA }
+    - { nombre: Monaco, iata: MC, codigo_aduana: MCO }
+    - { nombre: Mongolia, iata: MN, codigo_aduana: MNG }
+    - { nombre: Montenegro, iata: ME, codigo_aduana: ME }
+    - { nombre: Mozambique, iata: MZ, codigo_aduana: MOZ }
+    - { nombre: Myanmar, iata: MM, codigo_aduana: MMR }
+    - { nombre: Namibia, iata: NA, codigo_aduana: NAM }
+    - { nombre: Nepal, iata: NP, codigo_aduana: NPL }
+    - { nombre: Nicaragua, iata: NI, codigo_aduana: NIC }
+    - { nombre: Niger, iata: NE, codigo_aduana: NER }
+    - { nombre: Nigeria, iata: NG, codigo_aduana: NGA }
+    - { nombre: Niue, iata: NU, codigo_aduana: NIU }
+    - { nombre: Noruega, iata: 'NO', codigo_aduana: NOR }
+    - { nombre: 'Nueva Caledonia', iata: NC, codigo_aduana: NCL }
+    - { nombre: 'Nueva Zelandia', iata: NZ, codigo_aduana: NZL }
+    - { nombre: Oman, iata: OM, codigo_aduana: OMN }
+    - { nombre: 'Países Bajos', iata: NL, codigo_aduana: NLD }
+    - { nombre: Pakistan, iata: PK, codigo_aduana: PAK }
+    - { nombre: Palestina, iata: PS, codigo_aduana: PSE }
+    - { nombre: Panama, iata: PA, codigo_aduana: PAN }
+    - { nombre: 'Papua Nueva Guinea', iata: PG, codigo_aduana: PNG }
+    - { nombre: Paraguay, iata: PY, codigo_aduana: PRY }
+    - { nombre: Peru, iata: PE, codigo_aduana: PER }
+    - { nombre: Polonia, iata: PL, codigo_aduana: POL }
+    - { nombre: Portugal, iata: PT, codigo_aduana: PRT }
+    - { nombre: 'Puerto Rico', iata: PR, codigo_aduana: PRI }
+    - { nombre: Qatar, iata: QA, codigo_aduana: QAT }
+    - { nombre: 'Rep. De Corea del Sur', iata: KR, codigo_aduana: KOR }
+    - { nombre: 'Rep. Dem. Corea del Norte', iata: KP, codigo_aduana: PRK }
+    - { nombre: 'República Árabe Siria (Siria)', iata: SY, codigo_aduana: SYR }
+    - { nombre: 'Republica Checa', iata: CZ, codigo_aduana: CZE }
+    - { nombre: 'Republica Dominicana', iata: DO, codigo_aduana: DOM }
+    - { nombre: Ruanda, iata: RW, codigo_aduana: RWA }
+    - { nombre: Rumania, iata: RO, codigo_aduana: ROU }
+    - { nombre: Rusia, iata: RU, codigo_aduana: RUS }
+    - { nombre: 'Sahara Occidental', iata: EH, codigo_aduana: ESH }
+    - { nombre: Samoa, iata: WS, codigo_aduana: WSM }
+    - { nombre: 'San Cristobal y Nieves', iata: KN, codigo_aduana: KNA }
+    - { nombre: 'San Marino', iata: SM, codigo_aduana: SMR }
+    - { nombre: 'San Vicente y Granadinas', iata: VC, codigo_aduana: VCT }
+    - { nombre: 'Santa Lucia', iata: LC, codigo_aduana: LCA }
+    - { nombre: 'Santo Tome y Principe', iata: ST, codigo_aduana: STP }
+    - { nombre: Senegal, iata: SN, codigo_aduana: SEN }
+    - { nombre: Serbia, iata: RS, codigo_aduana: SRB }
+    - { nombre: 'Seychelles ', iata: SC, codigo_aduana: SYC }
+    - { nombre: 'Sierra Leona', iata: SL, codigo_aduana: SLE }
+    - { nombre: Singapur, iata: SG, codigo_aduana: SGP }
+    - { nombre: Somalia, iata: SO, codigo_aduana: SOM }
+    - { nombre: 'Sri Lanka', iata: LK, codigo_aduana: LKA }
+    - { nombre: Suazilandia, iata: SZ, codigo_aduana: SWZ }
+    - { nombre: Sudafrica, iata: ZA, codigo_aduana: ZAF }
+    - { nombre: Sudan, iata: SD, codigo_aduana: SDN }
+    - { nombre: Suecia, iata: SE, codigo_aduana: SWE }
+    - { nombre: Suiza, iata: CH, codigo_aduana: CHE }
+    - { nombre: Suriname, iata: SR, codigo_aduana: SUR }
+    - { nombre: Taiwan, iata: TW, codigo_aduana: TWN }
+    - { nombre: Tanzania, iata: TZ, codigo_aduana: TZA }
+    - { nombre: Tayikistan, iata: TJ, codigo_aduana: TJK }
+    - { nombre: Thailandia, iata: TH, codigo_aduana: THA }
+    - { nombre: Timor-Leste, iata: TL, codigo_aduana: TLS }
+    - { nombre: Togo, iata: TG, codigo_aduana: TGO }
+    - { nombre: Tonga, iata: TO, codigo_aduana: TON }
+    - { nombre: 'Trinidad y Tobago', iata: TT, codigo_aduana: TTO }
+    - { nombre: Tunez, iata: TN, codigo_aduana: TUN }
+    - { nombre: Turkmenistan, iata: TM, codigo_aduana: TKM }
+    - { nombre: Turquia, iata: TR, codigo_aduana: TUR }
+    - { nombre: Tuvalu, iata: TV, codigo_aduana: TUV }
+    - { nombre: Ucrania, iata: UA, codigo_aduana: UKR }
+    - { nombre: Uganda, iata: UG, codigo_aduana: UGA }
+    - { nombre: Uruguay, iata: UY, codigo_aduana: URY }
+    - { nombre: Uzbekistan, iata: UZ, codigo_aduana: UZB }
+    - { nombre: Vanuatu, iata: VU, codigo_aduana: VUT }
+    - { nombre: Vatican, iata: VA, codigo_aduana: VAT }
+    - { nombre: Venezuela, iata: VE, codigo_aduana: VEN }
+    - { nombre: Vietnam, iata: VN, codigo_aduana: VNM }
+    - { nombre: Yemen, iata: YE, codigo_aduana: YEM }
+    - { nombre: Zambia, iata: ZM, codigo_aduana: ZMB }
+    - { nombre: Zimbabwe, iata: ZW, codigo_aduana: ZWE }
