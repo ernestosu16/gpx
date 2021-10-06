@@ -9,6 +9,7 @@ use App\Command\BaseCommandInterface;
 use App\Config\Nomenclador\_Nomenclador_;
 use App\Entity\EnvioManifiesto;
 use App\Entity\Estructura;
+use App\Entity\Localizacion;
 use App\Entity\Nomenclador;
 use App\Entity\Persona;
 use Doctrine\ORM\ORMException;
@@ -110,7 +111,6 @@ final class ImportarManifiestoEnvioCommand extends BaseCommand implements BaseCo
                 if($transitaria == null){
                     dump('No existe esta Transitaria');
                     continue;// salta esta iteracion
-                    dump('Salta esta iteracion');
                 }
 
                 $finderAgencia = new Finder();
@@ -153,13 +153,20 @@ final class ImportarManifiestoEnvioCommand extends BaseCommand implements BaseCo
             $no_vuelo = (string)$xml->noVuelo;
             $envios = $xml->envios->envio;
 
-            foreach ($envios as $env){
-                $newenvio = $this->crearEnvioManifiesto($guia, $agencia, $no_vuelo, $transitaria, $env );
-                if($newenvio->getId() == null){
-                    dump('Manifiesto '.$newenvio->getCodigo().' no es valido.');
+            $this->getEntityManager()->beginTransaction();
+            try{
+                foreach ($envios as $env){
+                    $newenvio = $this->crearEnvioManifiesto($guia, $agencia, $no_vuelo, $transitaria, $env );
+                    if($newenvio->getId() == null){
+                        throw new \Exception('Manifiesto '.$newenvio->getCodigo().' no es valido.');
+                    }
                 }
-                dump($newenvio->getId());
+                $this->getEntityManager()->commit();
+            }catch (\Exception $e){
+                $this->getEntityManager()->rollBack();
+                dump($e->getMessage());
             }
+
         }
     }
 
@@ -186,13 +193,16 @@ final class ImportarManifiestoEnvioCommand extends BaseCommand implements BaseCo
             $destinatario = $existDestinatario;
         }
 
+        $localizacion = $this->getEntityManager()->getRepository(Localizacion::class)->findMunicipioAndProvinciaByCodigo(
+            $env->destinatario->contacto->contactosDomicilios->domicilio->provincia->codigoMunicipio,
+            $env->destinatario->contacto->contactosDomicilios->domicilio->provincia->codigoProvincia);
+
         $newEnvioManifiesto = new EnvioManifiesto($env->noEnvio,(float)$env->peso,$env->fechaImposicion,$agencia,$guia,$no_vuelo,$env->{"paisOrigen-Destino"},
             $env->descripcion, $env->destinatario->persona->nacionalidad, $env->destinatario->persona->fechaNacimiento,$env->destinatario->contacto->contactosTelefonos->telefono->noTelefono,
             $env->destinatario->contacto->contactosDomicilios->domicilio->calle, $env->destinatario->contacto->contactosDomicilios->domicilio->entreCalle,
             $env->destinatario->contacto->contactosDomicilios->domicilio->yCalle, $env->destinatario->contacto->contactosDomicilios->domicilio->no,
             $env->destinatario->contacto->contactosDomicilios->domicilio->piso, $env->destinatario->contacto->contactosDomicilios->domicilio->apto,
-            $env->destinatario->contacto->contactosDomicilios->domicilio->provincia->codigoProvincia, $env->destinatario->contacto->contactosDomicilios->domicilio->provincia->codigoMunicipio,
-            $env->remitente->persona->nacionalidad,$env->remitente->persona->fechaNacimiento);
+            $localizacion[1], $localizacion[0],$env->remitente->persona->nacionalidad,$env->remitente->persona->fechaNacimiento);
 
         $newEnvioManifiesto->setRemitente($remitente);
         $newEnvioManifiesto->setDestinatario($destinatario);
@@ -202,6 +212,7 @@ final class ImportarManifiestoEnvioCommand extends BaseCommand implements BaseCo
         $emManifiesto = $this->getContainer()->get('app.manager.envio_manifiesto');
 
         if($emManifiesto->validarEnvioManifiesto($newEnvioManifiesto)){
+            dump('Crea');
             return $emManifiesto->createEnvioManifiesto($newEnvioManifiesto);
         }
 
