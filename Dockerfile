@@ -26,12 +26,9 @@ RUN mkdir -p /app/var/cache; \
     touch /app/var/log/prod.log; \
     chown -R www-data:www-data var/cache var/log;
 
-#Syslink
-RUN ln -s /app /var/www/app
-RUN ln -s /app/docker/apache2/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
-
-# APACHE y PHP
+# APACHE
 COPY ./docker/app/conf/apache /etc/apache2
+# PHP
 COPY ./docker/app/conf/php/php.ini.dist /usr/local/etc/php/php.ini
 
 # Instalando paquetes necesarios
