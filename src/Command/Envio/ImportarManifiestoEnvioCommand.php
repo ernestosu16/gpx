@@ -72,7 +72,7 @@ final class ImportarManifiestoEnvioCommand extends BaseCommand implements BaseCo
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $ftpConfi = $this->getFTPConfi();
+        //$ftpConfi = $this->getFTPConfi();
 
         $dir = "/app/public/download/envioManifiesto";
         //dump($ftpConfi);exit;

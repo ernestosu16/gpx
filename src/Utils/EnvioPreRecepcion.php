@@ -8,6 +8,7 @@ use App\Entity\Localizacion;
 use App\Entity\Nomenclador;
 use App\Entity\Pais;
 use App\Entity\Persona;
+use phpDocumentor\Reflection\Location;
 
 class EnvioPreRecepcion
 {
@@ -15,13 +16,13 @@ class EnvioPreRecepcion
     private string $codTracking;
     private float $peso;
     //nacionalidad_remitente
-    private string $paisOrigen;
+    private Pais $paisOrigen;
     //currier y/o tipo de producto
     private string $agencia;
     //interes_aduana
     private bool $entidadCtrlAduana;
-    private string $provincia;
-    private string $municipio;
+    private ?Localizacion $provincia;
+    private ?Localizacion $municipio;
     private string $pareo;
     //Array de nomencladores de tipo anomalia
     private array $irregularidades;
@@ -89,20 +90,22 @@ class EnvioPreRecepcion
     }
 
     /**
-     * @return string
+     * @return Pais
      */
-    public function getPaisOrigen(): string
+    public function getPaisOrigen(): Pais
     {
         return $this->paisOrigen;
     }
 
     /**
-     * @param string $paisOrigen
+     * @param Pais $paisOrigen
      */
-    public function setPaisOrigen(string $paisOrigen): void
+    public function setPaisOrigen(Pais $paisOrigen): void
     {
         $this->paisOrigen = $paisOrigen;
     }
+
+
 
     /**
      * @return string
@@ -137,36 +140,38 @@ class EnvioPreRecepcion
     }
 
     /**
-     * @return string
+     * @return Localizacion|null
      */
-    public function getProvincia(): string
+    public function getProvincia(): ?Localizacion
     {
         return $this->provincia;
     }
 
     /**
-     * @param string $provincia
+     * @param Localizacion|null $provincia
      */
-    public function setProvincia(string $provincia): void
+    public function setProvincia(?Localizacion $provincia): void
     {
         $this->provincia = $provincia;
     }
 
     /**
-     * @return string
+     * @return Localizacion|null
      */
-    public function getMunicipio(): string
+    public function getMunicipio(): ?Localizacion
     {
         return $this->municipio;
     }
 
     /**
-     * @param string $municipio
+     * @param Localizacion|null $municipio
      */
-    public function setMunicipio(string $municipio): void
+    public function setMunicipio(?Localizacion $municipio): void
     {
         $this->municipio = $municipio;
     }
+
+
 
     /**
      * @return string

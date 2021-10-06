@@ -198,8 +198,6 @@ class EnvioController extends AbstractController
     #[Route('/envio/buscar-envio-manifestado', name: 'envio_manifestado', options: ["expose" => true] , methods: ['POST'])]
     public function buscarEnvioManifestado(Request $request){
 
-
-
         if ($request->isXmlHttpRequest()){
 
             $guia = $request->request->get('noGuia');
@@ -207,8 +205,8 @@ class EnvioController extends AbstractController
 
             $envioManifestadoService = $this->envioManager->obtnerEnvioManifestado($guia,$tracking);
 
-            var_dump("envioManifestadoService");
-            var_dump($envioManifestadoService);
+            dump("envioManifestadoService");
+            dump($envioManifestadoService);exit;
 
             $miRespuesta = new MyResponse();
 
@@ -251,6 +249,7 @@ class EnvioController extends AbstractController
             return JsonResponse::fromJsonString($miRespuestaJson);
 
         }else{
+            dump("Hacker");
             throwException('Hacker');
         }
 

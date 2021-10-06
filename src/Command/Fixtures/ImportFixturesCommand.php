@@ -320,6 +320,7 @@ final class ImportFixturesCommand extends BaseCommand implements BaseCommandInte
         }
 
         return $entity;
+    }
 
     private function configurarAgencias()
     {

@@ -121,8 +121,8 @@ function actualizarDatos(){
         type: 'POST',
         url: ruta,
         data: {
-            noGuia: 'hgfd',
-            codTracking: 456
+            noGuia: '136-62555942',
+            codTracking: 'CP002767682SA'
         },
         async: true,
         dataType: 'json',

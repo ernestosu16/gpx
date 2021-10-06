@@ -7,6 +7,7 @@ use App\Entity\Envio;
 use App\Entity\EnvioManifiesto;
 use App\Entity\Estructura;
 use App\Entity\Localizacion;
+use App\Repository\AgenciaRepository;
 use App\Repository\EnvioManifiestoRepository;
 use App\Repository\LocalizacionRepository;
 use App\Repository\NomencladorRepository;
@@ -23,7 +24,8 @@ class EnvioManager extends _Manager_
         private LocalizacionRepository $localizacionRepository,
         private EnvioManifiestoRepository $envioManifiestoRepository,
         private PaisRepository $paisRepository,
-        private NomencladorRepository $nomencladorRepository
+        private NomencladorRepository $nomencladorRepository,
+        private AgenciaRepository $agenciaRepository
     )
     {
     }
@@ -37,7 +39,10 @@ class EnvioManager extends _Manager_
     public function obtnerEnvioManifestado(string $noGuia, string $codTracking): ?EnvioPreRecepcion
     {
         $envioPreRecepcion = new EnvioPreRecepcion();
-        $envioManifestado = $this->envioManifiestoRepository->findByNumeroIdentidad($noGuia,$codTracking);
+        $envioManifestado = $this->envioManifiestoRepository->findByGuiaAndCodigo($noGuia,$codTracking);
+
+        dump('envio manifestado');
+        dump($envioManifestado);
 
         if ( $envioManifestado ) {
 
@@ -45,14 +50,14 @@ class EnvioManager extends _Manager_
             $envioPreRecepcion->setCodTracking($envioManifestado->getCodigo());
             $envioPreRecepcion->setPeso($envioManifestado->getPeso());
 
+            dump('prueba 123');
+
             //Comprobar que sea asi por codigo de aduana
-            $envioPreRecepcion->setPaisOrigen(
-                $this->paisRepository->findOneBy(['codigo_aduana'=>$envioManifestado->getNacionalidadRemitente()])
-            );
+            $envioPreRecepcion->setPaisOrigen($envioManifestado->getPaisOrigen());
             //Hace el metodo para que busque la agencia a partir del codigo dado por manifiesto
             $envioPreRecepcion->setAgencia(
-                //$this->nomencladorRepository->findOneByAgenciaCodigoManifiesto($envioManifestado->getAgenciaOrigen())
-                null
+
+
             );
             //Comprobar q sea asi realmente
             $envioPreRecepcion->setEntidadCtrlAduana($envioManifestado->isInteresAduana());

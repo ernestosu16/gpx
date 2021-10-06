@@ -21,7 +21,9 @@ class EnvioDireccion
 
     private string $apto;
 
-    private Localizacion $municipio;
+    private ?Localizacion $provincia;
+
+    private ?Localizacion $municipio;
 
 
     /**
@@ -121,20 +123,37 @@ class EnvioDireccion
     }
 
     /**
-     * @return Localizacion
+     * @return Localizacion|null
      */
-    public function getMunicipio(): Localizacion
+    public function getProvincia(): ?Localizacion
+    {
+        return $this->provincia;
+    }
+
+    /**
+     * @param Localizacion|null $provincia
+     */
+    public function setProvincia(?Localizacion $provincia): void
+    {
+        $this->provincia = $provincia;
+    }
+
+    /**
+     * @return Localizacion|null
+     */
+    public function getMunicipio(): ?Localizacion
     {
         return $this->municipio;
     }
 
     /**
-     * @param Localizacion $municipio
+     * @param Localizacion|null $municipio
      */
-    public function setMunicipio(Localizacion $municipio): void
+    public function setMunicipio(?Localizacion $municipio): void
     {
         $this->municipio = $municipio;
     }
+
 
     /**
      * @return string

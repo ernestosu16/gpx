@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Config\Data\Nomenclador\AgenciaData;
 use App\Config\Data\Nomenclador\GrupoData;
 use App\Entity\Agencia;
+use App\Entity\Nomenclador;
 use Doctrine\ORM\QueryBuilder;
 
 final class AgenciaRepository extends NomencladorRepository
@@ -22,5 +23,13 @@ final class AgenciaRepository extends NomencladorRepository
             ->setParameter('parent', $parent->getId())
             ->orderBy($alias . '.lft', 'ASC');;
         return $query;
+    }
+
+    public function findByCodigoAduana(string $code): Nomenclador
+    {
+        $parent = $this->findOneByCodigo(AgenciaData::code());
+        $agencia = $this->findOneBy(['parent' => $parent, 'descripcion' => $code]);
+
+        return $agencia;
     }
 }
