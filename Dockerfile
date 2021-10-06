@@ -24,7 +24,7 @@ RUN mkdir -p /app/var/cache; \
     mkdir -p /app/var/log;\
     touch /app/var/log/dev.log; \
     touch /app/var/log/prod.log; \
-    chown -R www-data:www-data var/cache var/log; \
+    chown -R www-data:www-data var/cache var/log;
 
 #Syslink
 RUN ln -s /app /var/www/app
