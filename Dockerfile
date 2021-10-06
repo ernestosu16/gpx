@@ -1,5 +1,4 @@
 FROM dap/php:8.0-apache
-
 # Instalando paquete
 RUN apt-get -y update && \
     apt-get install -y libicu-dev
@@ -11,9 +10,32 @@ RUN docker-php-ext-configure intl && \
 RUN docker-php-ext-configure opcache --enable-opcache \
     && docker-php-ext-install opcache
 
+COPY [".env", "composer.json", "composer.lock", "symfony.lock", "/app/"]
+
+COPY bin /app/bin
+COPY config /app/config
+COPY docker /app/docker
+COPY migrations /app/migrations
+COPY public /app/public
+COPY src /app/src
+COPY translations /app/translations
+
+RUN mkdir -p /app/var/cache; \
+    mkdir -p /app/var/log;\
+    touch /app/var/log/dev.log; \
+    touch /app/var/log/prod.log; \
+    chown -R www-data:www-data var/cache var/log; \
+
+#Syslink
+RUN ln -s /app /var/www/app
+RUN ln -s /app/docker/apache2/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
+
 # APACHE y PHP
 COPY ./docker/app/conf/apache /etc/apache2
 COPY ./docker/app/conf/php/php.ini.dist /usr/local/etc/php/php.ini
+
+# Instalando paquetes necesarios
+RUN composer install --no-scripts
 
 # Publicando el proyecto
 RUN ln -s /app /var/www/app
