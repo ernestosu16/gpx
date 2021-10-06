@@ -16,13 +16,19 @@ class LocalizacionRepository extends _NestedTreeRepository_
 
     public function findAllProvincia(): array
     {
-        return $this->findByTipo(LocalizacionTipo::PROVINCIA);
+        return $this->findByTipoCodigo(LocalizacionTipo::PROVINCIA);
     }
 
-    public function findByTipo(string $tipo): array
+    public function findByTipoCodigo(string $tipo): array
     {
         $em = $this->getEntityManager();
         $tipo = $em->getRepository(LocalizacionTipo::class)->findOneByCodigo($tipo);
+        return $this->findBy(['tipo' => $tipo]);
+    }
+
+    public function findByTipo(LocalizacionTipo $tipo): array
+    {
+        $tipo = $this->getEntityManager()->getRepository(LocalizacionTipo::class)->find($tipo);
         return $this->findBy(['tipo' => $tipo]);
     }
 

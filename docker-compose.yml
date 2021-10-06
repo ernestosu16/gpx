@@ -6,9 +6,30 @@ networks:
             driver: 'default'
 
 volumes:
+    redis-datastore:
+    rabbitmq-datastore:
     db-datastore:
 
 services:
+#    redis:
+#        image: redis:alpine3.14
+#        volumes:
+#            - 'redis-datastore:/bitnami/redis/data'
+#        networks:
+#            - 'app-net'
+#        ports:
+#            - '6379:6379'
+
+#    rabbitmq:
+#        image: rabbitmq:3-management-alpine
+#        volumes:
+#            - 'rabbitmq-datastore:/var/lib/rabbitmq'
+#        networks:
+#            - 'app-net'
+#        ports:
+#            - '5672:5672'
+#            - '15672:15672'
+
     db:
         image: 'dap/mysql:8.0'
         command:

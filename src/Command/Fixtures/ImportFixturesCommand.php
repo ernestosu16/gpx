@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Command\Configurar;
+namespace App\Command\Fixtures;
 
 use App\Command\BaseCommand;
 use App\Command\BaseCommandInterface;
@@ -13,6 +13,7 @@ use App\Entity\Grupo;
 use App\Entity\Localizacion;
 use App\Entity\LocalizacionTipo;
 use App\Entity\Menu;
+use App\Entity\Pais;
 use App\Repository\LocalizacionRepository;
 use App\Repository\LocalizacionTipoRepository;
 use Doctrine\ORM\OptimisticLockException;
@@ -24,11 +25,11 @@ use Symfony\Component\Console\Output\ConsoleSectionOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Yaml;
 
-final class FixturesCommand extends BaseCommand implements BaseCommandInterface
+final class ImportFixturesCommand extends BaseCommand implements BaseCommandInterface
 {
     static function getCommandName(): string
     {
-        return 'app:configurar:fixtures';
+        return 'app:fixtures:import';
     }
 
     /**
@@ -40,6 +41,9 @@ final class FixturesCommand extends BaseCommand implements BaseCommandInterface
         $section = $output->section();
 
         $section->writeln('* Iniciando el comando de creación de datos por defecto');
+
+        $section->writeln('  Creando los países');
+        $this->configurarPaises();
 
         $this->getEntityManager()->beginTransaction();
         $section->writeln('  Creando la lista de grupos');
@@ -138,6 +142,7 @@ final class FixturesCommand extends BaseCommand implements BaseCommandInterface
             $entity->setNombre($provincia['nombre']);
             $entity->setDescripcion($provincia['descripcion']);
             $entity->setCodigo($provincia['codigo']);
+            $entity->setCodigoAduana($provincia['codigo_aduana']);
             $entity->setTipo($tipoRepository->getTipoProvincia());
 
             $this->getEntityManager()->persist($entity);
@@ -156,6 +161,7 @@ final class FixturesCommand extends BaseCommand implements BaseCommandInterface
                 $entity->setParent($provinciaEntity);
                 $entity->setNombre($municipio['nombre']);
                 $entity->setCodigo($municipio['codigo']);
+                $entity->setCodigoAduana($municipio['codigo_aduana']);
                 $entity->setTipo($tipoRepository->getTipoMunicipio());
 
                 $this->getEntityManager()->persist($entity);
@@ -281,5 +287,22 @@ final class FixturesCommand extends BaseCommand implements BaseCommandInterface
         }
 
         return $estructura;
+    }
+
+    private function configurarPaises()
+    {
+        /** @var array $collection */
+        $collection = Yaml::parseFile($this->getKernel()->getProjectDir() . '/src/Config/Fixtures/pais.yaml');
+
+        foreach ($collection['pais'] as $pais) {
+            if ($this->getRepository(Pais::class)->findOneBy(['nombre' => $pais['nombre']]))
+                continue;
+
+            $entity = new Pais();
+            $entity->setNombre($pais['nombre']);
+            $entity->setIata($pais['iata']);
+            $entity->setCodigoAduana($pais['codigo_aduana']);
+            $this->getEntityManager()->persist($entity);
+        }
     }
 }
