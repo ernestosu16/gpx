@@ -1,14 +1,14 @@
 //Variables
 var envioTemporal = {
-    noGuia: "19357",
-    codTracking: "123",
+    no_guia: "19357",
+    cod_tracking: "123",
     peso: 1.5,
     //nacionalidad_remitente
-    paisOrigen: "",
+    pais_origen: "",
     //currier
     agencia: '',
     //interes_aduana
-    entidadCtrlAduana: false,
+    entidad_ctrl_aduana: false,
     provincia: '',
     municipio: '',
     pareo: '',
@@ -38,8 +38,8 @@ function buscarEnvioManifestado()
  */
 function annadirEnvioAListTemporal()
 {
-    noGuia = elementId('input_noGuia').value
-    codTracking = elementId('input_codTracking').value
+    no_guia = elementId('input_noGuia').value
+    cod_tracking = elementId('input_codTracking').value
     peso = elementId('input_peso').value
     nacionalidad = elementId('select_nacionalidadOrigen').value
     producto = elementId('select_producto').value
@@ -53,8 +53,8 @@ function annadirEnvioAListTemporal()
         pareo = elementId('input_pareo').value == "" ? "" : elementId('input_pareo').value
     }
 
-    campos =    "guia: "+ noGuia+ "\n"+
-                "track: "+ codTracking+ "\n"+
+    campos =    "guia: "+ no_guia+ "\n"+
+                "track: "+ cod_tracking+ "\n"+
                 "peso: "+ peso+ "\n"+
                 "nac: "+ nacionalidad+ "\n"+
                 "pro: "+ producto+ "\n"+
@@ -114,31 +114,84 @@ function habilitarDescripcionAnomalia(id)
 
 function actualizarDatos(){
 
+    //Seleccionar un pais
+    $('#select_nacionalidadOrigen')
+        .val('a5cc4eff-26b0-11ec-a331-0242ac120002')
+        .trigger('change.select2')
+
     this.listEnviosTemporles.push(12);
     console.log(this.listEnviosTemporles);
-    var ruta = Routing.generate('envio_manifestado')
-    $.ajax({
-        type: 'POST',
-        url: ruta,
-        data: {
-            noGuia: '136-62555942',
-            codTracking: 'CP002767682SA'
-        },
-        async: true,
-        dataType: 'json',
-        loading: '',
-        success: function (data) {
-           console.log('success',data)
-            if(!(data.estado)){
-                alert('No hay envio con esa guia y ese código');
-            }else {
-                alert(data.noGuia+' '+data.codTracking);
-            }
 
-        },
-        error: function (error){
-            alert('Error: '+ error.status+ ' '+ error.statusText);
-            console.log('error',error.responseText)
-        }
-    })
+    noGuia = document.getElementById('input_noGuia').value
+    codTracking = document.getElementById('input_codTracking').value
+    console.log(codTracking,'length')
+
+    if ( noGuia.length == 12 && codTracking.length == 13) {
+        var ruta = Routing.generate('envio_manifestado')
+        $.ajax({
+            type: 'POST',
+            url: ruta,
+            data: {
+                noGuia: noGuia,
+                codTracking: codTracking
+            },
+            async: true,
+            dataType: 'json',
+            loading: '',
+            success: function (data) {
+                console.log('success', data)
+                if (!(data.estado)) {
+                    alert(data.mensaje);
+                } else {
+                    alert("Recibido OK");
+                    envioTemporal = data.data
+                    asignarValoresDeEnvioManifestado();
+                }
+
+            },
+            error: function (error) {
+                alert('Error: ' + error.status + ' ' + error.statusText);
+                console.log('error', error.responseText)
+            }
+        })
+    }else {
+        alert('Deben estar correcto el No. Guia y el Codigo de Tracking.')
+    }
+
+
 }
+
+
+function asignarValoresDeEnvioManifestado(){
+
+    $('#input_noGuia').val(envioTemporal.no_guia);
+
+    $('#input_codTracking').val(envioTemporal.cod_tracking);
+
+    $('#input_peso').val(envioTemporal.peso);
+
+    $('#select_nacionalidadOrigen')
+        .val(envioTemporal.pais_origen)
+        .trigger('change.select2');
+
+    $('#select_producto')
+        .val(envioTemporal.agencia)
+        .trigger('change.select2');
+
+    if (envioTemporal.provincia) {
+        $('#select_provincias')
+            .val(envioTemporal.provincia)
+            .trigger('change.select2');
+    }
+
+    if (envioTemporal.municipio){
+        $('#select_municipios')
+            .val(envioTemporal.municipio)
+            .trigger('change.select2');
+    }
+
+    $('#input_pareo').val(envioTemporal.pareo);
+
+}
+
+

@@ -43,7 +43,7 @@
             <select id="select_nacionalidadOrigen" class="form-control input-sm select2" aria-label="Nacionalidad de orígen">
                 <option selected>Seleccione</option>
                 {% for nacionalidad in nacionalidades %}
-                    <option value="{{ nacionalidad }}">{{ nacionalidad }}</option>
+                    <option value="{{ nacionalidad.id }}">{{ nacionalidad.nombre }}</option>
                 {% endfor %}
             </select>
         </div>

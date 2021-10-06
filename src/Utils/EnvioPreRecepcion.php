@@ -12,15 +12,15 @@ use phpDocumentor\Reflection\Location;
 
 class EnvioPreRecepcion
 {
-    private string $noGuia;
-    private string $codTracking;
+    private string $no_guia;
+    private string $cod_tracking;
     private float $peso;
     //nacionalidad_remitente
-    private string $paisOrigen;
+    private string $pais_origen;
     //currier y/o tipo de producto
     private string $agencia;
     //interes_aduana
-    private bool $entidadCtrlAduana;
+    private bool $entidad_ctrl_aduana;
     private ?string $provincia;
     private ?string $municipio;
     private string $pareo;
@@ -33,7 +33,6 @@ class EnvioPreRecepcion
 
     /**
      * EnvioPreRecepcion constructor.
-     * @param string $noGuia
      */
     public function __construct()
     {
@@ -46,7 +45,7 @@ class EnvioPreRecepcion
      */
     public function getNoGuia(): string
     {
-        return $this->noGuia;
+        return $this->no_guia;
     }
 
     /**
@@ -54,7 +53,7 @@ class EnvioPreRecepcion
      */
     public function setNoGuia(string $noGuia): void
     {
-        $this->noGuia = $noGuia;
+        $this->no_guia = $noGuia;
     }
 
     /**
@@ -62,7 +61,7 @@ class EnvioPreRecepcion
      */
     public function getCodTracking(): string
     {
-        return $this->codTracking;
+        return $this->cod_tracking;
     }
 
     /**
@@ -70,7 +69,7 @@ class EnvioPreRecepcion
      */
     public function setCodTracking(string $codTracking): void
     {
-        $this->codTracking = $codTracking;
+        $this->cod_tracking = $codTracking;
     }
 
     /**
@@ -110,7 +109,7 @@ class EnvioPreRecepcion
      */
     public function isEntidadCtrlAduana(): bool
     {
-        return $this->entidadCtrlAduana;
+        return $this->entidad_ctrl_aduana;
     }
 
     /**
@@ -118,7 +117,7 @@ class EnvioPreRecepcion
      */
     public function setEntidadCtrlAduana(bool $entidadCtrlAduana): void
     {
-        $this->entidadCtrlAduana = $entidadCtrlAduana;
+        $this->entidad_ctrl_aduana = $entidadCtrlAduana;
     }
 
     /**
@@ -126,7 +125,7 @@ class EnvioPreRecepcion
      */
     public function getPaisOrigen(): string
     {
-        return $this->paisOrigen;
+        return $this->pais_origen;
     }
 
     /**
@@ -134,7 +133,7 @@ class EnvioPreRecepcion
      */
     public function setPaisOrigen(string $paisOrigen): void
     {
-        $this->paisOrigen = $paisOrigen;
+        $this->pais_origen = $paisOrigen;
     }
 
     /**

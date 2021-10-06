@@ -41,9 +41,6 @@ class EnvioManager extends _Manager_
         $envioPreRecepcion = new EnvioPreRecepcion();
         $envioManifestado = $this->envioManifiestoRepository->findByGuiaAndCodigo($noGuia,$codTracking);
 
-        dump('envio manifestado');
-        dump($envioManifestado);
-
         if ( $envioManifestado ) {
 
             $envioPreRecepcion->setNoGuia($envioManifestado->getNoGuiaAerea());
@@ -92,9 +89,6 @@ class EnvioManager extends _Manager_
             );
 
             $envioPreRecepcion->addDireccion($direccion);
-
-            dump('Envio Pre Recepcion');
-            dump($envioPreRecepcion);
 
         }else{
             $envioPreRecepcion = null;

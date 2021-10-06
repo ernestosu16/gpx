@@ -13,6 +13,7 @@ use App\Manager\EnvioManager;
 use App\Repository\EnvioManifiestoRepository;
 use App\Repository\EnvioRepository;
 use App\Repository\LocalizacionRepository;
+use App\Repository\PaisRepository;
 use App\Utils\MyResponse;
 use JMS\Serializer\SerializerBuilder;
 use phpDocumentor\Reflection\Types\False_;
@@ -30,7 +31,8 @@ class EnvioController extends AbstractController
     public function __construct(
         private LocalizacionRepository $localizacion,
         private EnvioManifiestoRepository $envioManifiesto,
-        private EnvioManager $envioManager
+        private EnvioManager $envioManager,
+        private PaisRepository $paisRepository,
     )
     {
     }
@@ -90,7 +92,9 @@ class EnvioController extends AbstractController
                 "envio manifestado en otro manifiesto",
                 "diferencia de peso"];
 
-            $nacionalidades = ['AFGANISTAN', 'ALBANIA', 'ALEMANIA', 'ANDORRA', 'ANGOLA', 'ANGUILA', 'ANTIGUA Y BARBUDA', 'ANTILLAS NEERLANDESAS', 'ARABIA SAUDITA', 'ARGELIA', 'ARGENTINA', 'BURUNDI', 'CAMBODIA', 'CAMBOYA', 'CAMERUN', 'CANADA', 'CHAD', 'CHILE', 'CHINA', 'CHIPRE', 'COLOMBIA', 'CONGO', 'COSTA DE MARFIL', 'COSTA RICA', 'CROACIA', 'DINAMARCA', 'DOMINICA'];
+            //$nacionalidades = ['AFGANISTAN', 'ALBANIA', 'ALEMANIA', 'ANDORRA', 'ANGOLA', 'ANGUILA', 'ANTIGUA Y BARBUDA', 'ANTILLAS NEERLANDESAS', 'ARABIA SAUDITA', 'ARGELIA', 'ARGENTINA', 'BURUNDI', 'CAMBODIA', 'CAMBOYA', 'CAMERUN', 'CANADA', 'CHAD', 'CHILE', 'CHINA', 'CHIPRE', 'COLOMBIA', 'CONGO', 'COSTA DE MARFIL', 'COSTA RICA', 'CROACIA', 'DINAMARCA', 'DOMINICA'];
+
+            $nacionalidades = $this->paisRepository->findAll();
 
             $curries = ['CUBA ENVIO', 'ALL COSUMER', 'CUGRANCA', 'IBT', 'BORDOY', 'APCARGO', 'DORMAR', 'LOBATON', 'GRAN CASTOR', 'CARIBBEAN LOGISTIC', 'CORRESPONDENCIA EXPRESS', 'MARFEENTERPRISE. SA'];
 
@@ -203,9 +207,6 @@ class EnvioController extends AbstractController
             $tracking = $request->request->get('codTracking');
 
             $envioManifestadoService = $this->envioManager->obtnerEnvioManifestado($guia,$tracking);
-
-            dump('envio $envioManifestadoService');
-            dump($envioManifestadoService);
 
             $miRespuesta = new MyResponse();
 
