@@ -24,6 +24,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleSectionOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Yaml;
+use function Symfony\Component\String\u;
 
 final class ImportFixturesCommand extends BaseCommand implements BaseCommandInterface
 {
@@ -86,10 +87,8 @@ final class ImportFixturesCommand extends BaseCommand implements BaseCommandInte
             if ($this->getRepository(Grupo::class)->findOneByCodigo($grupo['codigo']))
                 continue;
 
-            $grupoEntity = new Grupo();
-            $grupoEntity->setCodigo($grupo['codigo']);
-            $grupoEntity->setNombre($grupo['nombre']);
-            $grupoEntity->setDescripcion($grupo['descripcion']);
+            /** @var Grupo $grupoEntity */
+            $grupoEntity = $this->setter(new Grupo(), $grupo);
 
             $root->addChild($grupoEntity);
             $this->getEntityManager()->persist($root);
@@ -193,12 +192,10 @@ final class ImportFixturesCommand extends BaseCommand implements BaseCommandInte
             foreach ($menu['children'] as $child) {
                 if ($this->getRepository(Menu::class)->findOneByCodigo($child['codigo']))
                     continue;
-                $menuChildEntity = new Menu();
+
+                /** @var Menu $menuChildEntity */
+                $menuChildEntity = $this->setter(new Menu(), $child);
                 $menuChildEntity->setRoot($root);
-                $menuChildEntity->setCodigo($child['codigo']);
-                $menuChildEntity->setNombre($child['nombre']);
-                $menuChildEntity->setRoute($child['route']);
-                $menuChildEntity->setIcon($child['icon']);
                 $menuEntity->addChild($menuChildEntity);
             }
 
@@ -298,11 +295,24 @@ final class ImportFixturesCommand extends BaseCommand implements BaseCommandInte
             if ($this->getRepository(Pais::class)->findOneBy(['nombre' => $pais['nombre']]))
                 continue;
 
-            $entity = new Pais();
-            $entity->setNombre($pais['nombre']);
-            $entity->setIata($pais['iata']);
-            $entity->setCodigoAduana($pais['codigo_aduana']);
+            $entity = $this->setter(new Pais(), $pais);
             $this->getEntityManager()->persist($entity);
         }
+    }
+
+    private function setter(object $entity, $row): object
+    {
+        foreach ($row as $key => $value) {
+            $set = u($key)
+                ->replace('_', ' ')
+                ->title(true)
+                ->replace(' ', '')
+                ->prepend('set')
+                ->toString();
+
+            call_user_func([$entity, $set], $value);
+        }
+
+        return $entity;
     }
 }
