@@ -15,7 +15,7 @@
 <button class="btn btn-sm btn-success">{{ button_label|default('guardar'|trans([],'admin')) }}</button>
 
 <a class="btn btn-sm btn-default" href="{{ path(config.routes.index,{'parent': nomencladorParent.codigo}) }}">
-    {{ 'No se encontraron registros'|trans([],'admin') }}
+    {{ 'volver a la lista'|trans([],'admin') }}
 </a>
 {{ form_errors(form) }}
 {{ form_end(form) }}
