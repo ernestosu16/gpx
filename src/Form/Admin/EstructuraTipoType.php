@@ -2,8 +2,11 @@
 
 namespace App\Form\Admin;
 
+use App\Config\Data\Nomenclador\EstructuraTipoData;
 use App\Entity\EstructuraTipo;
 use App\Entity\Grupo;
+use App\Repository\EstructuraTipoRepository;
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -15,12 +18,28 @@ class EstructuraTipoType extends BaseNomencladorType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        /** @var EstructuraTipo $data */
+        $data = $builder->getData();
+
         $builder
             ->add('parent', EntityType::class, [
                 'class' => EstructuraTipo::class,
                 'label' => 'pertenece',
                 'label_attr' => ['class' => 'col-sm-2 control-label'],
                 'attr' => ['class' => 'form-control input-sm'],
+                'required' => true,
+                'disabled' => $data->getParent()?->getCodigo() === EstructuraTipoData::code(),
+                'query_builder' => function (EstructuraTipoRepository $repository) use ($data): QueryBuilder {
+                    $qb = $repository->createQueryBuilder('q');
+
+                    if ($data->getId())
+                        $qb->andWhere('q != :data')->setParameter('data', $data);
+
+                    if ($data->getParent()?->getCodigo() !== EstructuraTipoData::code())
+                        $qb->andWhere('q.parent is not null');
+
+                    return $qb;
+                }
             ])
             ->add('codigo', TextType::class, [
                 'label' => 'codigo',
@@ -53,7 +72,6 @@ class EstructuraTipoType extends BaseNomencladorType
                 'label' => 'habilitado',
                 'label_attr' => ['class' => 'col-sm-2 control-label'],
             ]);
-        ;
     }
 
     public function configureOptions(OptionsResolver $resolver)

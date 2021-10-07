@@ -117,6 +117,9 @@ abstract class _CrudController_ extends _Controller_
             ->getRepository(static::entity())
             ->createQueryBuilder('q');
 
+        if (static::parentCode())
+            $query->andWhere('q.parent is not null');
+
         $pagination = $this->paginator->paginate($query,
             $request->query->getInt('page', 1),
             $settings['page']['limit']

@@ -1,4 +1,4 @@
-{% if settings.routes.delete %}
+{% if settings.routes.delete and entity.parent != null %}
     <form method="post" action="{{ path(settings.routes.delete, {'id': entity.id}) }}">
         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ entity.id) }}">
         <button class="btn btn-sm btn-danger delete">{{ 'eliminar'|trans([],settings.translation_domain) }}</button>

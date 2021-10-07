@@ -6,14 +6,15 @@ use App\Entity\TrabajadorCredencial;
 use App\Event\Subscriber\_Subscriber_;
 use Doctrine\ORM\Events;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
+use JetBrains\PhpStorm\Pure;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class TrabajadorCredencialSubscriber extends _Subscriber_
+final class TrabajadorCredencialSubscriber extends _Subscriber_
 {
     private UserPasswordHasherInterface $passwordHasher;
 
-    public function __construct(ContainerInterface $container, UserPasswordHasherInterface $passwordHasher)
+    #[Pure] public function __construct(ContainerInterface $container, UserPasswordHasherInterface $passwordHasher)
     {
         parent::__construct($container);
         $this->passwordHasher = $passwordHasher;
@@ -48,9 +49,9 @@ class TrabajadorCredencialSubscriber extends _Subscriber_
         $this->passwordEncrypt($object);
     }
 
-    private function passwordEncrypt(TrabajadorCredencial $object)
+    private function passwordEncrypt(TrabajadorCredencial $object): void
     {
-        $hashedPassword = $this->passwordHasher->hashPassword($object, $object->getContrasena());
-        $object->setContrasena($hashedPassword);
+        if ($object->getContrasena())
+            $object->setContrasena($this->passwordHasher->hashPassword($object, $object->getContrasena()));
     }
 }

@@ -15,7 +15,14 @@ final class EstructuraTipoRepository extends NomencladorRepository
     public function createQueryBuilder($alias, $indexBy = null): QueryBuilder
     {
         return parent::createQueryBuilder($alias, $indexBy)
-            ->where($alias . '.parent is not null')
             ->orderBy($alias . '.lft', 'ASC');
+    }
+
+    public function findAll(): array
+    {
+        return $this->createQueryBuilder('q')
+            ->where('q.parent is not null')
+            ->getQuery()
+            ->getResult();
     }
 }

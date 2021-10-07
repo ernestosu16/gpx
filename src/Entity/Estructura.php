@@ -334,4 +334,21 @@ class Estructura extends BaseNestedTree
 
         return $this;
     }
+
+    public function getTiposPermitidos(): array
+    {
+        return $this->collectionTipos($this->getTipos(), []);
+    }
+
+    private function collectionTipos(Collection $tipos, array $collection): array
+    {
+        /** @var EstructuraTipo $tipo */
+        foreach ($tipos as $tipo) {
+            $collection[] = $tipo;
+            if ($children = $tipo->getChildren())
+                $collection = $this->collectionTipos($children, $collection);
+        }
+
+        return $collection;
+    }
 }
