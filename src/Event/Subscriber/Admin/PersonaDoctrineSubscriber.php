@@ -3,12 +3,12 @@
 namespace App\Event\Subscriber\Admin;
 
 use App\Entity\Persona;
-use App\Event\Subscriber\_Subscriber_;
+use App\Event\Subscriber\_DoctrineSubscriber_;
 use App\Manager\PersonaManager;
 use Doctrine\ORM\Events;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 
-final class PersonaSubscriber extends _Subscriber_
+final class PersonaDoctrineSubscriber extends _DoctrineSubscriber_
 {
     public function getSubscribedEvents(): array
     {

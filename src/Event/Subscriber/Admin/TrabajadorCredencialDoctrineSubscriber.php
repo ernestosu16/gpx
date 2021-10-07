@@ -3,14 +3,14 @@
 namespace App\Event\Subscriber\Admin;
 
 use App\Entity\TrabajadorCredencial;
-use App\Event\Subscriber\_Subscriber_;
+use App\Event\Subscriber\_DoctrineSubscriber_;
 use Doctrine\ORM\Events;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 use JetBrains\PhpStorm\Pure;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-final class TrabajadorCredencialSubscriber extends _Subscriber_
+final class TrabajadorCredencialDoctrineSubscriber extends _DoctrineSubscriber_
 {
     private UserPasswordHasherInterface $passwordHasher;
 

@@ -3,11 +3,11 @@
 namespace App\Event\Subscriber\Admin;
 
 use App\Entity\Menu;
-use App\Event\Subscriber\_Subscriber_;
+use App\Event\Subscriber\_DoctrineSubscriber_;
 use Doctrine\ORM\Events;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 
-final class MenuSubscriber extends _Subscriber_
+final class MenuDoctrineSubscriber extends _DoctrineSubscriber_
 {
     public function getSubscribedEvents(): array
     {

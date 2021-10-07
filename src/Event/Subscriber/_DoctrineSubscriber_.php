@@ -5,7 +5,7 @@ namespace App\Event\Subscriber;
 use Doctrine\Bundle\DoctrineBundle\EventSubscriber\EventSubscriberInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-abstract class _Subscriber_ implements EventSubscriberInterface
+abstract class _DoctrineSubscriber_ implements EventSubscriberInterface
 {
     public function __construct(
         private ContainerInterface $container

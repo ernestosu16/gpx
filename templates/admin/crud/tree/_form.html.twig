@@ -1,7 +1,7 @@
 {{ form_start(form) }}
 {# @var fv \Symfony\Component\Form\FormView #}
 {% for fv in form %}
-    {% if fv.vars.name != '_token' %}
+    {% if fv.vars.name != '_token' and fv.vars.name != 'parametros' %}
         <div class="form-group">
             {{ form_label(fv) }}
             <div class="col-sm-10">
@@ -11,6 +11,16 @@
             </div>
         </div>
     {% endif %}
+{% endfor %}
+{% for parametro in form.parametros %}
+    <div class="form-group">
+        {{ form_label(parametro) }}
+        <div class="col-sm-10">
+            {{ form_widget(parametro) }}
+            {{ form_help(parametro) }}
+            {{ form_errors(parametro) }}
+        </div>
+    </div>
 {% endfor %}
 <button class="btn btn-sm btn-success">{{ button_label|default('guardar'|trans([],'admin')) }}</button>
 
