@@ -53,4 +53,22 @@ class LocalizacionRepository extends _NestedTreeRepository_
             ->where($alias . '.tipo = :tipo')
             ->setParameter('tipo', $tipo);
     }
+
+    /**
+     * @param string $municipio
+     * @param string $provincia
+     * @return array
+     */
+    public function findMunicipioAndProvinciaByCodigo(string $municipio, string $provincia): array
+    {
+        $em = $this->getEntityManager();
+        $tipo = $em->getRepository(LocalizacionTipo::class)->findOneByCodigo(LocalizacionTipo::PROVINCIA);
+        $parent = $this->findOneBy(['tipo' => $tipo, 'codigo_aduana' => $provincia]);
+        $children = null;
+        if($parent){
+            $children = $this->findOneBy(['parent' => $parent, 'codigo_aduana' => $municipio]);
+        }
+        return [$children,$parent];
+    }
+
 }

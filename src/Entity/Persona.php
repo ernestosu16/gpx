@@ -8,6 +8,7 @@ use App\Utils\SigloUtil;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\Pure;
+use JMS\Serializer\Annotation\SerializedName;
 use Symfony\Component\Validator\Constraints as Assert;
 use function Symfony\Component\String\u;
 
@@ -25,6 +26,7 @@ class Persona extends _Entity_
     #[ORM\Column(type: 'string', length: 11, nullable: true)]
     #[Assert\Regex(pattern: RegexUtil::NUMERO_IDENTIDAD, message: 'Número de identidad es incorrecto')]
     #[Assert\Length(min: 11, max: 11)]
+    #[SerializedName('id')]
     private ?string $numero_identidad;
 
     #[ORM\Column(type: 'string', length: 11, nullable: true)]
@@ -32,19 +34,31 @@ class Persona extends _Entity_
 
     #[ORM\Column(type: 'string', length: 50)]
     #[Assert\Regex(pattern: RegexUtil::TEXTO_ACENTO_SIN_ESPACIO, message: 'El nombre solo puede contener letras.')]
+    #[SerializedName('primerNombre')]
     private string $nombre_primero;
 
     #[ORM\Column(type: 'string', length: 80, nullable: true)]
     #[Assert\Regex(pattern: RegexUtil::TEXTO_ACENTO_SIN_ESPACIO, message: 'El nombre solo puede contener letras.')]
+    #[SerializedName('segundoNombre')]
     private ?string $nombre_segundo;
 
     #[ORM\Column(type: 'string', length: 50)]
     #[Assert\Regex(pattern: RegexUtil::TEXTO_ACENTO_SIN_ESPACIO, message: 'El nombre solo puede contener letras.')]
+    #[SerializedName('primerApellido')]
     private string $apellido_primero;
 
     #[ORM\Column(type: 'string', length: 50)]
     #[Assert\Regex(pattern: RegexUtil::TEXTO_ACENTO_SIN_ESPACIO, message: 'El nombre solo puede contener letras.')]
+    #[SerializedName('segundoApellido')]
     private string $apellido_segundo;
+
+    #[ORM\Column(type: 'string', length: 50)]
+    #[SerializedName('nacionalidad')]
+    private string $nacionalidad;
+
+    #[ORM\Column(type: 'string', length: 20)]
+    #[SerializedName('fechaNacimiento')]
+    private string $fecha_nacimiento;
 
     #[ORM\Column(type: 'boolean')]
     private bool $esExtranjero = false;
@@ -61,6 +75,8 @@ class Persona extends _Entity_
     {
         $this->numero_pasaporte = null;
         $this->nombre_segundo = null;
+        $this->nacionalidad = "CUB";
+        $this->fecha_nacimiento = "";
     }
 
     public function getHash(): ?string
@@ -197,6 +213,40 @@ class Persona extends _Entity_
 
         return implode(' ', $c);
     }
+
+
+    /**
+     * @return string
+     */
+    public function getNacionalidad(): string
+    {
+        return $this->nacionalidad;
+    }
+
+    /**
+     * @param string $nacionalidad
+     */
+    public function setNacionalidad(string $nacionalidad): void
+    {
+        $this->nacionalidad = $nacionalidad;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFechaNacimiento(): string
+    {
+        return $this->fecha_nacimiento;
+    }
+
+    /**
+     * @param string $fecha_nacimiento
+     */
+    public function setFechaNacimiento(string $fecha_nacimiento): void
+    {
+        $this->fecha_nacimiento = $fecha_nacimiento;
+    }
+
 
     public function getSiglo(): int
     {
