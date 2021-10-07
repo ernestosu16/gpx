@@ -9,11 +9,6 @@ use App\Utils\Validator;
 
 class EnvioManifiestoManager extends _Manager_
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    protected $doctrineEntityManager;
-
     public function createEnvioManifiesto(EnvioManifiesto $envioManifiesto)
     {
         /** @var $em EntityManagerInterface **/

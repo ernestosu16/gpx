@@ -316,6 +316,7 @@ final class ImportFixturesCommand extends BaseCommand implements BaseCommandInte
         }
         $this->getEntityManager()->persist($root);
         $this->getEntityManager()->flush();
+    }
 
     private function configurarPaises()
     {
