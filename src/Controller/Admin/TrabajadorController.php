@@ -77,7 +77,7 @@ final class TrabajadorController extends _CrudController_
             $estructuras[] = $credencial->getTrabajador()->getEstructura();
 
             # Obtengo la lista de trabajadores de las lista de estructuras
-            $trabajadores = $this->trabajadorRepository->findByEstructuras($estructuras);
+            $trabajadores = $this->trabajadorRepository->findByEstructuras($estructuras, [$credencial->getTrabajador()]);
         }
 
         $settings = $this->settings();

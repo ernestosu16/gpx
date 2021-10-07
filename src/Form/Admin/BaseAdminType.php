@@ -24,7 +24,7 @@ abstract class BaseAdminType extends AbstractType
     /**
      * @return Estructura[]
      */
-    protected function getChoiceEstructuras(): array
+    protected function getChoiceEstructuras(array $incluir = [], array $excluir = []): array
     {
         if (in_array('ROLE_ADMIN', $this->tokenStorage->getToken()->getUser()->getRoles()))
             return $this->estructuraRepository->findAll();
@@ -33,10 +33,18 @@ abstract class BaseAdminType extends AbstractType
         $credencial = $this->tokenStorage->getToken()->getUser();
 
         # listado de estructura
-        return array_unique(array_merge(
-            [$credencial->getEstructura()],
-            $this->estructuraRepository->children($credencial->getEstructura())
+        $collection = array_unique(array_merge([$credencial->getEstructura()],
+            $this->estructuraRepository->children($credencial->getEstructura()),
+            $incluir
         ));
+
+        # Quitando de la lista
+        foreach ($collection as $key => $item) {
+            if (in_array($item, $excluir))
+                unset($collection[$key]);
+        }
+
+        return $collection;
     }
 
     protected function getChoiceGrupos(): array

@@ -3,37 +3,23 @@
 namespace App\Form\Admin;
 
 use App\Entity\Nomenclador;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class NomencladorType extends AbstractType
+class NomencladorType extends BaseNomencladorType
 {
+    public function __construct(
+        private EventDispatcherInterface $dispatcher
+    )
+    {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        /** @var Nomenclador $data */
-        $data = $builder->getData();
-
+        parent::buildForm($builder, $options);
         $builder
-            ->add('codigo', TextType::class, [
-                'label' => 'codigo',
-                'label_attr' => ['class' => 'col-sm-2 control-label'],
-                'attr' => ['autocomplete' => 'off', 'class' => 'form-control input-sm'],
-            ])
-            ->add('nombre', TextType::class, [
-                'label' => 'nombre',
-                'label_attr' => ['class' => 'col-sm-2 control-label'],
-                'attr' => ['autocomplete' => 'off', 'class' => 'form-control input-sm'],
-            ])
-            ->add('descripcion', TextareaType::class, [
-                'label' => 'descripcion',
-                'label_attr' => ['class' => 'col-sm-2 control-label'],
-                'empty_data' => '',
-                'required' => false,
-                'attr' => ['class' => 'form-control input-sm'],
-            ])
             ->add('end', null, [
                 'required' => false,
                 'label' => 'end',
@@ -44,6 +30,8 @@ class NomencladorType extends AbstractType
                 'label' => 'habilitado',
                 'label_attr' => ['class' => 'col-sm-2 control-label'],
             ]);
+
+        $this->dispatcher->dispatch(new GenericEvent($builder), 'form.nomenclador');
     }
 
     public function configureOptions(OptionsResolver $resolver)

@@ -14,9 +14,6 @@ abstract class BaseNomencladorType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        /** @var Nomenclador $data */
-        $data = $builder->getData();
-
         $builder
             ->add('codigo', TextType::class, [
                 'label' => 'codigo',
