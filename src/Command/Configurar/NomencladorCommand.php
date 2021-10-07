@@ -8,7 +8,7 @@ use App\Config\Data\_Data_;
 use App\Entity\Nomenclador;
 use App\Repository\NomencladorRepository;
 use App\Utils\ClassFinderUtil;
-use Doctrine\ORM\ORMException;
+use Doctrine\ORM\Exception\ORMException;
 use ReflectionClass;
 use ReflectionException;
 use Symfony\Component\Console\Command\Command;
@@ -74,15 +74,6 @@ final class NomencladorCommand extends BaseCommand implements BaseCommandInterfa
                 $nomenclador[] = $className::newInstance();
             }
         }
-
-//        $MyClassesNamespace = ClassFinderUtil::getClassesInNamespace('App\\Config\\Data\\Nomenclador');
-//        foreach ($MyClassesNamespace as $item) {
-//            $classReflection = new ReflectionClass($item);
-//            if ($classReflection->isAbstract()) continue;
-//            /** @var _Data_ $className */
-//            $className = $classReflection->getName();
-//            $nomenclador[] = $className::newInstance();
-//        }
 
         return $nomenclador;
     }
