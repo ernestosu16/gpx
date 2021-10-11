@@ -31,8 +31,6 @@ use Symfony\Component\Translation\Exception\InvalidResourceException;
 
 final class ImportarManifiestoEnvioCommand extends BaseCommand implements BaseCommandInterface
 {
-
-    const FTP_ENVIO_MANIFIESTO = "FTP_ENVIO_MANIFIESTO";
     private array $ftp_config = [];
 
     static function getCommandName(): string
@@ -45,25 +43,25 @@ final class ImportarManifiestoEnvioCommand extends BaseCommand implements BaseCo
         return 'Importa los envios de los manifiestos.xml';
     }
 
-    /**
-     * @throws ORMException
-     */
-    private function getFTPConfi(): array
-    {
-        if(empty($this->ftp_config)){
-            $em = $this->getEntityManager();
-            /** @var Nomenclador $ftpConfi */
-            $ftpConfi = $em->getRepository(Nomenclador::class)->findOneByCodigo(self::FTP_ENVIO_MANIFIESTO);
-            if (!$ftpConfi)
-                throw new ORMException('No se encontró la configuración del FTP_ENVIO_MANIFIESTO');
-
-            $this->ftp_config['host'] = $ftpConfi->getParametro("host");
-            $this->ftp_config['user'] = $ftpConfi->getParametro("user");
-            $this->ftp_config['pass'] = $ftpConfi->getParametro("pass");
-        }
-
-        return $this->ftp_config;
-    }
+//    /**
+//     * @throws ORMException
+//     */
+//    private function getFTPConfi(): array
+//    {
+//        if(empty($this->ftp_config)){
+//            $em = $this->getEntityManager();
+//            /** @var Nomenclador $ftpConfi */
+//            $ftpConfi = $em->getRepository(Nomenclador::class)->findOneByCodigo(self::FTP_ENVIO_MANIFIESTO);
+//            if (!$ftpConfi)
+//                throw new ORMException('No se encontró la configuración del FTP_ENVIO_MANIFIESTO');
+//
+//            $this->ftp_config['host'] = $ftpConfi->getParametro("host");
+//            $this->ftp_config['user'] = $ftpConfi->getParametro("user");
+//            $this->ftp_config['pass'] = $ftpConfi->getParametro("pass");
+//        }
+//
+//        return $this->ftp_config;
+//    }
 
     /**
      * @param InputInterface $input
