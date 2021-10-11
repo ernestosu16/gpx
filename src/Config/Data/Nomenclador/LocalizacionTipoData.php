@@ -5,7 +5,7 @@ namespace App\Config\Data\Nomenclador;
 use App\Config\Data\_Data_;
 use App\Entity\LocalizacionTipo;
 
-class LocalizacionTipoData extends _Data_
+final class LocalizacionTipoData extends _Data_
 {
     static function parent(): ?string
     {

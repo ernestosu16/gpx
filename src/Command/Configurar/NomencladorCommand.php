@@ -8,7 +8,7 @@ use App\Config\Data\_Data_;
 use App\Entity\Nomenclador;
 use App\Repository\NomencladorRepository;
 use App\Utils\ClassFinderUtil;
-use Doctrine\ORM\ORMException;
+use Doctrine\ORM\Exception\ORMException;
 use ReflectionClass;
 use ReflectionException;
 use Symfony\Component\Console\Command\Command;
@@ -16,6 +16,8 @@ use Symfony\Component\Console\Exception\CommandNotFoundException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleSectionOutput;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Finder\Finder;
+use function Symfony\Component\String\u;
 
 final class NomencladorCommand extends BaseCommand implements BaseCommandInterface
 {
@@ -34,13 +36,43 @@ final class NomencladorCommand extends BaseCommand implements BaseCommandInterfa
     {
         $nomenclador = [];
 
-        $MyClassesNamespace = ClassFinderUtil::getClassesInNamespace('App\\Config\\Data\\Nomenclador');
-        foreach ($MyClassesNamespace as $item) {
-            $classReflection = new ReflectionClass($item);
-            if ($classReflection->isAbstract()) continue;
-            /** @var _Data_ $className */
-            $className = $classReflection->getName();
-            $nomenclador[] = $className::newInstance();
+        $finder = new Finder();
+        $finder->files()->in('src/Config/Data/Nomenclador');
+
+        foreach ($finder as $file) {
+            $content = $file->getContents();
+            $tokens = token_get_all($content);
+            $namespace = '';
+            for ($index = 0; isset($tokens[$index]); $index++) {
+                if (!isset($tokens[$index][0])) {
+                    continue;
+                }
+                if (T_NAMESPACE === $tokens[$index][0]) {
+                    $index += 2; // Skip namespace keyword and whitespace
+                    while (isset($tokens[$index]) && is_array($tokens[$index])) {
+                        $namespace .= $tokens[$index++][1];
+                    }
+                }
+                if (T_CLASS === $tokens[$index][0] && T_WHITESPACE === $tokens[$index + 1][0] && T_STRING === $tokens[$index + 2][0]) {
+                    $index += 2; // Skip class keyword and whitespace
+                    $fqcns[] = u($namespace)->toString() /*. '\\' . $tokens[$index][1]*/
+                    ;
+                    break;
+                }
+            }
+        }
+        $fqcns = array_unique($fqcns);
+
+        foreach ($fqcns as $namespace) {
+//            $namespace = u($namespace)->replace('\\', '\\\\')->toString();
+            $MyClassesNamespace = ClassFinderUtil::getClassesInNamespace($namespace);
+            foreach ($MyClassesNamespace as $item) {
+                $classReflection = new ReflectionClass($item);
+                if ($classReflection->isAbstract()) continue;
+                /** @var _Data_ $className */
+                $className = $classReflection->getName();
+                $nomenclador[] = $className::newInstance();
+            }
         }
 
         return $nomenclador;

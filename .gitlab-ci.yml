@@ -1,0 +1,59 @@
+image: dap/php:8.0-apache
+
+stages:
+    - build
+    - test
+    - release
+
+cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+        - vendor/
+
+build:
+    stage: build
+    except:
+        - tags
+    artifacts:
+        paths:
+            - vendor/
+    before_script:
+        - curl -sS https://get.symfony.com/cli/installer | bash
+        - mv /root/.symfony/bin/symfony /usr/local/bin/symfony
+    script:
+        - symfony composer install
+
+phpunit:
+    stage: test
+    variables:
+        MYSQL_ROOT_PASSWORD: "root"
+        MYSQL_ROOT_HOST: "%"
+    except:
+        - tags
+    dependencies:
+        - build
+    services:
+        -   name: dap/mysql:8.0
+            alias: db
+    script:
+        #- sed -i 's/APP_ENV=dev/APP_ENV=test/g' .env
+        - ./proyect-init.sh
+        - bin/phpunit
+
+docker-build:
+    variables:
+        GIT_STRATEGY: clone
+        DOCKER_HOST: tcp://docker_dind:2375
+        DOCKER_TLS_CERTDIR: ""
+    stage: release
+    services:
+        -   name: dap/docker:dind
+            alias: docker_dind
+    only:
+        - tags
+    image: dap/docker:stable
+    before_script:
+        - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    script:
+        - docker build --pull -t "$CI_REGISTRY/$CI_REGISTRY_IMAGE:$CI_COMMIT_TAG" . -f Dockerfile
+        - docker push "$CI_REGISTRY/$CI_REGISTRY_IMAGE:$CI_COMMIT_TAG"

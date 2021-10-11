@@ -3,11 +3,11 @@
 namespace App\Event\Subscriber\Admin;
 
 use App\Entity\Localizacion;
-use App\Event\Subscriber\_Subscriber_;
+use App\Event\Subscriber\_DoctrineSubscriber_;
 use Doctrine\ORM\Events;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 
-class LocalizacionSubscriber extends _Subscriber_
+class LocalizacionDoctrineSubscriber extends _DoctrineSubscriber_
 {
     public function getSubscribedEvents(): array
     {

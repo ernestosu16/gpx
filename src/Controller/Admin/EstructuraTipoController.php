@@ -28,7 +28,7 @@ final class EstructuraTipoController extends _CrudController_
 
     protected static function fields(): array
     {
-        return ['nombre', 'descripcion', 'habilitado'];
+        return ['nombre', 'descripcion', 'grupos', 'habilitado'];
     }
 
     protected static function config(): array
