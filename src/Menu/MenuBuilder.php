@@ -6,7 +6,6 @@ use App\Config\Data\Nomenclador\MenuData;
 use App\Entity\Menu;
 use App\Repository\MenuRepository;
 use Knp\Menu\ItemInterface;
-use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 final class MenuBuilder extends _Menu_
 {
@@ -85,7 +84,10 @@ final class MenuBuilder extends _Menu_
                 'route' => $menu->getRoute() ?? null,
                 'label' => $label,
                 'extras' => ['safe_label' => true, 'translation_domain' => false],
-                'attributes' => ['class' => $this->requestStack->getCurrentRequest()->get('_route') === $menu->getRoute() ? 'active' : ''],
+                'attributes' => [
+                    'class' => $this->requestStack->getCurrentRequest()->get('_route') === $menu->getRoute() ? 'active' : '',
+                    'title' => $menu->getDescripcion()
+                ],
             ]);
         }
 

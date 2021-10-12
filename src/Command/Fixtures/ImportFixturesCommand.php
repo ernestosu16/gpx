@@ -4,7 +4,7 @@ namespace App\Command\Fixtures;
 
 use App\Command\BaseCommand;
 use App\Command\BaseCommandInterface;
-use App\Config\Data\Nomenclador\AgenciaData;
+use App\Config\Data\Nomenclador\EnvioData;
 use App\Config\Data\Nomenclador\EstructuraTipoData;
 use App\Config\Data\Nomenclador\GrupoData;
 use App\Config\Data\Nomenclador\MenuData;
@@ -15,9 +15,11 @@ use App\Entity\Grupo;
 use App\Entity\Localizacion;
 use App\Entity\LocalizacionTipo;
 use App\Entity\Menu;
+use App\Entity\Nomenclador;
 use App\Entity\Pais;
 use App\Repository\LocalizacionRepository;
 use App\Repository\LocalizacionTipoRepository;
+use App\Repository\NomencladorRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Symfony\Component\Console\Command\Command;
@@ -68,8 +70,13 @@ final class ImportFixturesCommand extends BaseCommand implements BaseCommandInte
         $section->writeln('  Creando las estructuras');
         $this->configurarEstructura();
 
+<<<<<<< HEAD
         $section->writeln('  Creando las agencias');
         $this->configurarAgencias();
+=======
+        $section->writeln('  Creando lista de nomencladores');
+        $this->configurarNomenclador();
+>>>>>>> master
 
         $this->getEntityManager()->commit();
 
@@ -346,5 +353,37 @@ final class ImportFixturesCommand extends BaseCommand implements BaseCommandInte
         }
 
         return $entity;
+    }
+
+    private function configurarNomenclador()
+    {
+        /** @var array $collection */
+        $collection = Yaml::parseFile($this->getKernel()->getProjectDir() . '/src/Config/Fixtures/nomenclador/envio.yaml');
+
+        $instance = EnvioData::newInstance();
+        /** @var NomencladorRepository $repository */
+        $repository = $this->getRepository(Nomenclador::class);
+        $parent = $repository->findOneByCodigo($instance->getCodeComplete());
+        foreach ($collection['envio'] as $key => $item) {
+            $codigo = $parent->getCodigo() . '_' . $key;
+
+            if ($repository->findOneByCodigo($codigo))
+                continue;
+
+            $entity = new Nomenclador();
+            $entity->setCodigo($parent->getCodigo() . '_' . $key);
+            $entity->setNombre($key);
+
+            foreach ($item as $value) {
+                $lv2 = new Nomenclador();
+                $lv2->setCodigo($entity->getCodigo() . '_' . $value);
+                $lv2->setNombre($value);
+                $entity->addChild($lv2);
+            }
+
+            $parent->addChild($entity);
+            $this->getEntityManager()->persist($parent);
+        }
+        $this->getEntityManager()->flush();
     }
 }
