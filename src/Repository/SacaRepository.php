@@ -25,7 +25,8 @@ class SacaRepository extends ServiceEntityRepository
         $this->createQueryBuilder('s')
             ->join('s.factura', 'f', Expr\Join::WITH, 'f.numero_factura='.$noFactura)
             ->join('s.estado', 'e', Expr\Join::WITH, 'e.codigo='.$estado)
-            ;
+            ->getQuery()
+            ->getResult();
     }
 
     // /**

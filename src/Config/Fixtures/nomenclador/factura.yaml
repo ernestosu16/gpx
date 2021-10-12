@@ -1,0 +1,8 @@
+factura:
+  anomalia:
+    - 'SACA FALTANTE'
+  estado:
+    - 'CREADA'
+    - 'RECIBIDA'
+    - 'PAGADA'
+    - 'ENTREGADA'
