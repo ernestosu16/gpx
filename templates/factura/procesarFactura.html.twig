@@ -1,0 +1,37 @@
+{% extends 'homer-theme/layout.html.twig' %}
+
+{% block title %}Recepcionar factura{% endblock %}
+{% block panel_title %}Recepcionar factura{% endblock %}
+{% block panel_body %}
+
+    <div class="row col-md-12 m-b">
+
+        <div class="col-md-4 form-check">
+
+            <input id="check_envioSinManifestar" class="form-check-input" type="checkbox" value="" onchange="">
+            <label class="form-label" style="color: darkorange">
+                Recepcionar envio sin manifestar.
+            </label>
+
+        </div>
+
+    </div>
+
+    <div class="row col-md-12 m-b">
+
+        <div class="col-auto">
+            <button class="btn btn-success"><i class="fa fa-inbox"></i> Recepcionar</button>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js',{ callback: 'fos.Router.setData' }) }}"></script>
+
+    <script src="{{ asset('js/envioRecepcionar.js') }}"></script>
+
+{% endblock %}
