@@ -7,6 +7,7 @@ namespace App\Command\Envio;
 use App\Command\BaseCommand;
 use App\Command\BaseCommandInterface;
 use App\Config\Nomenclador\_Nomenclador_;
+use App\Entity\Agencia;
 use App\Entity\EnvioManifiesto;
 use App\Entity\Estructura;
 use App\Entity\Localizacion;
@@ -14,6 +15,7 @@ use App\Entity\Nomenclador;
 use App\Entity\Persona;
 use Doctrine\ORM\ORMException;
 use JMS\Serializer\SerializerBuilder;
+use SimpleXMLElement;
 use Symfony\Component\Config\Util\XmlUtils;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -43,26 +45,6 @@ final class ImportarManifiestoEnvioCommand extends BaseCommand implements BaseCo
         return 'Importa los envios de los manifiestos.xml';
     }
 
-//    /**
-//     * @throws ORMException
-//     */
-//    private function getFTPConfi(): array
-//    {
-//        if(empty($this->ftp_config)){
-//            $em = $this->getEntityManager();
-//            /** @var Nomenclador $ftpConfi */
-//            $ftpConfi = $em->getRepository(Nomenclador::class)->findOneByCodigo(self::FTP_ENVIO_MANIFIESTO);
-//            if (!$ftpConfi)
-//                throw new ORMException('No se encontró la configuración del FTP_ENVIO_MANIFIESTO');
-//
-//            $this->ftp_config['host'] = $ftpConfi->getParametro("host");
-//            $this->ftp_config['user'] = $ftpConfi->getParametro("user");
-//            $this->ftp_config['pass'] = $ftpConfi->getParametro("pass");
-//        }
-//
-//        return $this->ftp_config;
-//    }
-
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
@@ -73,11 +55,61 @@ final class ImportarManifiestoEnvioCommand extends BaseCommand implements BaseCo
         /**@var $emCurl \App\Manager\CurlConectionManager **/
         $emCurl = $this->getContainer()->get('app.manager.curl_conection');
 
-        dump($emCurl);
-        exit;
-        //$ftpConfi = $this->getFTPConfi();
+        $em = $this->getEntityManager();
 
-        $dir = "/app/public/download/envioManifiesto";
+        //buscando las transitorias
+        $transitorias = $emCurl->getContentFromFTP();
+
+        //recooriendo todas las transitorias
+        foreach ($transitorias as $transitoria)
+        {
+            /** @var Estructura $estructuraTransitaria */
+            $estructuraTransitaria = $em->getRepository(Estructura::class)->findOneBy(array('codigo' => $transitoria['file']));
+            if($estructuraTransitaria == null){
+                dump('No existe esta Transitaria');
+                continue;// salta esta iteracion
+            }
+            //buscando las agencias
+            $agencias = $emCurl->getContentFromFTP($transitoria['url']);
+            //dump($agencias);
+            foreach ($agencias as $agencia){
+                /** @var Agencia $nomencladorAgencia */
+                $nomencladorAgencia = $em->getRepository(Nomenclador::class)->findOneBy(array('codigo' => 'AGENCIA_' . $agencia['file']));
+                if($nomencladorAgencia == null){
+                    dump('No existe esta Agencia');
+                    continue;// salta esta iteracion
+                }
+
+                //buscando los xml
+                $manifiestos = $emCurl->getContentFromFTP($agencia['url'], true);
+                foreach ($manifiestos as $file)
+                {
+                    $local_directory = $this->get('kernel')->getProjectDir() . '/public/download/envioManifiesto/' . $transitoria . '/' . $agencia;
+                    $emCurl->download($file['url'], $local_directory, $file['file']);
+
+                    $absoluteFilePath = $local_directory . '/' . $file['file'];
+                    $this->readManifiestoXML($absoluteFilePath, $file['file'], $estructuraTransitaria);
+
+
+                }
+            }
+        }
+
+        $transitoria = 'EMCI';
+        $agencia = 'SA';
+        $fileName = 'Manifiesto202108080340SA.xml';
+        $localFile = $this->get('kernel')->getProjectDir() . '/public/download/envioManifiesto/' . $transitoria . '/' . $agencia; // donde se va a descargar
+        $remoteFile = $this->get('kernel')->getProjectDir() . '/public/download/prueba/EMCI/SA/Manifiesto202108080340SA.xml';
+
+        $emCurl->download($remoteFile, $localFile, $fileName);
+
+        //$files = $emCurl->getFilesFromDirectories($directories[0].'/COPA');
+        //$dir = __DIR__."/app/public/download/envioManifiesto";
+        //dump($this->get('kernel')->getProjectDir());
+        exit('ok');
+
+
+
         //dump($ftpConfi);exit;
 
         //$sftp = new SFTP($ftpConfi['host'],21);
