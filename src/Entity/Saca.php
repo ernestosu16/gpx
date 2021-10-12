@@ -49,6 +49,11 @@ class Saca extends _Entity_
     #[ORM\OneToMany(mappedBy: 'saca_colectora', targetEntity: Saca::class)]
     private $sacas_children;
 
+    #[ORM\ManyToMany(targetEntity: Nomenclador::class, cascade: ['persist'])]
+    #[ORM\JoinTable(name: 'saca_anomalia_asignada')]
+    private ?Collection $anomalias;
+
+
     #[Pure]
     public function __construct()
     {
@@ -209,7 +214,22 @@ class Saca extends _Entity_
         return $this;
     }
 
+    /**
+     * @return Collection|null
+     */
+    public function getAnomalias(): ?Collection
+    {
+        return $this->anomalias;
+    }
 
-
+    /**
+     * @param Collection|null $anomalias
+     * @return Saca
+     */
+    public function setAnomalias(?Collection $anomalias): Saca
+    {
+        $this->anomalias = $anomalias;
+        return $this;
+    }
 
 }

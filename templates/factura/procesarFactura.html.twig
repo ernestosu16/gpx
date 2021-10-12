@@ -1,28 +1,71 @@
 {% extends 'homer-theme/layout.html.twig' %}
 
-{% block title %}Recepcionar factura{% endblock %}
-{% block panel_title %}Recepcionar factura{% endblock %}
+{% block title %}Recepción de factura y saca{% endblock %}
+{% block panel_title %}Recepción de factura y saca{% endblock %}
 {% block panel_body %}
+    <p style="border-bottom:1px solid #000000;"><strong>NÚMERO DE LA FACTURA</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
     <div class="row col-md-12 m-b">
 
-        <div class="col-md-4 form-check">
-
-            <input id="check_envioSinManifestar" class="form-check-input" type="checkbox" value="" onchange="">
-            <label class="form-label" style="color: darkorange">
-                Recepcionar envio sin manifestar.
-            </label>
-
+        <div class="col-md-6">
+            <input id="text_no_factura" class="form-control" type="text" value="" onchange="">
         </div>
-
+        <div class="col-md-4">
+            <button class="btn btn-primary" onclick="buscarFacturaSacas()"><i class="fa fa-search"></i> Recepcionar factura</button>
+        </div>
     </div>
 
     <div class="row col-md-12 m-b">
 
-        <div class="col-auto">
-            <button class="btn btn-success"><i class="fa fa-inbox"></i> Recepcionar</button>
+        <div class="well well-lg">
+
+            <p style="border-bottom:1px solid #000000;"><strong>VALIJAS PRESENTES EN LA FACTURA</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingOne">
+                        <input id="checkbox3" type="checkbox" class="checkbox">
+                          <label> Aqui van las sacas <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="collapsed">
+                                    Irregularidades
+                                </a></label>
+
+
+                    </div>
+                    <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne" aria-expanded="false" style="height: 0px;">
+                        <div class="panel-body">
+                            A wonderful serenity has taken possession of my entire soul, like these sweet mornings of spring which I enjoy with my whole heart. I am alone, and feel the charm of existence in this spot, which was created for the bliss of souls like mine.
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingTwo">
+
+                            <input class="form-check-input" type="checkbox" value="" id="check_asd" >
+                            <label class="form-label">asd <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" class="collapsed">
+                                    Irregularidades </label>
+
+                    </div>
+                    <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo" aria-expanded="false">
+                        <div class="panel-body">
+                            A wonderful serenity has taken possession of my entire soul, like these sweet mornings of spring which I enjoy with my whole heart. I am alone, and feel the charm of existence in this spot, which was created for the bliss of souls like mine.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <p style="border-bottom:1px solid #000000;"><strong>RECEPCIÓN DE LA VALIJA</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+    <div class="row col-md-12 m-b">
+
+        <div class="col-md-4">
+            <button class="btn btn-primary" onclick="buscarFacturaSacas()"><i class="fa fa-check"></i> Recepcionar valijas</button>
         </div>
     </div>
+
 
 
 {% endblock %}
@@ -32,6 +75,6 @@
     <script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
     <script src="{{ path('fos_js_routing_js',{ callback: 'fos.Router.setData' }) }}"></script>
 
-    <script src="{{ asset('js/envioRecepcionar.js') }}"></script>
+    <script src="{{ asset('js/factura.js') }}"></script>
 
 {% endblock %}

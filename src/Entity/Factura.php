@@ -47,6 +47,11 @@ class Factura
     #[ORM\OneToMany(mappedBy: 'factura', targetEntity: Saca::class)]
     private $sacas;
 
+    #[ORM\ManyToMany(targetEntity: Nomenclador::class, cascade: ['persist'])]
+    #[ORM\JoinTable(name: 'factura_anomalia_asignada')]
+    private ?Collection $anomalias;
+
+
     public function __construct()
     {
         $this->sacas = new ArrayCollection();
@@ -194,4 +199,23 @@ class Factura
 
         return $this;
     }
+
+    /**
+     * @return Collection|null
+     */
+    public function getAnomalias(): ?Collection
+    {
+        return $this->anomalias;
+    }
+
+    /**
+     * @param Collection|null $anomalias
+     * @return Factura
+     */
+    public function setAnomalias(?Collection $anomalias): Factura
+    {
+        $this->anomalias = $anomalias;
+        return $this;
+    }
+
 }
