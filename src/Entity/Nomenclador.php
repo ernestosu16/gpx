@@ -13,6 +13,7 @@ use JetBrains\PhpStorm\Pure;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
+use function Symfony\Component\String\u;
 
 /** @Gedmo\Tree(type="nested") */
 #[ORM\Entity(repositoryClass: NomencladorRepository::class)]
@@ -147,6 +148,8 @@ class Nomenclador extends BaseNestedTree
 
     public function setCodigo(string $codigo): self
     {
+        $codigo = u($codigo)->replace(' ', '_');
+
         $this->codigo = mb_strtoupper($codigo);
 
         return $this;
