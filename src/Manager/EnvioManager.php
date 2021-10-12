@@ -55,7 +55,7 @@ class EnvioManager extends _Manager_
                 $this->agenciaRepository->findByCodigoAduana($envioManifestado->getAgenciaOrigen())->getId()
             );
 
-            $envioPreRecepcion->setEntidadCtrlAduana($envioManifestado->isInteresAduana());
+            $envioPreRecepcion->setEntidadCtrlAduana(false);
 
             $provDest = $envioManifestado->getProvinciaDestinatario();
             $envioPreRecepcion->setProvincia(

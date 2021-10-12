@@ -221,8 +221,8 @@ class EnvioController extends AbstractController
             }else if($envioManifestadoService->isEntidadCtrlAduana()){
 
                 $miRespuesta->setEstado(false);
-                $miRespuesta->setData(null);
-                $miRespuesta->setMensaje("El envio solicitado es interés de aduana, no se puede recepcionar.");
+                $miRespuesta->setData($envioManifestadoService);
+                $miRespuesta->setMensaje("El envio solicitado es interés de aduana.");
 
                 //Si existe y esta correcto
             }else{
