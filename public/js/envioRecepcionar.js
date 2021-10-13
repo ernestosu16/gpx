@@ -11,6 +11,7 @@ var envioTemporal = {
     entidad_ctrl_aduana: false,
     provincia: '',
     municipio: '',
+    requiere_pareo: false,
     pareo: '',
     //anomalias
     irregularidades: [],
@@ -32,48 +33,48 @@ function buscarEnvioManifestado()
     var noGuia = $('#input_noGuia').val()
     var codTracking = $('#input_codTracking').val()
 
-    if ( noGuia.length == 12 && codTracking.length == 13) {
-        var ruta = Routing.generate('envio_manifestado')
-        $.ajax({
-            type: 'POST',
-            url: ruta,
-            data: {
-                noGuia: noGuia,
-                codTracking: codTracking
-            },
-            async: true,
-            dataType: 'json',
-            loading: '',
-            success: function (data) {
-                console.log('success', data)
-                if (!(data.estado)) {
-                    //alert(data.mensaje);
+    var ruta = Routing.generate('envio_manifestado')
+    $.ajax({
+        type: 'POST',
+        url: ruta,
+        data: {
+            noGuia: noGuia,
+            codTracking: codTracking
+        },
+        async: true,
+        dataType: 'json',
+        loading: '',
+        success: function (data) {
+            console.log('success', data)
+            if (!(data.estado)) {
+                //alert(data.mensaje);
+                swal({
+                    title: "Error",
+                    text: data.mensaje,
+                    type: "error"
+                });
+                this.limpiarCampos();
+            } else {
+                //alert("Recibido OK");
+                if (data.data.requiere_pareo){
                     swal({
-                        title: "Error",
-                        text: data.mensaje,
-                        type: "error"
+                        title: "Informacion",
+                        text: "Este envio requiere ser pareado.",
+                        type: "info"
                     });
-                } else {
-                    //alert("Recibido OK");
-                    envioTemporal = data.data
-                    asignarValoresDeEnvioManifestado();
                 }
-
-            },
-            error: function (error) {
-                alert('Error: ' + error.status + ' ' + error.statusText);
-                console.log('error', error.responseText)
+                envioTemporal = data.data
+                asignarValoresDeEnvioManifestado();
             }
-        })
-    }else {
-        //alert('Deben estar correcto el No. Guia y el Codigo de Tracking.')
-        swal({
-            title: "Error",
-            text: 'Deben estar correctos el No. Guia y el Codigo de Tracking.',
-            type: "error"
-        });
-        this.limpiarCampos()
-    }
+
+        },
+        error: function (error) {
+            alert('Error: ' + error.status + ' ' + error.statusText);
+            console.log('error', error.responseText)
+            this.limpiarCampos();
+        }
+    })
+
 
 }
 
@@ -86,13 +87,36 @@ function annadirEnvioAListTemporal()
     cod_tracking = $('#input_codTracking').val().toUpperCase();
     peso = $('#input_peso').val()
     nacionalidad = $('#select_nacionalidadOrigen').val()
-    producto = $('#select_producto').val()
+    agencia = $('#select_producto').val()
     entidadCtrlAduana = $('#check_entidadControlAduana').is(':checked')
     provincia = $('#select_provincias').val()
     municipio = $('#select_municipios').val()
     pareo = $('#input_pareo').val()
 
-    if( no_guia || cod_tracking || peso || nacionalidad || producto || provincia || municipio ){
+
+
+    campos =    "guia: "+ no_guia+ "\n"+
+        "track: "+ cod_tracking+ "\n"+
+        "peso: "+ peso+ "\n"+
+        "nac: "+ nacionalidad+ "\n"+
+        "age: "+ agencia+ "\n"+
+        "ent aduana: "+ entidadCtrlAduana+ "\n"+
+        "prov: "+ provincia+ "\n"+
+        "mun: "+ municipio+ "\n"+
+        "pareo: "+ pareo+ "\n";
+
+    if( no_guia == ""
+        || cod_tracking == ""
+        || peso == ""
+        || nacionalidad == ""
+        || agencia == ""
+        || provincia == ""
+        || municipio == ""
+        || provincia == ""
+        || municipio == ""
+        || (this.envioTemporal.requiere_pareo && pareo == "" ) ){
+
+        console.log('annadirEnvioAListTemporal if',campos);
 
         swal({
             title: "Error",
@@ -102,19 +126,25 @@ function annadirEnvioAListTemporal()
 
     }else{
 
+        nacionalidadc = $('#select_nacionalidadOrigen option:selected').text()
+        agenciac = $('#select_producto option:selected').text()
+        prov = $('#select_provincias option:selected').text()
+        mun = $('#select_municipios option:selected').text()
+
+        this.envioTemporal.cod_tracking = cod_tracking
+        this.envioTemporal.peso = peso
+        this.envioTemporal.pais_origen = nacionalidad
+        this.envioTemporal.agencia = agencia
+        this.envioTemporal.entidad_ctrl_aduana = entidadCtrlAduana
+        this.envioTemporal.provincia = provincia
+        this.envioTemporal.municipio = municipio
+        this.envioTemporal.pareo = pareo
+
         this.listEnviosTemporles.push(this.envioTemporal)
 
-        campos =    "guia: "+ no_guia+ "\n"+
-            "track: "+ cod_tracking+ "\n"+
-            "peso: "+ peso+ "\n"+
-            "nac: "+ nacionalidad+ "\n"+
-            "pro: "+ producto+ "\n"+
-            "ent aduana: "+ entidadCtrlAduana+ "\n"+
-            "prov: "+ provincia+ "\n"+
-            "mun: "+ municipio+ "\n"+
-            "pareo: "+ pareo+ "\n";
+        console.log(campos,'annadirEnvioAListTemporal else');
 
-        //alert(campos);
+        this.ActualizarList()
 
     }
 
@@ -122,6 +152,30 @@ function annadirEnvioAListTemporal()
 
 
 
+}
+
+function ActualizarList() {
+    var valor = '';
+
+    for (var i =0; i< this.listEnviosTemporles.length; i++){
+        valor += '<tr>' +
+            '<td>' + this.listEnviosTemporles[i].cod_tracking + '</td>' +
+            '<td>' + this.listEnviosTemporles[i].peso + '</td>' +
+            '<td> </td>' +
+            '<td></td>' +
+            '<td></td>' +
+            '<td></td>' +
+            '<td> <button class="btn btn-danger" onclick="eliminarEnvio('+i+')"><i class="fa fa-remove"></i></button> </td>' +
+            '</tr>';
+        $("#resultado").html(valor)
+    }
+}
+
+function eliminarEnvio(cod){
+    console.log("eliminar envio cod ",cod)
+    const resultado = this.listEnviosTemporles.find( envio => envio.cod_tracking === cod );
+    this.listEnviosTemporles.splice(cod,1)
+    this.ActualizarList()
 }
 
 /**
@@ -210,9 +264,13 @@ function habilitarDescripcionAnomalia(id)
 
 }
 
+function lolo(){
+    console.log('lolo')
+}
+
 function limpiarCampos(){
 
-    $('#input_noGuia').val("");
+    //$('#input_noGuia').val("");
 
     $('#input_noGuia').val("");
 

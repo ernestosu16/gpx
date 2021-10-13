@@ -12,6 +12,7 @@ use App\Entity\TrabajadorCredencial;
 use App\Repository\AgenciaRepository;
 use App\Repository\EnvioManifiestoRepository;
 use App\Repository\EnvioRepository;
+use App\Repository\EstructuraTipoRepository;
 use App\Repository\LocalizacionRepository;
 use App\Repository\NomencladorRepository;
 use App\Repository\PaisRepository;
@@ -31,7 +32,8 @@ class EnvioManager extends _Manager_
         private PaisRepository $paisRepository,
         private NomencladorRepository $nomencladorRepository,
         private AgenciaRepository $agenciaRepository,
-        private EnvioRepository $envioRepository
+        private EnvioRepository $envioRepository,
+        private EstructuraTipoRepository $estructuraTipoRepository
     )
     {
     }
@@ -69,7 +71,7 @@ class EnvioManager extends _Manager_
             $munDest = $envioManifestado->getMunicipioDestinatario();
             $envioPreRecepcion->municipio = $munDest?->getId();
 
-            $envioPreRecepcion->pareo = $parearEnvio ? $envioManifestado->getCodigo() : '';
+            $envioPreRecepcion->requiere_pareo = $parearEnvio;
 
             $envioPreRecepcion->irregularidades = [];
 
@@ -136,18 +138,20 @@ class EnvioManager extends _Manager_
 
             $envio->setPaisDestino($this->paisRepository->findByCodigoAduana('CUB'));
 
-            //Ver lo del metodo para ponerle la empresa
-            //$envio->setEmpresa( );
+            ///Ver lo del metodo para ponerle la empresa
+            $envio->setEmpresa($user->getEstructura()->searchParentsByTipo(
+                $this->estructuraTipoRepository->findOneByCodigo('EMPRESA')
+            ));
 
             $envio->setProvincia($this->localizacionRepository->find($envioPreRecepcion->provincia));
 
             $envio->setMunicipio($this->localizacionRepository->find($envioPreRecepcion->municipio));
 
             //Ver lo del metodo para guardar las anomalias en campo json
-            //$envio->setAnomalias($envioPreRecepcion->irregularidades);
+            $envio->setAnomalias($envioPreRecepcion->irregularidades);
 
             //Ver lo del metodo para generar el campo diecciones en el modelo y guardar en campo json
-            //$envio->setDirecciones($envioPreRecepcion->direcciones);
+            $envio->setDirecciones($envioPreRecepcion->direcciones);
 
             //A;adir lo de las trazas_envio , trazas_aduana y envio_aduana
 

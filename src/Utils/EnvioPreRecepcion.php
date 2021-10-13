@@ -45,7 +45,10 @@ class EnvioPreRecepcion
     public ?string $municipio;
 
     #[SerializedName('pareo')]
-    public string $pareo;
+    public string $pareo = "";
+
+    #[SerializedName('requiere_pareo')]
+    public bool $requiere_pareo = false;
 
     //Array de nomencladores de tipo anomalia
     /**
