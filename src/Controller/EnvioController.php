@@ -8,6 +8,7 @@ use App\Entity\Estructura;
 use App\Entity\Localizacion;
 use App\Entity\LocalizacionTipo;
 use App\Entity\Persona;
+use App\Entity\TrabajadorCredencial;
 use App\Form\EnvioType;
 use App\Manager\EnvioManager;
 use App\Repository\AgenciaRepository;
@@ -251,7 +252,10 @@ class EnvioController extends AbstractController
 
             $envios = $request->request->get('envios');
 
-            $result = $this->envioManager->recepcionarEnvios($envios);
+            /** @var TrabajadorCredencial $credencial */
+            $credencial = $this->getUser();
+
+            $result = $this->envioManager->recepcionarEnvios($envios,$credencial);
 
             $enviosRecepcionados= $this->envioManager->recepcionarEnvios([]);
 
@@ -284,4 +288,44 @@ class EnvioController extends AbstractController
         }
 
     }
+
+    #[Route('/envio/buscar-municipio', name: 'buscar_municipio', options: ["expose" => true] , methods: ['POST'])]
+    public function municipioDeUnaProvincia(Request $request){
+
+        if ($request->isXmlHttpRequest()){
+
+            $provincia = $request->request->get('provincia');
+
+            $municipios = $this->localizacion->findMunicipiosOfProvinciaById($provincia);
+
+            $miRespuesta = new MyResponse();
+
+            //Si no existen municipios
+            if ( ! $municipios ){
+
+                $miRespuesta->setEstado(false);
+                $miRespuesta->setData(null);
+                $miRespuesta->setMensaje("No existe el envio en la guia solicitada");
+
+                //Si existe pero es interes de aduana
+            }else{
+
+                $miRespuesta->setEstado(true);
+                $miRespuesta->setData($municipios);
+                $miRespuesta->setMensaje("Municipios buscados con exito");
+
+            }
+
+            $serializer = SerializerBuilder::create()->build();
+            $miRespuestaJson = $serializer->serialize($miRespuesta,"json");
+
+            return JsonResponse::fromJsonString($miRespuestaJson);
+
+        }else{
+            dump("Hacker");
+            throwException('Hacker');
+        }
+
+    }
+
 }

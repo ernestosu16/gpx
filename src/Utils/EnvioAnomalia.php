@@ -6,43 +6,60 @@ namespace App\Utils;
 
 class EnvioAnomalia
 {
-    private $anomalia;
-    private $descripcion;
+    private $id_anomalia;
+    private $nombre_anomalia;
+    private $descripcion_anomalia_envio;
 
-    /**
-     * @return mixed
-     */
-    public function getAnomalia()
+    public function __construct()
     {
-        return $this->anomalia;
-    }
-
-    /**
-     * @param mixed $anomalia
-     */
-    public function setAnomalia($anomalia): void
-    {
-        $this->anomalia = $anomalia;
     }
 
     /**
      * @return mixed
      */
-    public function getDescripcion()
+    public function getIdAnomalia()
     {
-        return $this->descripcion;
+        return $this->id_anomalia;
     }
 
     /**
-     * @param mixed $descripcion
+     * @param mixed $id_anomalia
      */
-    public function setDescripcion($descripcion): void
+    public function setIdAnomalia($id_anomalia): void
     {
-        $this->descripcion = $descripcion;
+        $this->id_anomalia = $id_anomalia;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getNombreAnomalia()
+    {
+        return $this->nombre_anomalia;
+    }
 
+    /**
+     * @param mixed $nombre_anomalia
+     */
+    public function setNombreAnomalia($nombre_anomalia): void
+    {
+        $this->nombre_anomalia = $nombre_anomalia;
+    }
 
+    /**
+     * @return mixed
+     */
+    public function getDescripcionAnomaliaEnvio()
+    {
+        return $this->descripcion_anomalia_envio;
+    }
 
+    /**
+     * @param mixed $descripcion_anomalia_envio
+     */
+    public function setDescripcionAnomaliaEnvio($descripcion_anomalia_envio): void
+    {
+        $this->descripcion_anomalia_envio = $descripcion_anomalia_envio;
+    }
 
 }

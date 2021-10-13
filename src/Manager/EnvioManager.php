@@ -3,10 +3,12 @@
 namespace App\Manager;
 
 
+use App\Controller\EnvioController;
 use App\Entity\Envio;
 use App\Entity\EnvioManifiesto;
 use App\Entity\Estructura;
 use App\Entity\Localizacion;
+use App\Entity\TrabajadorCredencial;
 use App\Repository\AgenciaRepository;
 use App\Repository\EnvioManifiestoRepository;
 use App\Repository\EnvioRepository;
@@ -98,7 +100,7 @@ class EnvioManager extends _Manager_
         return $envioPreRecepcion;
     }
 
-    public function recepcionarEnvios($envios): bool{
+    public function recepcionarEnvios($envios,TrabajadorCredencial $user): bool{
         $recepcionados = true;
 
         /** @var $em EntityManagerInterface **/
@@ -118,8 +120,7 @@ class EnvioManager extends _Manager_
             $envio->setPeso($envioPreRecepcion->peso);
 
             //Coger la del user autenticado
-            $estructuraOrigen = new Estructura();
-            $envio->setEstructuraOrigen($estructuraOrigen);
+            $envio->setEstructuraOrigen($user->getTrabajador()->getEstructura());
 
             $envio->setDestinatario($envioPreRecepcion->destinatario);
             $envio->setRemitente($envioPreRecepcion->remitente);
@@ -133,17 +134,14 @@ class EnvioManager extends _Manager_
             //Ver lo del metodo para ponerle el pais origen
             $envio->setPaisOrigen($this->paisRepository->find($envioPreRecepcion->pais_origen));
 
-            //Ver lo del metodo para ponerle el pais origen CUBA
-            $envio->setPaisDestino($this->paisRepository->find($envioPreRecepcion->pais_origen));
+            $envio->setPaisDestino($this->paisRepository->findByCodigoAduana('CUB'));
 
             //Ver lo del metodo para ponerle la empresa
             //$envio->setEmpresa( );
 
-            //Ver lo del metodo para buscar la provincia a partir del id
-            //$envio->setProvincia($this->localizacionRepository->findAllProvincia($envioPreRecepcion->provincia));
+            $envio->setProvincia($this->localizacionRepository->find($envioPreRecepcion->provincia));
 
-            //Ver lo del metodo para buscar el municipio a partir del id
-            //$envio->setMunicipio($this->localizacionRepository->findAllProvincia($envioPreRecepcion->provincia));
+            $envio->setMunicipio($this->localizacionRepository->find($envioPreRecepcion->municipio));
 
             //Ver lo del metodo para guardar las anomalias en campo json
             //$envio->setAnomalias($envioPreRecepcion->irregularidades);

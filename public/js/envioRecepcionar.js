@@ -30,11 +30,6 @@ function elementId(id){
  */
 function buscarEnvioManifestado()
 {
-    //Seleccionar un pais
-    $('#select_nacionalidadOrigen')
-        .val('a5cc4eff-26b0-11ec-a331-0242ac120002')
-        .trigger('change.select2')
-
     var noGuia = $('#input_noGuia').val()
     var codTracking = $('#input_codTracking').val()
 
