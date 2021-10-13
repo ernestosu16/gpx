@@ -5,6 +5,12 @@
     "composer/package-versions-deprecated": {
         "version": "1.11.99.3"
     },
+    "cron/cron": {
+        "version": "1.5.2"
+    },
+    "cron/cron-bundle": {
+        "version": "2.6.0"
+    },
     "defuse/php-encryption": {
         "version": "v2.3.1"
     },
