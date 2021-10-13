@@ -154,6 +154,10 @@ class EnvioManager extends _Manager_
             //A;adir lo de las trazas_envio , trazas_aduana y envio_aduana
 
             $em->persist($envio);
+            /*$em->persist($trazaEnvio);
+            $em->persist($envioAduana);
+            $em->persist($trazaEnvioAduana);
+            */
         }
 
         $em->flush();

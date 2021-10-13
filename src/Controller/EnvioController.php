@@ -253,46 +253,23 @@ class EnvioController extends AbstractController
 
             $result = $this->envioManager->recepcionarEnvios($envios);
 
-            dump($result);
-
-            $deserializer = SerializerBuilder::create()->build();
-
-            foreach ($envios as $envio){
-
-                /** @var EnvioPreRecepcion $envioPreRecepcion */
-                $envioPreRecepcion = $deserializer->deserialize(json_encode($envio),EnvioPreRecepcion::class,'json');
-
-                $envio = new Envio();
-                $envio->setFechaRecepcion(new \DateTime());
-                $envio->setCodTracking($envioPreRecepcion->cod_tracking);
-                $envio->setPareo($envioPreRecepcion->pareo);
-                $envio->setPeso($envioPreRecepcion->peso);
-                $envio->setEstructuraOrigen(null);
-                $envio->setCodTracking();
-                $envio->setCodTracking();
-
-
-            }
-            exit;
-            dump("Envios recepcionar");exit;
-
             $enviosRecepcionados= $this->envioManager->recepcionarEnvios([]);
 
             $miRespuesta = new MyResponse();
 
-            //Si no existe el envio
+            //Si dio algun error par aguardar los envios
             if ( ! $enviosRecepcionados ){
 
                 $miRespuesta->setEstado(false);
                 $miRespuesta->setData(null);
-                $miRespuesta->setMensaje("No existe el envio en la guia solicitada");
+                $miRespuesta->setMensaje("Se ha producido un error durante la salva de los envios");
 
 
             }else{
 
                 $miRespuesta->setEstado(true);
                 $miRespuesta->setData('');
-                $miRespuesta->setMensaje("OK");
+                $miRespuesta->setMensaje("Envios recepcionados correctamente !!!");
 
             }
 
