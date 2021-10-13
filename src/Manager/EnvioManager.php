@@ -120,7 +120,7 @@ class EnvioManager extends _Manager_
             $envio->setPeso($envioPreRecepcion->peso);
 
             //Coger la del user autenticado
-            $envio->setEstructuraOrigen($user->getTrabajador()->getEstructura());
+            $envio->setEstructuraOrigen($user->getEstructura());
 
             $envio->setDestinatario($envioPreRecepcion->destinatario);
             $envio->setRemitente($envioPreRecepcion->remitente);
