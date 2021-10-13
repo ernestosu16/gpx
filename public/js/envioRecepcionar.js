@@ -1,10 +1,10 @@
 //Variables
 var envioTemporal = {
-    no_guia: "19357",
-    cod_tracking: "123",
-    peso: 1.5,
+    no_guia: '',
+    cod_tracking: '',
+    peso: 0.0,
     //nacionalidad_remitente
-    pais_origen: "",
+    pais_origen: '',
     //currier
     agencia: '',
     //interes_aduana
