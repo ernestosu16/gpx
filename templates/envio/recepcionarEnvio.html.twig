@@ -20,17 +20,17 @@
     <div class="row col-md-12 m-b">
 
         <div class="col-md-3">
-            <label class="form-label">No. Guía</label>
+            <label class="form-label">No. Guía <strong style="color: red;">*</strong></label>
             <input id="input_noGuia" class="form-control input-sm" type="text" style='text-transform:uppercase;'>
         </div>
 
         <div class="col-md-3">
-            <label class="form-label">Código de tracking</label>
+            <label class="form-label">Código de tracking <strong style="color: red;">*</strong></label>
             <input id="input_codTracking" class="form-control input-sm" type="text" style='text-transform:uppercase;' onchange="buscarEnvioManifestado()">
         </div>
 
         <div class="col-md-2">
-            <label class="form-label">Peso (Kg)</label>
+            <label class="form-label">Peso (Kg) <strong style="color: red;">*</strong></label>
             <input id="input_peso" class="form-control input-sm" type="text">
         </div>
 
@@ -41,7 +41,7 @@
         <div class="col-md-3">
             <label class="form-label">Nacionalidad de orígen <strong style="color: red;">*</strong></label>
             <select id="select_nacionalidadOrigen" class="form-control input-sm select2" aria-label="Nacionalidad de orígen">
-                <option selected>Seleccione</option>
+                <option value="Seleccione" selected>Seleccione</option>
                 {% for nacionalidad in nacionalidades %}
                     <option value="{{ nacionalidad.id }}">{{ nacionalidad.nombre }}</option>
                 {% endfor %}
@@ -49,8 +49,8 @@
         </div>
 
         <div class="col-md-5">
-            <label class="form-label">Producto</label>
-            <select id="select_producto" class="form-control input-sm select2" aria-label="Producto">
+            <label class="form-label">Producto <strong style="color: red;">*</strong></label>
+            <select id="select_producto" class="form-control input-sm select2" aria-label="Productos">
                 <option selected>Seleccione</option>
                 {% for currie in curries %}
                     <option value="{{ currie }}">{{ currie }}</option>
@@ -72,8 +72,8 @@
     <div class="row col-md-12 m-b">
 
         <div class="col-md-3">
-            <label class="form-label">Provincias</label>
-            <select id="select_provincias" class="form-control input-sm select2" aria-label="Nacionalidad de orígen">
+            <label class="form-label">Provincias <strong style="color: red;">*</strong></label>
+            <select id="select_provincias" class="form-control input-sm select2" aria-label="Provincias">
                 <option selected>Seleccione</option>
                 {% for provincia in provincias %}
                     <option value="{{ provincia.codigo }}">{{ provincia.nombre }}</option>
@@ -82,7 +82,7 @@
         </div>
 
         <div class="col-md-5">
-            <label class="form-label">Municipio</label>
+            <label class="form-label">Municipio <strong style="color: red;">*</strong></label>
             <select id="select_municipios" class="form-control input-sm select2" aria-label="Municipios">
                 <option selected>Seleccione</option>
                 {% for municipio in municipios %}

@@ -93,6 +93,12 @@ class Envio extends _Entity_
     #[ORM\Column(type: 'json')]
     private array $anomalias;
 
+    /*
+    #[ORM\ManyToOne(targetEntity: Factura::class)]
+    #[ORM\JoinColumn(name: 'factura_id', referencedColumnName: 'id', nullable: false)]
+    private Localizacion $factura;
+    */
+
 
     #[Pure]
     public function __construct()
