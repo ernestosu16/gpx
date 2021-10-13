@@ -5,24 +5,32 @@ namespace App\Utils;
 
 
 use App\Entity\Localizacion;
+use JMS\Serializer\Annotation\SerializedName;
 
 class EnvioDireccion
 {
-
+    #[SerializedName('calle')]
     private string $calle;
 
+    #[SerializedName('entre_calle')]
     private string $entre_calle;
 
+    #[SerializedName('y_calle')]
     private string $y_calle;
 
+    #[SerializedName('numero')]
     private string $numero;
 
+    #[SerializedName('piso')]
     private string $piso;
 
+    #[SerializedName('apto')]
     private string $apto;
 
+    #[SerializedName('provincia')]
     private ?Localizacion $provincia;
 
+    #[SerializedName('municipio')]
     private ?Localizacion $municipio;
 
 

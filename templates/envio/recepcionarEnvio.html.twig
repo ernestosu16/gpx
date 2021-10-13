@@ -26,7 +26,7 @@
 
         <div class="col-md-3">
             <label class="form-label">Código de tracking</label>
-            <input id="input_codTracking" class="form-control input-sm" type="text" style='text-transform:uppercase;' onchange="actualizarDatos()">
+            <input id="input_codTracking" class="form-control input-sm" type="text" style='text-transform:uppercase;' onchange="buscarEnvioManifestado()">
         </div>
 
         <div class="col-md-2">
@@ -165,7 +165,7 @@
     <div class="row col-md-12 m-b">
 
         <div class="col-auto">
-            <button class="btn btn-success"><i class="fa fa-inbox"></i> Recepcionar</button>
+            <button class="btn btn-success" onclick="recepcionarEnvios()"><i class="fa fa-inbox"></i> Recepcionar</button>
 
             <button class="btn btn-danger2"><i class="fa fa-remove"></i> Cancelar</button>
         </div>

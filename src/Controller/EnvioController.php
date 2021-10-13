@@ -10,10 +10,12 @@ use App\Entity\LocalizacionTipo;
 use App\Entity\Persona;
 use App\Form\EnvioType;
 use App\Manager\EnvioManager;
+use App\Repository\AgenciaRepository;
 use App\Repository\EnvioManifiestoRepository;
 use App\Repository\EnvioRepository;
 use App\Repository\LocalizacionRepository;
 use App\Repository\PaisRepository;
+use App\Utils\EnvioPreRecepcion;
 use App\Utils\MyResponse;
 use JMS\Serializer\SerializerBuilder;
 use phpDocumentor\Reflection\Types\False_;
@@ -22,6 +24,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Serializer;
 use function PHPUnit\Framework\throwException;
 use function Sodium\add;
 
@@ -33,6 +36,7 @@ class EnvioController extends AbstractController
         private EnvioManifiestoRepository $envioManifiesto,
         private EnvioManager $envioManager,
         private PaisRepository $paisRepository,
+        private AgenciaRepository $agenciaRepository,
     )
     {
     }
@@ -92,14 +96,9 @@ class EnvioController extends AbstractController
                 "envio manifestado en otro manifiesto",
                 "diferencia de peso"];
 
-            //$nacionalidades = ['AFGANISTAN', 'ALBANIA', 'ALEMANIA', 'ANDORRA', 'ANGOLA', 'ANGUILA', 'ANTIGUA Y BARBUDA', 'ANTILLAS NEERLANDESAS', 'ARABIA SAUDITA', 'ARGELIA', 'ARGENTINA', 'BURUNDI', 'CAMBODIA', 'CAMBOYA', 'CAMERUN', 'CANADA', 'CHAD', 'CHILE', 'CHINA', 'CHIPRE', 'COLOMBIA', 'CONGO', 'COSTA DE MARFIL', 'COSTA RICA', 'CROACIA', 'DINAMARCA', 'DOMINICA'];
-
             $nacionalidades = $this->paisRepository->findAll();
 
-            $curries = ['CUBA ENVIO', 'ALL COSUMER', 'CUGRANCA', 'IBT', 'BORDOY', 'APCARGO', 'DORMAR', 'LOBATON', 'GRAN CASTOR', 'CARIBBEAN LOGISTIC', 'CORRESPONDENCIA EXPRESS', 'MARFEENTERPRISE. SA'];
-
-            dump('hola dump');
-            dump($provincias);
+            $curries = $this->agenciaRepository->findAll();
 
             //dump($this->localizacion->createQueryBuilderMunicipio());
 
@@ -218,9 +217,9 @@ class EnvioController extends AbstractController
                 $miRespuesta->setMensaje("No existe el envio en la guia solicitada");
 
                 //Si existe pero es interes de aduana
-            }else if($envioManifestadoService->isEntidadCtrlAduana()){
+            }else if($envioManifestadoService->entidad_ctrl_aduana){
 
-                $miRespuesta->setEstado(false);
+                $miRespuesta->setEstado(true);
                 $miRespuesta->setData($envioManifestadoService);
                 $miRespuesta->setMensaje("El envio solicitado es interés de aduana.");
 
@@ -229,6 +228,58 @@ class EnvioController extends AbstractController
 
                 $miRespuesta->setEstado(true);
                 $miRespuesta->setData($envioManifestadoService);
+                $miRespuesta->setMensaje("Envio buscado con exito");
+
+            }
+
+            $serializer = SerializerBuilder::create()->build();
+            $miRespuestaJson = $serializer->serialize($miRespuesta,"json");
+
+            return JsonResponse::fromJsonString($miRespuestaJson);
+
+        }else{
+            dump("Hacker");
+            throwException('Hacker');
+        }
+
+    }
+
+    #[Route('/envio/recepcionar-envios', name: 'recepcionar_envios', options: ["expose" => true] , methods: ['POST'])]
+    public function recepcionarEnvios(Request $request){
+
+        if ($request->isXmlHttpRequest()){
+
+            $envios = $request->request->get('envios');
+
+            $deserializer = SerializerBuilder::create()->build();
+
+            foreach ($envios as $envio){
+
+                /** @var EnvioPreRecepcion $envioPreRecepcion */
+                $envioPreRecepcion = $deserializer->deserialize(json_encode($envio),EnvioPreRecepcion::class,'json');
+
+                
+
+            }
+            exit;
+            dump("Envios recepcionar");exit;
+
+            $enviosRecepcionados= $this->envioManager->recepcionarEnvios([]);
+
+            $miRespuesta = new MyResponse();
+
+            //Si no existe el envio
+            if ( ! $enviosRecepcionados ){
+
+                $miRespuesta->setEstado(false);
+                $miRespuesta->setData(null);
+                $miRespuesta->setMensaje("No existe el envio en la guia solicitada");
+
+
+            }else{
+
+                $miRespuesta->setEstado(true);
+                $miRespuesta->setData('');
                 $miRespuesta->setMensaje("OK");
 
             }

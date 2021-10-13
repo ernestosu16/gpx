@@ -8,252 +8,71 @@ use App\Entity\Localizacion;
 use App\Entity\Nomenclador;
 use App\Entity\Pais;
 use App\Entity\Persona;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use JMS\Serializer\Annotation as Serializer;
+use JMS\Serializer\Annotation\SerializedName;
+use JMS\Serializer\Annotation\Type;
 use phpDocumentor\Reflection\Location;
 
 class EnvioPreRecepcion
 {
-    private string $no_guia;
-    private string $cod_tracking;
-    private float $peso;
-    //nacionalidad_remitente
-    private string $pais_origen;
-    //currier y/o tipo de producto
-    private string $agencia;
-    //interes_aduana
-    private bool $entidad_ctrl_aduana;
-    private ?string $provincia;
-    private ?string $municipio;
-    private string $pareo;
-    //Array de nomencladores de tipo anomalia
-    private array $irregularidades;
+    #[SerializedName('no_guia')]
+    public string $no_guia;
 
-    private Persona $destinatario;
-    private Persona $remitente;
-    private array $direcciones;
+    #[SerializedName('cod_tracking')]
+    public string $cod_tracking;
+
+    #[SerializedName('peso')]
+    public float $peso;
+
+    //nacionalidad_remitente
+    #[SerializedName('pais_origen')]
+    public string $pais_origen;
+
+    //currier y/o tipo de producto
+    #[SerializedName('agencia')]
+    public string $agencia;
+
+    //interes_aduana
+    #[SerializedName('entidad_ctrl_aduana')]
+    public bool $entidad_ctrl_aduana;
+
+    #[SerializedName('provincia')]
+    public ?string $provincia;
+
+    #[SerializedName('municipio')]
+    public ?string $municipio;
+
+    #[SerializedName('pareo')]
+    public string $pareo;
+
+    //Array de nomencladores de tipo anomalia
+    /**
+     * @var Nomenclador[]
+     * @Type("array<App\Entity\Nomenclador>")
+     * @SerializedName(name="irregularidades")
+     */
+    public array $irregularidades;
+
+    #[SerializedName('destinatario')]
+    public Persona $destinatario;
+
+    #[SerializedName('remitente')]
+    public Persona $remitente;
 
     /**
-     * EnvioPreRecepcion constructor.
+     * @var EnvioDireccion[]
+     * @Type("array<App\Utils\EnvioDireccion>")
+     * @SerializedName(name="direcciones")
+     */
+    public array $direcciones;
+
+    /**
+     * @param string $no_guia
      */
     public function __construct()
     {
-        $this->irregularidades = [];
-        $this->direcciones = [];
-    }
-
-    /**
-     * @return string
-     */
-    public function getNoGuia(): string
-    {
-        return $this->no_guia;
-    }
-
-    /**
-     * @param string $noGuia
-     */
-    public function setNoGuia(string $noGuia): void
-    {
-        $this->no_guia = $noGuia;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCodTracking(): string
-    {
-        return $this->cod_tracking;
-    }
-
-    /**
-     * @param string $codTracking
-     */
-    public function setCodTracking(string $codTracking): void
-    {
-        $this->cod_tracking = $codTracking;
-    }
-
-    /**
-     * @return float
-     */
-    public function getPeso(): float
-    {
-        return $this->peso;
-    }
-
-    /**
-     * @param float $peso
-     */
-    public function setPeso(float $peso): void
-    {
-        $this->peso = $peso;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAgencia(): string
-    {
-        return $this->agencia;
-    }
-
-    /**
-     * @param string $agencia
-     */
-    public function setAgencia(string $agencia): void
-    {
-        $this->agencia = $agencia;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isEntidadCtrlAduana(): bool
-    {
-        return $this->entidad_ctrl_aduana;
-    }
-
-    /**
-     * @param bool $entidadCtrlAduana
-     */
-    public function setEntidadCtrlAduana(bool $entidadCtrlAduana): void
-    {
-        $this->entidad_ctrl_aduana = $entidadCtrlAduana;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPaisOrigen(): string
-    {
-        return $this->pais_origen;
-    }
-
-    /**
-     * @param string $paisOrigen
-     */
-    public function setPaisOrigen(string $paisOrigen): void
-    {
-        $this->pais_origen = $paisOrigen;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getProvincia(): ?string
-    {
-        return $this->provincia;
-    }
-
-    /**
-     * @param string|null $provincia
-     */
-    public function setProvincia(?string $provincia): void
-    {
-        $this->provincia = $provincia;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getMunicipio(): ?string
-    {
-        return $this->municipio;
-    }
-
-    /**
-     * @param string|null $municipio
-     */
-    public function setMunicipio(?string $municipio): void
-    {
-        $this->municipio = $municipio;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPareo(): string
-    {
-        return $this->pareo;
-    }
-
-    /**
-     * @param string $pareo
-     */
-    public function setPareo(string $pareo): void
-    {
-        $this->pareo = $pareo;
-    }
-
-    /**
-     * @return array
-     */
-    public function getIrregularidades(): array
-    {
-        return $this->irregularidades;
-    }
-
-    /**
-     * @param array $irregularidades
-     */
-    public function setIrregularidades(array $irregularidades): void
-    {
-        $this->irregularidades = $irregularidades;
-    }
-
-    /**
-     * @return Persona
-     */
-    public function getDestinatario(): Persona
-    {
-        return $this->destinatario;
-    }
-
-    /**
-     * @param Persona $destinatario
-     */
-    public function setDestinatario(Persona $destinatario): void
-    {
-        $this->destinatario = $destinatario;
-    }
-
-    /**
-     * @return Persona
-     */
-    public function getRemitente(): Persona
-    {
-        return $this->remitente;
-    }
-
-    /**
-     * @param Persona $remitente
-     */
-    public function setRemitente(Persona $remitente): void
-    {
-        $this->remitente = $remitente;
-    }
-
-    /**
-     * @return array
-     */
-    public function getDirecciones(): array
-    {
-        return $this->direcciones;
-    }
-
-    /**
-     * @param array $direcciones
-     */
-    public function setDirecciones(array $direcciones): void
-    {
-        $this->direcciones = $direcciones;
-    }
-
-    /**
-     * @param EnvioDireccion $direccion
-     */
-    public function addDireccion(EnvioDireccion $direccion): void
-    {
-        $this->direcciones[] = $direccion;
     }
 
 

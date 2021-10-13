@@ -30,6 +30,45 @@ function elementId(id){
  */
 function buscarEnvioManifestado()
 {
+    //Seleccionar un pais
+    $('#select_nacionalidadOrigen')
+        .val('a5cc4eff-26b0-11ec-a331-0242ac120002')
+        .trigger('change.select2')
+
+    var noGuia = $('#input_noGuia').val()
+    var codTracking = $('#input_codTracking').val()
+
+    if ( noGuia.length == 12 && codTracking.length == 13) {
+        var ruta = Routing.generate('envio_manifestado')
+        $.ajax({
+            type: 'POST',
+            url: ruta,
+            data: {
+                noGuia: noGuia,
+                codTracking: codTracking
+            },
+            async: true,
+            dataType: 'json',
+            loading: '',
+            success: function (data) {
+                console.log('success', data)
+                if (!(data.estado)) {
+                    alert(data.mensaje);
+                } else {
+                    alert("Recibido OK");
+                    envioTemporal = data.data
+                    asignarValoresDeEnvioManifestado();
+                }
+
+            },
+            error: function (error) {
+                alert('Error: ' + error.status + ' ' + error.statusText);
+                console.log('error', error.responseText)
+            }
+        })
+    }else {
+        alert('Deben estar correcto el No. Guia y el Codigo de Tracking.')
+    }
 
 }
 
@@ -38,20 +77,19 @@ function buscarEnvioManifestado()
  */
 function annadirEnvioAListTemporal()
 {
-    no_guia = elementId('input_noGuia').value
-    cod_tracking = elementId('input_codTracking').value
-    peso = elementId('input_peso').value
-    nacionalidad = elementId('select_nacionalidadOrigen').value
-    producto = elementId('select_producto').value
-    entidadCtrlAduana = elementId('check_entidadControlAduana').checked
-    provincia = elementId('select_provincias').value
-    municipio = elementId('select_municipios').value
+    no_guia = $('#input_noGuia').val()
+    cod_tracking = $('#input_codTracking').val()
+    peso = $('#input_peso').val()
+    nacionalidad = $('#select_nacionalidadOrigen').val()
+    producto = $('#select_producto').val()
+    entidadCtrlAduana = $('#check_entidadControlAduana').is(':checked')
+    provincia = $('#select_provincias').val()
+    municipio = $('#select_municipios').val()
+    pareo = $('#input_pareo').val()
 
-    pareo = "";
+    this.listEnviosTemporles.push(this.envioTemporal)
 
-    if ( elementId('input_pareo') != null ){
-        pareo = elementId('input_pareo').value == "" ? "" : elementId('input_pareo').value
-    }
+    console.log(this.listEnviosTemporles,'ListTempo')
 
     campos =    "guia: "+ no_guia+ "\n"+
                 "track: "+ cod_tracking+ "\n"+
@@ -63,8 +101,9 @@ function annadirEnvioAListTemporal()
                 "mun: "+ municipio+ "\n"+
                 "pareo: "+ pareo+ "\n";
 
-
     alert(campos);
+
+
 
 }
 
@@ -73,6 +112,38 @@ function annadirEnvioAListTemporal()
  */
 function recepcionarEnvios()
 {
+    console.log(this.listEnviosTemporles,'ñññ')
+
+    if ( this.listEnviosTemporles.length > 0) {
+        var ruta = Routing.generate('recepcionar_envios')
+        $.ajax({
+            type: 'POST',
+            url: ruta,
+            data: {
+                envios: this.listEnviosTemporles
+            },
+            async: true,
+            dataType: 'json',
+            loading: '',
+            success: function (data) {
+                console.log('success', data)
+                if (!(data.estado)) {
+                    alert(data.mensaje);
+                } else {
+                    alert("Recibido OK");
+                    envioTemporal = data.data
+                    asignarValoresDeEnvioManifestado();
+                }
+
+            },
+            error: function (error) {
+                alert('Error: ' + error.status + ' ' + error.statusText);
+                console.log('error', error.responseText)
+            }
+        })
+    }else {
+        alert('Deben estar correcto el No. Guia y el Codigo de Tracking.')
+    }
 
 }
 
@@ -114,49 +185,6 @@ function habilitarDescripcionAnomalia(id)
 
 function actualizarDatos(){
 
-    //Seleccionar un pais
-    $('#select_nacionalidadOrigen')
-        .val('a5cc4eff-26b0-11ec-a331-0242ac120002')
-        .trigger('change.select2')
-
-    this.listEnviosTemporles.push(12);
-    console.log(this.listEnviosTemporles);
-
-    noGuia = document.getElementById('input_noGuia').value
-    codTracking = document.getElementById('input_codTracking').value
-    console.log(codTracking,'length')
-
-    if ( noGuia.length == 12 && codTracking.length == 13) {
-        var ruta = Routing.generate('envio_manifestado')
-        $.ajax({
-            type: 'POST',
-            url: ruta,
-            data: {
-                noGuia: noGuia,
-                codTracking: codTracking
-            },
-            async: true,
-            dataType: 'json',
-            loading: '',
-            success: function (data) {
-                console.log('success', data)
-                if (!(data.estado)) {
-                    alert(data.mensaje);
-                } else {
-                    alert("Recibido OK");
-                    envioTemporal = data.data
-                    asignarValoresDeEnvioManifestado();
-                }
-
-            },
-            error: function (error) {
-                alert('Error: ' + error.status + ' ' + error.statusText);
-                console.log('error', error.responseText)
-            }
-        })
-    }else {
-        alert('Deben estar correcto el No. Guia y el Codigo de Tracking.')
-    }
 
 
 }

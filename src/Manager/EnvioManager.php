@@ -9,11 +9,13 @@ use App\Entity\Estructura;
 use App\Entity\Localizacion;
 use App\Repository\AgenciaRepository;
 use App\Repository\EnvioManifiestoRepository;
+use App\Repository\EnvioRepository;
 use App\Repository\LocalizacionRepository;
 use App\Repository\NomencladorRepository;
 use App\Repository\PaisRepository;
 use App\Utils\EnvioDireccion;
 use App\Utils\EnvioPreRecepcion;
+use Doctrine\ORM\EntityManagerInterface;
 
 class EnvioManager extends _Manager_
 {
@@ -25,7 +27,8 @@ class EnvioManager extends _Manager_
         private EnvioManifiestoRepository $envioManifiestoRepository,
         private PaisRepository $paisRepository,
         private NomencladorRepository $nomencladorRepository,
-        private AgenciaRepository $agenciaRepository
+        private AgenciaRepository $agenciaRepository,
+        private EnvioRepository $envioRepository
     )
     {
     }
@@ -41,38 +44,34 @@ class EnvioManager extends _Manager_
         $envioPreRecepcion = new EnvioPreRecepcion();
         $envioManifestado = $this->envioManifiestoRepository->findByGuiaAndCodigo($noGuia,$codTracking);
 
+        $envioIgualCodTracking = $this->envioRepository->findOneBy(['cod_tracking'=> $codTracking]);
+        //Coger la fecha y si esdel mismo a;o entoces hacer el pareo decirlo al cliente y hacer validaciones
+        $parearEnvio = (bool)$envioIgualCodTracking;
+
         if ( $envioManifestado ) {
 
-            $envioPreRecepcion->setNoGuia($envioManifestado->getNoGuiaAerea());
-            $envioPreRecepcion->setCodTracking($envioManifestado->getCodigo());
-            $envioPreRecepcion->setPeso($envioManifestado->getPeso());
+            $envioPreRecepcion->no_guia = $envioManifestado->getNoGuiaAerea();
+            $envioPreRecepcion->cod_tracking = $envioManifestado->getCodigo();
+            $envioPreRecepcion->peso = $envioManifestado->getPeso();
 
-            $envioPreRecepcion->setPaisOrigen(
-                $this->paisRepository->findByCodigoAduana($envioManifestado->getPaisOrigen())->getId()
-            );
+            $envioPreRecepcion->pais_origen = $this->paisRepository->findByCodigoAduana($envioManifestado->getPaisOrigen())->getId();
 
-            $envioPreRecepcion->setAgencia(
-                $this->agenciaRepository->findByCodigoAduana($envioManifestado->getAgenciaOrigen())->getId()
-            );
+            $envioPreRecepcion->agencia = $this->agenciaRepository->findByCodigoAduana($envioManifestado->getAgenciaOrigen())->getId();
 
-            $envioPreRecepcion->setEntidadCtrlAduana(false);
+            $envioPreRecepcion->entidad_ctrl_aduana = false;
 
             $provDest = $envioManifestado->getProvinciaDestinatario();
-            $envioPreRecepcion->setProvincia(
-                $provDest ? $provDest->getId() : null
-            );
+            $envioPreRecepcion->provincia = $provDest?->getId();
 
             $munDest = $envioManifestado->getMunicipioDestinatario();
-            $envioPreRecepcion->setMunicipio(
-                $munDest ? $munDest->getId() : null
-            );
+            $envioPreRecepcion->municipio = $munDest?->getId();
 
-            $envioPreRecepcion->setPareo("");
+            $envioPreRecepcion->pareo = $parearEnvio ? $envioManifestado->getCodigo() : '';
 
-            $envioPreRecepcion->setIrregularidades([]);
+            $envioPreRecepcion->irregularidades = [];
 
-            $envioPreRecepcion->setRemitente($envioManifestado->getRemitente());
-            $envioPreRecepcion->setDestinatario($envioManifestado->getDestinatario());
+            $envioPreRecepcion->remitente = $envioManifestado->getRemitente();
+            $envioPreRecepcion->destinatario = $envioManifestado->getDestinatario();
 
             $direccion = new EnvioDireccion();
             $direccion->setCalle($envioManifestado->getCalleDestinatario());
@@ -88,7 +87,8 @@ class EnvioManager extends _Manager_
                 $envioManifestado->getMunicipioDestinatario()
             );
 
-            $envioPreRecepcion->addDireccion($direccion);
+            $envioPreRecepcion->direcciones = [];
+            $envioPreRecepcion->direcciones[] = $direccion;
 
         }else{
             $envioPreRecepcion = null;
@@ -100,24 +100,37 @@ class EnvioManager extends _Manager_
     public function recepcionarEnvios(array $envios): bool{
         $recepcionados = true;
 
+        /** @var $em EntityManagerInterface **/
+        $em = $this->get('doctrine.orm.default_entity_manager');
+
         foreach ($envios as $envio){
+            /** @var $envio EnvioPreRecepcion **/
 
             $envioRecepcionar = new Envio();
-            $envioRecepcionar->setCodTracking($envio->codTracking);
-            //..
-
+            $envioRecepcionar->setFechaRecepcion(new \DateTime());
+            $envioRecepcionar->setCodTracking($envio->getCodTracking());
+            $envioRecepcionar->setPareo($envio->getPareo());
+            $envioRecepcionar->setPeso($envio->getPeso());
             //Coger la del user autenticado
             $estructuraOrigen = new Estructura();
+
+            $envioRecepcionar->setEstructuraOrigen($estructuraOrigen);
+
+            $envioRecepcionar->setDestinatario($envio->getDestinatario());
+            $envioRecepcionar->setRemitente($envio->getRemitente());
+
+            $envioRecepcionar->setAgencia(  $envio->getAgencia());
+
 
             $direccion = new EnvioDireccion();
             $direccion->setCalle();
             //....
 
 
+            $em->persist($envioRecepcionar);
         }
 
-
-
+        $em->flush();
 
         return $recepcionados;
     }
