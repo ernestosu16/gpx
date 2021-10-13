@@ -16,6 +16,7 @@ use App\Repository\PaisRepository;
 use App\Utils\EnvioDireccion;
 use App\Utils\EnvioPreRecepcion;
 use Doctrine\ORM\EntityManagerInterface;
+use JMS\Serializer\SerializerBuilder;
 
 class EnvioManager extends _Manager_
 {
@@ -97,37 +98,62 @@ class EnvioManager extends _Manager_
         return $envioPreRecepcion;
     }
 
-    public function recepcionarEnvios(array $envios): bool{
+    public function recepcionarEnvios($envios): bool{
         $recepcionados = true;
 
         /** @var $em EntityManagerInterface **/
         $em = $this->get('doctrine.orm.default_entity_manager');
 
-        foreach ($envios as $envio){
-            /** @var $envio EnvioPreRecepcion **/
+        $deserializer = SerializerBuilder::create()->build();
 
-            $envioRecepcionar = new Envio();
-            $envioRecepcionar->setFechaRecepcion(new \DateTime());
-            $envioRecepcionar->setCodTracking($envio->getCodTracking());
-            $envioRecepcionar->setPareo($envio->getPareo());
-            $envioRecepcionar->setPeso($envio->getPeso());
+        foreach ($envios as $envio){
+
+            /** @var EnvioPreRecepcion $envioPreRecepcion */
+            $envioPreRecepcion = $deserializer->deserialize(json_encode($envio),EnvioPreRecepcion::class,'json');
+
+            $envio = new Envio();
+            $envio->setFechaRecepcion(new \DateTime());
+            $envio->setCodTracking($envioPreRecepcion->cod_tracking);
+            $envio->setPareo($envioPreRecepcion->pareo);
+            $envio->setPeso($envioPreRecepcion->peso);
+
             //Coger la del user autenticado
             $estructuraOrigen = new Estructura();
+            $envio->setEstructuraOrigen($estructuraOrigen);
 
-            $envioRecepcionar->setEstructuraOrigen($estructuraOrigen);
+            $envio->setDestinatario($envioPreRecepcion->destinatario);
+            $envio->setRemitente($envioPreRecepcion->remitente);
 
-            $envioRecepcionar->setDestinatario($envio->getDestinatario());
-            $envioRecepcionar->setRemitente($envio->getRemitente());
+            //Ver lo del metodo para buscar una agencia por el id
+            $envio->setAgencia($this->agenciaRepository->find($envioPreRecepcion->agencia));
 
-            $envioRecepcionar->setAgencia(  $envio->getAgencia());
+            //Ver lo del metodo para ponerle el estado
+            //$envio->setEstado($this->nomencladorRepository->find());
 
+            //Ver lo del metodo para ponerle el pais origen
+            $envio->setPaisOrigen($this->paisRepository->find($envioPreRecepcion->pais_origen));
 
-            $direccion = new EnvioDireccion();
-            $direccion->setCalle();
-            //....
+            //Ver lo del metodo para ponerle el pais origen CUBA
+            $envio->setPaisDestino($this->paisRepository->find($envioPreRecepcion->pais_origen));
 
+            //Ver lo del metodo para ponerle la empresa
+            //$envio->setEmpresa( );
 
-            $em->persist($envioRecepcionar);
+            //Ver lo del metodo para buscar la provincia a partir del id
+            //$envio->setProvincia($this->localizacionRepository->findAllProvincia($envioPreRecepcion->provincia));
+
+            //Ver lo del metodo para buscar el municipio a partir del id
+            //$envio->setMunicipio($this->localizacionRepository->findAllProvincia($envioPreRecepcion->provincia));
+
+            //Ver lo del metodo para guardar las anomalias en campo json
+            //$envio->setAnomalias($envioPreRecepcion->irregularidades);
+
+            //Ver lo del metodo para generar el campo diecciones en el modelo y guardar en campo json
+            //$envio->setDirecciones($envioPreRecepcion->direcciones);
+
+            //A;adir lo de las trazas_envio , trazas_aduana y envio_aduana
+
+            $em->persist($envio);
         }
 
         $em->flush();

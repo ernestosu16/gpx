@@ -251,6 +251,10 @@ class EnvioController extends AbstractController
 
             $envios = $request->request->get('envios');
 
+            $result = $this->envioManager->recepcionarEnvios($envios);
+
+            dump($result);
+
             $deserializer = SerializerBuilder::create()->build();
 
             foreach ($envios as $envio){
@@ -258,7 +262,15 @@ class EnvioController extends AbstractController
                 /** @var EnvioPreRecepcion $envioPreRecepcion */
                 $envioPreRecepcion = $deserializer->deserialize(json_encode($envio),EnvioPreRecepcion::class,'json');
 
-                
+                $envio = new Envio();
+                $envio->setFechaRecepcion(new \DateTime());
+                $envio->setCodTracking($envioPreRecepcion->cod_tracking);
+                $envio->setPareo($envioPreRecepcion->pareo);
+                $envio->setPeso($envioPreRecepcion->peso);
+                $envio->setEstructuraOrigen(null);
+                $envio->setCodTracking();
+                $envio->setCodTracking();
+
 
             }
             exit;
