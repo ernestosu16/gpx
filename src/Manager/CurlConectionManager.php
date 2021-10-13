@@ -163,20 +163,99 @@ class CurlConectionManager extends _Manager_
 
     public function download(string $remote_file,string $local_file, string $file_name)
     {
-        $curl = $this->ch;
-        curl_setopt($curl, CURLOPT_UPLOAD, false);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        // set file name
-        if (!curl_setopt($curl, CURLOPT_URL, $remote_file))
-            throw new \Exception("Could not set cURL file name: $remote_file");
-        $content = curl_exec($curl);
+//        if(!file_exists ($local_file)){
+//            mkdir($local_file,0777,true);
+//        }
+//
+//        $file_handle = fopen($local_file . '/' . $file_name, "w+");
+//
+//        $curl = $this->ch;
+//        curl_setopt($curl, CURLOPT_URL, $remote_file);
+//        curl_setopt($curl, CURLOPT_UPLOAD, false);
+//        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+//        //Pass our file handle to cURL.
+//        curl_setopt($curl, CURLOPT_FILE, $file_handle);
+//
+//        dump($curl);
+//        curl_exec($curl);
+//        $statusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+//
+//        curl_close($curl);
+//
+//        fclose($file_handle);
+//
+//        if($statusCode == 200){
+//            echo 'Downloaded!';
+//        } else{
+//            echo "Status Code: " . $statusCode;
+//        }
+//
+//        exit;
+
+
+        //The path & filename to save to.
+        $saveTo = $local_file . '/' . $file_name;
+
         if(!file_exists ($local_file)){
             mkdir($local_file,0777,true);
         }
-        $file_handle = fopen($local_file . '/' . $file_name, "w+");
-        //$content = file_get_contents($remote_file); //para hacer las pruebas local
-        fputs($file_handle, $content);
-        fclose($file_handle);
+
+        //Open file handler.
+        $fp = fopen($saveTo, 'w+');
+
+        //If $fp is FALSE, something went wrong.
+        if($fp === false){
+            throw new \Exception('Could not open: ' . $saveTo);
+        }
+
+        //Create a cURL handle.
+        $curl = curl_init($remote_file);
+
+        $options = [
+            CURLOPT_USERPWD        => $this->ftp_config['user'].':'.$this->ftp_config['pass'],
+            CURLOPT_PORT           => 21,
+            CURLOPT_TIMEOUT        => 30,
+            CURLOPT_FTP_SSL        => CURLFTPSSL_ALL, // require SSL For both control and data connections
+            CURLOPT_FTPSSLAUTH     => CURLFTPAUTH_DEFAULT, // let cURL choose the FTP authentication method (either SSL or TLS)
+            CURLOPT_SSL_CIPHER_LIST => 'DEFAULT@SECLEVEL=1'
+        ];
+
+        $options[CURLOPT_SSL_VERIFYPEER] = false;
+        $options[CURLOPT_SSL_VERIFYHOST] = false;
+
+        foreach ($options as $option_name => $option_value) {
+            if (!curl_setopt($curl, $option_name, $option_value))
+                throw new \Exception(sprintf('Could not set cURL option: %s', $option_name));
+        }
+
+        //Pass our file handle to cURL.
+        curl_setopt($curl, CURLOPT_FILE, $fp);
+
+        //Timeout if the file doesn't download after 20 seconds.
+        curl_setopt($curl, CURLOPT_TIMEOUT, 20);
+
+        //Execute the request.
+        curl_exec($curl);
+
+        //If there was an error, throw an Exception
+        if(curl_errno($curl)){
+            throw new \Exception(curl_error($curl));
+        }
+
+        //Get the HTTP status code.
+        $statusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+
+        //Close the cURL handler.
+        curl_close($curl);
+
+        //Close the file handler.
+        fclose($fp);
+
+        if($statusCode == 200){
+            echo 'Downloaded!';
+        } else{
+            echo "Status Code: " . $statusCode;
+        }
     }
 
     public function getContentFromFTP(string $url = null, bool $file = false): array
@@ -197,7 +276,7 @@ class CurlConectionManager extends _Manager_
                     //dump('Es un directorio');
                     $fullPathDirectories[] = ['url' => $url . $directory . '/', 'file' =>$directory];
                 } else{
-                    $fullPathFile[] = ['url' => $url . $directory . '/', 'file' =>$directory];
+                    $fullPathFile[] = ['url' => $url . $directory, 'file' =>$directory];
                 }
             }
 
@@ -210,24 +289,65 @@ class CurlConectionManager extends _Manager_
         }
     }
 
-    function deleteFileFromFTP(string $strURL,string $filename)
+    function deleteFileFromFTP(string $strURL,string $deletePath)
     {
-        $curl = $this->ch;
-        // connection options
-        $options = array(
-            CURLOPT_HEADER => 0,
-            CURLOPT_RETURNTRANSFER => true, // Return data inplace of echoing on screen
-            CURLOPT_URL => $strURL,
-            CURLOPT_QUOTE => array('DELE /' . $filename)
-        );
+//        dump($strURL);
+//        dump($filename);
+//
+//        $curl = $this->ch;
+//        // connection options
+//        $options = array(
+//            //CURLOPT_HEADER => 0,
+//            CURLOPT_RETURNTRANSFER => true, // Return data inplace of echoing on screen
+//            CURLOPT_URL => $strURL
+//            //CURLOPT_QUOTE => array('DELE /' . $filename)
+//        );
+//
+//        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "DELETE");
+//        foreach ($options as $option_name => $option_value) {
+//            if (!curl_setopt($curl, $option_name, $option_value))
+//                throw new \Exception(sprintf('Could not set cURL option: %s', $option_name));
+//        }
+
+        //$url = $strURL;
+
+        $ch = curl_init();
+
+        $options = [
+            CURLOPT_USERPWD        => $this->ftp_config['user'].':'.$this->ftp_config['pass'],
+            CURLOPT_PORT           => 21,
+            CURLOPT_TIMEOUT        => 30,
+            CURLOPT_FTP_SSL        => CURLFTPSSL_ALL, // require SSL For both control and data connections
+            CURLOPT_FTPSSLAUTH     => CURLFTPAUTH_DEFAULT, // let cURL choose the FTP authentication method (either SSL or TLS)
+            CURLOPT_SSL_CIPHER_LIST => 'DEFAULT@SECLEVEL=1',
+            CURLOPT_QUOTE => array( $deletePath),
+            //CURLOPT_QUOTE => array('DELE /EMCI/DHL/' . $filename),
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => false,
+            CURLOPT_RETURNTRANSFER =>true,
+            CURLOPT_URL => $strURL
+        ];
+
+//        $options[CURLOPT_SSL_VERIFYPEER] = false;
+//        $options[CURLOPT_SSL_VERIFYHOST] = false;
+
+        //curl_setopt_array();//para pasar las opciones completas
 
         foreach ($options as $option_name => $option_value) {
-            if (!curl_setopt($curl, $option_name, $option_value))
+            if (!curl_setopt($ch, $option_name, $option_value))
                 throw new \Exception(sprintf('Could not set cURL option: %s', $option_name));
         }
 
-        //ejecutas la conexion
-        curl_exec($curl);
-        curl_close($curl);
+        //curl_setopt($ch, CURLOPT_URL, $strURL);
+        //curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+
+//        $result = curl_exec($ch);
+//        $result = json_decode($result);
+
+        if (!curl_exec($ch))
+            throw new \Exception(sprintf('Could not delete file. cURL Error: [%s] - %s', curl_errno($ch), curl_error($ch)));
+
+        curl_close($ch);
     }
 }

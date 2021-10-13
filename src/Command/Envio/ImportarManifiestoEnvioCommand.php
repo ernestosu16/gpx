@@ -13,6 +13,7 @@ use App\Entity\Estructura;
 use App\Entity\Localizacion;
 use App\Entity\Nomenclador;
 use App\Entity\Persona;
+use App\Manager\CurlConectionManager;
 use Doctrine\ORM\ORMException;
 use JMS\Serializer\SerializerBuilder;
 use SimpleXMLElement;
@@ -33,8 +34,6 @@ use Symfony\Component\Translation\Exception\InvalidResourceException;
 
 final class ImportarManifiestoEnvioCommand extends BaseCommand implements BaseCommandInterface
 {
-    private array $ftp_config = [];
-
     static function getCommandName(): string
     {
         return 'app:envio:manifiesto';
@@ -52,7 +51,7 @@ final class ImportarManifiestoEnvioCommand extends BaseCommand implements BaseCo
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        /**@var $emCurl \App\Manager\CurlConectionManager **/
+        /**@var $emCurl CurlConectionManager **/
         $emCurl = $this->getContainer()->get('app.manager.curl_conection');
 
         $em = $this->getEntityManager();
@@ -84,16 +83,25 @@ final class ImportarManifiestoEnvioCommand extends BaseCommand implements BaseCo
                 $manifiestos = $emCurl->getContentFromFTP($agencia['url'], true);
                 foreach ($manifiestos as $file)
                 {
-                    $local_directory = $this->get('kernel')->getProjectDir() . '/public/download/envioManifiesto/' . $transitoria . '/' . $agencia;
+                    $local_directory = $this->get('kernel')->getProjectDir() . '/public/download/envioManifiesto/' . $transitoria['file'] . '/' . $agencia['file'];
                     $emCurl->download($file['url'], $local_directory, $file['file']);
+                    //$emCurl->download($agencia['url'], $local_directory, $file['file']);
 
                     $absoluteFilePath = $local_directory . '/' . $file['file'];
-                    $this->readManifiestoXML($absoluteFilePath, $file['file'], $estructuraTransitaria);
+                    $result = $this->readManifiestoXML($absoluteFilePath, $file['file'], $estructuraTransitaria);
 
+                    if($result){//manifiesto leido correctamente
+                        $deletePath = 'DELE /' . $transitoria['file'] . '/' . $agencia['file'] . '/' .  $file['file'];
+                        $emCurl->deleteFileFromFTP($agencia['url'], $deletePath );
+                    }else{//manifiesto con error
 
+                    }
                 }
             }
         }
+
+        dump('ok');
+        exit;
 
         $transitoria = 'EMCI';
         $agencia = 'SA';
@@ -163,7 +171,12 @@ final class ImportarManifiestoEnvioCommand extends BaseCommand implements BaseCo
                         foreach ($files as $file) {
                             $absoluteFilePath = $file->getRealPath();
                             $fileNameWithExtension = $file->getRelativePathname();
-                            $this->readManifiestoXML($absoluteFilePath, $fileNameWithExtension, $transitaria);
+                            $result = $this->readManifiestoXML($absoluteFilePath, $fileNameWithExtension, $transitaria);
+                            if($result){//manifiesto leido correctamente
+
+                            }else{//manifiesto con error
+
+                            }
                         }
                     }
                 }
@@ -173,7 +186,8 @@ final class ImportarManifiestoEnvioCommand extends BaseCommand implements BaseCo
         return Command::SUCCESS;
     }
 
-    protected function readManifiestoXML(string $absoluteFilePath, string $fileNameWithExtension, Estructura $transitaria){
+    protected function readManifiestoXML(string $absoluteFilePath, string $fileNameWithExtension, Estructura $transitaria): bool
+    {
         //libxml_use_internal_errors(true);
         $xml = simplexml_load_file($absoluteFilePath);
         if ($xml === false) {
@@ -197,9 +211,11 @@ final class ImportarManifiestoEnvioCommand extends BaseCommand implements BaseCo
                     }
                 }
                 $this->getEntityManager()->commit();
+                return true;
             }catch (\Exception $e){
                 $this->getEntityManager()->rollBack();
                 dump($e->getMessage());
+                return false;
             }
 
         }
