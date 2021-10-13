@@ -1,0 +1,5 @@
+envio:
+    anomalia:
+        - 'Faltante'
+        - 'Mal encaminado'
+        - 'Mojado'
