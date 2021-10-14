@@ -33,6 +33,11 @@ class Pais extends _Entity_
     #[ORM\Column(type: 'boolean')]
     private bool $habilitado;
 
+    public function __toString(): string
+    {
+        return $this->nombre;
+    }
+
     public function __construct()
     {
         $this->habilitado = true;

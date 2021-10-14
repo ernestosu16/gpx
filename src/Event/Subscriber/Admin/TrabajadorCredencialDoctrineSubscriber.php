@@ -5,7 +5,6 @@ namespace App\Event\Subscriber\Admin;
 use App\Entity\TrabajadorCredencial;
 use App\Event\Subscriber\_DoctrineSubscriber_;
 use Doctrine\ORM\Events;
-use Doctrine\ORM\UnitOfWork;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 use JetBrains\PhpStorm\Pure;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -31,31 +30,28 @@ final class TrabajadorCredencialDoctrineSubscriber extends _DoctrineSubscriber_
 
     public function prePersist(LifecycleEventArgs $args): void
     {
-        if (!$args->getObject() instanceof TrabajadorCredencial)
+        /** @var TrabajadorCredencial $object */
+        $object = $args->getObject();
+        if (!$object instanceof TrabajadorCredencial)
             return;
 
-        $this->passwordEncrypt($args);
+        $this->passwordEncrypt($object);
     }
 
     public function preUpdate(LifecycleEventArgs $args)
     {
-        if (!$args->getObject() instanceof TrabajadorCredencial)
-            return;
-
-        $this->passwordEncrypt($args);
-    }
-
-    private function passwordEncrypt(LifecycleEventArgs $args): void
-    {
-        /** @var UnitOfWork $uow */
-        $uow = $args->getObjectManager()->getUnitOfWork();
-        $uow->computeChangeSets(); // do not compute changes if inside a listener
-        $changeSet = $uow->getEntityChangeSet($args->getObject()); // view column change
-
         /** @var TrabajadorCredencial $object */
         $object = $args->getObject();
-        if (isset($changeSet['contrasena']) && $object->getContrasena()) {
-            $object->setContrasena($this->passwordHasher->hashPassword($object, $object->getContrasena()));
-        }
+        if (!$object instanceof TrabajadorCredencial)
+            return;
+
+        $changeSet = $args->getObjectManager()->getUnitOfWork()->getEntityChangeSet($object);
+        if (isset($changeSet['contrasena']) && $args->getObject()->getContrasena())
+            $this->passwordEncrypt($object);
+    }
+
+    private function passwordEncrypt(TrabajadorCredencial $credencial): void
+    {
+        $credencial->setContrasena($this->passwordHasher->hashPassword($credencial, $credencial->getContrasena()));
     }
 }
