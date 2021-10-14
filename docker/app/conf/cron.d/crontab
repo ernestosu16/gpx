@@ -1,0 +1,1 @@
+* * * * * www-data sh -c "php /app/bin/console cron:run" >> /app/var/log/cron.log
