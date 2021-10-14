@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Saca;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -17,6 +18,15 @@ class SacaRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Saca::class);
+    }
+
+    public function findSacasNoFactura($noFactura, $estado = 'CREADO')
+    {
+        $this->createQueryBuilder('s')
+            ->join('s.factura', 'f', Expr\Join::WITH, 'f.numero_factura='.$noFactura)
+            ->join('s.estado', 'e', Expr\Join::WITH, 'e.codigo='.$estado)
+            ->getQuery()
+            ->getResult();
     }
 
     // /**
