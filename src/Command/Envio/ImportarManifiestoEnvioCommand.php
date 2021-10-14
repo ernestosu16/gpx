@@ -70,11 +70,6 @@ final class ImportarManifiestoEnvioCommand extends BaseCommand implements BaseCo
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        /**@var $emCurl \App\Manager\CurlConectionManager **/
-        $emCurl = $this->getContainer()->get('app.manager.curl_conection');
-
-        dump($emCurl);
-        exit;
         //$ftpConfi = $this->getFTPConfi();
 
         $dir = "/app/public/download/envioManifiesto";

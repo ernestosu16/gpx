@@ -90,9 +90,14 @@ class Envio extends _Entity_
     #[ORM\JoinColumn(name: 'municipio_id', referencedColumnName: 'id', nullable: false)]
     private Localizacion $municipio;
 
-    #[ORM\ManyToMany(targetEntity: Nomenclador::class, cascade: ['persist'])]
-    #[ORM\JoinTable(name: 'envio_anomalia_asignada')]
-    private ?Collection $anomalias;
+    #[ORM\Column(type: 'json')]
+    private array $anomalias;
+
+    /*
+    #[ORM\ManyToOne(targetEntity: Factura::class)]
+    #[ORM\JoinColumn(name: 'factura_id', referencedColumnName: 'id', nullable: false)]
+    private Localizacion $factura;
+    */
 
 
     #[Pure]
@@ -410,24 +415,19 @@ class Envio extends _Entity_
     }
 
     /**
-     * @return Collection|null
+     * @return array
      */
-    public function getAnomalias(): ?Collection
+    public function getAnomalias(): array
     {
         return $this->anomalias;
     }
 
     /**
-     * @param Collection|null $anomalias
+     * @param array $anomalias
      */
-    public function setAnomalias(?Collection $anomalias): void
+    public function setAnomalias(array $anomalias): void
     {
         $this->anomalias = $anomalias;
     }
-
-
-
-
-
 
 }
