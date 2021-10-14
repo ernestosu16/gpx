@@ -10,6 +10,7 @@
         "ext-iconv": "*",
         "ext-dom": "*",
         "ext-xml": "*",
+        "ext-simplexml": "*",
         "composer/package-versions-deprecated": "1.11.99.3",
         "cron/cron-bundle": "^2.6",
         "defuse/php-encryption": "^2.3",
@@ -18,6 +19,7 @@
         "doctrine/doctrine-migrations-bundle": "^3.1",
         "doctrine/orm": "^2.9",
         "gedmo/doctrine-extensions": "^3.1",
+        "jms/serializer-bundle": "^3.10",
         "knplabs/knp-menu-bundle": "^3.1",
         "knplabs/knp-paginator-bundle": "^5.7",
         "phpdocumentor/reflection-docblock": "^5.2",
@@ -51,7 +53,8 @@
         "symfony/web-link": "5.3.*",
         "symfony/yaml": "5.3.*",
         "twig/extra-bundle": "^2.12|^3.0",
-        "twig/twig": "^2.12|^3.0"
+        "twig/twig": "^2.12|^3.0",
+      "ext-curl": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5",

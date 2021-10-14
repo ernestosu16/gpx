@@ -2,6 +2,7 @@
 
 namespace App\Utils;
 
+use JetBrains\PhpStorm\ArrayShape;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 use function Symfony\Component\String\u;
 
@@ -68,5 +69,128 @@ class Validator
             throw new InvalidArgumentException('El número de identidad es incorrecto.');
 
         return $numeroIdentidad;
+    }
+
+    public static function validarCI(string $ci): array
+    {
+        $errores_ci = "Destinatario con error en el CI ". $ci ."  \r\n";
+        $arreglo = array(
+            'valid' => true,
+            'error' => ''
+        );
+
+        if (strlen($ci) != 11) {
+            $errores_ci .= "-Formato incorrecto del carne de identidad.(No tiene 11 dígitos)  \r\n";
+            $arreglo['valid'] = false;
+            $arreglo['error'] = $errores_ci;
+            return $arreglo;
+        } else {
+            //validando el MES en el carnet de identidad
+            if (substr($ci,2,2) > 12 || substr($ci,2,2) <= 0)
+            {
+                $errores_ci .= "-Formato incorrecto del carne de identidad.(Mes incorrecto) \r\n";
+                $arreglo['valid'] = false;
+                $arreglo['error'] = $errores_ci;
+            }
+            //validando el DÍA en el carnet de identidad
+            if (substr($ci,4,2) > 31 || substr($ci,4,2) <= 0)
+            {
+                $errores_ci .= "-Formato incorrecto del carne de identidad.(Dia incorrecto) \r\n";
+                $arreglo['valid'] = false;
+                $arreglo['error'] = $errores_ci;
+            }
+            //validando que sea SOLO NÚMERO en el carnet de identidad
+            if(preg_match('/^([0-9])*$/', $ci) == 0)
+            {
+                $errores_ci .= "-Formato incorrecto del carne de identidad.(Este contiene letras) \r\n";
+                $arreglo['valid'] = false;
+                $arreglo['error'] = $errores_ci;
+            }
+            //validando Febrero en el carnet de identidad
+            if (substr($ci,2,2) == 02)
+            {
+                if(substr($ci,4,2) > 29)
+                {
+                    $errores_ci .= "-Formato incorrecto del carne de identidad.(Día incorrecto, en febrero el día no puede ser mayor a 29) \r\n";
+                    $arreglo['valid'] = false;
+                    $arreglo['error'] = $errores_ci;
+                }
+            }
+        }
+        return $arreglo;
+    }
+
+    public static function validarFecha(string $fecha): bool
+    {
+        $fecha_now = date('Y-m-d');
+
+        $anno_now = substr($fecha_now, 0, 4);
+        $mes_now = substr($fecha_now, 5, 2);
+        $dia_now = substr($fecha_now, 8, 2);
+
+        $anno = substr($fecha, 0, 4);
+        $mes = substr($fecha, 5, 2);
+        $dia = substr($fecha, 8, 2);
+
+        $anno_actual = date('Y');
+
+        if (strlen($fecha) != 10)
+        {
+            return false;
+        }
+        if ($anno > $anno_actual)
+        {
+            return false;
+        }
+        if ($anno == $anno_now)
+        {
+            if ($mes <= $mes_now)
+            {
+                if ($dia > $dia_now -1)
+                {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+        if ($anno < 1900) {
+            return false;
+        } else {
+            if ($mes > 12 || $mes == 0)
+            {
+                return false;
+            }
+            if ($dia > 31 || $dia == 0)
+            {
+                return false;
+            }
+            return true;
+        }
+    }
+
+    public static function tieneCaracteresEspeciales(string $cadena): bool
+    {
+        $caracteres_especiales = array('"', "¨", "º", "~",
+            "#", "@", "|", "!", "·", "$", "%", "&", "/",
+            "(", ")", "?", "¡", ".", "¿", "[", "^", "]",
+            "+", "}", "{", "¨", "´", ">", "< ", ";", ",", ":",
+            'ç', 'Ç', 'à', 'ä', 'â', 'ª', 'À', 'Â', 'Ä', 'è', 'ë', 'ê',
+            'È', 'Ê', 'Ë', 'ì', 'ï', 'î', 'Ì', 'Ï', 'Î', 'ò', 'ö', 'ô',
+            'Ò', 'Ö', 'Ô', 'ù', 'ü', 'û', 'Ù', 'Û', 'Ü');
+
+        $cont = 0;
+        foreach ($caracteres_especiales as $findme)
+        {
+            $pos = strpos($cadena, $findme);
+
+            if ($pos !== false) {
+                $cont++;
+            }
+        }
+
+        if($cont > 0) return true;
+
+        return false;
     }
 }
