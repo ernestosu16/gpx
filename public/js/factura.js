@@ -18,6 +18,7 @@ function buscarFacturaSacas()
         loading: '',
         success: function (data) {
             console.log('success', data)
+            $('#collapseOne').html()
         },
         error: function (error) {
             alert('Error: ' + error.status + ' ' + error.statusText);
@@ -25,4 +26,10 @@ function buscarFacturaSacas()
         }
 
         })
+
+
+}
+
+function recepcionarFactura() {
+
 }

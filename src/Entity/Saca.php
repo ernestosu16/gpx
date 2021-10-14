@@ -53,6 +53,8 @@ class Saca extends _Entity_
     #[ORM\JoinTable(name: 'saca_anomalia_asignada')]
     private ?Collection $anomalias;
 
+    #[ORM\Column(type: 'json', nullable: true )]
+    private $observaciones;
 
     #[Pure]
     public function __construct()
@@ -229,6 +231,24 @@ class Saca extends _Entity_
     public function setAnomalias(?Collection $anomalias): Saca
     {
         $this->anomalias = $anomalias;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getObservaciones()
+    {
+        return $this->observaciones;
+    }
+
+    /**
+     * @param mixed $observaciones
+     * @return Saca
+     */
+    public function setObservaciones($observaciones)
+    {
+        $this->observaciones = $observaciones;
         return $this;
     }
 

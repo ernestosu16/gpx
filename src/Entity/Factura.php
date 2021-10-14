@@ -51,6 +51,9 @@ class Factura
     #[ORM\JoinTable(name: 'factura_anomalia_asignada')]
     private ?Collection $anomalias;
 
+    #[ORM\Column(type: 'json', nullable: true)]
+    private $observaciones;
+
 
     public function __construct()
     {
@@ -218,4 +221,22 @@ class Factura
         return $this;
     }
 
+
+    /**
+     * @return mixed
+     */
+    public function getObservaciones()
+    {
+        return $this->observaciones;
+    }
+
+    /**
+     * @param mixed $observaciones
+     * @return Factura
+     */
+    public function setObservaciones($observaciones)
+    {
+        $this->observaciones = $observaciones;
+        return $this;
+    }
 }
