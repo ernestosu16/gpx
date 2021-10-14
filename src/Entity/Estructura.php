@@ -7,8 +7,8 @@ use App\Repository\EstructuraRepository;
 use App\Utils\RegexUtil;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Exception\ORMException;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\ORMException;
 use Gedmo\Mapping\Annotation as Gedmo;
 use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
@@ -350,5 +350,23 @@ class Estructura extends BaseNestedTree
         }
 
         return $collection;
+    }
+
+    /**
+     * Busca la estructura padres que contenta al tipo de estructura
+     */
+    public function searchParentsByTipo(EstructuraTipo $tipo): ?Estructura
+    {
+        return $this->searchParentByTipo($this, $tipo);
+    }
+
+    private function searchParentByTipo(?Estructura $estructura, EstructuraTipo $tipo): ?Estructura
+    {
+        if (!$estructura)
+            return null;
+
+        return ($estructura->getTipos()->exists(function (int $key, EstructuraTipo $element) use ($tipo) {
+            return $element === $tipo;
+        })) ? $estructura : $this->searchParentByTipo($estructura->getParent(), $tipo);
     }
 }

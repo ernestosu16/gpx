@@ -27,7 +27,7 @@ final class ManifiestoFtpAccesoFormSubscriber extends _Subscriber_
         $manifiestoData = ManifiestoFtpAccesoData::newInstance();
         /** @var Nomenclador $data */
         $data = $subject->getData();
-        if ($data->getCodigo() === $manifiestoData->getCodeComplete())
+        if ($data->getId() && $data->getCodigo() === $manifiestoData->getCodeComplete())
             $this->generarFormManifiesto($subject, $data);
     }
 

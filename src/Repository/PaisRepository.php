@@ -52,10 +52,21 @@ class PaisRepository extends ServiceEntityRepository
     }
     */
 
+
     public function findByCodigoAduana(string $code): ?Pais
     {
         return  $this->findOneBy(
             ['codigo_aduana'=> $code]
         );
+
+    public function findOneByIata(string $iata): ?Pais
+    {
+        return $this->findOneBy(['iata' => $iata]);
+    }
+
+    public function findOneByCodigoAduana(string $codigo): ?Pais
+    {
+        return $this->findOneBy(['codigo_aduana' => $codigo]);
+
     }
 }

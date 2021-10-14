@@ -26,7 +26,7 @@ class TrabajadorCredencial implements UserInterface, PasswordAuthenticatedUserIn
     #[ORM\Column(name: 'es_admin', type: 'boolean')]
     private bool $admin = false;
 
-    #[ORM\Column(type: 'string', length: 120, nullable: false)]
+    #[ORM\Column(type: 'text', length: 120, nullable: false)]
     private string $navegador = '';
 
     #[ORM\Column(type: 'json')]
@@ -162,13 +162,6 @@ class TrabajadorCredencial implements UserInterface, PasswordAuthenticatedUserIn
         return $roles;
     }
 
-    public function setSalt(string $salt): self
-    {
-        $this->salt = $salt;
-
-        return $this;
-    }
-
     public function getSalt(): ?string
     {
         return null;
@@ -178,6 +171,4 @@ class TrabajadorCredencial implements UserInterface, PasswordAuthenticatedUserIn
     {
         return null;
     }
-
-
 }

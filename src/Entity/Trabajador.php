@@ -178,27 +178,29 @@ class Trabajador extends _Entity_
     }
 
     public function setDatoPersona(
-        string $numeroIdentidad,
+        string $numeroID,
         string $nombrePrimero,
         string $nombreSegundo,
         string $apellidoPrimero,
         string $apellidoSegundo,
-        bool   $esExtranjero = false,
-    ): self
+        Pais   $pais,
+    ): Trabajador
     {
         $persona = new Persona();
 
-        if ($esExtranjero)
-            $persona->setNumeroPasaporte($numeroIdentidad);
+        if ($pais->getCodigoAduana() === Pais::PRINCIPAL)
+            $persona->setNumeroIdentidad($numeroID);
         else
-            $persona->setNumeroIdentidad($numeroIdentidad);
+            $persona->setNumeroPasaporte($numeroID);
+
         $persona->setNombrePrimero($nombrePrimero);
         $persona->setNombreSegundo($nombreSegundo);
         $persona->setApellidoPrimero($apellidoPrimero);
         $persona->setApellidoSegundo($apellidoSegundo);
-        $persona->setEsExtranjero($esExtranjero);
+        $persona->setPais($pais);
 
         $this->setPersona($persona);
+
         return $this;
     }
 
