@@ -93,26 +93,8 @@ function annadirEnvioAListTemporal()
     municipio = $('#select_municipios').val()
     pareo = $('#input_pareo').val()
 
-    campos =    "guia: "+ no_guia+ "\n"+
-        "track: "+ cod_tracking+ "\n"+
-        "peso: "+ peso+ "\n"+
-        "nac: "+ nacionalidad+ "\n"+
-        "age: "+ agencia+ "\n"+
-        "ent aduana: "+ entidadCtrlAduana+ "\n"+
-        "prov: "+ provincia+ "\n"+
-        "mun: "+ municipio+ "\n"+
-        "pareo: "+ pareo+ "\n";
-
-    if( no_guia == ""
-        || cod_tracking == ""
-        || peso == ""
-        || nacionalidad == ""
-        || agencia == ""
-        || provincia == ""
-        || municipio == ""
-        || provincia == ""
-        || municipio == ""
-        || (this.envioTemporal.requiere_pareo && pareo == "" ) ){
+    //Si hay algun campo vacio o necesita pareo y no ha sido pareado
+    if( this.validarCamposVacios(no_guia,cod_tracking,peso,nacionalidad,agencia,entidadCtrlAduana,provincia,municipio,pareo) ){
 
         swal({
             title: "Error",
@@ -120,6 +102,7 @@ function annadirEnvioAListTemporal()
             type: "error"
         });
 
+    //Si todos los campos estan correctos pero ya añadio un envio con ese codigo tracking
     }else if( this.buscarEnvioPorCodTracking(cod_tracking) ){
 
         swal({
@@ -128,14 +111,16 @@ function annadirEnvioAListTemporal()
             type: "error"
         });
 
+    //Insertar en el listado y la tabla
+    }else if (this.listEnviosTemporles.length == 10) {
+
+        swal({
+            title: "Error",
+            text: "Puede añadir hasta 10 envios.",
+            type: "error"
+        });
+
     }else {
-
-        nacionalidadc = $('#select_nacionalidadOrigen option:selected').text()
-        agenciac = $('#select_producto option:selected').text()
-        prov = $('#select_provincias option:selected').text()
-        mun = $('#select_municipios option:selected').text()
-
-        console.log(mun,'muni')
 
         this.envioTemporal.cod_tracking = cod_tracking
         this.envioTemporal.peso = peso
@@ -155,56 +140,66 @@ function annadirEnvioAListTemporal()
 
         listEnviosTemporles.push(this.envioTemporal)
 
-        this.ActualizarList()
-
+        this.actualizarTablaVisual()
     }
-
-
-
-
-
 }
 
-function ActualizarList() {
+function actualizarTablaVisual() {
     var valor = '';
-    console.log(this.listEnviosTemporles,'listEnviosTemporles actualizar')
 
-    var size = this.listEnviosTemporles.length
-
-    for (var i = 0; i < this.listEnviosTemporles.length; i++) {
+   for (var i = 0; i < this.listEnviosTemporles.length; i++) {
         console.log(i, 'i')
         console.log(this.listEnviosTemporles.length, 'length')
         valor += '<tr>' +
+            '<td>' + (i+1) + '</td>' +
             '<td>' + this.listEnviosTemporles[i].cod_tracking + '</td>' +
             '<td>' + this.listEnviosTemporles[i].peso + '</td>' +
             '<td>' + this.listEnviosTemporles[i].extra.nacionalidad + '</td>' +
             '<td>' + this.listEnviosTemporles[i].extra.agencia + '</td>' +
             '<td>' + this.listEnviosTemporles[i].extra.provincia + '</td>' +
             '<td>' + this.listEnviosTemporles[i].extra.municipio + '</td>' +
-            '<td> <button class="btn btn-danger" onclick="eliminarEnvio(' + i + ')"><i class="fa fa-remove"></i></button> </td>' +
+            '<td> <button class="btn btn-danger" onclick="eliminarEnvio(' + i + ')"><i class="fa fa-trash"></i></button> </td>' +
             '</tr>';
         $("#resultado").html(valor)
     }
 
 }
 
-function eliminarEnvio(cod){
+/**
+ * Eliminar envios de la lista temporal y mandar ha actualizar la tabla visual
+ */
+function eliminarEnvio(postionArray){
 
     if (this.listEnviosTemporles.length == 1){
         this.listEnviosTemporles.shift();
         $("#resultado").html('')
     }else {
-        this.listEnviosTemporles.splice(cod,1)
-        this.ActualizarList()
+        this.listEnviosTemporles.splice(postionArray,1)
+        this.actualizarTablaVisual()
     }
 }
 
 /**
-* Validar Campos
+* Validar Campos vacios
 */
-function validarCampos()
+function validarCamposVacios(no_guia,cod_tracking,peso,nacionalidad,agencia,entidadCtrlAduana,provincia,municipio,pareo)
 {
+    //Si hay algun campo vacio o necesita pareo y no ha sido pareado
+    if( no_guia == ""
+        || cod_tracking == ""
+        || peso == ""
+        || nacionalidad == ""
+        || agencia == ""
+        || provincia == ""
+        || municipio == ""
+        || provincia == ""
+        || municipio == ""
+        || (this.envioTemporal.requiere_pareo && pareo == "" ) ){
 
+        return false;
+    }
+
+    return true;
 
 }
 
