@@ -7,10 +7,12 @@
     "require": {
         "php": ">=8.0",
         "ext-ctype": "*",
-        "ext-iconv": "*",
+        "ext-curl": "*",
         "ext-dom": "*",
-        "ext-xml": "*",
+        "ext-iconv": "*",
         "ext-simplexml": "*",
+        "ext-xml": "*",
+        "api-platform/core": "^2.6",
         "composer/package-versions-deprecated": "1.11.99.3",
         "cron/cron-bundle": "^2.6",
         "defuse/php-encryption": "^2.3",
@@ -22,6 +24,7 @@
         "jms/serializer-bundle": "^3.10",
         "knplabs/knp-menu-bundle": "^3.1",
         "knplabs/knp-paginator-bundle": "^5.7",
+        "nelmio/cors-bundle": "^2.1",
         "phpdocumentor/reflection-docblock": "^5.2",
         "sensio/framework-extra-bundle": "^6.1",
         "stof/doctrine-extensions-bundle": "^1.6",
@@ -53,8 +56,7 @@
         "symfony/web-link": "5.3.*",
         "symfony/yaml": "5.3.*",
         "twig/extra-bundle": "^2.12|^3.0",
-        "twig/twig": "^2.12|^3.0",
-      "ext-curl": "*"
+        "twig/twig": "^2.12|^3.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5",
