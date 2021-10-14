@@ -4,6 +4,7 @@
 namespace App\Manager;
 
 use App\Entity\EnvioManifiesto;
+use App\Entity\Pais;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Utils\Validator;
 
@@ -31,7 +32,7 @@ class EnvioManifiestoManager extends _Manager_
                 $valido = false;
             }
 
-            if ($envioManifiesto->getDestinatario()->getNacionalidad() == "CUB")
+            if ($envioManifiesto->getDestinatario()->getPais()->getCodigoAduana() == Pais::PRINCIPAL)
             {
                 $valido = Validator::validarCI($envioManifiesto->getDestinatario()->getNumeroIdentidad())["valid"];
                 if(!$valido){

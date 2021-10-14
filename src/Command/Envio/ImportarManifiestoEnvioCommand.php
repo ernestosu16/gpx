@@ -6,36 +6,26 @@ namespace App\Command\Envio;
 
 use App\Command\BaseCommand;
 use App\Command\BaseCommandInterface;
-use App\Config\Nomenclador\_Nomenclador_;
 use App\Entity\Agencia;
 use App\Entity\EnvioManifiesto;
 use App\Entity\Estructura;
 use App\Entity\Localizacion;
 use App\Entity\Nomenclador;
+use App\Entity\Pais;
 use App\Entity\Persona;
 use App\Manager\CurlConectionManager;
-use Doctrine\ORM\ORMException;
+use App\Manager\PersonaManager;
+use App\Repository\PaisRepository;
 use JMS\Serializer\SerializerBuilder;
-use SimpleXMLElement;
-use Symfony\Component\Config\Util\XmlUtils;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use phpseclib3\Net\SFTP;
-use phpseclib3\Net\SSH2;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Finder\Finder;
-use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Serializer;
-
-
-use Symfony\Component\Config\FileLocator;
-use Symfony\Component\Translation\Exception\InvalidResourceException;
 
 final class ImportarManifiestoEnvioCommand extends BaseCommand implements BaseCommandInterface
 {
     private SymfonyStyle $io;
+    private \Doctrine\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository|PaisRepository $paisRepository;
 
     static function getCommandName(): string
     {
@@ -50,6 +40,7 @@ final class ImportarManifiestoEnvioCommand extends BaseCommand implements BaseCo
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
         $this->io = new SymfonyStyle($input, $output);
+        $this->paisRepository = $this->getRepository(Pais::class);
     }
 
     /**
@@ -234,16 +225,23 @@ final class ImportarManifiestoEnvioCommand extends BaseCommand implements BaseCo
 
     protected function crearEnvioManifiesto(string $guia, string $agencia, string $no_vuelo, Estructura $transitaria, \SimpleXMLElement $env): ?EnvioManifiesto
     {
-        /**@var $emPersona \App\Manager\PersonaManager **/
+        /**@var $emPersona PersonaManager **/
         $emPersona = $this->getContainer()->get('app.manager.persona');
 
         $serializer = SerializerBuilder::create()->build();
+
+        /** @var Persona $remitente */
         $remitente = $serializer->deserialize($env->remitente->persona->asXML(), Persona::class, 'xml');
-        $destinatario = $serializer->deserialize($env->destinatario->persona->asXML(), Persona::class, 'xml');
 
         $remitente->setNumeroPasaporte(null);
-        $destinatario->setNumeroPasaporte(null);
         $remitente->setNumeroIdentidad(null);
+        $remitente->setPais($this->paisRepository->findOneByCodigoAduana($env->remitente->persona->nacionalidad));
+
+
+        /** @var Persona $destinatario */
+        $destinatario = $serializer->deserialize($env->destinatario->persona->asXML(), Persona::class, 'xml');
+        $destinatario->setNumeroPasaporte(null);
+        $destinatario->setPais($this->paisRepository->findOneByCodigoAduana($env->destinatario->persona->nacionalidad));
 
         $existRemitente = $this->getEntityManager()->getRepository(Persona::class)->findOneBy(["hash"=>$emPersona->generarHash($remitente)]);
         if($existRemitente != null){
