@@ -131,7 +131,7 @@ class EnvioManager extends _Manager_
             $envio->setAgencia($this->agenciaRepository->find($envioPreRecepcion->agencia));
 
             //Ver lo del metodo para ponerle el estado
-            //$envio->setEstado($this->nomencladorRepository->find());
+            $envio->setEstado($this->nomencladorRepository->findOneByCodigo('APP_ENVIO_ESTADO_RECEPCIONADO'));
 
             //Ver lo del metodo para ponerle el pais origen
             $envio->setPaisOrigen($this->paisRepository->find($envioPreRecepcion->pais_origen));
