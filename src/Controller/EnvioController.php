@@ -85,7 +85,7 @@ class EnvioController extends AbstractController
 
             $nacionalidades = $this->paisRepository->findAll();
 
-            $curries = $this->agenciaRepository->findAll();
+            $curries = $this->agenciaRepository->findByChildren('AGENCIA');
 
             //dump($this->localizacion->createQueryBuilderMunicipio());
 

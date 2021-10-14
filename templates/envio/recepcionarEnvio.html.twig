@@ -121,12 +121,12 @@
                 <div class="row col-md-12 m-b">
 
                     <div class="col-md-5">
-                        <input class="form-check-input" type="checkbox" value="" id="check_{{ anomalia }}" onchange="habilitarDescripcionAnomalia('check_{{ anomalia }}')">
+                        <input class="form-check-input" type="checkbox" value="" id="check_{{ anomalia.id }}" onchange="habilitarDescripcionAnomalia('check_{{ anomalia }}')">
                         <label class="form-label">{{ anomalia }}</label>
                     </div>
 
                     <div class="col-md-7">
-                        <input id="input_{{ anomalia }}" style="display:none;" type="text" class="form-control input-sm" placeholder="Descripción">
+                        <input id="input_{{ anomalia.id }}" style="display:none;" type="text" class="form-control input-sm" placeholder="Descripción">
                     </div>
 
                 </div>
