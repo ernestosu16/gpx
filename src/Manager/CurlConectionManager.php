@@ -134,14 +134,14 @@ class CurlConectionManager extends _Manager_
         return $this->urlBase;
     }
 
-    public function upload($remote_file, $local_file)
+    public function upload($remote_file_name, $local_file , $remote_file_path)
     {
         $curl = $this->ch;
         curl_setopt($curl, CURLOPT_UPLOAD, true);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, false);
         // set file name
-        if (!curl_setopt($curl, CURLOPT_URL, $this->url.$remote_file))
-            throw new \Exception ("Could not set cURL file name: $remote_file");
+        if (!curl_setopt($curl, CURLOPT_URL, $this->getUrl(). $remote_file_path . self::FTP_DIERECTORI_ERROR_NAME . '/' . $remote_file_name))
+            throw new \Exception ("Could not set cURL file name: $remote_file_name");
         // open memory stream for writing
         $stream = fopen('php://temp', 'w+');
         // check for valid stream handle
@@ -153,7 +153,7 @@ class CurlConectionManager extends _Manager_
         rewind($stream);
         // set the file to be uploaded
         if (!curl_setopt($curl, CURLOPT_INFILE, $stream))
-            throw new \Exception("Could not load file $remote_file");
+            throw new \Exception("Could not load file $remote_file_name");
         // upload file
         if (!curl_exec($curl))
             throw new \Exception(sprintf('Could not upload file. cURL Error: [%s] - %s', curl_errno($curl), curl_error($curl)));
@@ -250,12 +250,6 @@ class CurlConectionManager extends _Manager_
 
         //Close the file handler.
         fclose($fp);
-
-        if($statusCode == 200){
-            echo 'Downloaded!';
-        } else{
-            echo "Status Code: " . $statusCode;
-        }
     }
 
     public function getContentFromFTP(string $url = null, bool $file = false): array
@@ -291,26 +285,6 @@ class CurlConectionManager extends _Manager_
 
     function deleteFileFromFTP(string $strURL,string $deletePath)
     {
-//        dump($strURL);
-//        dump($filename);
-//
-//        $curl = $this->ch;
-//        // connection options
-//        $options = array(
-//            //CURLOPT_HEADER => 0,
-//            CURLOPT_RETURNTRANSFER => true, // Return data inplace of echoing on screen
-//            CURLOPT_URL => $strURL
-//            //CURLOPT_QUOTE => array('DELE /' . $filename)
-//        );
-//
-//        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "DELETE");
-//        foreach ($options as $option_name => $option_value) {
-//            if (!curl_setopt($curl, $option_name, $option_value))
-//                throw new \Exception(sprintf('Could not set cURL option: %s', $option_name));
-//        }
-
-        //$url = $strURL;
-
         $ch = curl_init();
 
         $options = [

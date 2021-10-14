@@ -73,7 +73,7 @@ class EnvioManifiesto extends _Entity_
     private string $apto_destinatario;
 
     #[ORM\ManyToOne(targetEntity: Localizacion::class)]
-    #[ORM\JoinColumn(name: '$provincia_destinatario_id', referencedColumnName: 'id')]
+    #[ORM\JoinColumn(name: 'provincia_destinatario_id', referencedColumnName: 'id')]
     private ?Localizacion $provincia_destinatario;
 
     #[ORM\ManyToOne(targetEntity: Localizacion::class)]

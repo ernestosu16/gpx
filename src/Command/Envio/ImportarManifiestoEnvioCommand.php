@@ -23,6 +23,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use phpseclib3\Net\SFTP;
 use phpseclib3\Net\SSH2;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
@@ -34,6 +35,8 @@ use Symfony\Component\Translation\Exception\InvalidResourceException;
 
 final class ImportarManifiestoEnvioCommand extends BaseCommand implements BaseCommandInterface
 {
+    private SymfonyStyle $io;
+
     static function getCommandName(): string
     {
         return 'app:envio:manifiesto';
@@ -42,6 +45,11 @@ final class ImportarManifiestoEnvioCommand extends BaseCommand implements BaseCo
     static function getCommandDescription(): string
     {
         return 'Importa los envios de los manifiestos.xml';
+    }
+
+    protected function initialize(InputInterface $input, OutputInterface $output)
+    {
+        $this->io = new SymfonyStyle($input, $output);
     }
 
     /**
@@ -56,7 +64,7 @@ final class ImportarManifiestoEnvioCommand extends BaseCommand implements BaseCo
 
         $em = $this->getEntityManager();
 
-        //buscando las transitorias
+        $this->io->title('Buscando Transitorias en el FTP');
         $transitorias = $emCurl->getContentFromFTP();
 
         //recooriendo todas las transitorias
@@ -65,17 +73,17 @@ final class ImportarManifiestoEnvioCommand extends BaseCommand implements BaseCo
             /** @var Estructura $estructuraTransitaria */
             $estructuraTransitaria = $em->getRepository(Estructura::class)->findOneBy(array('codigo' => $transitoria['file']));
             if($estructuraTransitaria == null){
-                dump('No existe esta Transitaria');
+                $this->io->caution('La entidad Transitria ' . $transitoria['file'] . ' no se encuentra en la BD.');
                 continue;// salta esta iteracion
             }
+            $this->io->title('Buscando Agencias en el FTP');
             //buscando las agencias
             $agencias = $emCurl->getContentFromFTP($transitoria['url']);
-            //dump($agencias);
             foreach ($agencias as $agencia){
                 /** @var Agencia $nomencladorAgencia */
                 $nomencladorAgencia = $em->getRepository(Nomenclador::class)->findOneBy(array('codigo' => 'AGENCIA_' . $agencia['file']));
                 if($nomencladorAgencia == null){
-                    dump('No existe esta Agencia');
+                    $this->io->caution('La Agencia ' . $agencia['file'] . ' no se encuentra en la BD.');
                     continue;// salta esta iteracion
                 }
 
@@ -90,31 +98,34 @@ final class ImportarManifiestoEnvioCommand extends BaseCommand implements BaseCo
                     $absoluteFilePath = $local_directory . '/' . $file['file'];
                     $result = $this->readManifiestoXML($absoluteFilePath, $file['file'], $estructuraTransitaria);
 
-                    if($result){//manifiesto leido correctamente
-                        $deletePath = 'DELE /' . $transitoria['file'] . '/' . $agencia['file'] . '/' .  $file['file'];
-                        $emCurl->deleteFileFromFTP($agencia['url'], $deletePath );
-                    }else{//manifiesto con error
-
+                    if(!$result){//manifiesto leido correctamente
+                        $this->io->error('El manifiesto' . $file['file'] . ' no se pudo leer correctamente.');
+                        $localFile = $this->get('kernel')->getProjectDir() . '/public/download/envioManifiesto/EMCI/DHL/Manifiesto202108080340SA.xml';
+                        $emCurl->upload($file['file'],$local_directory . '/' . $file['file'] ,$transitoria['file'] . '/' . $agencia['file'] . '/');
+                        unlink($local_directory . '/' . $file['file']);
                     }
+
+                    $deletePath = 'DELE /' . $transitoria['file'] . '/' . $agencia['file'] . '/' .  $file['file'];
+                    $emCurl->deleteFileFromFTP($agencia['url'], $deletePath );
                 }
             }
         }
 
-        dump('ok');
-        exit;
+        $this->io->success('Comando ejecutado satisfactoriamente.');
+        return Command::SUCCESS;
 
-        $transitoria = 'EMCI';
-        $agencia = 'SA';
-        $fileName = 'Manifiesto202108080340SA.xml';
-        $localFile = $this->get('kernel')->getProjectDir() . '/public/download/envioManifiesto/' . $transitoria . '/' . $agencia; // donde se va a descargar
-        $remoteFile = $this->get('kernel')->getProjectDir() . '/public/download/prueba/EMCI/SA/Manifiesto202108080340SA.xml';
-
-        $emCurl->download($remoteFile, $localFile, $fileName);
+//        $transitoria = 'EMCI';
+//        $agencia = 'SA';
+//        $fileName = 'Manifiesto202108080340SA.xml';
+//        $localFile = $this->get('kernel')->getProjectDir() . '/public/download/envioManifiesto/' . $transitoria . '/' . $agencia; // donde se va a descargar
+//        $remoteFile = $this->get('kernel')->getProjectDir() . '/public/download/prueba/EMCI/SA/Manifiesto202108080340SA.xml';
+//
+//        $emCurl->download($remoteFile, $localFile, $fileName);
 
         //$files = $emCurl->getFilesFromDirectories($directories[0].'/COPA');
         //$dir = __DIR__."/app/public/download/envioManifiesto";
         //dump($this->get('kernel')->getProjectDir());
-        exit('ok');
+        //exit('ok');
 
 
 
@@ -135,55 +146,55 @@ final class ImportarManifiestoEnvioCommand extends BaseCommand implements BaseCo
         }*/
 
 
-        $finder = new Finder();
-        // find all files in the current directory
-        //$finder->files()->in($dir);
-        $finder->depth(0);
+//        $finder = new Finder();
+//        // find all files in the current directory
+//        //$finder->files()->in($dir);
+//        $finder->depth(0);
+//
+//        $directories = $finder->directories()->in($dir);
+//
+//        // check if there are any search results
+//        if ($directories->hasResults()) {
+//            foreach ($directories as $directory) {
+//                $absoluteDirectoriesPath = $directory->getRealPath();
+//                $directoriesNameWithExtension = $directory->getRelativePathname();
+//                //dump("Transitaria - ".$directoriesNameWithExtension);
+//                $em = $this->getEntityManager();
+//                /** @var Estructura $transitaria */
+//                $transitaria = $em->getRepository(Estructura::class)->findOneBy(array('codigo' => $directoriesNameWithExtension));
+//                if($transitaria == null){
+//                    dump('No existe esta Transitaria');
+//                    continue;// salta esta iteracion
+//                }
+//
+//                $finderAgencia = new Finder();
+//                $finderAgencia->depth(0);
+//                $agencias = $finderAgencia->directories()->in($absoluteDirectoriesPath);
+//
+//                foreach ($agencias as $agencia){
+//                    $agenciaAbsoluteDirectoriesPath = $agencia->getRealPath();
+//                    //dump("Agencia - ".$agenciaAbsoluteDirectoriesPath);
+//                    $agenciaDirectoriesNameWithExtension = $agencia->getRelativePathname();
+//                    $finderManifiesto = new Finder();
+//                    $finderManifiesto->depth(0);
+//                    $files = $finderManifiesto->files()->in($agenciaAbsoluteDirectoriesPath)->name(['*.xml','*.XML']);
+//                    if($files->hasResults()){
+//                        foreach ($files as $file) {
+//                            $absoluteFilePath = $file->getRealPath();
+//                            $fileNameWithExtension = $file->getRelativePathname();
+//                            $result = $this->readManifiestoXML($absoluteFilePath, $fileNameWithExtension, $transitaria);
+//                            if($result){//manifiesto leido correctamente
+//
+//                            }else{//manifiesto con error
+//
+//                            }
+//                        }
+//                    }
+//                }
+//
+//            }
+//        }
 
-        $directories = $finder->directories()->in($dir);
-
-        // check if there are any search results
-        if ($directories->hasResults()) {
-            foreach ($directories as $directory) {
-                $absoluteDirectoriesPath = $directory->getRealPath();
-                $directoriesNameWithExtension = $directory->getRelativePathname();
-                //dump("Transitaria - ".$directoriesNameWithExtension);
-                $em = $this->getEntityManager();
-                /** @var Estructura $transitaria */
-                $transitaria = $em->getRepository(Estructura::class)->findOneBy(array('codigo' => $directoriesNameWithExtension));
-                if($transitaria == null){
-                    dump('No existe esta Transitaria');
-                    continue;// salta esta iteracion
-                }
-
-                $finderAgencia = new Finder();
-                $finderAgencia->depth(0);
-                $agencias = $finderAgencia->directories()->in($absoluteDirectoriesPath);
-
-                foreach ($agencias as $agencia){
-                    $agenciaAbsoluteDirectoriesPath = $agencia->getRealPath();
-                    //dump("Agencia - ".$agenciaAbsoluteDirectoriesPath);
-                    $agenciaDirectoriesNameWithExtension = $agencia->getRelativePathname();
-                    $finderManifiesto = new Finder();
-                    $finderManifiesto->depth(0);
-                    $files = $finderManifiesto->files()->in($agenciaAbsoluteDirectoriesPath)->name(['*.xml','*.XML']);
-                    if($files->hasResults()){
-                        foreach ($files as $file) {
-                            $absoluteFilePath = $file->getRealPath();
-                            $fileNameWithExtension = $file->getRelativePathname();
-                            $result = $this->readManifiestoXML($absoluteFilePath, $fileNameWithExtension, $transitaria);
-                            if($result){//manifiesto leido correctamente
-
-                            }else{//manifiesto con error
-
-                            }
-                        }
-                    }
-                }
-
-            }
-        }
-        return Command::SUCCESS;
     }
 
     protected function readManifiestoXML(string $absoluteFilePath, string $fileNameWithExtension, Estructura $transitaria): bool
@@ -214,7 +225,7 @@ final class ImportarManifiestoEnvioCommand extends BaseCommand implements BaseCo
                 return true;
             }catch (\Exception $e){
                 $this->getEntityManager()->rollBack();
-                dump($e->getMessage());
+                //dump($e->getMessage());
                 return false;
             }
 
@@ -263,7 +274,6 @@ final class ImportarManifiestoEnvioCommand extends BaseCommand implements BaseCo
         $emManifiesto = $this->getContainer()->get('app.manager.envio_manifiesto');
 
         if($emManifiesto->validarEnvioManifiesto($newEnvioManifiesto)){
-            dump('Crea');
             return $emManifiesto->createEnvioManifiesto($newEnvioManifiesto);
         }
 
