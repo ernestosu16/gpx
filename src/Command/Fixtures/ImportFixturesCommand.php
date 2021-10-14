@@ -74,6 +74,9 @@ final class ImportFixturesCommand extends BaseCommand implements BaseCommandInte
         $section->writeln('  Creando lista de nomencladores');
         $this->configurarNomenclador();
 
+        $section->writeln('  Creando las agencias');
+        $this->configurarAgencias();
+
         $this->getEntityManager()->commit();
 
         return Command::SUCCESS;
@@ -429,6 +432,31 @@ final class ImportFixturesCommand extends BaseCommand implements BaseCommandInte
             $parent->addChild($entity);
             $this->getEntityManager()->persist($parent);
         }
+        $this->getEntityManager()->flush();
+    }
+
+    private function configurarAgencias()
+    {
+        /** @var ?Agencia $root */
+        $root = $this->getRepository(Agencia::class)->findOneBy(['codigo' => AgenciaData::code()]);;
+
+        if ($root->getChildren()->count())
+            return;
+
+        $agencia = Yaml::parseFile($this->getKernel()->getProjectDir() . '/src/Config/Fixtures/agencia.yaml');
+        foreach ($agencia['agencias'] as $agencia) {
+            if ($this->getRepository(Agencia::class)->findOneBy(['codigo' => $agencia['codigo']]))
+                continue;
+
+            $agenciaEntity = new Agencia();
+            $agenciaEntity->setRoot($root);
+            $agenciaEntity->setCodigo($agencia['codigo']);
+            $agenciaEntity->setNombre($agencia['nombre']);
+            $agenciaEntity->setDescripcion($agencia['descripcion']);
+
+            $root->addChild($agenciaEntity);
+        }
+        $this->getEntityManager()->persist($root);
         $this->getEntityManager()->flush();
     }
 }
