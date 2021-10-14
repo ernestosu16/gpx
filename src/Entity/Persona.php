@@ -14,6 +14,7 @@ use function Symfony\Component\String\u;
 #[ORM\Entity(repositoryClass: PersonaRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_PERSONA', columns: ['hash'])]
 #[ORM\Index(fields: ['numero_identidad'], name: 'IDX_NUMERO_IDENTIDAD')]
+#[ORM\Index(fields: ['pais'], name: 'IDX_PAIS')]
 class Persona extends _Entity_
 {
     const HOMBRE = 'hombre';
@@ -46,11 +47,9 @@ class Persona extends _Entity_
     #[Assert\Regex(pattern: RegexUtil::TEXTO_ACENTO_SIN_ESPACIO, message: 'El nombre solo puede contener letras.')]
     private string $apellido_segundo;
 
-    #[ORM\Column(type: 'boolean')]
-    private bool $esExtranjero = false;
-
-    #[ORM\Column(type: 'boolean')]
-    private bool $esValido = false;
+    #[ORM\ManyToOne(targetEntity: Pais::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private Pais $pais;
 
     #[Pure] public function __toString(): string
     {
@@ -147,26 +146,14 @@ class Persona extends _Entity_
         return $this;
     }
 
-    public function getEsExtranjero(): ?bool
+    public function getPais(): Pais
     {
-        return $this->esExtranjero;
+        return $this->pais;
     }
 
-    public function setEsExtranjero(bool $esExtranjero): self
+    public function setPais(Pais $pais): Persona
     {
-        $this->esExtranjero = $esExtranjero;
-
-        return $this;
-    }
-
-    public function getEsValido(): ?bool
-    {
-        return $this->esValido;
-    }
-
-    public function setEsValido(bool $esValido): self
-    {
-        $this->esValido = $esValido;
+        $this->pais = $pais;
 
         return $this;
     }

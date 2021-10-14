@@ -9,6 +9,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "ext-dom": "*",
+        "ext-xml": "*",
         "composer/package-versions-deprecated": "1.11.99.3",
         "cron/cron-bundle": "^2.6",
         "defuse/php-encryption": "^2.3",

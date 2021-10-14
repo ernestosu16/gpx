@@ -5,9 +5,11 @@ namespace App\Command\Trabajador;
 use App\Entity\Estructura;
 use App\Entity\EstructuraTipo;
 use App\Entity\Grupo;
+use App\Entity\Pais;
 use App\Entity\Trabajador;
 use App\Repository\EstructuraTipoRepository;
 use App\Repository\GrupoRepository;
+use App\Repository\PaisRepository;
 use App\Repository\TrabajadorCredencialRepository;
 use App\Repository\TrabajadorRepository;
 use App\Utils\Validator;
@@ -32,6 +34,7 @@ final class NuevoCommand extends Command
         private TrabajadorCredencialRepository $credencial,
         private EstructuraTipoRepository       $estructuraTipo,
         private GrupoRepository                $grupo,
+        private PaisRepository                 $paisRepository,
     )
     {
         parent::__construct();
@@ -162,18 +165,7 @@ final class NuevoCommand extends Command
 
     private function invokeValidateAdmin(InputInterface $input, OutputInterface $output)
     {
-        return $this->io->ask('Administrador General del Sistema', false, function ($admin) {
-            if (!is_string($admin))
-                throw new InvalidOptionException('Solo se admite Y o N');
-
-            if ($admin == 'y')
-                return true;
-
-            if ($admin == 'n')
-                return false;
-
-            throw new InvalidOptionException('Solo se admite Y o N');
-        });
+        return $this->io->confirm('Administrador General del Sistema', false);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -192,8 +184,9 @@ final class NuevoCommand extends Command
         $grupo = $input->getOption('grupo');
         $admin = $input->getOption('admin');
 
+        $pais = $this->paisRepository->findOneByCodigoAduana(Pais::PRINCIPAL);
         $trabajador = new Trabajador();
-        $trabajador->setDatoPersona($numeroIdentidad, $nombre, '', $apellidoPrimero, $apellidoSegundo);
+        $trabajador->setDatoPersona($numeroIdentidad, $nombre, '', $apellidoPrimero, $apellidoSegundo, $pais);
         $trabajador->setDatoCredencial($usuario, $password, $admin);
         $trabajador->setEstructura($estructura);
         $trabajador->addGrupo($grupo);

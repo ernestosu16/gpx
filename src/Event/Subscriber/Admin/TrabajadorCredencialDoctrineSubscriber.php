@@ -5,6 +5,7 @@ namespace App\Event\Subscriber\Admin;
 use App\Entity\TrabajadorCredencial;
 use App\Event\Subscriber\_DoctrineSubscriber_;
 use Doctrine\ORM\Events;
+use Doctrine\ORM\UnitOfWork;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 use JetBrains\PhpStorm\Pure;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -30,28 +31,31 @@ final class TrabajadorCredencialDoctrineSubscriber extends _DoctrineSubscriber_
 
     public function prePersist(LifecycleEventArgs $args): void
     {
-        $object = $args->getObject();
-
-        if (!$object instanceof TrabajadorCredencial)
+        if (!$args->getObject() instanceof TrabajadorCredencial)
             return;
 
-        $this->passwordEncrypt($object);
+        $this->passwordEncrypt($args);
     }
 
     public function preUpdate(LifecycleEventArgs $args)
     {
-
-        $object = $args->getObject();
-
-        if (!$object instanceof TrabajadorCredencial)
+        if (!$args->getObject() instanceof TrabajadorCredencial)
             return;
 
-        $this->passwordEncrypt($object);
+        $this->passwordEncrypt($args);
     }
 
-    private function passwordEncrypt(TrabajadorCredencial $object): void
+    private function passwordEncrypt(LifecycleEventArgs $args): void
     {
-        if ($object->getContrasena())
+        /** @var UnitOfWork $uow */
+        $uow = $args->getObjectManager()->getUnitOfWork();
+        $uow->computeChangeSets(); // do not compute changes if inside a listener
+        $changeSet = $uow->getEntityChangeSet($args->getObject()); // view column change
+
+        /** @var TrabajadorCredencial $object */
+        $object = $args->getObject();
+        if (isset($changeSet['contrasena']) && $object->getContrasena()) {
             $object->setContrasena($this->passwordHasher->hashPassword($object, $object->getContrasena()));
+        }
     }
 }
