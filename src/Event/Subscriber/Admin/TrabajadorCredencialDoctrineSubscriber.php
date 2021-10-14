@@ -49,7 +49,6 @@ final class TrabajadorCredencialDoctrineSubscriber extends _DoctrineSubscriber_
     {
         /** @var UnitOfWork $uow */
         $uow = $args->getObjectManager()->getUnitOfWork();
-        $uow->computeChangeSets(); // do not compute changes if inside a listener
         $changeSet = $uow->getEntityChangeSet($args->getObject()); // view column change
 
         /** @var TrabajadorCredencial $object */

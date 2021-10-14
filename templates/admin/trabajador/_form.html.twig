@@ -6,7 +6,7 @@
         </fieldset>
         {# @var fv \Symfony\Component\Form\FormView #}
         {% for fv in form.persona %}
-            {% if fv.vars.name != '_token' %}
+            {% if 'hidden' in fv.vars.block_prefixes %}{{ form_row(fv) }}{% else %}
                 <div class="form-group">
                     {{ form_label(fv) }}
                     <div class="col-sm-8">
