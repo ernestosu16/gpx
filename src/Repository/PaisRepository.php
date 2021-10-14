@@ -54,7 +54,7 @@ class PaisRepository extends ServiceEntityRepository
 
     public function getPaisCuba(): ?Pais
     {
-        return $this->findOneBy(['codigo_aduana' => Pais::PRINCIPAL]);
+        return $this->findOneByCodigoAduana(Pais::PRINCIPAL);
     }
 
     public function findOneByIata(string $iata): ?Pais
