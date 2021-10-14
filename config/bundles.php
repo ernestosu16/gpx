@@ -19,4 +19,5 @@ return [
     JMS\SerializerBundle\JMSSerializerBundle::class => ['all' => true],
 	JMS\SerializerBundle\JMSSerializerBundle::class => ['all' => true],
     Knp\Bundle\PaginatorBundle\KnpPaginatorBundle::class => ['all' => true],
+    Cron\CronBundle\CronCronBundle::class => ['all' => true],
 ];

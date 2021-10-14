@@ -8,13 +8,13 @@ use App\Utils\SigloUtil;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\Pure;
-use JMS\Serializer\Annotation\SerializedName;
 use Symfony\Component\Validator\Constraints as Assert;
 use function Symfony\Component\String\u;
 
 #[ORM\Entity(repositoryClass: PersonaRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_PERSONA', columns: ['hash'])]
 #[ORM\Index(fields: ['numero_identidad'], name: 'IDX_NUMERO_IDENTIDAD')]
+#[ORM\Index(fields: ['pais'], name: 'IDX_PAIS')]
 class Persona extends _Entity_
 {
     const HOMBRE = 'hombre';
@@ -26,7 +26,6 @@ class Persona extends _Entity_
     #[ORM\Column(type: 'string', length: 11, nullable: true)]
     #[Assert\Regex(pattern: RegexUtil::NUMERO_IDENTIDAD, message: 'Número de identidad es incorrecto')]
     #[Assert\Length(min: 11, max: 11)]
-    #[SerializedName('id')]
     private ?string $numero_identidad;
 
     #[ORM\Column(type: 'string', length: 11, nullable: true)]
@@ -34,37 +33,23 @@ class Persona extends _Entity_
 
     #[ORM\Column(type: 'string', length: 50)]
     #[Assert\Regex(pattern: RegexUtil::TEXTO_ACENTO_SIN_ESPACIO, message: 'El nombre solo puede contener letras.')]
-    #[SerializedName('primerNombre')]
     private string $nombre_primero;
 
     #[ORM\Column(type: 'string', length: 80, nullable: true)]
     #[Assert\Regex(pattern: RegexUtil::TEXTO_ACENTO_SIN_ESPACIO, message: 'El nombre solo puede contener letras.')]
-    #[SerializedName('segundoNombre')]
     private ?string $nombre_segundo;
 
     #[ORM\Column(type: 'string', length: 50)]
     #[Assert\Regex(pattern: RegexUtil::TEXTO_ACENTO_SIN_ESPACIO, message: 'El nombre solo puede contener letras.')]
-    #[SerializedName('primerApellido')]
     private string $apellido_primero;
 
     #[ORM\Column(type: 'string', length: 50)]
     #[Assert\Regex(pattern: RegexUtil::TEXTO_ACENTO_SIN_ESPACIO, message: 'El nombre solo puede contener letras.')]
-    #[SerializedName('segundoApellido')]
     private string $apellido_segundo;
 
-    #[ORM\Column(type: 'string', length: 50)]
-    #[SerializedName('nacionalidad')]
-    private string $nacionalidad;
-
-    #[ORM\Column(type: 'string', length: 20)]
-    #[SerializedName('fechaNacimiento')]
-    private string $fecha_nacimiento;
-
-    #[ORM\Column(type: 'boolean')]
-    private bool $esExtranjero = false;
-
-    #[ORM\Column(type: 'boolean')]
-    private bool $esValido = false;
+    #[ORM\ManyToOne(targetEntity: Pais::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private Pais $pais;
 
     #[Pure] public function __toString(): string
     {
@@ -75,8 +60,6 @@ class Persona extends _Entity_
     {
         $this->numero_pasaporte = null;
         $this->nombre_segundo = null;
-        $this->nacionalidad = "CUB";
-        $this->fecha_nacimiento = "";
     }
 
     public function getHash(): ?string
@@ -163,26 +146,14 @@ class Persona extends _Entity_
         return $this;
     }
 
-    public function getEsExtranjero(): ?bool
+    public function getPais(): Pais
     {
-        return $this->esExtranjero;
+        return $this->pais;
     }
 
-    public function setEsExtranjero(bool $esExtranjero): self
+    public function setPais(Pais $pais): Persona
     {
-        $this->esExtranjero = $esExtranjero;
-
-        return $this;
-    }
-
-    public function getEsValido(): ?bool
-    {
-        return $this->esValido;
-    }
-
-    public function setEsValido(bool $esValido): self
-    {
-        $this->esValido = $esValido;
+        $this->pais = $pais;
 
         return $this;
     }
@@ -213,40 +184,6 @@ class Persona extends _Entity_
 
         return implode(' ', $c);
     }
-
-
-    /**
-     * @return string
-     */
-    public function getNacionalidad(): string
-    {
-        return $this->nacionalidad;
-    }
-
-    /**
-     * @param string $nacionalidad
-     */
-    public function setNacionalidad(string $nacionalidad): void
-    {
-        $this->nacionalidad = $nacionalidad;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFechaNacimiento(): string
-    {
-        return $this->fecha_nacimiento;
-    }
-
-    /**
-     * @param string $fecha_nacimiento
-     */
-    public function setFechaNacimiento(string $fecha_nacimiento): void
-    {
-        $this->fecha_nacimiento = $fecha_nacimiento;
-    }
-
 
     public function getSiglo(): int
     {

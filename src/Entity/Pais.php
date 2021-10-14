@@ -5,14 +5,16 @@ namespace App\Entity;
 use App\Entity\Traits\VersionTrait;
 use App\Repository\PaisRepository;
 use Doctrine\ORM\Mapping as ORM;
-use function Symfony\Component\String\u;
 use Symfony\Component\Validator\Constraints as Assert;
+use function Symfony\Component\String\u;
 
 #[ORM\Entity(repositoryClass: PaisRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IATA', columns: ['iata'])]
 #[ORM\UniqueConstraint(name: 'UNIQ_CODIGO_ADUANA', columns: ['codigo_aduana'])]
 class Pais extends _Entity_
 {
+    const PRINCIPAL = 'CUB';
+
     use VersionTrait;
 
     #[ORM\Column(type: 'string', length: 45)]
@@ -30,6 +32,11 @@ class Pais extends _Entity_
 
     #[ORM\Column(type: 'boolean')]
     private bool $habilitado;
+
+    public function __toString(): string
+    {
+        return $this->nombre;
+    }
 
     public function __construct()
     {

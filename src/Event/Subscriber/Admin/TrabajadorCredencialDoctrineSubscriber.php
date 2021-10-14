@@ -30,8 +30,8 @@ final class TrabajadorCredencialDoctrineSubscriber extends _DoctrineSubscriber_
 
     public function prePersist(LifecycleEventArgs $args): void
     {
+        /** @var TrabajadorCredencial $object */
         $object = $args->getObject();
-
         if (!$object instanceof TrabajadorCredencial)
             return;
 
@@ -40,18 +40,18 @@ final class TrabajadorCredencialDoctrineSubscriber extends _DoctrineSubscriber_
 
     public function preUpdate(LifecycleEventArgs $args)
     {
-
+        /** @var TrabajadorCredencial $object */
         $object = $args->getObject();
-
         if (!$object instanceof TrabajadorCredencial)
             return;
 
-        $this->passwordEncrypt($object);
+        $changeSet = $args->getObjectManager()->getUnitOfWork()->getEntityChangeSet($object);
+        if (isset($changeSet['contrasena']) && $args->getObject()->getContrasena())
+            $this->passwordEncrypt($object);
     }
 
-    private function passwordEncrypt(TrabajadorCredencial $object): void
+    private function passwordEncrypt(TrabajadorCredencial $credencial): void
     {
-        if ($object->getContrasena())
-            $object->setContrasena($this->passwordHasher->hashPassword($object, $object->getContrasena()));
+        $credencial->setContrasena($this->passwordHasher->hashPassword($credencial, $credencial->getContrasena()));
     }
 }
