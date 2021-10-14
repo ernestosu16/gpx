@@ -11,7 +11,6 @@ use JetBrains\PhpStorm\Pure;
 #[ORM\Entity(repositoryClass: SacaRepository::class)]
 class Saca extends _Entity_
 {
-
     #[ORM\Column(type: 'string', length: 13, nullable: false)]
     private string $sello;
 

@@ -14,11 +14,10 @@ function buscarFacturaSacas()
             noFactura: noFactura
         },
         async: true,
-        dataType: 'json',
+        dataType: 'html',
         loading: '',
         success: function (data) {
-            console.log('success', data)
-            $('#collapseOne').html()
+            $('#sacas').html(data)
         },
         error: function (error) {
             alert('Error: ' + error.status + ' ' + error.statusText);
@@ -32,4 +31,12 @@ function buscarFacturaSacas()
 
 function recepcionarFactura() {
 
+}
+
+function guardarAnomalia(){
+
+    var table = document.getElementById("anomaliaslist");
+    var cells = table.getElementsByTagName("input");
+
+    console.log(cells);
 }

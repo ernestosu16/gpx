@@ -8,13 +8,8 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: FacturaRepository::class)]
-class Factura
+class Factura extends _Entity_
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    private $id;
-
     #[ORM\Column(type: 'datetime')]
     private $fecha;
 
@@ -58,11 +53,6 @@ class Factura
     public function __construct()
     {
         $this->sacas = new ArrayCollection();
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
     }
 
     public function getFecha(): ?\DateTimeInterface
