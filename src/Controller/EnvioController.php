@@ -15,6 +15,7 @@ use App\Repository\AgenciaRepository;
 use App\Repository\EnvioManifiestoRepository;
 use App\Repository\EnvioRepository;
 use App\Repository\LocalizacionRepository;
+use App\Repository\NomencladorRepository;
 use App\Repository\PaisRepository;
 use App\Utils\EnvioPreRecepcion;
 use App\Utils\MyResponse;
@@ -38,6 +39,7 @@ class EnvioController extends AbstractController
         private EnvioManager $envioManager,
         private PaisRepository $paisRepository,
         private AgenciaRepository $agenciaRepository,
+        private NomencladorRepository $nomencladorRepository
     )
     {
     }
@@ -79,23 +81,7 @@ class EnvioController extends AbstractController
 
             $municipios = $this->localizacion->findByTipoCodigo(LocalizacionTipo::MUNICIPIO);
 
-            $anomalias = ["envio faltante",
-                "envio mal encaminado",
-                "envio mojado",
-                "envio roto",
-                "acceso al contenido",
-                "envio con precinta",
-                "envio violado",
-                "envio de entidad, bajo control aduana postal",
-                "envio no controlado",
-                "notificado a",
-                "cambio tipo de producto",
-                "cambio sub tipo de producto",
-                "generado aviso",
-                "eliminado aviso",
-                "envio no manifestado",
-                "envio manifestado en otro manifiesto",
-                "diferencia de peso"];
+            $anomalias = $this->nomencladorRepository->findByChildren('APP_ENVIO_ANOMALIA');
 
             $nacionalidades = $this->paisRepository->findAll();
 
@@ -105,7 +91,7 @@ class EnvioController extends AbstractController
 
 
             return $this->render('envio/recepcionarEnvio.html.twig', [
-                "anomalias" => $anomalias,
+                "anomalias" => $anomalias->toArray(),
                 "provincias" => $provincias,
                 "nacionalidades" => $nacionalidades,
                 "curries" => $curries,
