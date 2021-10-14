@@ -53,7 +53,7 @@ function buscarEnvioManifestado()
                     text: data.mensaje,
                     type: "error"
                 });
-                this.limpiarCampos();
+                limpiarCampos();
             } else {
                 //alert("Recibido OK");
                 if (data.data.requiere_pareo){
@@ -71,7 +71,7 @@ function buscarEnvioManifestado()
         error: function (error) {
             alert('Error: ' + error.status + ' ' + error.statusText);
             console.log('error', error.responseText)
-            this.limpiarCampos();
+            limpiarCampos();
         }
     })
 
@@ -288,29 +288,25 @@ function limpiarCampos(){
 
     //$('#input_noGuia').val("");
 
-    $('#input_noGuia').val("");
-
     $('#input_codTracking').val("");
 
     $('#input_peso').val("");
 
-    $('#select_nacionalidadOrigen').unselect();
+    $('#select_nacionalidadOrigen')
+        .val("")
+        .trigger('change.select2');
 
     $('#select_producto')
         .val("")
         .trigger('change.select2');
 
-    if (envioTemporal.provincia) {
-        $('#select_provincias')
-            .val("Seleccione")
-            .trigger('change.select2');
-    }
+    $('#select_provincias')
+        .val("")
+        .trigger('change.select2');
 
-    if (envioTemporal.municipio){
-        $('#select_municipios')
-            .val("")
-            .trigger('change.select2');
-    }
+    $('#select_municipios')
+        .val("")
+        .trigger('change.select2');
 
     $('#input_pareo').val("");
 

@@ -4,12 +4,14 @@ namespace App\Command\Fixtures;
 
 use App\Command\BaseCommand;
 use App\Command\BaseCommandInterface;
+use App\Config\Data\Nomenclador\AgenciaData;
 use App\Config\Data\Nomenclador\EnvioData;
 use App\Config\Data\Nomenclador\FacturaData;
 use App\Config\Data\Nomenclador\SacaData;
 use App\Config\Data\Nomenclador\EstructuraTipoData;
 use App\Config\Data\Nomenclador\GrupoData;
 use App\Config\Data\Nomenclador\MenuData;
+use App\Entity\Agencia;
 use App\Entity\Estructura;
 use App\Entity\EstructuraTipo;
 use App\Entity\Grupo;
