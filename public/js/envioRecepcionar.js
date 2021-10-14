@@ -94,7 +94,7 @@ function annadirEnvioAListTemporal()
     pareo = $('#input_pareo').val()
 
     //Si hay algun campo vacio o necesita pareo y no ha sido pareado
-    if( this.validarCamposVacios(no_guia,cod_tracking,peso,nacionalidad,agencia,entidadCtrlAduana,provincia,municipio,pareo) ){
+    if( !( this.validarCamposVacios(no_guia,cod_tracking,peso,nacionalidad,agencia,entidadCtrlAduana,provincia,municipio,pareo)) ){
 
         swal({
             title: "Error",
@@ -112,14 +112,6 @@ function annadirEnvioAListTemporal()
         });
 
     //Insertar en el listado y la tabla
-    }else if (this.listEnviosTemporles.length == 10) {
-
-        swal({
-            title: "Error",
-            text: "Puede añadir hasta 10 envios.",
-            type: "error"
-        });
-
     }else {
 
         this.envioTemporal.cod_tracking = cod_tracking
@@ -208,15 +200,19 @@ function validarCamposVacios(no_guia,cod_tracking,peso,nacionalidad,agencia,enti
  */
 function recepcionarEnvios()
 {
-    console.log(this.listEnviosTemporles,'ñññ')
-
     if ( this.listEnviosTemporles.length > 0) {
+
+        var listEnvios = this.listEnviosTemporles.map( (envio) => {
+            delete envio.extra
+            return envio
+        } )
+
         var ruta = Routing.generate('recepcionar_envios')
         $.ajax({
             type: 'POST',
             url: ruta,
             data: {
-                envios: this.listEnviosTemporles
+                envios: listEnvios
             },
             async: true,
             dataType: 'json',
@@ -234,12 +230,20 @@ function recepcionarEnvios()
 
             },
             error: function (error) {
-                alert('Error: ' + error.status + ' ' + error.statusText);
                 console.log('error', error.responseText)
+                swal({
+                    title: "Error",
+                    text: 'Error: ' + error.status + ' ' + error.statusText,
+                    type: "error"
+                });
             }
         })
     }else {
-        alert('Deben estar correcto el No. Guia y el Codigo de Tracking.')
+        swal({
+            title: "Error",
+            text: 'Debe añadir al menos un envio.',
+            type: "error"
+        });
     }
 
 }
