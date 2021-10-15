@@ -18,10 +18,10 @@ class TrabajadorCredencial implements UserInterface, PasswordAuthenticatedUserIn
     private ?Trabajador $trabajador = null;
 
     #[ORM\Column(type: 'string', length: 50, unique: true)]
-    private ?string $usuario;
+    private ?string $usuario = null;
 
     #[ORM\Column(type: 'string', length: 60)]
-    private ?string $contrasena;
+    private ?string $contrasena = null;
 
     #[ORM\Column(name: 'es_admin', type: 'boolean')]
     private bool $admin = false;
