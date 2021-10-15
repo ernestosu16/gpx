@@ -243,17 +243,14 @@ class EnvioController extends AbstractController
 
             $result = $this->envioManager->recepcionarEnvios($envios,$credencial);
 
-            $enviosRecepcionados= $this->envioManager->recepcionarEnvios([]);
-
             $miRespuesta = new MyResponse();
 
             //Si dio algun error par aguardar los envios
-            if ( ! $enviosRecepcionados ){
+            if ( ! $result ){
 
                 $miRespuesta->setEstado(false);
                 $miRespuesta->setData(null);
-                $miRespuesta->setMensaje("Se ha producido un error durante la salva de los envios");
-
+                $miRespuesta->setMensaje("Se ha producido un error durante la recepcion de los envios");
 
             }else{
 

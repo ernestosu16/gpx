@@ -110,15 +110,16 @@ class EnvioManager extends _Manager_
     public function recepcionarEnvios($envios,TrabajadorCredencial $user): bool{
         $recepcionados = true;
 
-        /** @var $em EntityManagerInterface **/
+
+        /** @var $em EntityManagerInterface * */
         $em = $this->get('doctrine.orm.default_entity_manager');
 
         $deserializer = SerializerBuilder::create()->build();
 
-        foreach ($envios as $envio){
+        foreach ($envios as $envio) {
 
             /** @var EnvioPreRecepcion $envioPreRecepcion */
-            $envioPreRecepcion = $deserializer->deserialize(json_encode($envio),EnvioPreRecepcion::class,'json');
+            $envioPreRecepcion = $deserializer->deserialize(json_encode($envio), EnvioPreRecepcion::class, 'json');
 
             $fechaActual = new \DateTime();
 
@@ -182,7 +183,7 @@ class EnvioManager extends _Manager_
              * Anomalias del envio
              */
 
-            foreach ($envioPreRecepcion->irregularidades as $anomalia){
+            foreach ($envioPreRecepcion->irregularidades as $anomalia) {
 
                 $envioAnomaliaTraza = new EnvioAnomaliaTraza();
                 $envioAnomaliaTraza->setAnomalia($this->nomencladorRepository->find($anomalia->getId()));
