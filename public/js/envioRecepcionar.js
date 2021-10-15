@@ -83,6 +83,8 @@ function buscarEnvioManifestado()
  */
 function annadirEnvioAListTemporal()
 {
+    console.log('logs')
+    this.obtenerAnomalias()
     no_guia = $('#input_noGuia').val()
     cod_tracking = $('#input_codTracking').val().toUpperCase();
     peso = $('#input_peso').val()
@@ -270,15 +272,51 @@ function mostarUOcultarIrregularidades()
  */
 function habilitarDescripcionAnomalia(id)
 {
-    let arr = id.toString().substring(5,id.toString().length);
+    //let arr = id.toString().substring(5,id.toString().length);
+    let idAnomalia = id.toString().substring(6,id.toString().length);
+    console.log(idAnomalia,'id idAnomalia')
 
-    let inputDescripcion = document.getElementById('input'+arr)
+    let inputDescripcion = document.getElementById('input_'+idAnomalia)
+
+    let checkAnomaliaNombre = $('#check_'+idAnomalia).val()
 
     if (inputDescripcion.style.display == "none"){
         inputDescripcion.style.display = "";
+        annadirYEliminarAnomalia(idAnomalia,checkAnomaliaNombre,true)
     }else{
         inputDescripcion.style.display = "none"
         inputDescripcion.value = ""
+        annadirYEliminarAnomalia(idAnomalia,'',false)
+    }
+
+
+}
+
+function annadirYEliminarAnomalia(idAnomalia, nombre, annadir){
+
+    console.log(this.envioTemporal.irregularidades, 'array irreg')
+
+    if (annadir){
+
+        this.envioTemporal.irregularidades.push(
+            {
+                id: idAnomalia,
+                nombre: nombre,
+                descripcion: ''
+            }
+        )
+
+    }else {
+
+        var evens = _.remove(this.envioTemporal.irregularidades, function(anomalia) {
+
+            if (anomalia.id !== idAnomalia) {
+                return anomalia;
+            }
+
+        });
+
+        this.envioTemporal.irregularidades = evens
     }
 
 
@@ -351,6 +389,30 @@ function buscarEnvioPorCodTracking(cod){
 
     return !!resultado ;
 
+}
+
+function obtenerAnomalias(){
+    var c = document.getElementById('div_irregularidades');
+    var cells = c.getElementsByTagName('input');
+
+    console.log(c,'c');
+    console.log(cells,'cells');
+
+    /*for (var i = 0; i < cells.length; i++) {
+        id = cells[i].getAttribute("id");
+        /*typeElement = cells[i].getAttribute("type");
+        if ( typeElement == "text") {
+            console.log($('#'+id).val(),'text')
+        }else {
+            console.log($('#'+id).is(':checked'),'checked')
+        }*
+
+        console.log(i,'i');
+        if ($('#'+id).is(':checked')){
+            let idInputTextAnomalia = id.toString().substring(6,id.toString().length);
+            console.log($('#input_'+idInputTextAnomalia).val(),'text')
+        }
+    }*/
 }
 
 

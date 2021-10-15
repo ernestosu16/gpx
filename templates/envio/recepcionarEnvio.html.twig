@@ -121,12 +121,12 @@
                 <div class="row col-md-12 m-b">
 
                     <div class="col-md-5">
-                        <input class="form-check-input" type="checkbox" value="" id="check_{{ anomalia.id }}" onchange="habilitarDescripcionAnomalia('check_{{ anomalia.id }}')">
+                        <input class="form-check-input" type="checkbox" value="{{ anomalia }}" id="check_{{ anomalia.id }}" >
                         <label class="form-label">{{ anomalia }}</label>
                     </div>
 
-                    <div class="col-md-7">
-                        <input id="input_{{ anomalia.id }}" style="display:none;" type="text" class="form-control input-sm" placeholder="Descripción">
+                    <div class="col-md-7" id="ds1">
+                        <input id="input_{{ anomalia.id }}"  type="text" class="form-control input-sm miclass" onchange="escribirDescripcion()" placeholder="Descripción">
                     </div>
 
                 </div>
@@ -208,5 +208,6 @@
     <script src="{{ path('fos_js_routing_js',{ callback: 'fos.Router.setData' }) }}"></script>
 
     <script src="{{ asset('js/envioRecepcionar.js') }}"></script>
+    <script src="{{ asset('js/lodash.min.js') }}"></script>
 
 {% endblock %}
