@@ -476,6 +476,7 @@ function obtenerIrregularidades(){
 function buscarMunDeUnaProv()
 {
     var idProv = $('#select_provincias').val()
+    var selectMunicipio = $('#select_municipios')
     if (idProv) {
         var ruta = Routing.generate('mun_prov_seleccionada')
         $.ajax({
@@ -497,18 +498,20 @@ function buscarMunDeUnaProv()
                         type: "error"
                     });
                     console.log(data.mensaje);
-                    limpiarCampos();
                 } else {
                     //alert("Recibido OK");
-                    if (data.data.requiere_pareo) {
-                        swal({
-                            title: "Informacion",
-                            text: "Este envio requiere ser pareado.",
-                            type: "info"
-                        });
+
+                    var options = '<option value="">Seleccione</option>';
+
+                    var municipios = []
+                    municipios = data.data;
+
+                    for (var i=0; i<municipios.length; i++){
+                        options+='<option value="'+municipios[i].id+'">'+municipios[i].nombre+'</option>'
+                        console.log()
                     }
-                    envioTemporal = data.data
-                    asignarValoresDeEnvioManifestado();
+
+                    selectMunicipio.html(options);
                 }
 
             },
