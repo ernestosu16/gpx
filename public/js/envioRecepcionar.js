@@ -171,7 +171,7 @@ function eliminarEnvioTablaPreRecepcionados(postionArray){
 
     if (this.listEnviosTemporles.length == 1){
         this.listEnviosTemporles.shift();
-        $("#resultado").html('')
+        limpiarTodosLosItemsDeLaTabla();
     }else {
         this.listEnviosTemporles.splice(postionArray,1)
         this.pintarTablaEnviosPreRecepcionados()
@@ -227,11 +227,11 @@ function recepcionarEnvios()
             success: function (data) {
                 console.log('success', data)
                 if (!(data.estado)) {
-                    alert(data.mensaje);
+                    //alert(data.mensaje);
                     swal({
-                        title: "Informacion",
-                        text: 'Envios receppcionados con exito.',
-                        type: "info"
+                        title: "Error",
+                        text: data.mensaje,
+                        type: "error"
                     });
 
                 } else {
@@ -242,8 +242,7 @@ function recepcionarEnvios()
                         type: "info"
                     });
 
-                    limpiarVariableEnvioTemporal();
-                    limpiarVariableListEnvioTemporales();
+                    limpiarTodo();
                 }
 
             },
@@ -386,6 +385,27 @@ function limpiarVariableEnvioTemporal(){
 function limpiarVariableListEnvioTemporales(){
 
     this.listEnviosTemporles = []
+}
+
+/**
+ * Limpiar todos los items de la tabla
+ */
+function limpiarTodosLosItemsDeLaTabla(){
+    $("#resultado").html('');
+}
+
+/**
+ * Limpiar todos los datos
+ */
+function limpiarTodo(){
+
+    //Incluye los metodos  [ limpiarIrregularidades y limpiarVariableEnvioTemporal ]
+    limpiarCampos();
+
+    limpiarVariableListEnvioTemporales();
+    limpiarIrregularidades();
+    limpiarTodosLosItemsDeLaTabla();
+
 }
 
 /**
