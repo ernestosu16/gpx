@@ -51,6 +51,7 @@ function buscarEnvioManifestado()
                     text: data.mensaje,
                     type: "error"
                 });
+                console.log(data.mensaje);
                 limpiarCampos();
             } else {
                 //alert("Recibido OK");
@@ -227,11 +228,22 @@ function recepcionarEnvios()
                 console.log('success', data)
                 if (!(data.estado)) {
                     alert(data.mensaje);
+                    swal({
+                        title: "Informacion",
+                        text: 'Envios receppcionados con exito.',
+                        type: "info"
+                    });
 
                 } else {
-                    alert("Recibido OK");
-                    envioTemporal = data.data
-                    asignarValoresDeEnvioManifestado();
+                    console.log()("Envios receppcionados con exito.");
+                    swal({
+                        title: "Informacion",
+                        text: 'Envios receppcionados con exito.',
+                        type: "info"
+                    });
+
+                    limpiarVariableEnvioTemporal();
+                    limpiarVariableListEnvioTemporales();
                 }
 
             },
@@ -304,6 +316,8 @@ function limpiarCampos(){
         .val("")
         .trigger('change.select2');
 
+    $('#check_entidadControlAduana').prop('checked',false)
+
     $('#select_provincias')
         .val("")
         .trigger('change.select2');
@@ -316,6 +330,7 @@ function limpiarCampos(){
 
     limpiarIrregularidades();
 
+    limpiarVariableEnvioTemporal();
 }
 
 /**
@@ -335,6 +350,42 @@ function limpiarIrregularidades(){
 
     }
 
+}
+
+/**
+ * Limpiar la variable de envio temporal
+ */
+function limpiarVariableEnvioTemporal(){
+
+    this.envioTemporal = {
+        no_guia: '',
+        cod_tracking: '',
+        peso: 0.0,
+        //nacionalidad_remitente
+        pais_origen: '',
+        //currier
+        agencia: '',
+        //interes_aduana
+        entidad_ctrl_aduana: false,
+        provincia: '',
+        municipio: '',
+        requiere_pareo: false,
+        pareo: '',
+        //anomalias
+        irregularidades: [],
+        destinatario: null,
+        remitente: null,
+        direcciones: []
+    }
+
+}
+
+/**
+ * Limpiar la variable de lista de envio temporal
+ */
+function limpiarVariableListEnvioTemporales(){
+
+    this.listEnviosTemporles = []
 }
 
 /**
