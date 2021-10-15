@@ -23,8 +23,6 @@ var envioTemporal = {
 var listEnviosTemporles = new Array();
 
 
-
-
 /**
  * Buscar un envio en la tabla manisfestados
  */
@@ -79,12 +77,10 @@ function buscarEnvioManifestado()
 }
 
 /**
- * Añadir envios crakeados al listado temporal para posteriormente recepcionarlos
+ * Añadir envios trakeados al listado temporal, para posteriormente recepcionarlos
  */
 function annadirEnvioAListTemporal()
 {
-    console.log('logs')
-    this.obtenerAnomalias()
     no_guia = $('#input_noGuia').val()
     cod_tracking = $('#input_codTracking').val().toUpperCase();
     peso = $('#input_peso').val()
@@ -132,13 +128,21 @@ function annadirEnvioAListTemporal()
             municipio: $('#select_municipios option:selected').text()
         }
 
+        this.envioTemporal.irregularidades = [];
+        this.envioTemporal.irregularidades = obtenerIrregularidades();
+
         listEnviosTemporles.push(this.envioTemporal)
 
-        this.actualizarTablaVisual()
+        this.pintarTablaEnviosPreRecepcionados();
+
+        this.limpiarCampos();
     }
 }
 
-function actualizarTablaVisual() {
+/**
+ * Pintar la tabla de envios prerecepcionados a partir del listado de envios prerecepcionados
+ */
+function pintarTablaEnviosPreRecepcionados() {
     var valor = '';
 
    for (var i = 0; i < this.listEnviosTemporles.length; i++) {
@@ -152,7 +156,7 @@ function actualizarTablaVisual() {
             '<td>' + this.listEnviosTemporles[i].extra.agencia + '</td>' +
             '<td>' + this.listEnviosTemporles[i].extra.provincia + '</td>' +
             '<td>' + this.listEnviosTemporles[i].extra.municipio + '</td>' +
-            '<td> <button class="btn btn-danger" onclick="eliminarEnvio(' + i + ')"><i class="fa fa-trash"></i></button> </td>' +
+            '<td> <button class="btn btn-danger" onclick="eliminarEnvioTablaPreRecepcionados(' + i + ')"><i class="fa fa-trash"></i></button> </td>' +
             '</tr>';
         $("#resultado").html(valor)
     }
@@ -160,16 +164,16 @@ function actualizarTablaVisual() {
 }
 
 /**
- * Eliminar envios de la lista temporal y mandar ha actualizar la tabla visual
+ * Eliminar envios de la lista de envios prerecepcionados y mandar ha actualizar la tabla visual
  */
-function eliminarEnvio(postionArray){
+function eliminarEnvioTablaPreRecepcionados(postionArray){
 
     if (this.listEnviosTemporles.length == 1){
         this.listEnviosTemporles.shift();
         $("#resultado").html('')
     }else {
         this.listEnviosTemporles.splice(postionArray,1)
-        this.actualizarTablaVisual()
+        this.pintarTablaEnviosPreRecepcionados()
     }
 }
 
@@ -268,60 +272,22 @@ function mostarUOcultarIrregularidades()
 }
 
 /**
- * Mostrar u ocultar la descripcion de una irregularidad seleccionada
+ * Limpiar el campo descripcion de la irregularidad correspondiente en caso de ser desmarcado
  */
-function habilitarDescripcionAnomalia(id)
+function limpiarDescripcionIrregularidad(idAnomalia)
 {
-    //let arr = id.toString().substring(5,id.toString().length);
-    let idAnomalia = id.toString().substring(6,id.toString().length);
-    console.log(idAnomalia,'id idAnomalia')
+   let inputDescripcionAnomalia = document.getElementById('input_'+idAnomalia)
 
-    let inputDescripcion = document.getElementById('input_'+idAnomalia)
+    let checkAnomalia = $('#check_'+idAnomalia).is(':checked')
 
-    let checkAnomaliaNombre = $('#check_'+idAnomalia).val()
-
-    if (inputDescripcion.style.display == "none"){
-        inputDescripcion.style.display = "";
-        annadirYEliminarAnomalia(idAnomalia,checkAnomaliaNombre,true)
-    }else{
-        inputDescripcion.style.display = "none"
-        inputDescripcion.value = ""
-        annadirYEliminarAnomalia(idAnomalia,'',false)
+    if (!checkAnomalia){
+        inputDescripcionAnomalia.value = ""
     }
-
-
 }
 
-function annadirYEliminarAnomalia(idAnomalia, nombre, annadir){
-
-    console.log(this.envioTemporal.irregularidades, 'array irreg')
-
-    if (annadir){
-
-        this.envioTemporal.irregularidades.push(
-            {
-                id: idAnomalia,
-                nombre: nombre,
-                descripcion: ''
-            }
-        )
-
-    }else {
-
-        var evens = _.remove(this.envioTemporal.irregularidades, function(anomalia) {
-
-            if (anomalia.id !== idAnomalia) {
-                return anomalia;
-            }
-
-        });
-
-        this.envioTemporal.irregularidades = evens
-    }
-
-
-}
-
+/**
+ * Limpiar todos los valores de los campos (Menos el campo de la guia)
+ */
 function limpiarCampos(){
 
     //$('#input_noGuia').val("");
@@ -348,9 +314,32 @@ function limpiarCampos(){
 
     $('#input_pareo').val("");
 
+    limpiarIrregularidades();
+
 }
 
+/**
+ * Limpiar todos los valores de los campos de las irregularidades y/o anomalias
+ */
+function limpiarIrregularidades(){
 
+    var divIrregularidades = document.getElementById('div_irregularidades');
+    var inputs = divIrregularidades.getElementsByTagName('input');
+
+    for (var i = 0; i < inputs.length; i+=2 ) {
+        id = inputs[i].getAttribute("id");
+        $('#'+id).prop('checked',false)
+
+        let idInputTextAnomalia = id.toString().substring(6,id.toString().length);
+        $('#input_'+idInputTextAnomalia).val("")
+
+    }
+
+}
+
+/**
+ * Asignar los valores de la variable (envioTemporal) obtenido del envio manifestado a los input correspondientes
+ */
 function asignarValoresDeEnvioManifestado(){
 
     $('#input_noGuia').val(envioTemporal.no_guia);
@@ -383,36 +372,51 @@ function asignarValoresDeEnvioManifestado(){
 
 }
 
+/**
+ * Buscar en la variable (listEnviosTemporles) si esta un envio dado su cod_tracking
+ * @param cod
+ * @return {boolean}
+ */
 function buscarEnvioPorCodTracking(cod){
 
     const resultado = this.listEnviosTemporles.find( envio => envio.cod_tracking === cod );
 
     return !!resultado ;
-
 }
 
-function obtenerAnomalias(){
-    var c = document.getElementById('div_irregularidades');
-    var cells = c.getElementsByTagName('input');
+/**
+ * Retorna el array de irreularidades en caso de que existan si no retorna una array vacio
+ * @return array<Irregularidades>
+ */
+function obtenerIrregularidades(){
 
-    console.log(c,'c');
-    console.log(cells,'cells');
+    var divIrregularidades = document.getElementById('div_irregularidades');
+    var inputs = divIrregularidades.getElementsByTagName('input');
 
-    /*for (var i = 0; i < cells.length; i++) {
-        id = cells[i].getAttribute("id");
-        /*typeElement = cells[i].getAttribute("type");
+    var irregularidades = []
+
+    for (var i = 0; i < inputs.length; i+=2 ) {
+        id = inputs[i].getAttribute("id");
+        /*typeElement = inputs[i].getAttribute("type");
         if ( typeElement == "text") {
             console.log($('#'+id).val(),'text')
         }else {
             console.log($('#'+id).is(':checked'),'checked')
-        }*
+        }*/
 
-        console.log(i,'i');
-        if ($('#'+id).is(':checked')){
+        if($('#'+id).is(':checked')){
             let idInputTextAnomalia = id.toString().substring(6,id.toString().length);
-            console.log($('#input_'+idInputTextAnomalia).val(),'text')
+            var textoDescripcion = $('#input_'+idInputTextAnomalia).val()
+            irregularidades.push({
+                id: idInputTextAnomalia,
+                nombre: $('#'+id).val(),
+                descripcion: textoDescripcion ? textoDescripcion : ''
+            })
         }
-    }*/
+
+    }
+
+    return irregularidades;
 }
 
 
