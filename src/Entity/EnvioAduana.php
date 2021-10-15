@@ -34,6 +34,12 @@ class EnvioAduana extends _Entity_
     #[ORM\JoinColumn(name: 'estado_id', referencedColumnName: 'id', nullable: false)]
     private Nomenclador $estado;
 
+    /*
+    #[ORM\ManyToOne(targetEntity: Fichero::class, cascade: ['persist'])]
+    #[ORM\JoinColumn(name: 'fichero_id', referencedColumnName: 'id', nullable: false)]
+    private Fichero $fichero;
+    */
+
     public function __construct()
     {
     }
