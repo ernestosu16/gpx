@@ -275,14 +275,17 @@ class EnvioController extends AbstractController
 
     }
 
-    #[Route('/envio/buscar-municipio', name: 'buscar_municipio', options: ["expose" => true] , methods: ['POST'])]
+    #[Route('/envio/buscar-municipio', name: 'mun_prov_seleccionada', options: ["expose" => true] , methods: ['POST'])]
     public function municipioDeUnaProvincia(Request $request){
 
         if ($request->isXmlHttpRequest()){
 
-            $provincia = $request->request->get('provincia');
+            $idProvincia = $request->request->get('idProvincia');
 
-            $municipios = $this->localizacion->findMunicipiosOfProvinciaById($provincia);
+            /** @var Localizacion $provincia */
+            $provincia = $this->localizacion->find($idProvincia);
+
+            $municipios = $provincia->getChildren()->toArray();
 
             $miRespuesta = new MyResponse();
 
@@ -291,15 +294,14 @@ class EnvioController extends AbstractController
 
                 $miRespuesta->setEstado(false);
                 $miRespuesta->setData(null);
-                $miRespuesta->setMensaje("No existe el envio en la guia solicitada");
+                $miRespuesta->setMensaje("No existen municipios en la provincia solicitada");
 
-                //Si existe pero es interes de aduana
+
             }else{
 
                 $miRespuesta->setEstado(true);
                 $miRespuesta->setData($municipios);
                 $miRespuesta->setMensaje("Municipios buscados con exito");
-
             }
 
             $serializer = SerializerBuilder::create()->build();

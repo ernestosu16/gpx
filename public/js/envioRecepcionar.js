@@ -470,4 +470,54 @@ function obtenerIrregularidades(){
     return irregularidades;
 }
 
+/**
+ * Buscar municipios de una provincia
+ */
+function buscarMunDeUnaProv()
+{
+    var idProv = $('#select_provincias').val()
+    if (idProv) {
+        var ruta = Routing.generate('mun_prov_seleccionada')
+        $.ajax({
+            type: 'POST',
+            url: ruta,
+            data: {
+                idProvincia: idProv
+            },
+            async: true,
+            dataType: 'json',
+            loading: '',
+            success: function (data) {
+                console.log('success', data)
+                if (!(data.estado)) {
+                    //alert(data.mensaje);
+                    swal({
+                        title: "Error",
+                        text: data.mensaje,
+                        type: "error"
+                    });
+                    console.log(data.mensaje);
+                    limpiarCampos();
+                } else {
+                    //alert("Recibido OK");
+                    if (data.data.requiere_pareo) {
+                        swal({
+                            title: "Informacion",
+                            text: "Este envio requiere ser pareado.",
+                            type: "info"
+                        });
+                    }
+                    envioTemporal = data.data
+                    asignarValoresDeEnvioManifestado();
+                }
 
+            },
+            error: function (error) {
+                alert('Error: ' + error.status + ' ' + error.statusText);
+                console.log('error', error.responseText)
+            }
+        })
+    }
+
+
+}
