@@ -18,10 +18,10 @@ class EnvioAduana extends _Entity_
     #[ORM\Column(type: 'string', length: 800, nullable: true)]
     private string $datos_despacho;
 
-    #[ORM\Column(type: 'string', length: 13, nullable: true)]
+    #[ORM\Column(type: 'string', length: 6, nullable: true)]
     private string $provincia_aduana;
 
-    #[ORM\Column(type: 'string', length: 13, nullable: true)]
+    #[ORM\Column(type: 'string', length: 4, nullable: true)]
     private string $municipio_aduana;
 
     #[ORM\Column(type: 'boolean')]
