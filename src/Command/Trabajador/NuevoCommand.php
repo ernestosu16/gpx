@@ -108,7 +108,7 @@ final class NuevoCommand extends Command
         $tipos = $this->estructuraTipoRepository->findAll();
 
         $estructura = $input->getOption('estructura');
-        if(!$estructura || !empty($estructura))
+        if ($estructura != null && !empty($estructura))
             return $this->estructuraRepository->findAll()[$estructura];
 
         $helper = $this->getHelper('question');
@@ -135,7 +135,7 @@ final class NuevoCommand extends Command
         $grupos = $this->grupo->findAll();
 
         $grupo = $input->getOption('grupo');
-        if(!$grupo || !empty($grupo))
+        if ($grupo != null && !empty($grupo))
             return $grupos[$grupo];
 
         $helper = $this->getHelper('question');
