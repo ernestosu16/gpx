@@ -49,7 +49,7 @@ class TrabajadorCredencial implements UserInterface, PasswordAuthenticatedUserIn
         return $this;
     }
 
-    public function getContrasena(): string
+    public function getContrasena(): ?string
     {
         return $this->contrasena;
     }

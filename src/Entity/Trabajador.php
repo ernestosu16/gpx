@@ -212,4 +212,9 @@ class Trabajador extends _Entity_
         }
         return new ArrayCollection($menus);
     }
+
+    #[Pure] public function hasCredentials(): bool
+    {
+        return $this->credencial && $this->credencial->getUsuario();
+    }
 }

@@ -20,8 +20,6 @@ use function Symfony\Component\String\u;
 
 final class NomencladorCommand extends BaseCommand implements BaseCommandInterface
 {
-    private array $codigo;
-
     static function getCommandName(): string
     {
         return 'app:configurar:nomenclador';

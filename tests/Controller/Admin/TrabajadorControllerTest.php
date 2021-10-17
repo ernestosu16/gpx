@@ -86,6 +86,22 @@ class TrabajadorControllerTest extends AdminWebTestCase
         $this->assertEquals(303, $this->client->getResponse()->getStatusCode());
     }
 
+    public function testEditarSinCredencial(): void
+    {
+        $em = $this->getContainer()->get('doctrine')->getManager();
+        $trabajador = $em->getRepository(Trabajador::class)->findOneByNumeroIdentidad('88010111112');
+        $crawler = $this->client->request('GET', '/admin/trabajador/' . $trabajador->getId() . '/edit');
+        $buttonCrawlerNode = $crawler->selectButton('Guardar');
+        $form = $buttonCrawlerNode->form();
+
+        $form['trabajador[persona][apellido_primero]'] = 'sin';
+
+        # submit the Form object
+        $this->client->submit($form);
+
+        $this->assertEquals(303, $this->client->getResponse()->getStatusCode());
+    }
+
     public function testEliminarSinCredencial(): void
     {
         $em = $this->getContainer()->get('doctrine')->getManager();
