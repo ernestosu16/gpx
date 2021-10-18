@@ -3,8 +3,6 @@
 
 namespace App\Twig;
 
-
-use App\Entity\_Entity_;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Extension\AbstractExtension;
@@ -24,7 +22,7 @@ class AppExtension extends AbstractExtension
         ];
     }
 
-    public function callField(_Entity_ $object, string $method): mixed
+    public function callField($object, string $method): mixed
     {
         $method = u($method)->camel()->title()->prepend('get')->toString();
         $value = $object->$method();
