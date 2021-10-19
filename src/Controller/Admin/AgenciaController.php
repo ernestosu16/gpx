@@ -39,6 +39,9 @@ final class AgenciaController extends _CrudController_
                 self::NEW => 'Nueva agencia',
                 self::EDIT => 'Editar agencia',
             ],
+            'filter' => [
+                'q.nombre' => 'nombre'
+            ],
             'routes' => [
                 self::INDEX => 'admin_agencia_index',
                 self::NEW => 'admin_agencia_new',
