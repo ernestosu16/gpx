@@ -183,4 +183,9 @@ class Localizacion extends BaseNestedTree
         $this->codigo_aduana = $codigo_aduana;
         return $this;
     }
+
+    public function getNombreConTipo()
+    {
+        return sprintf('%s (%s)', $this->nombre, $this->tipo->getNombre());
+    }
 }

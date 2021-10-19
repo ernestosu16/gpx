@@ -5,6 +5,10 @@ namespace App\Controller\Admin;
 use App\Entity\Estructura;
 use App\Entity\TrabajadorCredencial;
 use App\Form\Admin\EstructuraType;
+use App\Repository\EstructuraRepository;
+use Doctrine\ORM\QueryBuilder;
+use JetBrains\PhpStorm\Pure;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -12,6 +16,14 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route(path: '/estructura', name: 'admin_estructura')]
 final class EstructuraController extends _CrudController_
 {
+    #[Pure] public function __construct(
+        private EstructuraRepository $estructuraRepository,
+        protected PaginatorInterface $paginator
+    )
+    {
+        parent::__construct($paginator);
+    }
+
     protected static function entity(): string
     {
         return Estructura::class;
@@ -61,20 +73,20 @@ final class EstructuraController extends _CrudController_
         ]);
     }
 
-    private function getEstructuras(): array
+    private function getEstructuras(): QueryBuilder
     {
         /** @var TrabajadorCredencial $credencial */
         $credencial = $this->getUser();
 
-        if (in_array('ROLE_ADMIN', $credencial->getRoles()))
-            return $this->getDoctrine()->getRepository(Estructura::class)->findAll();
+        $query = $this->estructuraRepository->createQueryBuilder('e');
 
-        # Obtengo la lista de estructura subordinadas a la principal
-        return array_merge(
-            [$credencial->getTrabajador()->getEstructura()],
-            $this->getDoctrine()->getRepository(Estructura::class)->getChildren(
-                $credencial->getTrabajador()->getEstructura()
-            )
-        );
+        if (in_array('ROLE_ADMIN', $credencial->getRoles()))
+            return $query;
+
+        # Obtengo la lista de estructura subordinadas y principal del trabajador
+        $query->andWhere('e.parent = :parent ')->setParameter('parent', $credencial->getTrabajador()->getEstructura())
+            ->orWhere('e = :estructura ')->setParameter('estructura', $credencial->getTrabajador()->getEstructura());
+
+        return $query;
     }
 }

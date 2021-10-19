@@ -1,6 +1,8 @@
 twig:
     default_path: '%kernel.project_dir%/templates'
     form_themes: ['widgets/form_div_layout.html.twig']
+    paths:
+        '%kernel.project_dir%/templates': App
 when@test:
     twig:
         strict_variables: true
