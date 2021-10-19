@@ -11,7 +11,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading" role="tab" id="panelSaca_{{saca.id}}">
 
-                    <input class="form-check-input" type="checkbox" value="" id="checkSaca_{{saca.id}}" checked>
+                    <input class="form-check-input" type="checkbox" value="{{saca.id}}" id="checkSaca_{{saca.id}}" checked>
                     <label class="form-label">SACA No. [{{ saca.sello }}] código [{{saca.codigo}}] en estado [{{ saca.estado.nombre }}] &nbsp; + &nbsp;
                         <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{saca.id}}" aria-expanded="false" aria-controls="collapse{{saca.id}}" class="collapsed">
                             Irregularidades </a></label>
@@ -48,7 +48,7 @@
     <div class="row col-md-12 m-b">
 
         <div class="col-md-4">
-            <button class="btn btn-primary" onclick="recepcionarFactura()"><i class="fa fa-check"></i> Recepcionar valijas</button>
+            <button class="btn btn-primary" onclick="recepcionarFactura({{noFactura}})"><i class="fa fa-check"></i> Recepcionar valijas</button>
         </div>
     </div>
 {% endblock %}

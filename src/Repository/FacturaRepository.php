@@ -19,6 +19,18 @@ class FacturaRepository extends ServiceEntityRepository
         parent::__construct($registry, Factura::class);
     }
 
+
+    public function getSacasNoFatura(string $noFactura)
+    {
+        $factura = $this->findOneBy(['numero_factura'=>$noFactura]);
+
+        return $factura->getSacas();
+    }
+
+    public function getFacturaByNoFactura(string $noFactura)
+    {
+        return $this->findOneBy(['numero_factura'=>$noFactura]);
+    }
     // /**
     //  * @return Factura[] Returns an array of Factura objects
     //  */

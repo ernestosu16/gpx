@@ -29,7 +29,31 @@ function buscarFacturaSacas()
 
 }
 
-function recepcionarFactura() {
+function recepcionarFactura(noFactura) {
+
+    let parent = elementId();
+    let sacas = [];
+
+    let ruta = Routing.generate('recepcionar_sacas_factura');
+    $.ajax({
+        type: 'POST',
+        url: ruta,
+        data: {
+            noFactura: noFactura,
+            sacas: sacas
+        },
+        async: true,
+        dataType: 'html',
+        loading: '',
+        success: function (data) {
+            $('#sacas').html(data)
+        },
+        error: function (error) {
+            alert('Error: ' + error.status + ' ' + error.statusText);
+            console.log('error', error.responseText)
+        }
+
+    })
 
 }
 
