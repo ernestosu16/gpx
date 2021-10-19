@@ -7,6 +7,7 @@ use App\Entity\TrabajadorCredencial;
 use App\Form\Admin\TrabajadorType;
 use App\Repository\EstructuraRepository;
 use App\Repository\TrabajadorRepository;
+use Doctrine\ORM\QueryBuilder;
 use JetBrains\PhpStorm\Pure;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -64,25 +65,10 @@ final class TrabajadorController extends _CrudController_
         # Comprobando si el trabajador tiene acceso a esta opción
         $this->denyAccessUnlessGranted([], $request);
 
-        /** @var TrabajadorCredencial $credencial */
-        $credencial = $this->getUser();
-
-        if (in_array('ROLE_ADMIN', $credencial->getRoles())) {
-            $trabajadores = $this->trabajadorRepository->findAll();
-        } else {
-            # Obtengo la lista de estructura subordinada a la principal
-            $estructuras = $this->estructuraRepository->getChildren($credencial->getTrabajador()->getEstructura());
-
-            # Agrego la estructura principal a la lista de subordinadas
-            $estructuras[] = $credencial->getTrabajador()->getEstructura();
-
-            # Obtengo la lista de trabajadores de las lista de estructuras
-            $trabajadores = $this->trabajadorRepository->findByEstructuras($estructuras, [$credencial->getTrabajador()]);
-        }
 
         $settings = $this->settings();
         $pagination = $this->paginator->paginate(
-            $trabajadores,
+            $this->getTrabajadores(),
             $request->query->getInt('page', 1),
             $settings['page']['limit']
         );
@@ -90,5 +76,32 @@ final class TrabajadorController extends _CrudController_
         return $this->render($settings['templates'][self::INDEX], [
             'pagination' => $pagination,
         ]);
+    }
+
+    private function getTrabajadores(): QueryBuilder
+    {
+        /** @var TrabajadorCredencial $credencial */
+        $credencial = $this->getUser();
+
+        $query = $this->trabajadorRepository->createQueryBuilder('t')
+            ->join('t.credencial', 'c')
+            ->join('t.persona', 'p')
+            ->join('t.estructura', 'e');
+
+        if (in_array('ROLE_ADMIN', $credencial->getRoles()))
+            return $query;
+
+        # Obtengo la lista de estructura subordinada a la principal
+        $estructuras = $this->estructuraRepository->getChildren($credencial->getTrabajador()->getEstructura());
+
+        # Agrego la estructura principal a la lista de subordinadas
+        $estructuras[] = $credencial->getTrabajador()->getEstructura();
+
+        $query
+            ->where('t != :trabajador')->setParameter('trabajador', $credencial->getTrabajador())
+            ->andWhere('e IN (:estructuras)')->setParameter('estructuras', $estructuras);
+
+
+        return $query;
     }
 }

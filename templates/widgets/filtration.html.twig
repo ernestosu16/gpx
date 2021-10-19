@@ -1,0 +1,37 @@
+<form method="get" action="{{ action }}" enctype="application/x-www-form-urlencoded" class="form-horizontal">
+    <div class="form-group">
+        <div class="col-xs-6 col-sm-4 col-lg-4 m-t-xs">
+            {% if fields|length > 1 %}
+                <select name="{{ filterFieldName }}" class="form-control input-sm select2">
+                    {% for field, label in fields %}
+                        <option value="{{ field }}"{% if selectedField == field %} selected="selected"{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            {% else %}
+                <input type="hidden" name="{{ filterFieldName }}" value="{{ fields|keys|first }}"/>
+            {% endif %}
+        </div>
+        <div class="col-xs-6 col-sm-3 col-lg-4 m-t-xs">
+            <input type="text" value="{{ selectedValue }}" name="{{ filterValueName }}" placeholder="{{ fields|first }}"
+                   class="form-control input-sm"/>
+        </div>
+        <div class="col-xs-12 col-sm-5 col-lg-4">
+            <div class="row">
+                {% if options.reset is defined %}
+                    <div class="col-xs-12 col-sm-6 col-lg-6 m-t-xs">
+                        <button class="btn btn-sm btn-success  btn-block">{{ options.button }}</button>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-lg-6 m-t-xs">
+                        <a class="btn btn-sm btn-default btn-block"
+                           href="{{ path(options.reset.route) }}">{{ options.reset.button }}</a>
+                    </div>
+                {% else %}
+                    <div class="col-xs-12 col-sm-12 col-lg-12 m-t-xs">
+                        <button class="btn btn-sm btn-success  btn-block">{{ options.button }}</button>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+</form>

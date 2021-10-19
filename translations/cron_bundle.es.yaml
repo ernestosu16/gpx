@@ -1,0 +1,5 @@
+name: "Nombre"
+command: "Comando"
+schedule: "Programar"
+description: "Descripcion"
+enabled: "Habilitado"

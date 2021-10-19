@@ -4,6 +4,7 @@
 namespace App\Manager;
 
 use App\Entity\EnvioManifiesto;
+use App\Entity\Pais;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Utils\Validator;
 
@@ -23,49 +24,49 @@ class EnvioManifiestoManager extends _Manager_
         if($envioManifiesto->getAgenciaOrigen() != 'COPA' && $envioManifiesto->getAgenciaOrigen() != 'DHL'){
             if($envioManifiesto->getDescripcion() == ''){
                 $valido = false;
-                dump('Descripcion vacia '.$envioManifiesto->getDescripcion());
+                //dump('Descripcion vacia '.$envioManifiesto->getDescripcion());
             }
 
             if($envioManifiesto->getPaisOrigen() == 'CUB'){
-                dump('Pais de origen no puede ser '.$envioManifiesto->getPaisOrigen());
+                //dump('Pais de origen no puede ser '.$envioManifiesto->getPaisOrigen());
                 $valido = false;
             }
 
-            if ($envioManifiesto->getDestinatario()->getNacionalidad() == "CUB")
+            if ($envioManifiesto->getDestinatario()->getPais()->getCodigoAduana() == Pais::PRINCIPAL)
             {
                 $valido = Validator::validarCI($envioManifiesto->getDestinatario()->getNumeroIdentidad())["valid"];
                 if(!$valido){
-                    dump('Carnet de identidad del destinatario no valido'.$envioManifiesto->getDestinatario()->getNumeroIdentidad());
+                    //dump('Carnet de identidad del destinatario no valido'.$envioManifiesto->getDestinatario()->getNumeroIdentidad());
                 }
             }
 
             if($envioManifiesto->getCodigo() == ''){
                 $valido = false;
-                dump('Codigo vacia '.$envioManifiesto->getCodigo());
+                //dump('Codigo vacia '.$envioManifiesto->getCodigo());
             }
 
             if ($envioManifiesto->getDestinatario()->getNombrePrimero() == "" || Validator::tieneCaracteresEspeciales($envioManifiesto->getDestinatario()->getNombrePrimero()))
             {
                 $valido = false;
-                dump('NombrePrimero de destinatario no valido '.$envioManifiesto->getDestinatario()->getNombrePrimero());
+                //dump('NombrePrimero de destinatario no valido '.$envioManifiesto->getDestinatario()->getNombrePrimero());
             }
 
             if ($envioManifiesto->getDestinatario()->getApellidoPrimero() == "" || Validator::tieneCaracteresEspeciales($envioManifiesto->getDestinatario()->getApellidoPrimero()))
             {
                 $valido = false;
-                dump('ApellidoPrimero de destinatario no valido '.$envioManifiesto->getDestinatario()->getApellidoPrimero());
+                //dump('ApellidoPrimero de destinatario no valido '.$envioManifiesto->getDestinatario()->getApellidoPrimero());
             }
 
             if ($envioManifiesto->getRemitente()->getNombrePrimero() == "" || Validator::tieneCaracteresEspeciales($envioManifiesto->getRemitente()->getNombrePrimero()))
             {
                 $valido = false;
-                dump('NombrePrimero de remitente no valido '.$envioManifiesto->getRemitente()->getNombrePrimero());
+                //dump('NombrePrimero de remitente no valido '.$envioManifiesto->getRemitente()->getNombrePrimero());
             }
 
             if ($envioManifiesto->getRemitente()->getApellidoPrimero() == "" || Validator::tieneCaracteresEspeciales($envioManifiesto->getRemitente()->getApellidoPrimero()))
             {
                 $valido = false;
-                dump('ApellidoPrimero de destinatario no valido '.$envioManifiesto->getRemitente()->getApellidoPrimero());
+                //dump('ApellidoPrimero de destinatario no valido '.$envioManifiesto->getRemitente()->getApellidoPrimero());
             }
 
             if (Validator::validarFecha($envioManifiesto->getRemitente()->getFechaNacimiento()) == false) $valido = false;
@@ -74,7 +75,7 @@ class EnvioManifiestoManager extends _Manager_
 
             if($envioManifiesto->getProvinciaDestinatario() == null){
                 $valido = false;
-                dump('La provincia del destinatario vacio');
+                //dump('La provincia del destinatario vacio');
             }
         }
 

@@ -7,6 +7,7 @@ use App\Entity\EstructuraTipo;
 use App\Entity\Grupo;
 use App\Entity\Pais;
 use App\Entity\Trabajador;
+use App\Repository\EstructuraRepository;
 use App\Repository\EstructuraTipoRepository;
 use App\Repository\GrupoRepository;
 use App\Repository\PaisRepository;
@@ -32,7 +33,8 @@ final class NuevoCommand extends Command
         private Validator                      $validator,
         private TrabajadorRepository           $trabajador,
         private TrabajadorCredencialRepository $credencial,
-        private EstructuraTipoRepository       $estructuraTipo,
+        private EstructuraRepository           $estructuraRepository,
+        private EstructuraTipoRepository       $estructuraTipoRepository,
         private GrupoRepository                $grupo,
         private PaisRepository                 $paisRepository,
     )
@@ -84,12 +86,12 @@ final class NuevoCommand extends Command
                 throw new InvalidOptionException(sprintf('%s: No tiene definido "label"', $option['name']));
 
             $value = $input->getOption($option['name']);
-            if (isset($option['invoke']) && is_string($option['invoke'])) {
+            if (!$value && isset($option['invoke']) && is_string($option['invoke'])) {
                 $method = $option['invoke'];
                 if (method_exists($this, $method))
                     $value = $this->$method($input, $output);
             } else {
-                if (null !== $value)
+                if ($value)
                     $this->io->text('# <info>' . $option['label'] . '</info>: ' . $value);
                 else {
                     $value = (isset($option['validator'])) ?
@@ -103,7 +105,12 @@ final class NuevoCommand extends Command
 
     private function invokeValidateEstructura(InputInterface $input, OutputInterface $output): Estructura
     {
-        $tipos = $this->estructuraTipo->findAll();
+        $tipos = $this->estructuraTipoRepository->findAll();
+
+        $estructura = $input->getOption('estructura');
+        if ($estructura != null && !empty($estructura))
+            return $this->estructuraRepository->findAll()[$estructura];
+
         $helper = $this->getHelper('question');
         $question = new ChoiceQuestion('Por favor seleccione el tipo de estructura', $tipos, 0);
         $question->setErrorMessage('El Tipo de Estructura "%s" es invalido.');
@@ -126,6 +133,11 @@ final class NuevoCommand extends Command
     private function invokeValidateGrupo(InputInterface $input, OutputInterface $output): Grupo
     {
         $grupos = $this->grupo->findAll();
+
+        $grupo = $input->getOption('grupo');
+        if ($grupo != null && !empty($grupo))
+            return $grupos[$grupo];
+
         $helper = $this->getHelper('question');
         $question = new ChoiceQuestion('Por favor seleccione el grupo', $grupos, 0);
         $question->setErrorMessage('El Grupo "%s" es invalido.');

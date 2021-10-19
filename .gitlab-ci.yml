@@ -36,9 +36,10 @@ phpunit:
         -   name: dap/mysql:8.0
             alias: db
     script:
-        #- sed -i 's/APP_ENV=dev/APP_ENV=test/g' .env
+        - sed -i 's/APP_ENV=dev/APP_ENV=test/g' .env
         - ./proyect-init.sh
-        - bin/phpunit
+        - bin/console app:trabajador:nuevo --numero-identidad=00000000000 --nombre=Admin --apellido-primero="del" --apellido-segundo="Sistema" --cargo="admin" --usuario=admin --password=admin --estructura=0 --grupo=0 --admin=y
+        - bin/phpunit --testdox
 
 docker-build:
     variables:
