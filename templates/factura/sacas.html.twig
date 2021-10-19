@@ -5,37 +5,46 @@
         <div class="well well-lg">
 
             <p style="border-bottom:1px solid #000000;"><strong>VALIJAS PRESENTES EN LA FACTURA</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
                 {% for saca in sacas %}
+                {% if saca.estado.codigo == 'APP_SACA_ESTADO_RECIBIDA' %}
 
             <div class="panel panel-default">
                 <div class="panel-heading" role="tab" id="panelSaca_{{saca.id}}">
-
-                    <input class="form-check-input" type="checkbox" value="{{saca.id}}" id="checkSaca_{{saca.id}}" checked>
                     <label class="form-label">SACA No. [{{ saca.sello }}] código [{{saca.codigo}}] en estado [{{ saca.estado.nombre }}] &nbsp; + &nbsp;
                         <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{saca.id}}" aria-expanded="false" aria-controls="collapse{{saca.id}}" class="collapsed">
                             Irregularidades </a></label>
-
-                </div>
-                <div id="collapse{{saca.id}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="panelSaca_{{saca.id}}" aria-expanded="false">
-                    <div class="panel-body" id="anomaliaslist">
-                        {% for an in anomalias %}
-                            <div class="col-md-12" style="margin-bottom: 10px;">
-                                <div class="col-md-4">
-                                    {{an.nombre}}
-                                </div>
-                                <div class="col-md-8">
-                                    <input class="form-control" type="text" value="" id="text_anomalia_{{an.codigo}}">
-                                </div>
-                            </div>
-                        {% endfor %}
-                        <div class="pull-right" style="margin-top: 25px;">
-                            <button class="btn btn-primary" onclick="guardarAnomalia()"><i class="fa fa-check"></i> Guardar </button>
-                        </div>
-
-                    </div>
                 </div>
             </div>
+            {% else %}
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="panelSaca_{{saca.id}}">
+
+                        <input class="form-check-input checkbox-sacas" type="checkbox" value="{{saca.id}}" id="checkSaca_{{saca.id}}" checked>
+                        <label class="form-label">SACA No. [{{ saca.sello }}] código [{{saca.codigo}}] en estado [{{ saca.estado.nombre }}] &nbsp; + &nbsp;
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{saca.id}}" aria-expanded="false" aria-controls="collapse{{saca.id}}" class="collapsed">
+                                Irregularidades </a></label>
+
+                    </div>
+                    <div id="collapse{{saca.id}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="panelSaca_{{saca.id}}" aria-expanded="false">
+                        <div class="panel-body" id="anomaliaslist">
+                            {% for an in anomalias %}
+                                <div class="col-md-12" style="margin-bottom: 10px;">
+                                    <div class="col-md-4">
+                                        <p class="{{an.codigo}}">{{an.nombre}}</p>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input class="form-control {{an.codigo}}" type="text" value="" id="{{saca.id}}_anomalia_{{an.codigo}}">
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            <div class="pull-right" style="margin-top: 25px;">
+                                <button class="btn btn-primary" onclick="guardarAnomalia('{{ saca.id }}')"><i class="fa fa-check"></i> Guardar </button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
             {% endfor %}
         </div>
     </div>

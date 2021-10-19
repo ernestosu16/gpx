@@ -7,10 +7,8 @@ namespace App\Controller;
 use App\Repository\FacturaRepository;
 use App\Repository\NomencladorRepository;
 use App\Repository\SacaRepository;
-use Doctrine\ORM\EntityManager;
-use JMS\Serializer\SerializerBuilder;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -22,7 +20,7 @@ class FacturaController extends AbstractController
         private SacaRepository $sacaRepository,
         private NomencladorRepository $nomencladorRepository,
         private FacturaRepository $facturaRepository,
-        private EntityManager $entityManager
+        private EntityManagerInterface $entityManager
     )
     {
     }
@@ -38,13 +36,13 @@ class FacturaController extends AbstractController
     public function findSacasFactura(Request $request)
     {
         $noFactura = $request->get('noFactura');
-        $sacas = $this->sacaRepository->findSacasNoFactura($noFactura);
+        $sacas = $this->facturaRepository->findSacasNoFacturaAndEstado($noFactura);
         $anomalias = $this->nomencladorRepository->findByChildren('APP_SACA_ANOMALIA');
 
-        $html = $this->renderView('factura/sacas.html.twig', [
+        $html = $sacas ? $this->renderView('factura/sacas.html.twig', [
             'sacas'=>$sacas,
             'anomalias'=>$anomalias->toArray(),
-            'noFactura' => $noFactura]);
+            'noFactura' => $noFactura]) : 'No se encontro factura con ese numero factura';
 
         return new Response($html);
     }
@@ -54,8 +52,9 @@ class FacturaController extends AbstractController
     {
         $noFactura = $request->get('noFactura');
         $sacas = $request->get('sacas');
+        $todos = $request->get('todos');
         $factura = $this->facturaRepository->getFacturaByNoFactura($noFactura);
-        $estado = $this->nomencladorRepository->findOneByCodigo('');
+        $estado = $this->nomencladorRepository->findOneByCodigo('APP_SACA_ESTADO_RECIBIDA');
 
         foreach ($sacas as $id)
         {
@@ -66,9 +65,9 @@ class FacturaController extends AbstractController
             $this->entityManager->flush();
         }
 
-        if(count($factura->getSacas()->toArray()) == count($sacas))
+        if($todos)
         {
-            $estado = $this->nomencladorRepository->findOneByCodigo('');
+            $estado = $this->nomencladorRepository->findOneByCodigo('APP_FACTURA_ESTADO_RECIBIDA');
             $factura->setEstado($estado);
             $this->entityManager->persist($factura);
             $this->entityManager->flush();
