@@ -31,6 +31,8 @@ function buscarEnvioManifestado()
     var noGuia = $('#input_noGuia').val()
     var codTracking = $('#input_codTracking').val()
 
+    console.log(noGuia+' '+codTracking,'buscar');
+
     var ruta = Routing.generate('envio_manifestado')
     $.ajax({
         type: 'POST',
