@@ -29,6 +29,7 @@ final class LocalizacionController extends _CrudController_
         return [
             'filter' => [
                 'q.nombre' => 'nombre',
+                'q.codigo_aduana' => 'codigo_aduana',
             ],
             'routes' => [
                 self::INDEX => 'admin_localizacion_index',
