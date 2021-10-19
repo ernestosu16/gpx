@@ -9,6 +9,7 @@ use ReflectionProperty;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 abstract class _CrudController_ extends _Controller_
 {
@@ -45,7 +46,8 @@ abstract class _CrudController_ extends _Controller_
     private array $page = ['limit' => 20, 'orderBy' => []];
 
     public function __construct(
-        protected PaginatorInterface $paginator
+        protected PaginatorInterface  $paginator,
+        protected TranslatorInterface $translator
     )
     {
     }
@@ -117,6 +119,11 @@ abstract class _CrudController_ extends _Controller_
             ->getRepository(static::entity())
             ->createQueryBuilder('q');
 
+        $filters = [];
+        if (isset($settings['filter'])) {
+            $filters = $settings['filter'];
+        }
+
         if (static::parentCode())
             $query->andWhere('q.parent is not null');
 
@@ -126,6 +133,7 @@ abstract class _CrudController_ extends _Controller_
         );
 
         return $this->render($settings['templates'][self::INDEX], [
+            'filters' => $filters,
             'settings' => $settings,
             'pagination' => $pagination
         ]);

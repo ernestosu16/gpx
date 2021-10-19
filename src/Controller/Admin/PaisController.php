@@ -22,6 +22,11 @@ final class PaisController extends _CrudController_
     protected static function config(): array
     {
         return [
+            'filter' => [
+                'q.nombre' => 'nombre',
+                'q.iata' => 'iata',
+                'q.codigo_aduana' => 'codigo_aduana'
+            ],
             'routes' => [
                 self::INDEX => 'admin_pais_index',
                 self::NEW => 'admin_pais_new',

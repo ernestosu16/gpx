@@ -2,46 +2,58 @@
 {% block title %}{{ settings.titles.index|trans([],settings.translation_domain) }}{% endblock %}
 {% block panel_title %}{{ settings.titles.index|trans([],settings.translation_domain) }}{% endblock %}
 {% block panel_body %}
-    <div class="table-responsive">
-        <table class="table table-hover table-bordered table-striped">
-            <thead>
-            <tr>
-                {% for field in settings.fields %}
-                    <th>{{ field|trans([],settings.translation_domain) }}</th>
-                {% endfor %}
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for  row in pagination %}
+    {% if filters|length > 0 %}
+        <div class="col-xs-12 col-sm-12 col-lg-7 pull-right">
+            {{ knp_pagination_filter(pagination, filters, {
+                'button': 'filtrar',
+                'translationDomain': 'admin'
+            }) }}
+
+        </div>
+    {% endif %}
+    <div class="col-sm-12">
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered table-striped">
+                <thead>
                 <tr>
                     {% for field in settings.fields %}
-                        <td>{{ callField(row,field) }}</td>
+                        <th>{{ field|trans([],settings.translation_domain) }}</th>
                     {% endfor %}
-                    <td>
-                        {% if settings.routes.edit %}
-                            <a class="btn btn-xs btn-default" href="{{ path(settings.routes.edit, {'id': row.id}) }}"
-                               title="{{ 'editar'|trans([],settings.translation_domain) }}">
-                                <i class="fa fa-pencil"></i>
-                            </a>
-                        {% endif %}
-                    </td>
+                    <th></th>
                 </tr>
-            {% else %}
-                {% set count = settings.fields|length + 1 %}
-                <tr>
-                    <td colspan="{{ count }}">{{ 'No se encontraron registros'|trans([],settings.translation_domain) }}</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                {% for  row in pagination %}
+                    <tr>
+                        {% for field in settings.fields %}
+                            <td>{{ callField(row,field) }}</td>
+                        {% endfor %}
+                        <td>
+                            {% if settings.routes.edit %}
+                                <a class="btn btn-xs btn-default"
+                                   href="{{ path(settings.routes.edit, {'id': row.id}) }}"
+                                   title="{{ 'editar'|trans([],settings.translation_domain) }}">
+                                    <i class="fa fa-pencil"></i>
+                                </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    {% set count = settings.fields|length + 1 %}
+                    <tr>
+                        <td colspan="{{ count }}">{{ 'No se encontraron registros'|trans([],settings.translation_domain) }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="pull-right">
+            <div class="navigation">{{ knp_pagination_render(pagination) }}</div>
+        </div>
+        {% if settings.routes.new %}
+            <a class="btn btn-sm btn-primary" href="{{ path(settings.routes.new) }}">
+                {{ 'nuevo'|trans([],settings.translation_domain) }}
+            </a>
+        {% endif %}
     </div>
-    <div class="pull-right">
-        <div class="navigation">{{ knp_pagination_render(pagination) }}</div>
-    </div>
-    {% if settings.routes.new %}
-        <a class="btn btn-sm btn-primary" href="{{ path(settings.routes.new) }}">
-            {{ 'nuevo'|trans([],settings.translation_domain) }}
-        </a>
-    {% endif %}
 {% endblock %}

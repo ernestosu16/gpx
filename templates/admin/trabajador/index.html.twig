@@ -4,17 +4,18 @@
 {% block panel_body %}
     <div class="col-xs-12 col-sm-12 col-lg-7 pull-right">
         {{ knp_pagination_filter(pagination, {
-            'p.numero_identidad': 'numero de identidad'|trans({},'admin'),
-            'p.nombre_primero': 'nombre'|trans({},'admin'),
-            'p.apellido_primero': 'primer apellido'|trans({},'admin'),
-            'p.apellido_segundo': 'segundo apellido'|trans({},'admin'),
-            'c.usuario': 'usuario'|trans({},'admin'),
+            'p.numero_identidad': 'numero de identidad'),
+            'p.nombre_primero': 'nombre'),
+            'p.apellido_primero': 'primer apellido'),
+            'p.apellido_segundo': 'segundo apellido'),
+            'c.usuario': 'usuario'),
         },{
-            'button': 'filter',
+            'button': 'filtrar',
             'reset': {
                 'button': 'reset',
                 'route': 'admin_trabajador_index'
-            }
+            },
+            'translationDomain': 'admin'
         }) }}
     </div>
     <div class="col-sm-12">
