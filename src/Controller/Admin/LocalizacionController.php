@@ -27,9 +27,12 @@ final class LocalizacionController extends _CrudController_
     protected static function config(): array
     {
         return [
+            'filter' => [
+                'q.nombre' => 'nombre',
+            ],
             'routes' => [
                 self::INDEX => 'admin_localizacion_index',
-//                self::NEW => 'admin_localizacion_new',
+                self::NEW => 'admin_localizacion_new',
                 self::EDIT => 'admin_localizacion_edit',
 //                self::DELETE => 'admin_localizacion_delete',
             ],

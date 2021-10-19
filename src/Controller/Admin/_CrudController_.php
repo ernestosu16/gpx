@@ -46,8 +46,7 @@ abstract class _CrudController_ extends _Controller_
     private array $page = ['limit' => 20, 'orderBy' => []];
 
     public function __construct(
-        protected PaginatorInterface  $paginator,
-        protected TranslatorInterface $translator
+        protected PaginatorInterface  $paginator
     )
     {
     }
