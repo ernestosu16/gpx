@@ -41,7 +41,7 @@ class FacturaRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
 
-        return $factura[0]->getSacas()->toArray();
+        return $factura ? $factura[0]->getSacas()->toArray() : $factura;
     }
     // /**
     //  * @return Factura[] Returns an array of Factura objects

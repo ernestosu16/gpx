@@ -9,6 +9,7 @@ use App\Repository\NomencladorRepository;
 use App\Repository\SacaRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -42,7 +43,7 @@ class FacturaController extends AbstractController
         $html = $sacas ? $this->renderView('factura/sacas.html.twig', [
             'sacas'=>$sacas,
             'anomalias'=>$anomalias->toArray(),
-            'noFactura' => $noFactura]) : 'No se encontro factura con ese numero factura';
+            'noFactura' => $noFactura]) : 'null';
 
         return new Response($html);
     }
@@ -72,6 +73,6 @@ class FacturaController extends AbstractController
             $this->entityManager->persist($factura);
             $this->entityManager->flush();
         }
-        return $this->render('factura/procesarFactura.html.twig',[]);
+        return JsonResponse::fromJsonString('"Factura recibida correctamente"');
     }
 }

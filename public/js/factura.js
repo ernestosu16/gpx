@@ -17,7 +17,16 @@ function buscarFacturaSacas()
         dataType: 'html',
         loading: '',
         success: function (data) {
-            $('#sacas').html(data)
+            if (data === 'null'){
+                swal({
+                    title: "No se encuentra",
+                    text: 'No existe factura con ese numero o ya ha sido entregada',
+                    type: "warning"
+                });
+
+            }else {
+                $('#sacas').html(data)
+            }
         },
         error: function (error) {
             alert('Error: ' + error.status + ' ' + error.statusText);
@@ -38,28 +47,42 @@ function recepcionarFactura(noFactura)
             sacas.push(check.value)
     }
 
-    let todos = sacas.length === inputs.length;
-    let ruta = Routing.generate('recepcionar_sacas_factura');
-    $.ajax({
-        type: 'POST',
-        url: ruta,
-        data: {
-            noFactura: noFactura,
-            sacas: sacas,
-            todos: todos
-        },
-        async: true,
-        dataType: 'html',
-        loading: '',
-        success: function (data) {
-            console.log(1);
-        },
-        error: function (error) {
-            alert('Error: ' + error.status + ' ' + error.statusText);
-            console.log('error', error.responseText)
-        }
+    if (sacas.length === 0){
+        swal({
+            title: "Ningun seleccionado",
+            text: 'Debe seleccionar al menos una saca',
+            type: "warning"
+        });
+    }
+    else{
+        let todos = sacas.length === inputs.length;
+        let ruta = Routing.generate('recepcionar_sacas_factura');
+        $.ajax({
+            type: 'POST',
+            url: ruta,
+            data: {
+                noFactura: noFactura,
+                sacas: sacas,
+                todos: todos
+            },
+            async: true,
+            dataType: 'html',
+            loading: '',
+            success: function (data) {
+                swal({
+                    title: "OK",
+                    text: data,
+                    type: "success"
+                });
+                $('#sacas').html('')
+            },
+            error: function (error) {
+                alert('Error: ' + error.status + ' ' + error.statusText);
+                console.log('error', error.responseText)
+            }
 
-    })
+        })
+    }
 
 }
 
@@ -79,37 +102,47 @@ function guardarAnomalia(sacaID){
             value.push(a[1].value);
         }
     }
-    let i = 0;
-    let anomalias = {};
 
-    while ( i < key.length)
-    {
-        anomalias[key[i]]=value[i]
-        i++;
-    }
-    console.log(anomalias);
+    if(key.length !== 0) {
+        let i = 0;
+        let anomalias = {};
 
-    let ruta = Routing.generate('saca_anomalia');
-    $.ajax({
-        type: 'POST',
-        url: ruta,
-        data: {
-            id: sacaID,
-            saca: ['qwe','rty'],
-            anomalias: anomalias
-        },
-        async: true,
-        dataType: 'json',
-        loading: '',
-        success: function (data) {
-            console.log(1);
-        },
-        error: function (error) {
-            alert('Error: ' + error.status + ' ' + error.statusText);
-            console.log('error', error.responseText)
+        while (i < key.length) {
+            anomalias[key[i]] = value[i]
+            i++;
         }
 
-    })
+        let ruta = Routing.generate('saca_anomalia');
+        $.ajax({
+            type: 'POST',
+            url: ruta,
+            data: {
+                id: sacaID,
+                saca: ['qwe', 'rty'],
+                anomalias: anomalias
+            },
+            async: true,
+            dataType: 'json',
+            loading: '',
+            success: function (data) {
+                swal({
+                    title: "OK",
+                    text: data,
+                    type: "success"
+                });
+            },
+            error: function (error) {
+                alert('Error: ' + error.status + ' ' + error.statusText);
+                console.log('error', error.responseText)
+            }
 
+        })
+    }else {
+        swal({
+            title: "Anomalias vacias",
+            text: 'Debe escribir la descripcion en al menos una anomalia',
+            type: "warning"
+        });
+    }
 
 }

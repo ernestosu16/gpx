@@ -34,6 +34,6 @@ class SacaController extends AbstractController
         $this->entityManager->persist($sacas);
         $this->entityManager->flush();
 
-        return JsonResponse::fromJsonString('"Hola"');
+        return JsonResponse::fromJsonString('"Anomalias agregadas correctamente"');
     }
 }

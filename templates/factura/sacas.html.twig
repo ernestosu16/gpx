@@ -21,11 +21,11 @@
 
                         <input class="form-check-input checkbox-sacas" type="checkbox" value="{{saca.id}}" id="checkSaca_{{saca.id}}" checked>
                         <label class="form-label">SACA No. [{{ saca.sello }}] código [{{saca.codigo}}] en estado [{{ saca.estado.nombre }}] &nbsp; + &nbsp;
-                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{saca.id}}" aria-expanded="false" aria-controls="collapse{{saca.id}}" class="collapsed">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{saca.id}}" aria-expanded="false" aria-controls="collapse{{saca.id}}" class="collapsed collapse{{saca.id}}">
                                 Irregularidades </a></label>
 
                     </div>
-                    <div id="collapse{{saca.id}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="panelSaca_{{saca.id}}" aria-expanded="false">
+                    <div id="collapse{{saca.id}}" class="panel-collapse collapse collapse{{saca.id}}" role="tabpanel" aria-labelledby="panelSaca_{{saca.id}}" aria-expanded="false">
                         <div class="panel-body" id="anomaliaslist">
                             {% for an in anomalias %}
                                 <div class="col-md-12" style="margin-bottom: 10px;">
