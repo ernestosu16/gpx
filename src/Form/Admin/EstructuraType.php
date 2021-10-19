@@ -73,7 +73,7 @@ class EstructuraType extends BaseAdminType
                 'class' => EstructuraTipo::class,
                 'multiple' => true,
                 'required' => true,
-                'choices' => $estructura->getTiposPermitidos(),
+                'choices' => $this->getTipos($credencial, $estructura),
                 'disabled' => $data === $estructura && !in_array('ROLE_ADMIN', $credencial->getRoles()),
                 'label' => 'tipos',
                 'label_attr' => ['class' => 'col-sm-2 control-label'],
@@ -117,5 +117,13 @@ class EstructuraType extends BaseAdminType
             'attr' => ['class' => 'form-horizontal'],
             'translation_domain' => 'admin',
         ]);
+    }
+
+    private function getTipos(TrabajadorCredencial $credencial, Estructura $estructura): array
+    {
+        if (in_array('ROLE_ADMIN', $credencial->getRoles())) {
+            return $estructura->getRoot()->getTiposPermitidos();
+        }
+        return $estructura->getTiposPermitidos();
     }
 }

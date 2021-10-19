@@ -26,7 +26,13 @@ COPY ./conf/php/php.ini /usr/local/etc/php/php.ini
 # Publicando el proyecto
 RUN ln -s /app /var/www/app
 
+# Configure cron jobs, and ensure crontab-file permissions
+COPY conf/cron.d/crontab /etc/cron.d/app-cron
+RUN chmod 0644 /etc/cron.d/app-cron && \
+    crontab /etc/cron.d/app-cron && \
+    touch /var/log/cron.log
+
 EXPOSE 80
 RUN mkdir -p /var/log/supervisor
 COPY ./conf/supervisord.conf /etc/supervisor/supervisord.conf
-CMD ["supervisord"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]

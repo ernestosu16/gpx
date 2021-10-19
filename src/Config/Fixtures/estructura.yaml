@@ -2,7 +2,7 @@ estructuras:
     -   nombre: 'Ministerio de las Comunicaciones'
         descripcion: 'Es un ministerio ordenado y organizado, en función del desarrollo de las telecomunicaciones, las tecnologías de la información y la comunicación, y los servicios postales, que cumple sus compromisos con el pueblo y con la defensa de la Patria.'
         codigo_postal: '10600'
-        codigo: 'MINISTERIO_DE_LAS_COMUNICACIONES'
+        codigo: 'MINCOM'
         tipo: 'MINISTERIO'
         municipio: 'MUNICIPIO_PLAZA_DE_LA_REVOLUCION'
         children:

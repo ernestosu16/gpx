@@ -46,12 +46,13 @@ final class TrabajadorCredencialDoctrineSubscriber extends _DoctrineSubscriber_
             return;
 
         $changeSet = $args->getObjectManager()->getUnitOfWork()->getEntityChangeSet($object);
-        if (isset($changeSet['contrasena']) && $args->getObject()->getContrasena())
+        if (isset($changeSet['contrasena']))
             $this->passwordEncrypt($object);
     }
 
     private function passwordEncrypt(TrabajadorCredencial $credencial): void
     {
-        $credencial->setContrasena($this->passwordHasher->hashPassword($credencial, $credencial->getContrasena()));
+        if ($credencial->getContrasena())
+            $credencial->setContrasena($this->passwordHasher->hashPassword($credencial, $credencial->getContrasena()));
     }
 }

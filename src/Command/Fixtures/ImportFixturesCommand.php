@@ -4,12 +4,14 @@ namespace App\Command\Fixtures;
 
 use App\Command\BaseCommand;
 use App\Command\BaseCommandInterface;
+use App\Config\Data\Nomenclador\AgenciaData;
 use App\Config\Data\Nomenclador\EnvioData;
 use App\Config\Data\Nomenclador\FacturaData;
 use App\Config\Data\Nomenclador\SacaData;
 use App\Config\Data\Nomenclador\EstructuraTipoData;
 use App\Config\Data\Nomenclador\GrupoData;
 use App\Config\Data\Nomenclador\MenuData;
+use App\Entity\Agencia;
 use App\Entity\Estructura;
 use App\Entity\EstructuraTipo;
 use App\Entity\Grupo;
@@ -73,6 +75,9 @@ final class ImportFixturesCommand extends BaseCommand implements BaseCommandInte
 
         $section->writeln('  Creando lista de nomencladores');
         $this->configurarNomenclador();
+
+        $section->writeln('  Creando las agencias');
+        $this->configurarAgencias();
 
         $this->getEntityManager()->commit();
 
@@ -293,6 +298,32 @@ final class ImportFixturesCommand extends BaseCommand implements BaseCommandInte
         }
 
         return $estructura;
+    }
+
+
+    private function configurarAgencias()
+    {
+        /** @var ?Agencia $root */
+        $root = $this->getRepository(Agencia::class)->findOneBy(['codigo' => AgenciaData::code()]);;
+
+        if ($root->getChildren()->count())
+            return;
+
+        $agencia = Yaml::parseFile($this->getKernel()->getProjectDir() . '/src/Config/Fixtures/agencia.yaml');
+        foreach ($agencia['agencias'] as $agencia) {
+            if ($this->getRepository(Agencia::class)->findOneBy(['codigo' => $agencia['codigo']]))
+                continue;
+
+            $agenciaEntity = new Agencia();
+            $agenciaEntity->setRoot($root);
+            $agenciaEntity->setCodigo($agencia['codigo']);
+            $agenciaEntity->setNombre($agencia['nombre']);
+            $agenciaEntity->setDescripcion($agencia['descripcion']);
+
+            $root->addChild($agenciaEntity);
+        }
+        $this->getEntityManager()->persist($root);
+        $this->getEntityManager()->flush();
     }
 
     private function configurarPaises()

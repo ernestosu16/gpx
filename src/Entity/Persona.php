@@ -57,6 +57,10 @@ class Persona extends _Entity_
     #[ORM\JoinColumn(nullable: false)]
     private Pais $pais;
 
+    #[ORM\Column(type: 'string', length: 20)]
+    #[SerializedName('fechaNacimiento')]
+    private string $fecha_nacimiento = '';
+
     #[Pure] public function __toString(): string
     {
         return $this->getNombreCompleto();
@@ -191,6 +195,21 @@ class Persona extends _Entity_
         return implode(' ', $c);
     }
 
+    /**
+     * @return string
+     */
+    public function getFechaNacimiento(): string
+    {
+        return $this->fecha_nacimiento;
+    }
+
+    /**
+     * @param string $fecha_nacimiento
+     */
+    public function setFechaNacimiento(string $fecha_nacimiento): void
+    {
+        $this->fecha_nacimiento = $fecha_nacimiento;
+    }
 
     public function getSiglo(): int
     {

@@ -44,6 +44,11 @@ menu:
                 route: 'admin_agencia_index'
                 icon: 'fa fa-plane'
 
+            -   codigo: 'ADMIN_CRON_JOB'
+                nombre: 'Tareas programadas'
+                route: 'admin_cron_job_index'
+                icon: null
+
     -   codigo: 'NOMENCLADORES'
         nombre: 'Nomencladores'
         route: null

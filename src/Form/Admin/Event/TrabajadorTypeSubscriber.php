@@ -63,10 +63,12 @@ class TrabajadorTypeSubscriber implements EventSubscriberInterface
             if ($persona) # Si existe la asigno al trabajador
                 $trabajador->setPersona($persona);
 
-            # Si el usuario es null quitar la credencial
-            if ($credencial && $credencial->getUsuario() === null)
-                $trabajador->setCredencial(null);
+
         }
+
+        # Si el usuario es null quitar la credencial
+        if (!$trabajador->hasCredentials())
+            $trabajador->setCredencial(null);
     }
 
 }
