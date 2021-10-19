@@ -2,67 +2,81 @@
 {% block title %}{{ settings.titles.index }}{% endblock %}
 {% block panel_title %}{{ settings.titles.index }}{% endblock %}
 {% block panel_body %}
-    <div class="table-responsive">
-        <table class="table table-hover table-bordered table-striped">
-            <thead>
-            <tr>
-                <th>{{ 'nombre'|trans([],'admin') }}</th>
-                <th>{{ 'codigo_postal'|trans([],'admin') }}</th>
-                <th>{{ 'provincia'|trans([],'admin') }}</th>
-                <th>{{ 'municipio'|trans([],'admin') }}</th>
-                <th>{{ 'grupos permitidos'|trans([],'admin') }}</th>
-                <th>{{ 'tipos'|trans([],'admin') }}</th>
-                <th>{{ 'habilitado'|trans([],'admin') }}</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for estructura in pagination %}
+    <div class="col-xs-12 col-sm-12 col-lg-7 pull-right">
+        {{ knp_pagination_filter(pagination, {
+            'e.nombre': 'nombre'|trans({},'admin'),
+            'e.codigo_postal': 'codigo_postal'|trans({},'admin'),
+        },{
+            'button': 'filter',
+            'reset': {
+                'button': 'reset',
+                'route': 'admin_estructura_index'
+            }
+        }) }}
+    </div>
+    <div class="col-sm-12">
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered table-striped">
+                <thead>
                 <tr>
-                    <td>{{ estructura.nombre }}</td>
-                    <td>{{ estructura.codigoPostal }}</td>
-                    <td>{{ estructura.municipio.parent }}</td>
-                    <td>{{ estructura.municipio }}</td>
-                    <td>
-                        {# <div class="article"> #}
-                        <ul class="inline">
-                            {% for grupo in estructura.grupos %}
-                                <li>{{ grupo }}</li>
-                            {% endfor %}
-                        </ul>
-                        {# </div> #}
-                    </td>
-                    <td>
-                        <ul class="inline">
-                            {% for tipo in estructura.tipos %}
-                                <li>{{ tipo }}</li>
-                            {% endfor %}
-                        </ul>
-                    </td>
-                    <td>{{ estructura.habilitado ? 'si'|trans([],'admin') : 'no'|trans([],'admin') }}</td>
-                    <td>
+                    <th>{{ 'nombre'|trans([],'admin') }}</th>
+                    <th>{{ 'codigo_postal'|trans([],'admin') }}</th>
+                    <th>{{ 'provincia'|trans([],'admin') }}</th>
+                    <th>{{ 'municipio'|trans([],'admin') }}</th>
+                    <th>{{ 'grupos permitidos'|trans([],'admin') }}</th>
+                    <th>{{ 'tipos'|trans([],'admin') }}</th>
+                    <th>{{ 'habilitado'|trans([],'admin') }}</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for estructura in pagination %}
+                    <tr>
+                        <td>{{ estructura.nombre }}</td>
+                        <td>{{ estructura.codigoPostal }}</td>
+                        <td>{{ estructura.municipio.parent }}</td>
+                        <td>{{ estructura.municipio }}</td>
+                        <td>
+                            {# <div class="article"> #}
+                            <ul class="inline">
+                                {% for grupo in estructura.grupos %}
+                                    <li>{{ grupo }}</li>
+                                {% endfor %}
+                            </ul>
+                            {# </div> #}
+                        </td>
+                        <td>
+                            <ul class="inline">
+                                {% for tipo in estructura.tipos %}
+                                    <li>{{ tipo }}</li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                        <td>{{ estructura.habilitado ? 'si'|trans([],'admin') : 'no'|trans([],'admin') }}</td>
+                        <td>
 
-                        <a class="btn btn-xs btn-default"
-                           href="{{ path('admin_estructura_edit', {'id': estructura.id}) }}"
-                           title="{{ 'editar'|trans([],'admin') }}">
-                            <i class="fa fa-pencil"></i>
-                        </a>
-                    </td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="3">{{ 'No se encontraron registros'|trans({},'admin') }}</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+                            <a class="btn btn-xs btn-default"
+                               href="{{ path('admin_estructura_edit', {'id': estructura.id}) }}"
+                               title="{{ 'editar'|trans([],'admin') }}">
+                                <i class="fa fa-pencil"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="8">{{ 'No se encontraron registros'|trans({},'admin') }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="pull-right">
+            <div class="navigation">{{ knp_pagination_render(pagination) }}</div>
+        </div>
+        <a class="btn btn-sm btn-primary" href="{{ path('admin_estructura_new') }}">
+            Nueva estructura
+        </a>
     </div>
-    <div class="pull-right">
-        <div class="navigation">{{ knp_pagination_render(pagination) }}</div>
-    </div>
-    <a class="btn btn-sm btn-primary" href="{{ path('admin_estructura_new') }}">
-        Nueva estructura
-    </a>
 {% endblock %}
 {% block javascripts %}
     <script type="text/javascript">
