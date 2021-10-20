@@ -11,8 +11,9 @@
                 <input type="hidden" name="{{ filterFieldName }}" value="{{ fields|keys|first }}"/>
             {% endif %}
         </div>
-        <div class="col-xs-6 col-sm-3 col-lg-4 m-t-xs">
-            <input type="text" value="{{ selectedValue }}" name="{{ filterValueName }}" placeholder="{{ fields|first }}"
+        <div class="{% if fields|length == 1 %}col-xs-12{% else %}col-xs-6{% endif %} col-sm-3 col-lg-4 m-t-xs">
+            <input type="text" value="{{ selectedValue }}" name="{{ filterValueName }}"
+                   placeholder="{% if fields|length == 1 %}{{ fields|first }}{% endif %}"
                    class="form-control input-sm"/>
         </div>
         <div class="col-xs-12 col-sm-5 col-lg-4">
