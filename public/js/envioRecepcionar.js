@@ -94,8 +94,10 @@ function annadirEnvioAListTemporal()
     municipio = $('#select_municipios').val()
     pareo = $('#input_pareo').val()
 
+    console.log(municipio, 'log mun')
+
     //Si hay algun campo vacio o necesita pareo y no ha sido pareado
-    if( !( this.validarCamposVacios(no_guia,cod_tracking,peso,nacionalidad,agencia,entidadCtrlAduana,provincia,municipio,pareo)) ){
+    if( !( this.validarCamposVacios(no_guia,cod_tracking,peso.toString(),nacionalidad,agencia,provincia,municipio,pareo)) ){
 
         swal({
             title: "Error",
@@ -183,25 +185,60 @@ function eliminarEnvioTablaPreRecepcionados(postionArray){
 /**
 * Validar Campos vacios
 */
-function validarCamposVacios(no_guia,cod_tracking,peso,nacionalidad,agencia,entidadCtrlAduana,provincia,municipio,pareo)
+function validarCamposVacios(no_guia,cod_tracking,peso,nacionalidad,agencia,provincia,municipio,pareo)
 {
     //Si hay algun campo vacio o necesita pareo y no ha sido pareado
-    if( no_guia == ""
-        || cod_tracking == ""
-        || peso == ""
-        || nacionalidad == ""
-        || agencia == ""
-        || provincia == ""
-        || municipio == ""
-        || provincia == ""
-        || municipio == ""
-        || (this.envioTemporal.requiere_pareo && pareo == "" ) ){
 
+    if( no_guia.length === 0){
+        console.log('no_guia: '+no_guia,'logs')
         return false;
+    }else if(cod_tracking.length === 0){
+        console.log(' cod_tracking: '+ cod_tracking,'logs')
+        return false;
+    }else if(peso.length === 0){
+        console.log(' peso: '+ peso,'logs')
+        return false;
+    }else if(nacionalidad.length === 0){
+        console.log(' nacionalidad: '+ nacionalidad,'logs')
+        return false;
+    }else if(agencia.length === 0){
+        console.log(' agencia: '+ agencia,'logs')
+        return false;
+    }else if(provincia.length === 0){
+        console.log(' provincia: '+ provincia,'logs')
+        return false;
+    }else if(municipio.length === 0){
+        console.log(' municipio '+ municipio +' ','logs')
+        return false;
+    }else if( this.envioTemporal.requiere_pareo && pareo.length === 0 ){
+        console.log('pareo','logs')
+        return false;
+    }else {
+        console.log( ' else ','logs')
+        return true;
     }
 
-    return true;
 
+
+
+
+
+    /*if( no_guia.length === 0
+        || cod_tracking.length === 0
+        || peso.length === 0
+        || nacionalidad.length === 0
+        || agencia.length === 0
+        || provincia.length === 0
+        || municipio.length === 0
+        || (this.envioTemporal.requiere_pareo && pareo.length === 0 ) ){
+
+        console.log('no_guia: '+no_guia +' cod_tracking: '+ cod_tracking +' peso: '+ peso +' nacionalidad: '+ nacionalidad +' agencia: '+ agencia +' provincia: '+ provincia +' '+ municipio +' ','logs')
+
+        return false;
+    }else {
+
+        return true;
+    }*/
 }
 
 /**
@@ -530,7 +567,7 @@ function buscarMunDeUnaProv()
 
                     for (var i=0; i<municipios.length; i++){
                         options+='<option value="'+municipios[i].id+'">'+municipios[i].nombre+'</option>'
-                        console.log()
+                        console.log('ajax prov-mun')
                     }
 
                     selectMunicipio.html(options);
