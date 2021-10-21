@@ -19,6 +19,8 @@ use App\Repository\NomencladorRepository;
 use App\Repository\PaisRepository;
 use App\Utils\EnvioPreRecepcion;
 use App\Utils\MyResponse;
+use JMS\Serializer\Context;
+use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerBuilder;
 use phpDocumentor\Reflection\Types\False_;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -285,7 +287,7 @@ class EnvioController extends AbstractController
             $municipios = $provincia->getChildren()->toArray();
 
             $miRespuesta = new MyResponse();
-
+            $serializer = SerializerBuilder::create()->build();
             //Si no existen municipios
             if ( ! $municipios ){
 
@@ -297,13 +299,12 @@ class EnvioController extends AbstractController
             }else{
 
                 $miRespuesta->setEstado(true);
-                $miRespuesta->setData($municipios);
+                $mi = $serializer->serialize($municipios,"json", SerializationContext::create()->setGroups('default'));
+                $miRespuesta->setData(json_decode($mi, true, 512, JSON_THROW_ON_ERROR) );
                 $miRespuesta->setMensaje("Municipios buscados con exito");
             }
 
-            $serializer = SerializerBuilder::create()->build();
             $miRespuestaJson = $serializer->serialize($miRespuesta,"json");
-
             return JsonResponse::fromJsonString($miRespuestaJson);
 
         }else{

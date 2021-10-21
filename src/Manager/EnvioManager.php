@@ -129,9 +129,9 @@ class EnvioManager extends _Manager_
         //try{
             foreach ($envios as $envio) {
 
-                dump(json_encode($envio),'envios');
+                //dump(json_encode($envio),'envios');
                 $envioPreRecepcion1 = $deserializer->deserialize(json_encode($envio), EnvioPreRecepcion::class, 'json');
-                dump($envioPreRecepcion1,'envioPreRecepcion');exit;
+               // dump($envioPreRecepcion1,'envioPreRecepcion');exit;
 
 
                 /** @var EnvioPreRecepcion $envioPreRecepcion */
@@ -139,7 +139,7 @@ class EnvioManager extends _Manager_
 
 
 
-                dump($envioPreRecepcion,'envioPreRecepcion');exit;
+            //    dump($envioPreRecepcion,'envioPreRecepcion');exit;
                 $fechaActual = new \DateTime();
 
                 /**
@@ -178,7 +178,7 @@ class EnvioManager extends _Manager_
                 $municipio = $this->entityManager->getRepository(Localizacion::class)->find($envioPreRecepcion->municipio);
                 $envio->setMunicipio($municipio);
 
-                $envio->setDirecciones($envioPreRecepcion->direcciones);
+                //$envio->setDirecciones($envioPreRecepcion->direcciones);
 
                 $this->entityManager->persist($envio);
 

@@ -29,9 +29,20 @@ class SacaController extends AbstractController
     {
         $id = $request->get('id');
         $anomalias = $request->get('anomalias');
-        $sacas = $this->sacaRepository->find($id);
-        $sacas->setObservaciones($anomalias);
-        $this->entityManager->persist($sacas);
+        $saca = $this->sacaRepository->find($id);
+        if (array_key_exists('DIFERENCIA DE PESO', $anomalias)){
+            $actual = $saca->getPeso();
+            $real = (float)$anomalias['DIFERENCIA DE PESO'];
+            $diff = $real - $actual;
+
+            $anomalias['DIFERENCIA DE PESO'] = [
+                'peso real' => $real,
+                'peso actual' => $actual,
+                'diferencia' => $diff
+            ];
+        }
+        $saca->setObservaciones($anomalias);
+        $this->entityManager->persist($saca);
         $this->entityManager->flush();
 
         return JsonResponse::fromJsonString('"Anomalias agregadas correctamente"');

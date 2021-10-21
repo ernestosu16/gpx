@@ -463,28 +463,4 @@ final class ImportFixturesCommand extends BaseCommand implements BaseCommandInte
         $this->getEntityManager()->flush();
     }
 
-    private function configurarAgencias()
-    {
-        /** @var ?Agencia $root */
-        $root = $this->getRepository(Agencia::class)->findOneBy(['codigo' => AgenciaData::code()]);;
-
-        if ($root->getChildren()->count())
-            return;
-
-        $agencia = Yaml::parseFile($this->getKernel()->getProjectDir() . '/src/Config/Fixtures/agencia.yaml');
-        foreach ($agencia['agencias'] as $agencia) {
-            if ($this->getRepository(Agencia::class)->findOneBy(['codigo' => $agencia['codigo']]))
-                continue;
-
-            $agenciaEntity = new Agencia();
-            $agenciaEntity->setRoot($root);
-            $agenciaEntity->setCodigo($agencia['codigo']);
-            $agenciaEntity->setNombre($agencia['nombre']);
-            $agenciaEntity->setDescripcion($agencia['descripcion']);
-
-            $root->addChild($agenciaEntity);
-        }
-        $this->getEntityManager()->persist($root);
-        $this->getEntityManager()->flush();
-    }
 }

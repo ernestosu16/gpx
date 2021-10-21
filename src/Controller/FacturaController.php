@@ -59,11 +59,11 @@ class FacturaController extends AbstractController
 
         foreach ($sacas as $id)
         {
-            /*$saca = $this->sacaRepository->find($id);
+            $saca = $this->sacaRepository->find($id);
             $saca->setEstado($estado);
 
             $this->entityManager->persist($saca);
-            $this->entityManager->flush();*/
+            $this->entityManager->flush();
         }
 
         if($todos)

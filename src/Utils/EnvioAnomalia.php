@@ -9,13 +9,13 @@ use JMS\Serializer\Annotation\SerializedName;
 class EnvioAnomalia
 {
     #[SerializedName('id')]
-    private $id;
+    private string $id;
 
     #[SerializedName('nombre')]
-    private $nombre;
+    private string $nombre;
 
     #[SerializedName('descripcion')]
-    private $descripcion;
+    private string $descripcion;
 
     public function __construct()
     {

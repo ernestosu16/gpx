@@ -109,10 +109,8 @@ function guardarAnomalia(sacaID){
                     text: 'Debe escribir la diferencia de peso',
                     type: "warning"
                 });
-
                 return;
             }
-
         }
     }
 
