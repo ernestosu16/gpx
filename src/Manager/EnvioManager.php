@@ -2,7 +2,7 @@
 
 namespace App\Manager;
 
-
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use App\Controller\EnvioController;
 use App\Entity\Agencia;
 use App\Entity\Envio;
@@ -30,6 +30,7 @@ use App\Utils\EnvioPreRecepcion;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\ORMException;
 use JMS\Serializer\SerializerBuilder;
+use Symfony\Component\Serializer\Serializer;
 
 class EnvioManager extends _Manager_
 {
@@ -193,12 +194,17 @@ class EnvioManager extends _Manager_
                     $envioManifestado->getMunicipioDestinatario()?->getId()
                 );
 
-                $direcciones = [];
-                $direcciones[] = $direccion;
+                $normalizers = [new ObjectNormalizer()];
+                $serializer = new Serializer($normalizers, []);
 
+                $as = $serializer->normalize($direccion);
+
+
+                $direcciones = [];
+                $direcciones[] = $as;
 
                 $envio->setDirecciones($direcciones);
-                dump($envio,'direcciones');exit;
+                //dump($envio,'direcciones');exit;
 
 
                 //dump($envio,'dump');exit;
