@@ -88,10 +88,11 @@ function recepcionarFactura(noFactura)
 
 function guardarAnomalia(sacaID){
 
-    var table = document.getElementById("anomaliaslist");
+    var table = document.getElementById("anomaliaslist"+sacaID);
     var cells = table.getElementsByTagName("input");
-
-    let key = [];
+   
+    console.log(cells);
+    /*let key = [];
     let value = [];
 
     for (let check of cells) {
@@ -143,6 +144,6 @@ function guardarAnomalia(sacaID){
             text: 'Debe escribir la descripcion en al menos una anomalia',
             type: "warning"
         });
-    }
+    }*/
 
 }

@@ -53,17 +53,17 @@ class FacturaController extends AbstractController
     {
         $noFactura = $request->get('noFactura');
         $sacas = $request->get('sacas');
-        $todos = $request->get('todos');
+        $todos = filter_var($request->get('todos'), FILTER_VALIDATE_BOOLEAN);
         $factura = $this->facturaRepository->getFacturaByNoFactura($noFactura);
         $estado = $this->nomencladorRepository->findOneByCodigo('APP_SACA_ESTADO_RECIBIDA');
 
         foreach ($sacas as $id)
         {
-            $saca = $this->sacaRepository->find($id);
+            /*$saca = $this->sacaRepository->find($id);
             $saca->setEstado($estado);
 
             $this->entityManager->persist($saca);
-            $this->entityManager->flush();
+            $this->entityManager->flush();*/
         }
 
         if($todos)
