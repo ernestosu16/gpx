@@ -25,10 +25,10 @@ class EnvioAduana extends _Entity_
     private string $municipio_aduana;
 
     #[ORM\Column(type: 'boolean')]
-    private string $arancel;
+    private bool $arancel = false;
 
     #[ORM\Column(type: 'boolean')]
-    private string $procesado;
+    private bool $procesado = false;
 
     #[ORM\ManyToOne(targetEntity: Nomenclador::class, cascade: ['persist'])]
     #[ORM\JoinColumn(name: 'estado_id', referencedColumnName: 'id', nullable: false)]
@@ -125,36 +125,40 @@ class EnvioAduana extends _Entity_
     }
 
     /**
-     * @return string
+     * @return bool
      */
-    public function getArancel(): string
+    public function isArancel(): bool
     {
         return $this->arancel;
     }
 
     /**
-     * @param string $arancel
+     * @param bool $arancel
      */
-    public function setArancel(string $arancel): void
+    public function setArancel(bool $arancel): void
     {
         $this->arancel = $arancel;
     }
 
     /**
-     * @return string
+     * @return bool
      */
-    public function getProcesado(): string
+    public function isProcesado(): bool
     {
         return $this->procesado;
     }
 
     /**
-     * @param string $procesado
+     * @param bool $procesado
      */
-    public function setProcesado(string $procesado): void
+    public function setProcesado(bool $procesado): void
     {
         $this->procesado = $procesado;
     }
+
+
+
+
 
     /**
      * @return Nomenclador

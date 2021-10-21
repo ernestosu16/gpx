@@ -1,5 +1,6 @@
 //Variables
 var envioTemporal = {
+    id:'',
     no_guia: '',
     cod_tracking: '',
     peso: 0.0,
@@ -17,7 +18,7 @@ var envioTemporal = {
     irregularidades: [],
     destinatario: null,
     remitente: null,
-    direcciones: []
+    //direcciones: []
 
 };
 var listEnviosTemporles = new Array();
@@ -396,6 +397,7 @@ function limpiarIrregularidades(){
 function limpiarVariableEnvioTemporal(){
 
     this.envioTemporal = {
+        id: '',
         no_guia: '',
         cod_tracking: '',
         peso: 0.0,
@@ -413,7 +415,7 @@ function limpiarVariableEnvioTemporal(){
         irregularidades: [],
         destinatario: null,
         remitente: null,
-        direcciones: []
+        //direcciones: []
     }
 
 }

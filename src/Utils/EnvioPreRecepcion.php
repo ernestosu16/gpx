@@ -17,6 +17,9 @@ use phpDocumentor\Reflection\Location;
 
 class EnvioPreRecepcion
 {
+    #[SerializedName('id')]
+    public string $id;
+
     #[SerializedName('no_guia')]
     public string $no_guia;
 
@@ -56,20 +59,13 @@ class EnvioPreRecepcion
      * @Type("array<App\Utils\EnvioAnomalia>")
      * @SerializedName(name="irregularidades")
      */
-    public array $irregularidades;
+    public array $irregularidades = [];
 
     #[SerializedName('destinatario')]
     public Persona $destinatario;
 
     #[SerializedName('remitente')]
     public Persona $remitente;
-
-    /**
-     * @var EnvioDireccion[]
-     * @Type("array<App\Utils\EnvioDireccion>")
-     * @SerializedName(name="direcciones")
-     */
-    public array $direcciones;
 
     /**
      * @param string $no_guia

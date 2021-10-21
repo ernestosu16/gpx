@@ -91,8 +91,11 @@ class Envio extends _Entity_
     private Localizacion $municipio;
 
     #[ORM\ManyToOne(targetEntity: Factura::class)]
-    #[ORM\JoinColumn(name: 'factura_id', referencedColumnName: 'id', nullable: false)]
-    private Factura $factura;
+    #[ORM\JoinColumn(name: 'factura_id', referencedColumnName: 'id', nullable: true)]
+    private ?Factura $factura;
+
+    #[ORM\Column(type: 'json')]
+    private array $direcciones = array();
 
 
     #[Pure]
@@ -410,21 +413,37 @@ class Envio extends _Entity_
     }
 
     /**
-     * @return Factura
+     * @return Factura|null
      */
-    public function getFactura(): Factura
+    public function getFactura(): ?Factura
     {
         return $this->factura;
     }
 
     /**
-     * @param Factura $factura
+     * @param Factura|null $factura
      */
-    public function setFactura(Factura $factura): void
+    public function setFactura(?Factura $factura): void
     {
         $this->factura = $factura;
     }
 
 
+
+    /**
+     * @return array
+     */
+    public function getDirecciones(): array
+    {
+        return $this->direcciones;
+    }
+
+    /**
+     * @param array $direcciones
+     */
+    public function setDirecciones(array $direcciones): void
+    {
+        $this->direcciones = $direcciones;
+    }
 
 }

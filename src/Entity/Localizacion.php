@@ -10,6 +10,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use JetBrains\PhpStorm\Pure;
+use JMS\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -41,12 +42,14 @@ class Localizacion extends BaseNestedTree
     #[ORM\Column(type: 'string', length: 100, unique: true)]
     #[Assert\NotBlank]
     #[Assert\Regex(pattern: RegexUtil::CODIGO, message: 'regex.codigo')]
+    #[Groups(['default'])]
     protected string $codigo;
 
     #[ORM\Column(type: 'string', length: 50)]
     #[Assert\NotBlank]
     #[Assert\Regex(pattern: RegexUtil::TEXTO_ACENTO_ESPACIO, message: 'regex.nombre')]
     #[Assert\Length(min: 3, max: 100)]
+    #[Groups(['default'])]
     protected string $nombre;
 
     #[ORM\Column(type: 'text', length: 500)]
@@ -55,10 +58,12 @@ class Localizacion extends BaseNestedTree
 
     #[ORM\Column(type: 'text', length: 2)]
     #[Assert\Length(max: 2)]
+    #[Groups(['default'])]
     protected string $codigo_aduana = '';
 
     #[ORM\ManyToOne(targetEntity: LocalizacionTipo::class)]
     #[ORM\JoinColumn(name: 'localizacion_tipo_id', nullable: false)]
+    #[Groups(['default'])]
     protected ?LocalizacionTipo $tipo;
 
     #[Pure] public function __construct()

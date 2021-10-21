@@ -19,6 +19,7 @@ use App\Repository\NomencladorRepository;
 use App\Repository\PaisRepository;
 use App\Utils\EnvioPreRecepcion;
 use App\Utils\MyResponse;
+use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerBuilder;
 use phpDocumentor\Reflection\Types\False_;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -272,8 +273,8 @@ class EnvioController extends AbstractController
 
     }
 
-    #[Route('/envio/buscar-municipio', name: 'mun_prov_seleccionada', options: ["expose" => true] , methods: ['POST'])]
-    public function municipioDeUnaProvincia(Request $request){
+    #[Route('/envio/buscar-municipio1', name: 'mun_prov_seleccionada1', options: ["expose" => true] , methods: ['POST'])]
+    public function municipioDeUnaProvincia1(Request $request){
 
         if ($request->isXmlHttpRequest()){
 
@@ -304,6 +305,46 @@ class EnvioController extends AbstractController
             $serializer = SerializerBuilder::create()->build();
             $miRespuestaJson = $serializer->serialize($miRespuesta,"json");
 
+            return JsonResponse::fromJsonString($miRespuestaJson);
+
+        }else{
+            dump("Hacker");
+            throwException('Hacker');
+        }
+
+    }
+
+    #[Route('/envio/buscar-municipio', name: 'mun_prov_seleccionada', options: ["expose" => true] , methods: ['POST'])]
+    public function municipioDeUnaProvincia(Request $request){
+
+        if ($request->isXmlHttpRequest()){
+
+            $idProvincia = $request->request->get('idProvincia');
+
+            /** @var Localizacion $provincia */
+            $provincia = $this->localizacion->find($idProvincia);
+
+            $municipios = $provincia->getChildren()->toArray();
+
+            $miRespuesta = new MyResponse();
+            $serializer = SerializerBuilder::create()->build();
+            //Si no existen municipios
+            if ( ! $municipios ){
+
+                $miRespuesta->setEstado(false);
+                $miRespuesta->setData(null);
+                $miRespuesta->setMensaje("No existen municipios en la provincia solicitada");
+
+
+            }else{
+
+                $miRespuesta->setEstado(true);
+                $mi = $serializer->serialize($municipios,"json", SerializationContext::create()->setGroups('default'));
+                $miRespuesta->setData(json_decode($mi, true, 512, JSON_THROW_ON_ERROR) );
+                $miRespuesta->setMensaje("Municipios buscados con exito");
+            }
+
+            $miRespuestaJson = $serializer->serialize($miRespuesta,"json");
             return JsonResponse::fromJsonString($miRespuestaJson);
 
         }else{

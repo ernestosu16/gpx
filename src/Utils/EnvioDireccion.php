@@ -28,10 +28,10 @@ class EnvioDireccion
     private string $apto;
 
     #[SerializedName('provincia')]
-    private ?Localizacion $provincia;
+    private string $provincia;
 
     #[SerializedName('municipio')]
-    private ?Localizacion $municipio;
+    private string $municipio;
 
 
     /**
@@ -131,53 +131,35 @@ class EnvioDireccion
     }
 
     /**
-     * @return Localizacion|null
+     * @return string
      */
-    public function getProvincia(): ?Localizacion
+    public function getProvincia(): string
     {
         return $this->provincia;
     }
 
     /**
-     * @param Localizacion|null $provincia
+     * @param string $provincia
      */
-    public function setProvincia(?Localizacion $provincia): void
+    public function setProvincia(string $provincia): void
     {
         $this->provincia = $provincia;
     }
 
     /**
-     * @return Localizacion|null
+     * @return string
      */
-    public function getMunicipio(): ?Localizacion
+    public function getMunicipio(): string
     {
         return $this->municipio;
     }
 
     /**
-     * @param Localizacion|null $municipio
+     * @param string $municipio
      */
-    public function setMunicipio(?Localizacion $municipio): void
+    public function setMunicipio(string $municipio): void
     {
         $this->municipio = $municipio;
     }
-
-
-    /**
-     * @return string
-     */
-    public function getMunicipioNombre(): string
-    {
-        return $this->municipio->getNombre();
-    }
-
-    /**
-     * @return string
-     */
-    public function getMunicipioCodigo(): string
-    {
-        return $this->municipio->getCodigo();
-    }
-
 
 }
