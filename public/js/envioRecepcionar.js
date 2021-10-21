@@ -474,11 +474,11 @@ function asignarValoresDeEnvioManifestado(){
             .trigger('change.select2');
     }
 
-    if (envioTemporal.municipio){
+    /*if (envioTemporal.municipio){
         $('#select_municipios')
             .val(envioTemporal.municipio)
             .trigger('change.select2');
-    }
+    }*/
 
     $('#input_pareo').val(envioTemporal.pareo);
 
@@ -572,7 +572,14 @@ function buscarMunDeUnaProv()
                         console.log('ajax prov-mun')
                     }
 
+                    selectMunicipio.html('');
                     selectMunicipio.html(options);
+
+                    if (envioTemporal.municipio){
+                        $('#select_municipios')
+                            .val(envioTemporal.municipio)
+                            .trigger('change.select2');
+                    }
                 }
 
             },
