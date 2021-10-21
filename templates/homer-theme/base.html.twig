@@ -43,6 +43,18 @@
 <script src="{{ asset('homer-theme/scripts/homer.min.js') }}"></script>
 <script src="{{ asset('app.min.js') }}"></script>
 
+{% if app.request.method == 'GET' %}
+    <script type="text/javascript">
+        {% set referer = app.request.headers.get('referer') %}
+        {% set from_search = app.session.has('from-search') ?? false %}
+        {% set flashes = ('buscar' in referer or not from_search) ? app.session.flashbag.get('toastr') : app.session.flashbag.peek('toastr') %}
+        {% for flash in flashes %}
+        {{ flash|raw }}
+        {% endfor %}
+    </script>
+{% endif %}
+
+
 {% block javascripts %}{% endblock %}
 </body>
 </html>

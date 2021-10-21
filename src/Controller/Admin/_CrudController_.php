@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Controller\_Controller_;
+use App\Service\NotifyService;
 use Doctrine\ORM\ORMInvalidArgumentException;
 use Knp\Component\Pager\PaginatorInterface;
 use ReflectionProperty;
@@ -136,6 +137,12 @@ abstract class _CrudController_ extends _Controller_
         ]);
     }
 
+    public static function getSubscribedServices(): array
+    {
+        $services = parent::getSubscribedServices();
+        $services['app.service.notify'] = NotifyService::class;
+        return $services;
+    }
 
     #[Route('/new', name: '_new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
@@ -159,6 +166,7 @@ abstract class _CrudController_ extends _Controller_
             $this->getDoctrine()->getManager()->persist($entity);
             $this->getDoctrine()->getManager()->flush();
 
+            $this->get('app.service.notify')->addToastr('Creado', 'Datos creado correctamente.');
             return $this->redirectToRoute($settings['routes'][self::INDEX], [], Response::HTTP_SEE_OTHER);
         }
 
@@ -184,8 +192,10 @@ abstract class _CrudController_ extends _Controller_
             $this->getDoctrine()->getManager()->persist($entity);
             $this->getDoctrine()->getManager()->flush();
 
+            $this->get('app.service.notify')->addToastr('Editar', 'Editado correctamente.');
             return $this->redirectToRoute($settings['routes'][self::INDEX], [], Response::HTTP_SEE_OTHER);
         }
+
         return $this->render($settings['templates'][self::EDIT], [
             'settings' => $this->settings(),
             'entity' => $entity,
@@ -202,6 +212,8 @@ abstract class _CrudController_ extends _Controller_
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($entity);
             $entityManager->flush();
+
+            $this->get('app.service.notify')->addToastr('Eliminado', 'Eliminado correctamente.');
         }
 
         $settings = $this->settings();

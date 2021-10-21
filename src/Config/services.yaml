@@ -3,3 +3,9 @@ services:
         arguments: ['@doctrine.orm.entity_manager']
         tags:
             - 'security.voter'
+
+    app.service.notify:
+        class: App\Service\NotifyService
+        public: true
+        arguments:
+          [ '@Symfony\Component\HttpFoundation\Session\SessionInterface' ]
