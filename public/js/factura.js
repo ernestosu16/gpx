@@ -33,7 +33,7 @@ function buscarFacturaSacas()
             console.log('error', error.responseText)
         }
 
-        })
+    })
 
 
 }
@@ -89,61 +89,64 @@ function recepcionarFactura(noFactura)
 function guardarAnomalia(sacaID){
 
     var table = document.getElementById("anomaliaslist"+sacaID);
-    var cells = table.getElementsByTagName("input");
-   
-    console.log(cells);
-    /*let key = [];
+    var cells = table.getElementsByClassName("check-anomalia");
+
+    let key = [];
     let value = [];
 
     for (let check of cells) {
-        if(check.value){
+        if(check.checked){
             let className = check.className.split(' ');
-            let a = table.getElementsByClassName(className[1]);
-            key.push(a[0].innerText);
-            value.push(a[1].value);
+            let a = table.getElementsByClassName(className[2]);
+
+            key.push(a[1].innerText);
+            value.push(a[2].value);
+
+            if (a[1].innerText === 'DIFERENCIA DE PESO' && a[2].value==='')
+            {
+                swal({
+                    title: "Diferencia de peso",
+                    text: 'Debe escribir la diferencia de peso',
+                    type: "warning"
+                });
+
+                return;
+            }
+
         }
     }
 
-    if(key.length !== 0) {
-        let i = 0;
-        let anomalias = {};
+    let i = 0;
+    let anomalias = {};
 
-        while (i < key.length) {
-            anomalias[key[i]] = value[i]
-            i++;
+    while (i < key.length) {
+        anomalias[key[i]] = value[i]
+        i++;
+    }
+
+    let ruta = Routing.generate('saca_anomalia');
+    $.ajax({
+        type: 'POST',
+        url: ruta,
+        data: {
+            id: sacaID,
+            anomalias: anomalias
+        },
+        async: true,
+        dataType: 'json',
+        loading: '',
+        success: function (data) {
+            swal({
+                title: "OK",
+                text: data,
+                type: "success"
+            });
+        },
+        error: function (error) {
+            alert('Error: ' + error.status + ' ' + error.statusText);
+            console.log('error', error.responseText)
         }
 
-        let ruta = Routing.generate('saca_anomalia');
-        $.ajax({
-            type: 'POST',
-            url: ruta,
-            data: {
-                id: sacaID,
-                saca: ['qwe', 'rty'],
-                anomalias: anomalias
-            },
-            async: true,
-            dataType: 'json',
-            loading: '',
-            success: function (data) {
-                swal({
-                    title: "OK",
-                    text: data,
-                    type: "success"
-                });
-            },
-            error: function (error) {
-                alert('Error: ' + error.status + ' ' + error.statusText);
-                console.log('error', error.responseText)
-            }
-
-        })
-    }else {
-        swal({
-            title: "Anomalias vacias",
-            text: 'Debe escribir la descripcion en al menos una anomalia',
-            type: "warning"
-        });
-    }*/
+    })
 
 }
