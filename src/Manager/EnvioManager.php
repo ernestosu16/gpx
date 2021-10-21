@@ -204,10 +204,6 @@ class EnvioManager extends _Manager_
                 $direcciones[] = $as;
 
                 $envio->setDirecciones($direcciones);
-                //dump($envio,'direcciones');exit;
-
-
-                //dump($envio,'dump');exit;
 
                 $this->entityManager->persist($envio);
 
