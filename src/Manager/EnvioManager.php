@@ -123,10 +123,8 @@ class EnvioManager extends _Manager_
     public function recepcionarEnvios($envios,TrabajadorCredencial $user): bool{
         $recepcionados = true;
 
-        //dump($envios,'envios');exit;
-
         $deserializer = SerializerBuilder::create()->build();
-        //try{
+        try{
             foreach ($envios as $envio) {
 
                 /** @var EnvioPreRecepcion $envioPreRecepcion */
@@ -198,11 +196,10 @@ class EnvioManager extends _Manager_
                 $normalizers = [new ObjectNormalizer()];
                 $serializer = new Serializer($normalizers, []);
 
-                $as = $serializer->normalize($direccion);
-
+                $dereccionesSerializadas = $serializer->normalize($direccion);
 
                 $direcciones = [];
-                $direcciones[] = $as;
+                $direcciones[] = $dereccionesSerializadas;
 
                 $envio->setDirecciones($direcciones);
 
@@ -249,6 +246,7 @@ class EnvioManager extends _Manager_
                 $envioAduana->setProvinciaAduana($provincia->getCodigoAduana());
                 $envioAduana->setMunicipioAduana($municipio->getCodigoAduana());
                 $envioAduana->setEstado($estadoRecepcionado);
+                $envioAduana->setArancel($envioManifestado->isArancel());
 
                 $this->entityManager->persist($envioAduana);
 
@@ -269,10 +267,9 @@ class EnvioManager extends _Manager_
             }
 
             $this->entityManager->flush();
-        /*}catch (\Exception $e){
-            dump($e,'exceptos');exit;
+        }catch (\Exception $e){
             return false;
-        }*/
+        }
 
         return $recepcionados;
     }
