@@ -15,6 +15,7 @@ use App\Repository\AgenciaRepository;
 use App\Repository\EnvioManifiestoRepository;
 use App\Repository\EnvioRepository;
 use App\Repository\LocalizacionRepository;
+use App\Repository\NomencladorRepository;
 use App\Repository\PaisRepository;
 use App\Utils\EnvioPreRecepcion;
 use App\Utils\MyResponse;
@@ -38,6 +39,7 @@ class EnvioController extends AbstractController
         private EnvioManager $envioManager,
         private PaisRepository $paisRepository,
         private AgenciaRepository $agenciaRepository,
+        private NomencladorRepository $nomencladorRepository
     )
     {
     }
@@ -79,33 +81,17 @@ class EnvioController extends AbstractController
 
             $municipios = $this->localizacion->findByTipoCodigo(LocalizacionTipo::MUNICIPIO);
 
-            $anomalias = ["envio faltante",
-                "envio mal encaminado",
-                "envio mojado",
-                "envio roto",
-                "acceso al contenido",
-                "envio con precinta",
-                "envio violado",
-                "envio de entidad, bajo control aduana postal",
-                "envio no controlado",
-                "notificado a",
-                "cambio tipo de producto",
-                "cambio sub tipo de producto",
-                "generado aviso",
-                "eliminado aviso",
-                "envio no manifestado",
-                "envio manifestado en otro manifiesto",
-                "diferencia de peso"];
+            $anomalias = $this->nomencladorRepository->findByChildren('APP_ENVIO_ANOMALIA');
 
             $nacionalidades = $this->paisRepository->findAll();
 
-            $curries = $this->agenciaRepository->findAll();
+            $curries = $this->agenciaRepository->findByChildren('AGENCIA');
 
             //dump($this->localizacion->createQueryBuilderMunicipio());
 
 
             return $this->render('envio/recepcionarEnvio.html.twig', [
-                "anomalias" => $anomalias,
+                "anomalias" => $anomalias->toArray(),
                 "provincias" => $provincias,
                 "nacionalidades" => $nacionalidades,
                 "curries" => $curries,
@@ -257,17 +243,14 @@ class EnvioController extends AbstractController
 
             $result = $this->envioManager->recepcionarEnvios($envios,$credencial);
 
-            $enviosRecepcionados= $this->envioManager->recepcionarEnvios([]);
-
             $miRespuesta = new MyResponse();
 
             //Si dio algun error par aguardar los envios
-            if ( ! $enviosRecepcionados ){
+            if ( ! $result ){
 
                 $miRespuesta->setEstado(false);
                 $miRespuesta->setData(null);
-                $miRespuesta->setMensaje("Se ha producido un error durante la salva de los envios");
-
+                $miRespuesta->setMensaje("Se ha producido un error durante la recepcion de los envios");
 
             }else{
 
@@ -289,14 +272,17 @@ class EnvioController extends AbstractController
 
     }
 
-    #[Route('/envio/buscar-municipio', name: 'buscar_municipio', options: ["expose" => true] , methods: ['POST'])]
+    #[Route('/envio/buscar-municipio', name: 'mun_prov_seleccionada', options: ["expose" => true] , methods: ['POST'])]
     public function municipioDeUnaProvincia(Request $request){
 
         if ($request->isXmlHttpRequest()){
 
-            $provincia = $request->request->get('provincia');
+            $idProvincia = $request->request->get('idProvincia');
 
-            $municipios = $this->localizacion->findMunicipiosOfProvinciaById($provincia);
+            /** @var Localizacion $provincia */
+            $provincia = $this->localizacion->find($idProvincia);
+
+            $municipios = $provincia->getChildren()->toArray();
 
             $miRespuesta = new MyResponse();
 
@@ -305,15 +291,14 @@ class EnvioController extends AbstractController
 
                 $miRespuesta->setEstado(false);
                 $miRespuesta->setData(null);
-                $miRespuesta->setMensaje("No existe el envio en la guia solicitada");
+                $miRespuesta->setMensaje("No existen municipios en la provincia solicitada");
 
-                //Si existe pero es interes de aduana
+
             }else{
 
                 $miRespuesta->setEstado(true);
                 $miRespuesta->setData($municipios);
                 $miRespuesta->setMensaje("Municipios buscados con exito");
-
             }
 
             $serializer = SerializerBuilder::create()->build();

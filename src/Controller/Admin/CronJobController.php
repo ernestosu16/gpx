@@ -28,6 +28,9 @@ final class CronJobController extends _CrudController_
     {
         return [
             'translation_domain' => 'cron_bundle',
+            'filter' => [
+                'q.nombre' => 'nombre'
+            ],
             'routes' => [
                 self::INDEX => 'admin_cron_job_index',
                 self::NEW => 'admin_cron_job_new',

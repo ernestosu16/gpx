@@ -4,11 +4,18 @@
 namespace App\Utils;
 
 
+use JMS\Serializer\Annotation\SerializedName;
+
 class EnvioAnomalia
 {
-    private $id_anomalia;
-    private $nombre_anomalia;
-    private $descripcion_anomalia_envio;
+    #[SerializedName('id')]
+    private $id;
+
+    #[SerializedName('nombre')]
+    private $nombre;
+
+    #[SerializedName('descripcion')]
+    private $descripcion;
 
     public function __construct()
     {
@@ -17,49 +24,49 @@ class EnvioAnomalia
     /**
      * @return mixed
      */
-    public function getIdAnomalia()
+    public function getId()
     {
-        return $this->id_anomalia;
+        return $this->id;
     }
 
     /**
-     * @param mixed $id_anomalia
+     * @param mixed $id
      */
-    public function setIdAnomalia($id_anomalia): void
+    public function setId($id): void
     {
-        $this->id_anomalia = $id_anomalia;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getNombreAnomalia()
-    {
-        return $this->nombre_anomalia;
-    }
-
-    /**
-     * @param mixed $nombre_anomalia
-     */
-    public function setNombreAnomalia($nombre_anomalia): void
-    {
-        $this->nombre_anomalia = $nombre_anomalia;
+        $this->id = $id;
     }
 
     /**
      * @return mixed
      */
-    public function getDescripcionAnomaliaEnvio()
+    public function getNombre()
     {
-        return $this->descripcion_anomalia_envio;
+        return $this->nombre;
     }
 
     /**
-     * @param mixed $descripcion_anomalia_envio
+     * @param mixed $nombre
      */
-    public function setDescripcionAnomaliaEnvio($descripcion_anomalia_envio): void
+    public function setNombre($nombre): void
     {
-        $this->descripcion_anomalia_envio = $descripcion_anomalia_envio;
+        $this->nombre = $nombre;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDescripcion()
+    {
+        return $this->descripcion;
+    }
+
+    /**
+     * @param mixed $descripcion
+     */
+    public function setDescripcion($descripcion): void
+    {
+        $this->descripcion = $descripcion;
     }
 
 }

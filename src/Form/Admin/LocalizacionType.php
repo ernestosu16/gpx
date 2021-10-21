@@ -6,7 +6,6 @@ use App\Entity\Localizacion;
 use App\Entity\LocalizacionTipo;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -18,6 +17,16 @@ class LocalizacionType extends AbstractType
         $object = $builder->getData();
 
         $builder
+            ->add('parent', EntityType::class, [
+                'class' => Localizacion::class,
+                'label' => 'pertenece',
+                'label_attr' => ['class' => 'col-sm-2 control-label'],
+                'attr' => ['class' => 'form-control input-sm select2'],
+                'required' => false,
+                'choice_label' => function (Localizacion $row) {
+                    return $row->getNombreConTipo();
+                }
+            ])
             ->add('tipo', EntityType::class, [
                 'class' => LocalizacionTipo::class,
                 'label' => 'tipo',

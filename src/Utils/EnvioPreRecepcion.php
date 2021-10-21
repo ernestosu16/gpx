@@ -52,8 +52,8 @@ class EnvioPreRecepcion
 
     //Array de nomencladores de tipo anomalia
     /**
-     * @var Nomenclador[]
-     * @Type("array<App\Entity\Nomenclador>")
+     * @var EnvioAnomalia[]
+     * @Type("array<App\Utils\EnvioAnomalia>")
      * @SerializedName(name="irregularidades")
      */
     public array $irregularidades;
