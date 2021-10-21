@@ -1,0 +1,115 @@
+{% extends 'homer-theme/layout.html.twig' %}
+
+{% block panel_body %}
+    <div id="printableArea">
+        <div class="col-md-12">
+            <table class="table table-hover table-bordered table-striped">
+                <thead>
+                <tr>
+                    <td colspan="4" align="center">Factura Integrada de Envíos y Sacas</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        Fecha: {{ fecha }}
+                    </td>
+                    <td>
+                        Origen: {{ factura.origen }}
+                    </td>
+                    <td>
+                        Factura: {{ factura.numerofactura }}
+                    </td>
+                    <td>
+                        Código: {{ factura.codigofactura }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Despacho:
+                    </td>
+                    <td colspan="2">
+                        Destino: {{ factura.destino }}
+                    </td>
+                    <td>
+                        Chapa: {{ factura.chapavehiculo }}
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-12">
+            <label>Relación de Sacas</label>
+        </div>
+        <div class="col-md-12">
+            <table class="table table-hover table-bordered table-striped">
+                <thead>
+                <tr>
+                    <th>Consecutivo</th>
+                    <th>Código</th>
+                    <th>Sello</th>
+                    <th>Peso(Kg)</th>
+                    <th>Cantidad envíos</th>
+                    <th>Número de despacho</th>
+                    <th>Peso de los envíos</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in sacas %}
+                    <tr>
+                        <th></th>
+                        <th>{{ item.codigo }}</th>
+                        <th>{{ item.sello }}</th>
+                        <th>{{ item.peso }}</th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                {% endfor %}
+                {% for item in envios %}
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th>{{ item.codTracking }}</th>
+                        <th>{{ item.peso }}</th>
+                        <th>1</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-12">
+            <label>Peso total de las sacas: </label>
+        </div>
+
+
+    </div>
+    <div class="col-sm-12">
+        <input type="button" onclick="printDiv('printableArea')" value="Imprimir" class="btn btn-primary"/>
+        <a rel="nofollow" href="/factura/crear_factura" class="btn btn btn-default">Volver</a>
+    </div>
+
+
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js',{ callback: 'fos.Router.setData' }) }}"></script>
+
+    <script>
+
+        function printDiv(divName) {
+            var printContents = document.getElementById(divName).innerHTML;
+            var originalContents = document.body.innerHTML;
+
+            document.body.innerHTML = printContents;
+
+            window.print();
+
+            document.body.innerHTML = originalContents;
+        }
+    </script>
+
+{% endblock %}
