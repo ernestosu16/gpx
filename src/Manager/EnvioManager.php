@@ -170,7 +170,8 @@ class EnvioManager extends _Manager_
                     $this->entityManager->getRepository(EstructuraTipo::class)->findOneByCodigo('EMPRESA')
                 ));
 
-                $envio->setCanal($estadoRecepcionado);
+                $canalVerde = $this->entityManager->getRepository(Nomenclador::class)->findOneByCodigo('CANAL_VERDE');
+                $envio->setCanal($canalVerde);
 
                 /** @var Localizacion $provincia */
                 $provincia = $this->entityManager->getRepository(Localizacion::class)->find($envioPreRecepcion->provincia);
@@ -220,7 +221,7 @@ class EnvioManager extends _Manager_
                 $envioTraza->setTrabajador($user->getTrabajador());
                 $envioTraza->setEstructuraOrigen($user->getEstructura());
                 $envioTraza->setIp('');
-                $envioTraza->setCanal($estadoRecepcionado);
+                $envioTraza->setCanal($canalVerde);
 
                 $this->entityManager->persist($envioTraza);
 

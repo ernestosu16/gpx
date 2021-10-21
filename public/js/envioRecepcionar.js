@@ -254,6 +254,8 @@ function recepcionarEnvios()
             return envio
         } )
 
+        console.log(listEnvios,'listEnvios');
+
         var ruta = Routing.generate('recepcionar_envios')
         $.ajax({
             type: 'POST',
@@ -275,10 +277,10 @@ function recepcionarEnvios()
                     });
 
                 } else {
-                    console.log()("Envios receppcionados con exito.");
+                    console.log("Envios receppcionados con exito.");
                     swal({
                         title: "Informacion",
-                        text: 'Envios receppcionados con exito.',
+                        text: 'Envios recepcionados con exito.',
                         type: "info"
                     });
 
