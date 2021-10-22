@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Envio;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -47,4 +48,19 @@ class EnvioRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function findByEnvioToCodTrackingCalendarYear($codTracking)
+    {
+        $exp = new Expr();
+        $fechaActual = new \DateTime();
+
+        return $this->createQueryBuilder('envio')
+            ->andWhere('envio.cod_tracking = :codTracking')
+            ->andWhere($exp->andX($exp->gte('envio.fecha_recepcion',':fecha_init'),$exp->lte('envio.fecha_recepcion',':fecha_end')))
+            ->setParameter('codTracking', $codTracking)
+            ->setParameter('fecha_init', $fechaActual->format('Y-01-01 00:00:00'))
+            ->setParameter('fecha_end', $fechaActual->format('Y-12-31 23:59:59'))
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

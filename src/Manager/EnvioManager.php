@@ -63,11 +63,9 @@ class EnvioManager extends _Manager_
         /** @var $envioManifestado EnvioManifiesto * */
         $envioManifestado = $this->entityManager->getRepository(EnvioManifiesto::class)->findByGuiaAndCodigo($noGuia,$codTracking);
 
-        $envioIgualCodTracking = $this->entityManager->getRepository(Envio::class)->findOneBy(['cod_tracking'=> $codTracking]);
-        //Coger la fecha y si esdel mismo a;o entoces hacer el pareo decirlo al cliente y hacer validaciones
-        $parearEnvio = (bool)$envioIgualCodTracking;
+        $envioIgualCodTracking = $this->entityManager->getRepository(Envio::class)->findByEnvioToCodTrackingCalendarYear($codTracking);
 
-        dump($envioManifestado,'$envioManifestado');
+        $parearEnvio = (bool)$envioIgualCodTracking;
 
         if (  $envioManifestado ) {
 
@@ -94,24 +92,6 @@ class EnvioManager extends _Manager_
 
             $envioPreRecepcion->remitente = $envioManifestado->getRemitente();
             $envioPreRecepcion->destinatario = $envioManifestado->getDestinatario();
-
-            /*$direccion = new EnvioDireccion();
-            $direccion->setCalle($envioManifestado->getCalleDestinatario());
-            $direccion->setEntreCalle($envioManifestado->getEntreCalleDestinatario());
-            $direccion->setYCalle($envioManifestado->getYCalleDestinatario());
-            $direccion->setNumero($envioManifestado->getNoDestinatario());
-            $direccion->setPiso($envioManifestado->getPisoDestinatario());
-            $direccion->setApto($envioManifestado->getAptoDestinatario());
-            $direccion->setProvincia(
-                $envioManifestado->getProvinciaDestinatario()
-            );
-            $direccion->setMunicipio(
-                $envioManifestado->getMunicipioDestinatario()
-            );
-
-            $envioPreRecepcion->direcciones = [];
-            $envioPreRecepcion->direcciones[] = $direccion;
-            */
 
         }else{
             $envioPreRecepcion = null;
