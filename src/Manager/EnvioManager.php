@@ -250,4 +250,32 @@ class EnvioManager extends _Manager_
         return $recepcionados;
     }
 
+    public function saveEnvioAnomalias(string $id, array $anomalias, TrabajadorCredencial $user)
+    {
+        $envio = $this->entityManager->getRepository(Envio::class)->find($id);
+
+        $envioTraza = new EnvioTraza();
+        $envioTraza->setFecha(new \DateTime());
+        $envioTraza->setPeso($envio->getPeso());
+        $envioTraza->setEnvio($envio);
+        $envioTraza->setEstado($envio->getEstado());
+        $envioTraza->setTrabajador($user->getTrabajador());
+        $envioTraza->setEstructuraOrigen($user->getEstructura());
+        $envioTraza->setIp('');
+
+        $this->entityManager->persist($envioTraza);
+
+        foreach ($anomalias as $key=>$value )
+        {
+
+            $envioAnomaliaTraza = new EnvioAnomaliaTraza();
+            $envioAnomaliaTraza->setAnomalia($this->entityManager->getRepository(Nomenclador::class)->findOneBy(['codigo'=>$key]));
+            $envioAnomaliaTraza->setDescripcion($value);
+            $envioAnomaliaTraza->setEnvioTraza($envioTraza);
+
+            $this->entityManager->persist($envioAnomaliaTraza);
+            $this->entityManager->flush();
+        }
+    }
+
 }

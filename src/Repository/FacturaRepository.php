@@ -43,6 +43,17 @@ class FacturaRepository extends ServiceEntityRepository
 
         return $factura ? $factura[0]->getSacas()->toArray() : $factura;
     }
+
+    public function findEnviosNoFacturaAndEstado($noFactura, $estado = 'APP_FACTURA_ESTADO_CREADA')
+    {
+        $factura = $this->createQueryBuilder('f')
+            ->join('f.estado', 'e', Expr\Join::WITH, "e.codigo='$estado'")
+            ->andWhere("f.numero_factura='$noFactura'")
+            ->getQuery()
+            ->getResult();
+
+        return $factura ? $factura[0]->getEnvios()->toArray() : $factura;
+    }
     // /**
     //  * @return Factura[] Returns an array of Factura objects
     //  */

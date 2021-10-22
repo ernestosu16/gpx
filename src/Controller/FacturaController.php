@@ -38,11 +38,15 @@ class FacturaController extends AbstractController
     {
         $noFactura = $request->get('noFactura');
         $sacas = $this->facturaRepository->findSacasNoFacturaAndEstado($noFactura);
+        $envios = $this->facturaRepository->findEnviosNoFacturaAndEstado($noFactura);
         $anomalias = $this->nomencladorRepository->findByChildren('APP_SACA_ANOMALIA');
+        $anomaliasE = $this->nomencladorRepository->findByChildren('APP_ENVIO_ANOMALIA');
 
         $html = $sacas ? $this->renderView('factura/sacas.html.twig', [
             'sacas'=>$sacas,
+            'envios'=>$envios,
             'anomalias'=>$anomalias->toArray(),
+            'anomaliasE'=>$anomaliasE->toArray(),
             'noFactura' => $noFactura]) : 'null';
 
         return new Response($html);

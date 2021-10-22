@@ -91,7 +91,7 @@ class Envio extends _Entity_
     private Localizacion $municipio;
 
     #[ORM\ManyToOne(targetEntity: Factura::class)]
-    #[ORM\JoinColumn(name: 'factura_id', referencedColumnName: 'id', nullable: false)]
+    #[ORM\JoinColumn(name: 'factura_id', referencedColumnName: 'id', nullable: true)]
     private Factura $factura;
 
 

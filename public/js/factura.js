@@ -148,3 +148,66 @@ function guardarAnomalia(sacaID){
     })
 
 }
+
+function guardarAnomaliaEnvio(envioID){
+
+    var table = document.getElementById("anomaliaslist"+envioID);
+    var cells = table.getElementsByClassName("check-anomalia");
+
+    let key = [];
+    let value = [];
+
+    for (let check of cells) {
+        if(check.checked){
+            let className = check.className.split(' ');
+            let a = table.getElementsByClassName(className[2]);
+
+            key.push(a[0].value);
+            value.push(a[2].value);
+
+            /*if (a[1].innerText === 'DIFERENCIA DE PESO' && a[2].value==='')
+            {
+                swal({
+                    title: "Diferencia de peso",
+                    text: 'Debe escribir la diferencia de peso',
+                    type: "warning"
+                });
+                return;
+            }*/
+        }
+    }
+
+    let i = 0;
+    let anomalias = {};
+
+    while (i < key.length) {
+        anomalias[key[i]] = value[i]
+        i++;
+    }
+
+    let ruta = Routing.generate('envio_anomalia');
+    $.ajax({
+        type: 'POST',
+        url: ruta,
+        data: {
+            id: envioID,
+            anomalias: anomalias
+        },
+        async: true,
+        dataType: 'json',
+        loading: '',
+        success: function (data) {
+            swal({
+                title: "OK",
+                text: data,
+                type: "success"
+            });
+        },
+        error: function (error) {
+            alert('Error: ' + error.status + ' ' + error.statusText);
+            console.log('error', error.responseText)
+        }
+
+    })
+
+}

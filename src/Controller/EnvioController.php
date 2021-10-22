@@ -314,4 +314,22 @@ class EnvioController extends AbstractController
 
     }
 
+    #[Route('/save-anomalia', name: 'envio_anomalia', options: ["expose" => true] ,methods: ['POST'])]
+    public function saveEnvioAnomalia(Request $request)
+    {
+        $id = $request->get('id');
+        $anomalias = $request->get('anomalias');
+
+        try {
+            /** @var TrabajadorCredencial $credencial */
+            $user = $this->getUser();
+
+            $this->envioManager->saveEnvioAnomalias($id,$anomalias,$user);
+            return JsonResponse::fromJsonString('"Anomalias agregadas correctamente"');
+        }catch (\Exception $exception){
+            return $exception;
+        }
+
+
+    }
 }

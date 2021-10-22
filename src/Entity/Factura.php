@@ -42,6 +42,9 @@ class Factura extends _Entity_
     #[ORM\OneToMany(mappedBy: 'factura', targetEntity: Saca::class)]
     private $sacas;
 
+    #[ORM\OneToMany(mappedBy: 'factura', targetEntity: Envio::class)]
+    private $envios;
+
     #[ORM\ManyToMany(targetEntity: Nomenclador::class, cascade: ['persist'])]
     #[ORM\JoinTable(name: 'factura_anomalia_asignada')]
     private ?Collection $anomalias;
@@ -49,6 +52,8 @@ class Factura extends _Entity_
     #[ORM\Column(type: 'json', nullable: true)]
     private $observaciones;
 
+    #[ORM\OneToMany(mappedBy: "factura", targetEntity: FacturaTraza::class)]
+    private $trazas;
 
     public function __construct()
     {
@@ -194,6 +199,36 @@ class Factura extends _Entity_
     }
 
     /**
+     * @return Collection|Envio[]
+     */
+    public function getEnvios(): Collection
+    {
+        return $this->envios;
+    }
+
+    public function addEnvio(Envio $envio): self
+    {
+        if (!$this->envios->contains($envio)) {
+            $this->envios[] = $envio;
+            $envio->setFactura($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEnvio(Envio $envio): self
+    {
+        if ($this->envios->removeElement($envio)) {
+            // set the owning side to null (unless already changed)
+            if ($envio->getFactura() === $this) {
+                $envio->setFactura(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
      * @return Collection|null
      */
     public function getAnomalias(): ?Collection
@@ -229,4 +264,35 @@ class Factura extends _Entity_
         $this->observaciones = $observaciones;
         return $this;
     }
+
+    /**
+     * @return Collection|FacturaTraza[]
+     */
+    public function getTrazas(): Collection
+    {
+        return $this->trazas;
+    }
+
+    public function addTraza(FacturaTraza $traza): self
+    {
+        if (!$this->trazas->contains($traza)) {
+            $this->trazas[] = $traza;
+            $traza->setFactura($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTraza(FacturaTraza $traza): self
+    {
+        if ($this->trazas->removeElement($traza)) {
+            // set the owning side to null (unless already changed)
+            if ($traza->getFactura() === $this) {
+                $traza->setFactura(null);
+            }
+        }
+
+        return $this;
+    }
+
 }

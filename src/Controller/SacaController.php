@@ -25,7 +25,7 @@ class SacaController extends AbstractController
     }
 
     #[Route('/save-anomalia', name: 'saca_anomalia', options: ["expose" => true] ,methods: ['POST'])]
-    public function findSacasFactura(Request $request)
+    public function saveSacaAnomalia(Request $request)
     {
         $id = $request->get('id');
         $anomalias = $request->get('anomalias');
