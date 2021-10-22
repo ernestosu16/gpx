@@ -160,9 +160,9 @@ function GuardarFactura() {
                 document.getElementById('generar_factura').setAttribute('href', 'imprimir/' + data);
             }
         });
+    }else{
+        alert('Revise los campos')
     }
-
-
 }
 
 function validaForm(){

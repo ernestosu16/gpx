@@ -7,7 +7,7 @@ function AgregarEnvios() {
     $("#mensaje").html('')
     var ruta = Routing.generate('Annadir')
     var res = $("#input_codTracking").val();
-    const oficina = $("#select_oficinas_saca").val();
+    const oficina = $("#select_oficinas").val();
 
     const resultado = listEnvios.find( envio => envio.cod === res );
 
@@ -101,25 +101,29 @@ function GuardarSaca() {
         l.push(envio.id);
     }
 
-    validaForm();
+    var valido = validaForm();
 
-    $.ajax({
-        type: 'POST',
-        url: ruta,
-        data: ({oficina: oficina, list: l, sello: sello, peso: peso }),
-        async: true,
-        dataType: "json",
-        success: function (data) {
-            limpiarFormulario()
-            mi_funcion();
-            swal({
-                title: "",
-                text: "Se ha creado la saca correctamente",
-                type: "success"
-            });
-            document.getElementById('enlace').setAttribute('href', 'imprimir/' + data);
-        }
-    });
+    if (valido == true){
+        $.ajax({
+            type: 'POST',
+            url: ruta,
+            data: ({oficina: oficina, list: l, sello: sello, peso: peso }),
+            async: true,
+            dataType: "json",
+            success: function (data) {
+                limpiarFormulario()
+                mi_funcion();
+                swal({
+                    title: "",
+                    text: "Se ha creado la saca correctamente",
+                    type: "success"
+                });
+                document.getElementById('enlace').setAttribute('href', 'imprimir/' + data);
+            }
+        });
+    }else {
+        alert('Revise los campos')
+    }
 }
 
 $(document).ready(function(){
@@ -160,6 +164,24 @@ function mi_funcion() {
 }
 
 function validaForm(){
+    if($("#select_oficinas").val() == "0"){
+        var v = '';
+        v = '<p style="color: #d62c1a">* Campo vacío</p>'
+        $('#mensaje_oficina').html(v);
+        return false;
+    }else
+    {
+        $('#mensaje_oficina').html('');
+    }
+    if(listEnvios.length == 0){
+        var v = '';
+        v = '<p style="color: #d62c1a">* Tabla vacío</p>'
+        $('#mensaje_tabla').html(v);
+        return false;
+    }else
+    {
+        $('#mensaje_tabla').html('');
+    }
     if($("#input_sello").val() == ""){
         var v = '';
         v = '<p style="color: #d62c1a">* Campo vacío</p>'
@@ -177,3 +199,4 @@ function validaForm(){
 
     return true; // Si todo está correcto
 }
+

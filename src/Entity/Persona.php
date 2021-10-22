@@ -59,7 +59,7 @@ class Persona extends _Entity_
 
     #[ORM\Column(type: 'string', length: 20)]
     #[SerializedName('fechaNacimiento')]
-    private string $fecha_nacimiento = '';
+    private ?string $fecha_nacimiento = '';
 
     #[Pure] public function __toString(): string
     {
