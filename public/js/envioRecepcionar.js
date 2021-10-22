@@ -1,5 +1,6 @@
 //Variables
 var envioTemporal = {
+    id:'',
     no_guia: '',
     cod_tracking: '',
     peso: 0.0,
@@ -17,7 +18,7 @@ var envioTemporal = {
     irregularidades: [],
     destinatario: null,
     remitente: null,
-    direcciones: []
+    //direcciones: []
 
 };
 var listEnviosTemporles = new Array();
@@ -253,6 +254,8 @@ function recepcionarEnvios()
             return envio
         } )
 
+        console.log(listEnvios,'listEnvios');
+
         var ruta = Routing.generate('recepcionar_envios')
         $.ajax({
             type: 'POST',
@@ -274,10 +277,10 @@ function recepcionarEnvios()
                     });
 
                 } else {
-                    console.log()("Envios receppcionados con exito.");
+                    console.log("Envios receppcionados con exito.");
                     swal({
                         title: "Informacion",
-                        text: 'Envios receppcionados con exito.',
+                        text: 'Envios recepcionados con exito.',
                         type: "info"
                     });
 
@@ -396,6 +399,7 @@ function limpiarIrregularidades(){
 function limpiarVariableEnvioTemporal(){
 
     this.envioTemporal = {
+        id: '',
         no_guia: '',
         cod_tracking: '',
         peso: 0.0,
@@ -413,7 +417,7 @@ function limpiarVariableEnvioTemporal(){
         irregularidades: [],
         destinatario: null,
         remitente: null,
-        direcciones: []
+        //direcciones: []
     }
 
 }
@@ -472,11 +476,11 @@ function asignarValoresDeEnvioManifestado(){
             .trigger('change.select2');
     }
 
-    if (envioTemporal.municipio){
+    /*if (envioTemporal.municipio){
         $('#select_municipios')
             .val(envioTemporal.municipio)
             .trigger('change.select2');
-    }
+    }*/
 
     $('#input_pareo').val(envioTemporal.pareo);
 
@@ -570,7 +574,14 @@ function buscarMunDeUnaProv()
                         console.log('ajax prov-mun')
                     }
 
+                    selectMunicipio.html('');
                     selectMunicipio.html(options);
+
+                    if (envioTemporal.municipio){
+                        $('#select_municipios')
+                            .val(envioTemporal.municipio)
+                            .trigger('change.select2');
+                    }
                 }
 
             },

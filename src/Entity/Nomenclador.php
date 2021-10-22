@@ -33,6 +33,7 @@ use function Symfony\Component\String\u;
     "estructura_tipo" => EstructuraTipo::class,
     "localizacion_tipo" => LocalizacionTipo::class,
     "agencia" => Agencia::class,
+    "canal" => Canal::class,
 ])]
 class Nomenclador extends BaseNestedTree
 {

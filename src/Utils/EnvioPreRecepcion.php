@@ -10,6 +10,9 @@ use JMS\Serializer\Annotation\Type;
 
 class EnvioPreRecepcion
 {
+    #[SerializedName('id')]
+    public string $id;
+
     #[SerializedName('no_guia')]
     public string $no_guia;
 
@@ -65,13 +68,6 @@ class EnvioPreRecepcion
     }
 
     /**
-     * @return string
-     */
-    public function getNoGuia(): string
-    {
-        return $this->no_guia;
-    }
-
     /**
      * @param string $no_guia
      * @return EnvioPreRecepcion
@@ -175,7 +171,7 @@ class EnvioPreRecepcion
     /**
      * @return string|null
      */
-    public function getProvincia(): ?string
+    public function __construct()
     {
         return $this->provincia;
     }

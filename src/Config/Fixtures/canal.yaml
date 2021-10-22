@@ -1,0 +1,10 @@
+canales:
+  - nombre: 'CANAL VERDE'
+    descripcion: 'VERDE'
+    codigo: 'CANAL_VERDE'
+  - nombre: 'CANAL ROJO'
+    descripcion: 'ROJO'
+    codigo: 'CANAL_ROJO'
+  - nombre: 'CANAL NARANJA'
+    descripcion: 'NARANJA'
+    codigo: 'CANAL_NARANJA'
