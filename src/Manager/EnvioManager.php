@@ -149,8 +149,8 @@ class EnvioManager extends _Manager_
                 $envio->setPareo($envioPreRecepcion->pareo);
                 $envio->setPeso($envioPreRecepcion->peso);
 
-                //Coger la del user autenticado
                 $envio->setEstructuraOrigen($user->getEstructura());
+                $envio->setEstructuraDestino($user->getEstructura());
 
                 $envio->setDestinatario($envioManifestado->getDestinatario());
                 $envio->setRemitente($envioManifestado->getRemitente());
