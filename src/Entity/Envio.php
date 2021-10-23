@@ -16,8 +16,8 @@ class Envio extends _Entity_
     #[ORM\Column(type: 'string', length: 13, nullable: false)]
     private string $cod_tracking;
 
-    #[ORM\Column(type: 'string', length: 13, nullable: false)]
-    private string $pareo;
+    #[ORM\Column(type: 'string', length: 13, nullable: true)]
+    private ?string $pareo;
 
     #[ORM\Column(type: 'float', nullable: false)]
     private float $peso;
@@ -138,17 +138,17 @@ class Envio extends _Entity_
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getPareo(): string
+    public function getPareo(): ?string
     {
         return $this->pareo;
     }
 
     /**
-     * @param string $pareo
+     * @param string|null $pareo
      */
-    public function setPareo(string $pareo): void
+    public function setPareo(?string $pareo): void
     {
         $this->pareo = $pareo;
     }
