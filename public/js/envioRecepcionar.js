@@ -1,4 +1,8 @@
 //Variables
+class ModoRecepcion {
+    static MANIFESTADO = 'MANIFESTADO';
+    static SINMANIFESTAR = 'SINMANIFESTAR';
+}
 var envioTemporal = {
     id:'',
     no_guia: '',
@@ -23,10 +27,6 @@ var envioTemporal = {
 
 };
 var listEnviosTemporles = new Array();
-class ModoRecepcion {
-    static MANIFESTADO = 'MANIFESTADO';
-    static SINMANIFESTAR = 'SINMANIFESTAR';
-}
 
 
 /**
@@ -36,7 +36,7 @@ function buscarEnvio()
 {
     var noGuia = $('#input_noGuia').val()
     var codTracking = $('#input_codTracking').val()
-    var sinManifestar = $('#check_envioSinManifestar').is(':checked')
+    var modoRecepcion = this.modoRecepcion();
 
     var ruta = Routing.generate('envio_manifestado')
     $.ajax({
@@ -45,34 +45,51 @@ function buscarEnvio()
         data: {
             noGuia: noGuia,
             codTracking: codTracking,
-            sinManifestar: sinManifestar
+            modoRecepcion: modoRecepcion
         },
         async: true,
         dataType: 'json',
         loading: '',
         success: function (data) {
             console.log('success', data)
-            if (!(data.estado)) {
-                //alert(data.mensaje);
-                swal({
-                    title: "Error",
-                    text: data.mensaje,
-                    type: "error"
-                });
-                console.log(data.mensaje);
-                limpiarCampos();
-            } else {
-                //alert("Recibido OK");
-                if (data.data.requiere_pareo){
+
+
+            if (modoRecepcion == ModoRecepcion.SINMANIFESTAR ){
+
+                if (data.requiere_pareo){
                     swal({
                         title: "Informacion",
-                        text: "Este envio requiere ser pareado.",
+                        text: data.mensaje,
                         type: "info"
                     });
                 }
-                envioTemporal = data.data
-                asignarValoresDeEnvioManifestado();
+
+            //Manifestado
+            }else{
+
+                if (!(data.estado)) {
+                    swal({
+                        title: "Error",
+                        text: data.mensaje,
+                        type: "error"
+                    });
+                    console.log(data.mensaje);
+                    limpiarCampos();
+                } else {
+                    //alert("Recibido OK");
+                    if (data.data.requiere_pareo){
+                        swal({
+                            title: "Informacion",
+                            text: "Este envio requiere ser pareado.",
+                            type: "info"
+                        });
+                    }
+                    envioTemporal = data.data
+                    asignarValoresDeEnvioManifestado();
+                }
+
             }
+            //End manifestado
 
         },
         error: function (error) {
@@ -81,8 +98,6 @@ function buscarEnvio()
             limpiarCampos();
         }
     })
-
-
 }
 
 /**
@@ -402,8 +417,6 @@ function limpiarDescripcionIrregularidad(idAnomalia)
  */
 function limpiarCampos(){
 
-    //$('#input_noGuia').val("");
-
     $('#input_codTracking').val("");
 
     $('#input_peso').val("");
@@ -631,7 +644,6 @@ function buscarMunDeUnaProv()
 
                     for (var i=0; i<municipios.length; i++){
                         options+='<option value="'+municipios[i].id+'">'+municipios[i].nombre+'</option>'
-                        console.log('ajax prov-mun')
                     }
 
                     selectMunicipio.html('');
@@ -656,7 +668,7 @@ function buscarMunDeUnaProv()
 }
 
 /**
- * Obtener modo de recepcion
+ * Obtener modo de recepcion a partir del check seleccionado
  @return {string}
  */
 function modoRecepcion(){
@@ -666,5 +678,21 @@ function modoRecepcion(){
     }else {
         return ModoRecepcion.MANIFESTADO;
     }
+}
+
+/**
+ * Cambiar modo de recepcion
+ @return {string}
+ */
+function cambiarModoRecepcion(){
+
+    limpiarCampos()
+
+    if ( $('#check_envioSinManifestar').is(':checked') ){
+        envioTemporal.modo_recepcion = ModoRecepcion.SINMANIFESTAR;
+    }else {
+        envioTemporal.modo_recepcion = ModoRecepcion.MANIFESTADO;
+    }
+
 }
 

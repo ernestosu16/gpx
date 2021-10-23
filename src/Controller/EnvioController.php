@@ -18,6 +18,7 @@ use App\Repository\LocalizacionRepository;
 use App\Repository\NomencladorRepository;
 use App\Repository\PaisRepository;
 use App\Utils\EnvioPreRecepcion;
+use App\Utils\ModoRecepcion;
 use App\Utils\MyResponse;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerBuilder;
@@ -28,6 +29,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Serializer;
+use function PHPUnit\Framework\equalToIgnoringCase;
 use function PHPUnit\Framework\throwException;
 use function Sodium\add;
 
@@ -193,31 +195,22 @@ class EnvioController extends AbstractController
 
             $guia = $request->request->get('noGuia');
             $tracking = $request->request->get('codTracking');
-            $sinManifestar = $request->request->get('sinManifestar');
+            $modoRecepcion = $request->request->get('modoRecepcion');
 
             $miRespuesta = new MyResponse();
 
+
             //Envios sin manifestar
-            if ($sinManifestar){
+            if ( $modoRecepcion == ModoRecepcion::$SINMANIFESTAR ){
 
                 $envioSinManifestar = $this->envioRepository->findByEnvioToCodTrackingCalendarYear($tracking);
 
-                if($envioSinManifestar){
+                $requiere_pareo = (bool)$envioSinManifestar;
 
-                    $requiere_pareo = (bool)$envioSinManifestar;
+                $miRespuesta->setEstado(true);
+                $miRespuesta->setData($requiere_pareo);
+                $miRespuesta->setMensaje( $requiere_pareo ? 'Este envio requiere ser pareado.' : 'Este envio no requiere ser pareado.');
 
-                    $miRespuesta->setEstado(true);
-                    $miRespuesta->setData($requiere_pareo);
-                    $miRespuesta->setMensaje("Este envio requiere ser pareado.");
-
-                    //Si existe y esta correcto
-                }else{
-
-                    $miRespuesta->setEstado(true);
-                    $miRespuesta->setData(null);
-                    $miRespuesta->setMensaje("Envio buscado con exito");
-
-                }
 
             //Envios manifestados
             }else{
@@ -288,47 +281,6 @@ class EnvioController extends AbstractController
                 $miRespuesta->setData('');
                 $miRespuesta->setMensaje("Envios recepcionados correctamente !!!");
 
-            }
-
-            $serializer = SerializerBuilder::create()->build();
-            $miRespuestaJson = $serializer->serialize($miRespuesta,"json");
-
-            return JsonResponse::fromJsonString($miRespuestaJson);
-
-        }else{
-            dump("Hacker");
-            throwException('Hacker');
-        }
-
-    }
-
-    #[Route('/envio/buscar-municipio1', name: 'mun_prov_seleccionada1', options: ["expose" => true] , methods: ['POST'])]
-    public function municipioDeUnaProvincia1(Request $request){
-
-        if ($request->isXmlHttpRequest()){
-
-            $idProvincia = $request->request->get('idProvincia');
-
-            /** @var Localizacion $provincia */
-            $provincia = $this->localizacion->find($idProvincia);
-
-            $municipios = $provincia->getChildren()->toArray();
-
-            $miRespuesta = new MyResponse();
-
-            //Si no existen municipios
-            if ( ! $municipios ){
-
-                $miRespuesta->setEstado(false);
-                $miRespuesta->setData(null);
-                $miRespuesta->setMensaje("No existen municipios en la provincia solicitada");
-
-
-            }else{
-
-                $miRespuesta->setEstado(true);
-                $miRespuesta->setData($municipios);
-                $miRespuesta->setMensaje("Municipios buscados con exito");
             }
 
             $serializer = SerializerBuilder::create()->build();

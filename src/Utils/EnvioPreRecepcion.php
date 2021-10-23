@@ -68,7 +68,7 @@ class EnvioPreRecepcion
     public Persona $remitente;
 
     #[SerializedName('modo_recepcion')]
-    public string $modo_recepcion;
+    public string $modo_recepcion = 'MANIFESTADO';
 
     /**
      * @param string $no_guia
