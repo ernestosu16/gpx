@@ -1,4 +1,8 @@
 //Variables
+$(document).ready(function (){
+    limpiarTodo()
+})
+
 class ModoRecepcion {
     static MANIFESTADO = 'MANIFESTADO';
     static SINMANIFESTAR = 'SINMANIFESTAR';
@@ -32,13 +36,13 @@ var listEnviosTemporles = new Array();
 /**
  * Buscar un envio en la tabla manisfestados
  */
-function buscarEnvio()
+function buscarEnvioPreRecepcion()
 {
     var noGuia = $('#input_noGuia').val()
     var codTracking = $('#input_codTracking').val()
     var modoRecepcion = this.modoRecepcion();
 
-    var ruta = Routing.generate('envio_manifestado')
+    var ruta = Routing.generate('buscar_envio_pre_recepcion')
     $.ajax({
         type: 'POST',
         url: ruta,
@@ -521,6 +525,16 @@ function limpiarTodo(){
     limpiarVariableListEnvioTemporales();
     limpiarIrregularidades();
     limpiarTodosLosItemsDeLaTabla();
+    limpiarCheckModosRecepcion();
+
+}
+
+/**
+ * Limpiar todos los check de los modos de recepcion
+ */
+function limpiarCheckModosRecepcion(){
+
+    $('#check_envioSinManifestar').prop('checked',false)
 
 }
 
@@ -627,7 +641,6 @@ function buscarMunDeUnaProv()
             success: function (data) {
                 console.log('success', data)
                 if (!(data.estado)) {
-                    //alert(data.mensaje);
                     swal({
                         title: "Error",
                         text: data.mensaje,
@@ -652,6 +665,10 @@ function buscarMunDeUnaProv()
                     if (envioTemporal.municipio){
                         $('#select_municipios')
                             .val(envioTemporal.municipio)
+                            .trigger('change.select2');
+                    }else {
+                        $('#select_municipios')
+                            .val('')
                             .trigger('change.select2');
                     }
                 }

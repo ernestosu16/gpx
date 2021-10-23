@@ -187,9 +187,8 @@ class EnvioController extends AbstractController
     }
 
 
-
-    #[Route('/envio/buscar-envio-manifestado', name: 'envio_manifestado', options: ["expose" => true] , methods: ['POST'])]
-    public function buscarEnvioManifestado(Request $request){
+    #[Route('/envio/buscar-envio-pre-recepcion', name: 'buscar_envio_pre_recepcion', options: ["expose" => true] , methods: ['POST'])]
+    public function buscarEnvioPreRecepcion(Request $request){
 
         if ($request->isXmlHttpRequest()){
 
