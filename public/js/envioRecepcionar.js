@@ -31,6 +31,7 @@ function buscarEnvioManifestado()
 {
     var noGuia = $('#input_noGuia').val()
     var codTracking = $('#input_codTracking').val()
+    var sinManifestar = $('#check_envioSinManifestar').is(':checked')
 
     var ruta = Routing.generate('envio_manifestado')
     $.ajax({
@@ -38,7 +39,8 @@ function buscarEnvioManifestado()
         url: ruta,
         data: {
             noGuia: noGuia,
-            codTracking: codTracking
+            codTracking: codTracking,
+            sinManifestar: sinManifestar
         },
         async: true,
         dataType: 'json',
@@ -65,6 +67,60 @@ function buscarEnvioManifestado()
                 }
                 envioTemporal = data.data
                 asignarValoresDeEnvioManifestado();
+            }
+
+        },
+        error: function (error) {
+            alert('Error: ' + error.status + ' ' + error.statusText);
+            console.log('error', error.responseText)
+            limpiarCampos();
+        }
+    })
+
+
+}
+
+/**
+ * Buscar un envio en la tabla envio por el codigo tracking y que sea del año calendario actual
+ */
+function buscarEnvioSinManifestar()
+{
+    var codTracking = $('#input_codTracking').val()
+    var sinManifestar = $('#check_envioSinManifestar').is(':checked')
+
+    var ruta = Routing.generate('envio_manifestado')
+    $.ajax({
+        type: 'POST',
+        url: ruta,
+        data: {
+            codTracking: codTracking,
+            sinManifestar: sinManifestar
+        },
+        async: true,
+        dataType: 'json',
+        loading: '',
+        success: function (data) {
+            console.log('success', data)
+            if (!(data.estado)) {
+                //alert(data.mensaje);
+                swal({
+                    title: "Error",
+                    text: data.mensaje,
+                    type: "error"
+                });
+                console.log(data.mensaje);
+                limpiarCampos();
+            } else {
+                //alert("Recibido OK");
+                if (data.data.requiere_pareo){
+                    swal({
+                        title: "Informacion",
+                        text: "Este envio requiere ser pareado.",
+                        type: "info"
+                    });
+                }
+                envioTemporal.requiere_pareo = data.data.requiere_pareo
+                //asignarValoresDeEnvioManifestado();
             }
 
         },

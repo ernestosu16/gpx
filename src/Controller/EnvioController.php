@@ -40,7 +40,8 @@ class EnvioController extends AbstractController
         private EnvioManager $envioManager,
         private PaisRepository $paisRepository,
         private AgenciaRepository $agenciaRepository,
-        private NomencladorRepository $nomencladorRepository
+        private NomencladorRepository $nomencladorRepository,
+        private EnvioRepository $envioRepository,
     )
     {
     }
@@ -192,31 +193,59 @@ class EnvioController extends AbstractController
 
             $guia = $request->request->get('noGuia');
             $tracking = $request->request->get('codTracking');
-
-            $envioManifestadoService = $this->envioManager->obtnerEnvioManifestado($guia,$tracking);
+            $sinManifestar = $request->request->get('sinManifestar');
 
             $miRespuesta = new MyResponse();
 
-            //Si no existe el envio
-            if ( ! $envioManifestadoService ){
+            //Envios sin manifestar
+            if ($sinManifestar){
 
-                $miRespuesta->setEstado(false);
-                $miRespuesta->setData(null);
-                $miRespuesta->setMensaje("No existe el envio en la guia solicitada");
+                $envioSinManifestar = $this->envioRepository->findByEnvioToCodTrackingCalendarYear($tracking);
 
-                //Si existe pero es interes de aduana
-            }else if($envioManifestadoService->entidad_ctrl_aduana){
+                if($envioSinManifestar){
 
-                $miRespuesta->setEstado(true);
-                $miRespuesta->setData($envioManifestadoService);
-                $miRespuesta->setMensaje("El envio solicitado es interés de aduana.");
+                    $requiere_pareo = (bool)$envioSinManifestar;
 
-                //Si existe y esta correcto
+                    $miRespuesta->setEstado(true);
+                    $miRespuesta->setData($requiere_pareo);
+                    $miRespuesta->setMensaje("Este envio requiere ser pareado.");
+
+                    //Si existe y esta correcto
+                }else{
+
+                    $miRespuesta->setEstado(true);
+                    $miRespuesta->setData(null);
+                    $miRespuesta->setMensaje("Envio buscado con exito");
+
+                }
+
+            //Envios manifestados
             }else{
 
-                $miRespuesta->setEstado(true);
-                $miRespuesta->setData($envioManifestadoService);
-                $miRespuesta->setMensaje("Envio buscado con exito");
+                $envioManifestadoService = $this->envioManager->obtnerEnvioManifestado($guia,$tracking);
+
+                //Si no existe el envio
+                if ( ! $envioManifestadoService ){
+
+                    $miRespuesta->setEstado(false);
+                    $miRespuesta->setData(null);
+                    $miRespuesta->setMensaje("No existe el envio en la guia solicitada");
+
+                    //Si existe pero es interes de aduana
+                }else if($envioManifestadoService->entidad_ctrl_aduana){
+
+                    $miRespuesta->setEstado(true);
+                    $miRespuesta->setData($envioManifestadoService);
+                    $miRespuesta->setMensaje("El envio solicitado es interés de aduana.");
+
+                    //Si existe y esta correcto
+                }else{
+
+                    $miRespuesta->setEstado(true);
+                    $miRespuesta->setData($envioManifestadoService);
+                    $miRespuesta->setMensaje("Envio buscado con exito");
+
+                }
 
             }
 
