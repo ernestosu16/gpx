@@ -32,7 +32,7 @@ class ModoRecepcion {
 /**
  * Buscar un envio en la tabla manisfestados
  */
-function buscarEnvioManifestado()
+function buscarEnvio()
 {
     var noGuia = $('#input_noGuia').val()
     var codTracking = $('#input_codTracking').val()
