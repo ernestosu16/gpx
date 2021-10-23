@@ -94,6 +94,8 @@ class EnvioManager extends _Manager_
             $envioPreRecepcion->remitente = $envioManifestado->getRemitente();
             $envioPreRecepcion->destinatario = $envioManifestado->getDestinatario();
 
+            $envioPreRecepcion->modo_recepcion = ModoRecepcion::$MANIFESTADO;
+
         }else{
             $envioPreRecepcion = null;
         }
@@ -186,6 +188,9 @@ class EnvioManager extends _Manager_
                     $direcciones[] = $dereccionesSerializadas;
 
                     $envio->setDirecciones($direcciones);
+
+                }else{
+                    $envioManifestado = null;
                 }
 
                 $this->entityManager->persist($envio);
