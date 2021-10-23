@@ -19,9 +19,14 @@ var envioTemporal = {
     destinatario: null,
     remitente: null,
     //direcciones: []
+    modo_recepcion: ModoRecepcion.MANIFESTADO
 
 };
 var listEnviosTemporles = new Array();
+class ModoRecepcion {
+    static MANIFESTADO = 'MANIFESTADO';
+    static SINMANIFESTAR = 'SINMANIFESTAR';
+}
 
 
 /**
@@ -472,6 +477,7 @@ function limpiarVariableEnvioTemporal(){
         destinatario: null,
         remitente: null,
         //direcciones: []
+        modo_recepcion: ModoRecepcion.MANIFESTADO
     }
 
 }
@@ -648,3 +654,17 @@ function buscarMunDeUnaProv()
 
 
 }
+
+/**
+ * Obtener modo de recepcion
+ @return {string}
+ */
+function modoRecepcion(){
+
+    if ( $('#check_envioSinManifestar').is(':checked') ){
+        return ModoRecepcion.SINMANIFESTAR;
+    }else {
+        return ModoRecepcion.MANIFESTADO;
+    }
+}
+

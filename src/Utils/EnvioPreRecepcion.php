@@ -67,6 +67,9 @@ class EnvioPreRecepcion
     #[SerializedName('remitente')]
     public Persona $remitente;
 
+    #[SerializedName('modo_recepcion')]
+    public string $modo_recepcion;
+
     /**
      * @param string $no_guia
      */
