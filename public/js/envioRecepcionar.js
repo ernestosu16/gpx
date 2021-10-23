@@ -60,7 +60,8 @@ function buscarEnvioPreRecepcion()
 
             if (modoRecepcion == ModoRecepcion.SINMANIFESTAR ){
 
-                if (data.requiere_pareo){
+                if (data.data){
+                    envioTemporal.requiere_pareo = true
                     swal({
                         title: "Informacion",
                         text: data.mensaje,
@@ -196,14 +197,14 @@ function annadirEnvioAListTemporal()
     //Insertar en el listado y la tabla
     }else {
 
-        this.envioTemporal.cod_tracking = cod_tracking
+        this.envioTemporal.cod_tracking = this.envioTemporal.requiere_pareo ? pareo : cod_tracking
         this.envioTemporal.peso = peso
         this.envioTemporal.pais_origen = nacionalidad
         this.envioTemporal.agencia = agencia
         this.envioTemporal.entidad_ctrl_aduana = entidadCtrlAduana
         this.envioTemporal.provincia = provincia
         this.envioTemporal.municipio = municipio
-        this.envioTemporal.pareo = pareo
+        this.envioTemporal.pareo = this.envioTemporal.requiere_pareo ? cod_tracking : pareo
 
         this.envioTemporal['extra'] = {
             nacionalidad: $('#select_nacionalidadOrigen option:selected').text(),
@@ -329,6 +330,13 @@ function recepcionarEnvios()
 
         var listEnvios = this.listEnviosTemporles.map( (envio) => {
             delete envio.extra
+
+            if(envio.modo_recepcion == ModoRecepcion.SINMANIFESTAR ) {
+                delete envio.id
+                delete envio.no_guia
+                delete envio.remitente
+                delete envio.destinatario
+            }
             return envio
         } )
 
@@ -494,7 +502,7 @@ function limpiarVariableEnvioTemporal(){
         destinatario: null,
         remitente: null,
         //direcciones: []
-        modo_recepcion: ModoRecepcion.MANIFESTADO
+        modo_recepcion: modoRecepcion()
     }
 
 }
