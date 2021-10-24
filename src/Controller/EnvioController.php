@@ -105,6 +105,63 @@ class EnvioController extends AbstractController
         }
     }
 
+    #[Route('/entregar-envio-por-ci', name: 'entregar_envio_por_ci', methods: ['GET'])]
+    public function entregar_envio_por_ci(Request $request): Response
+    {
+
+        if ($request->isXmlHttpRequest()){
+
+            //Obtener array de envios a recepcionar
+            $datos = $request->request->get['data'];
+
+            $miRespuesta = new MyResponse();
+
+            if ($this->envioManager->recepcionarEnvios($datos)){
+
+                $miRespuesta->setEstado(true);
+                $miRespuesta->setData(null);
+                $miRespuesta->setMensaje("OK");
+
+            }else{
+
+                $miRespuesta->setEstado(false);
+                $miRespuesta->setData(null);
+                $miRespuesta->setMensaje("Error al recepcionar los envios correspondientes");
+
+            }
+
+            $serializer = SerializerBuilder::create()->build();
+            $miRespuestaJson = $serializer->serialize($miRespuesta,"json");
+
+            return JsonResponse::fromJsonString($miRespuestaJson);
+
+        }else {
+
+
+            $provincias = $this->localizacion->findAllProvincia();
+
+            $municipios = $this->localizacion->findByTipoCodigo(LocalizacionTipo::MUNICIPIO);
+
+            $anomalias = $this->nomencladorRepository->findByChildren('APP_ENVIO_ANOMALIA');
+
+            $nacionalidades = $this->paisRepository->findAll();
+
+            $curries = $this->agenciaRepository->findByChildren('AGENCIA');
+
+            //dump($this->localizacion->createQueryBuilderMunicipio());
+
+
+            return $this->render('envio/entregarEnvioPorCI.html.twig', [
+                "anomalias" => $anomalias->toArray(),
+                "provincias" => $provincias,
+                "nacionalidades" => $nacionalidades,
+                "curries" => $curries,
+                "municipios" => $municipios
+            ]);
+
+        }
+    }
+
     /*public function obtenerEnvioManifestado(string $codTracking){
 
         $envioManifestado = $this->envioManifestado->findOneBySomeField($codTracking);
