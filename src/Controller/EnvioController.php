@@ -137,27 +137,7 @@ class EnvioController extends AbstractController
 
         }else {
 
-
-            $provincias = $this->localizacion->findAllProvincia();
-
-            $municipios = $this->localizacion->findByTipoCodigo(LocalizacionTipo::MUNICIPIO);
-
-            $anomalias = $this->nomencladorRepository->findByChildren('APP_ENVIO_ANOMALIA');
-
-            $nacionalidades = $this->paisRepository->findAll();
-
-            $curries = $this->agenciaRepository->findByChildren('AGENCIA');
-
-            //dump($this->localizacion->createQueryBuilderMunicipio());
-
-
-            return $this->render('envio/entregarEnvioPorCI.html.twig', [
-                "anomalias" => $anomalias->toArray(),
-                "provincias" => $provincias,
-                "nacionalidades" => $nacionalidades,
-                "curries" => $curries,
-                "municipios" => $municipios
-            ]);
+            return $this->render('envio/entregarEnvioPorCI.html.twig', []);
 
         }
     }
