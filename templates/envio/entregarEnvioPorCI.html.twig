@@ -1,0 +1,59 @@
+{% extends 'homer-theme/layout.html.twig' %}
+
+{% block title %}Entregar envio por CI{% endblock %}
+{% block panel_title %}Entregar envio por CI{% endblock %}
+{% block panel_body %}
+
+    <div class="row col-md-12 m-b">
+
+        <div class="col-md-4">
+            <input id="input_no_identidad" class="form-control" type="text" value="" onchange="">
+        </div>
+        <div class="col-md-4">
+            <button class="btn btn-primary" onclick="buscarEnviosPorCI()"><i class="fa fa-search"></i> Buscar envios</button>
+        </div>
+    </div>
+
+    <div class="row col-md-12 m-b">
+        <div class="col-md-12">
+            <div class="table-responsive">
+            <table class="table table-hover table-bordered table-striped">
+            <thead>
+            <tr>
+                <th></th>
+                <th>Código de tracking</th>
+                <th>Peso</th>
+                <th>Pais origen</th>
+                <th>Agencia</th>
+                <th>Provincia</th>
+                <th>Municipio</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody id="resultado">
+
+            </tbody>
+        </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="row col-md-12 m-b">
+
+        <div class="col-auto">
+            <button class="btn btn-success" onclick="recepcionarEnvios()"><i class="fa fa-inbox"></i> Facturar </button>
+
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js',{ callback: 'fos.Router.setData' }) }}"></script>
+
+    <script src="{{ asset('js/envioRecepcionar.js') }}"></script>
+
+{% endblock %}
