@@ -106,7 +106,7 @@ class EnvioController extends AbstractController
     }
 
     #[Route('/entregar-envio-por-ci', name: 'entregar_envio_por_ci', methods: ['GET'])]
-    public function entregar_envio_por_ci(Request $request): Response
+    public function entregarEnvioPorCI(Request $request): Response
     {
 
         if ($request->isXmlHttpRequest()){
