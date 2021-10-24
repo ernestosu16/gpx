@@ -371,4 +371,43 @@ class EnvioController extends AbstractController
 
     }
 
+    #[Route('/envio/buscar-envio-pre-recepcion', name: 'buscar_envio_pre_recepcion', options: ["expose" => true] , methods: ['POST'])]
+    public function buscarEnvioParaEntregaPorCI(Request $request){
+
+        if ($request->isXmlHttpRequest()){
+
+            $no_ci = $request->request->get('noCI');
+
+            /** @var Persona $persona */
+            $persona = $this->getDoctrine()->getRepository(Persona::class)->findOneByNumeroIdentidad($no_ci );
+
+
+            $miRespuesta = new MyResponse();
+
+
+            if ( $persona){
+
+
+                $requiere_pareo = (bool)$envioSinManifestar;
+
+                $miRespuesta->setEstado(true);
+                $miRespuesta->setData($requiere_pareo);
+                $miRespuesta->setMensaje( $requiere_pareo ? 'Este envio requiere ser pareado.' : 'Este envio no requiere ser pareado.');
+
+
+                //Envios manifestados
+            }
+
+            $serializer = SerializerBuilder::create()->build();
+            $miRespuestaJson = $serializer->serialize($miRespuesta,"json");
+
+            return JsonResponse::fromJsonString($miRespuestaJson);
+
+        }else{
+            dump("Hacker");
+            throwException('Hacker');
+        }
+
+    }
+
 }
