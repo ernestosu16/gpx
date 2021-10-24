@@ -263,7 +263,7 @@ class EnvioController extends AbstractController
             /** @var TrabajadorCredencial $credencial */
             $credencial = $this->getUser();
 
-            $result = $this->envioManager->recepcionarEnvios($envios,$credencial);
+            $result = $this->envioManager->recepcionarEnvios($envios,$credencial,$request->getClientIp());
 
             $miRespuesta = new MyResponse();
 

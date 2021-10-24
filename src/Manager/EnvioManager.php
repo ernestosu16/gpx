@@ -103,7 +103,7 @@ class EnvioManager extends _Manager_
         return $envioPreRecepcion;
     }
 
-    public function recepcionarEnvios($envios,TrabajadorCredencial $user): bool{
+    public function recepcionarEnvios($envios,TrabajadorCredencial $user,$clientIP): bool{
         $recepcionados = true;
 
         $deserializer = SerializerBuilder::create()->build();
@@ -206,7 +206,7 @@ class EnvioManager extends _Manager_
                 $envioTraza->setEstado($estadoRecepcionado);
                 $envioTraza->setTrabajador($user->getTrabajador());
                 $envioTraza->setEstructuraOrigen($user->getEstructura());
-                $envioTraza->setIp('');
+                $envioTraza->setIp($clientIP);
                 $envioTraza->setCanal($canalVerde);
 
                 $this->entityManager->persist($envioTraza);
