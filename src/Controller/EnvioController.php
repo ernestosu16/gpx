@@ -105,6 +105,43 @@ class EnvioController extends AbstractController
         }
     }
 
+    #[Route('/entregar-envio-por-ci', name: 'entregar_envio_por_ci', methods: ['GET'])]
+    public function entregarEnvioPorCI(Request $request): Response
+    {
+
+        if ($request->isXmlHttpRequest()){
+
+            //Obtener array de envios a recepcionar
+            $datos = $request->request->get['data'];
+
+            $miRespuesta = new MyResponse();
+
+            if ($this->envioManager->recepcionarEnvios($datos)){
+
+                $miRespuesta->setEstado(true);
+                $miRespuesta->setData(null);
+                $miRespuesta->setMensaje("OK");
+
+            }else{
+
+                $miRespuesta->setEstado(false);
+                $miRespuesta->setData(null);
+                $miRespuesta->setMensaje("Error al recepcionar los envios correspondientes");
+
+            }
+
+            $serializer = SerializerBuilder::create()->build();
+            $miRespuestaJson = $serializer->serialize($miRespuesta,"json");
+
+            return JsonResponse::fromJsonString($miRespuestaJson);
+
+        }else {
+
+            return $this->render('envio/entregarEnvioPorCI.html.twig', []);
+
+        }
+    }
+
     /*public function obtenerEnvioManifestado(string $codTracking){
 
         $envioManifestado = $this->envioManifestado->findOneBySomeField($codTracking);
@@ -325,6 +362,45 @@ class EnvioController extends AbstractController
             }
 
             $miRespuestaJson = $serializer->serialize($miRespuesta,"json");
+            return JsonResponse::fromJsonString($miRespuestaJson);
+
+        }else{
+            dump("Hacker");
+            throwException('Hacker');
+        }
+
+    }
+
+    #[Route('/envio/buscar-envio-pre-recepcion', name: 'buscar_envio_pre_recepcion', options: ["expose" => true] , methods: ['POST'])]
+    public function buscarEnvioParaEntregaPorCI(Request $request){
+
+        if ($request->isXmlHttpRequest()){
+
+            $no_ci = $request->request->get('noCI');
+
+            /** @var Persona $persona */
+            $persona = $this->getDoctrine()->getRepository(Persona::class)->findOneByNumeroIdentidad($no_ci );
+
+
+            $miRespuesta = new MyResponse();
+
+
+            if ( $persona){
+
+
+                $requiere_pareo = (bool)$envioSinManifestar;
+
+                $miRespuesta->setEstado(true);
+                $miRespuesta->setData($requiere_pareo);
+                $miRespuesta->setMensaje( $requiere_pareo ? 'Este envio requiere ser pareado.' : 'Este envio no requiere ser pareado.');
+
+
+                //Envios manifestados
+            }
+
+            $serializer = SerializerBuilder::create()->build();
+            $miRespuestaJson = $serializer->serialize($miRespuesta,"json");
+
             return JsonResponse::fromJsonString($miRespuestaJson);
 
         }else{
