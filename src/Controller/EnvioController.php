@@ -380,6 +380,11 @@ class EnvioController extends AbstractController
 
             $persona = $this->getDoctrine()->getRepository(Persona::class)->findOneByNumeroIdentidad($numeroIdentidad)?->getId();
 
+            /** @var TrabajadorCredencial $credencial */
+            $credencial = $this->getUser();
+
+            $enviosEntregar = $this->envioRepository->buscarEnvioParaEntregaPorCI($persona,$credencial);
+
             $miRespuesta = new MyResponse();
 
 
