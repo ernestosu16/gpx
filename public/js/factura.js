@@ -161,7 +161,7 @@ function GuardarFactura() {
             }
         });
     }else{
-        alert('Revise los campos')
+        toastr.warning('Por favor revise que los datos esten correctos');
     }
 }
 
@@ -248,3 +248,13 @@ function mi_funcion() {
     jQuery('#select_choferes').prop('disabled', true);
     jQuery('#button_crear_factura').prop('disabled', true);
 }
+
+// Toastr options
+toastr.options = {
+    "debug": false,
+    "newestOnTop": false,
+    "positionClass": "toast-top-center",
+    "closeButton": true,
+    "toastClass": "animated fadeInDown",
+};
+

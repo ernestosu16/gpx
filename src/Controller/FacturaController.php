@@ -67,7 +67,7 @@ class FacturaController extends AbstractController
         $em = $this->getDoctrine()->getManager();
         $oficinas = $em->getRepository(Estructura::class)->findAll();
         /** @var Nomenclador $nom */
-        $nom = $em->getRepository(Nomenclador::class)->findOneByCodigo('APP_FACTURA_TIPO_VEHICULO');
+        $nom = $em->getRepository(Nomenclador::class)->findOneByCodigo('APP_TIPO_VEHICULO');
         $vehiculos = $nom->getChildren()->getValues();
 
         /** @var Trabajador $trabajador */
@@ -135,7 +135,7 @@ class FacturaController extends AbstractController
                 }
             }else{
                 if ($saca != null){
-                    if ($saca->getEstado()->getCodigo() == 'APP_SACA_ESTADO_CREADA'){
+                    if ($saca->getEstado()->getCodigo() == 'APP_ENVIO_SACA_ESTADO_CREADA'){
                         if ($saca->getDestino()->getId() == $oficina_dest){
                             $id = $saca->getId();
                             $cod = $saca->getSello();
@@ -181,7 +181,7 @@ class FacturaController extends AbstractController
             $chofer = $em->getRepository(Trabajador::class)->findOneBy(['persona' => $request->request->get('chofer')]);
 
             /** @var Nomenclador $estado */
-            $estado = $em->getRepository(Nomenclador::class)->findOneBy(['codigo'=>'APP_FACTURA_ESTADO_CREADA']);
+            $estado = $em->getRepository(Nomenclador::class)->findOneBy(['codigo'=>'APP_ENVIO_FACTURA_ESTADO_CREADA']);
 
             /** @var Nomenclador $tipo_vehiculo */
             $tipo_vehiculo = $em->getRepository(Nomenclador::class)->find($request->request->get('tipo_vehiculo'));

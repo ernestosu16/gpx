@@ -3,3 +3,16 @@ envio:
         - 'Faltante'
         - 'Mal encaminado'
         - 'Mojado'
+    saca:
+        estado:
+            - 'Creada'
+            - 'Facturada'
+            - 'Recibida'
+            - 'Aperturada'
+        tipo_embalaje:
+            - 'Saca'
+            - 'Contenedor'
+            - 'Envío al descubierto'
+    Factura:
+        estado:
+            - 'Creada'

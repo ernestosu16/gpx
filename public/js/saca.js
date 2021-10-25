@@ -113,16 +113,12 @@ function GuardarSaca() {
             success: function (data) {
                 limpiarFormulario()
                 mi_funcion();
-                swal({
-                    title: "",
-                    text: "Se ha creado la saca correctamente",
-                    type: "success"
-                });
+                toastr.success('Se ha creado la saca correctamente');
                 document.getElementById('enlace').setAttribute('href', 'imprimir/' + data);
             }
         });
     }else {
-        alert('Revise los campos')
+        toastr.warning('Por favor revise que los datos esten correctos');
     }
 }
 
@@ -199,4 +195,13 @@ function validaForm(){
 
     return true; // Si todo está correcto
 }
+
+// Toastr options
+toastr.options = {
+    "debug": false,
+    "newestOnTop": false,
+    "positionClass": "toast-top-center",
+    "closeButton": true,
+    "toastClass": "animated fadeInDown",
+};
 

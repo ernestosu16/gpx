@@ -118,13 +118,13 @@ class SacaController extends AbstractController
             $estructura_origen = $user->getEstructura();
 
             /** @var Nomenclador $estado */
-            $estado = $em->getRepository(Nomenclador::class)->findOneBy(['codigo' => 'APP_SACA_ESTADO_CREADA']);
+            $estado = $em->getRepository(Nomenclador::class)->findOneBy(['codigo' => 'APP_ENVIO_SACA_ESTADO_CREADA']);
 
             if (!$estado)
                 return new JsonResponse(['error' => 'Error el estado de la saca "CREADO" no existe'], 500);
 
             /** @var Nomenclador $tipo */
-            $tipo = $nomencladorRepository->findOneByCodigo('APP_SACA_TIPO_EMBALAJE_SACA');
+            $tipo = $nomencladorRepository->findOneByCodigo('APP_ENVIO_SACA_TIPO_EMBALAJE_SACA');
 
             if (!$tipo)
                 return new JsonResponse(['error' => 'Error el en tipo de embalaje "SACA" no existe'], 500);
@@ -153,6 +153,9 @@ class SacaController extends AbstractController
 
             /** @var Nomenclador $estClasificada */
             $estClasificada = $em->getRepository(Nomenclador::class)->findOneBy(['codigo' => 'APP_ENVIO_ESTADO_CLASIFICADO']);
+
+            if (!$estClasificada)
+                return new JsonResponse(['error' => 'Error el estado del envío "CLASIFICADO" no existe'], 500);
 
             foreach ($listado as $item) {
                 /** @var Envio $envio */
