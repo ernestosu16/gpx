@@ -112,7 +112,7 @@ class EnvioController extends AbstractController
         if ($request->isXmlHttpRequest()){
 
             //Obtener array de envios a recepcionar
-            $datos = $request->request->get['data'];
+            $datos = $request->request->get('id');
 
             $miRespuesta = new MyResponse();
 
@@ -371,28 +371,23 @@ class EnvioController extends AbstractController
 
     }
 
-    #[Route('/envio/buscar-envio-pre-recepcion', name: 'buscar_envio_pre_recepcion', options: ["expose" => true] , methods: ['POST'])]
+    #[Route('/envio/buscar-envioe-para-entrega-por-CI', name: 'buscar_envioe_para_entrega_por_CI', options: ["expose" => true] , methods: ['POST'])]
     public function buscarEnvioParaEntregaPorCI(Request $request){
 
         if ($request->isXmlHttpRequest()){
 
-            $no_ci = $request->request->get('noCI');
+            $numeroIdentidad = $request->request->get('noCI');
 
-            /** @var Persona $persona */
-            $persona = $this->getDoctrine()->getRepository(Persona::class)->findOneByNumeroIdentidad($no_ci );
-
+            $persona = $this->getDoctrine()->getRepository(Persona::class)->findOneByNumeroIdentidad($numeroIdentidad)?->getId();
 
             $miRespuesta = new MyResponse();
 
 
             if ( $persona){
 
-
-                $requiere_pareo = (bool)$envioSinManifestar;
-
                 $miRespuesta->setEstado(true);
-                $miRespuesta->setData($requiere_pareo);
-                $miRespuesta->setMensaje( $requiere_pareo ? 'Este envio requiere ser pareado.' : 'Este envio no requiere ser pareado.');
+                $miRespuesta->setData($persona);
+                $miRespuesta->setMensaje( true ? 'Este envio requiere ser pareado.' : 'Este envio no requiere ser pareado.');
 
 
                 //Envios manifestados

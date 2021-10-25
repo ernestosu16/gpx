@@ -7,10 +7,10 @@
     <div class="row col-md-12 m-b">
 
         <div class="col-md-4">
-            <input id="input_no_identidad" class="form-control" type="text" value="" onchange="">
+            <input id="input_no_identidad" class="form-control" type="text" value="" >
         </div>
         <div class="col-md-4">
-            <button class="btn btn-primary" onclick="buscarEnviosPorCI()"><i class="fa fa-search"></i> Buscar</button>
+            <button class="btn btn-primary" onclick="buscarEnvioPreRecepcion()"><i class="fa fa-search"></i> Buscar</button>
         </div>
     </div>
 
@@ -73,6 +73,6 @@
     <script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
     <script src="{{ path('fos_js_routing_js',{ callback: 'fos.Router.setData' }) }}"></script>
 
-    <script src="{{ asset('js/envioRecepcionar.js') }}"></script>
+    <script src="{{ asset('js/envioEntregarPorCI.js') }}"></script>
 
 {% endblock %}
