@@ -20,11 +20,11 @@ class SacaRepository extends ServiceEntityRepository
         parent::__construct($registry, Saca::class);
     }
 
-    public function findSacasNoFactura($noFactura, $estado = 'APP_SACA_ESTADO_CREADA')
+    public function findSacasNoFactura($noFactura, $estado = 'CREADO')
     {
-        return $this->createQueryBuilder('s')
+        $this->createQueryBuilder('s')
             ->join('s.factura', 'f', Expr\Join::WITH, 'f.numero_factura='.$noFactura)
-            ->join('s.estado', 'e', Expr\Join::WITH, "e.codigo='$estado'")
+            ->join('s.estado', 'e', Expr\Join::WITH, 'e.codigo='.$estado)
             ->getQuery()
             ->getResult();
     }

@@ -1,18 +1,10 @@
 envio:
     anomalia:
-        - 'Faltante'
-        - 'Mal encaminado'
-        - 'Mojado'
-    saca:
-        estado:
-            - 'Creada'
-            - 'Facturada'
-            - 'Recibida'
-            - 'Aperturada'
-        tipo_embalaje:
-            - 'Saca'
-            - 'Contenedor'
-            - 'Envío al descubierto'
-    Factura:
-        estado:
-            - 'Creada'
+        - 'envio faltante'
+        - 'envio mal encaminado'
+        - 'envio mojado'
+        - 'envio roto'
+    estado:
+        - 'RECEPCIONADO'
+        - 'ENTREGADO ADUANA'
+        - 'SALIDA ADUANA'

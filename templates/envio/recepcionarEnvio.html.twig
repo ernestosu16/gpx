@@ -1,0 +1,213 @@
+{% extends 'homer-theme/layout.html.twig' %}
+
+{% block title %}Recepcionar envios{% endblock %}
+{% block panel_title %}Recepcionar envios{% endblock %}
+{% block panel_body %}
+
+
+
+        <div class="row col-md-12 m-b">
+
+            <div class="col-md-4 form-check">
+
+                <input id="check_envioSinManifestar" class="form-check-input" type="checkbox" value="" onchange="">
+                <label class="form-label" style="color: darkorange">
+                    Recepcionar envio sin manifestar.
+                </label>
+
+            </div>
+
+        </div>
+
+        <div class="row col-md-12 m-b">
+
+            <div class="col-md-3">
+                <label class="form-label">No. Guía <strong style="color: red;">*</strong></label>
+                <input id="input_noGuia" class="form-control input-sm" type="text" style='text-transform:uppercase;'>
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">Código de tracking <strong style="color: red;">*</strong></label>
+                <input id="input_codTracking" class="form-control input-sm" type="text" style='text-transform:uppercase;' onchange="buscarEnvioManifestado()">
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label">Peso (Kg) <strong style="color: red;">*</strong></label>
+                <input id="input_peso" class="form-control input-sm" type="text">
+            </div>
+
+        </div>
+
+        <div class="row col-md-12 m-b">
+
+            <div class="col-md-3">
+                <label class="form-label">Nacionalidad de orígen <strong style="color: red;">*</strong></label>
+                <select id="select_nacionalidadOrigen" class="form-control input-sm select2" aria-label="Nacionalidad de orígen">
+                    <option value="" selected>Seleccione</option>
+                    {% for nacionalidad in nacionalidades %}
+                        <option value="{{ nacionalidad.id }}">{{ nacionalidad.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-5">
+                <label class="form-label">Agencia <strong style="color: red;">*</strong></label>
+                <select id="select_producto" class="form-control input-sm select2" aria-label="Agencias">
+                    <option value="" selected>Seleccione</option>
+                    {% for currie in curries %}
+                        <option value="{{ currie.id }}">{{ currie }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-4 form-check">
+                <label class="form-label">
+                    Entidad control aduana
+                </label>
+                <br>
+                <input id="check_entidadControlAduana" class="form-check-input" type="checkbox">
+
+            </div>
+
+        </div>
+
+        <div class="row col-md-12 m-b">
+
+            <div class="col-md-3">
+                <label class="form-label">Provincias <strong style="color: red;">*</strong></label>
+                <select id="select_provincias" class="form-control input-sm select2" aria-label="Provincias" onchange="buscarMunDeUnaProv()">
+                    <option value="" selected>Seleccione</option>
+                    {% for provincia in provincias %}
+                        <option value="{{ provincia.id }}">{{ provincia.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-5">
+                <label class="form-label">Municipio <strong style="color: red;">*</strong></label>
+                <select id="select_municipios" class="form-control input-sm select2" aria-label="Municipios">
+                    <option value="" selected>Seleccione</option>
+                    {% for municipio in municipios %}
+                        <option value="{{ municipio.id }}">{{ municipio.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">Pareo</label>
+                <input id="input_pareo" class="form-control input-sm" type="text">
+            </div>
+
+        </div>
+
+        <div class="row col-md-12 m-b">
+
+            <div class="col-md-4 form-check">
+
+                <div>
+                    <a id="a_irregularidades" onclick="mostarUOcultarIrregularidades()">
+                        <i id="i_irregularidades" class="fa fa-chevron-right"></i>
+                        <strong>Irregularidades</strong>
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div id="div_irregularidades" style="display:none;">
+
+            {% for anomalia in anomalias %}
+                <div class="row col-md-12 m-b">
+
+                    <div class="col-md-5">
+                        <input class="form-check-input" type="checkbox" value="{{ anomalia }}" id="check_{{ anomalia.id }}" onchange="limpiarDescripcionIrregularidad('{{ anomalia.id }}')" >
+                        <label class="form-label">{{ anomalia }}</label>
+                    </div>
+
+                    <div class="col-md-7" id="ds1">
+                        <input id="input_{{ anomalia.id }}"  type="text" class="form-control input-sm miclass" placeholder="Descripción">
+                    </div>
+
+                </div>
+            {% endfor %}
+
+        </div>
+
+        <div class="row col-md-12 m-b">
+
+            <div class="col-md-12">
+                <button class="pull-right btn btn-info" onclick="annadirEnvioAListTemporal()" >
+                    <i class="fa fa-plus"></i>
+                    Añadir
+                </button>
+            </div>
+        </div>
+
+        <!--div class="row col-md-12 m-b">
+
+            <div class="col-md-12">
+                <label class="form-label">Listado de envíos (3/10)</label>
+                <select class="form-control input-sm" size="10" multiple aria-label="multiple select example">
+                    <option value="1">One</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                </select>
+            </div>
+
+        </div-->
+
+        <div class="row col-md-12 m-b">
+            <div class="col-md-12">
+                <div class="table-responsive">
+                <table class="table table-hover table-bordered table-striped">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Código de tracking</th>
+                    <th>Peso</th>
+                    <th>Pais origen</th>
+                    <th>Agencia</th>
+                    <th>Provincia</th>
+                    <th>Municipio</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody id="resultado">
+
+                </tbody>
+            </table>
+                </div>
+            </div>
+        </div>
+
+        <!--div class="row col-md-12 m-b">
+
+            <div class="col-md-12">
+                <button id="button_eliminarEnvio" class="pull-right btn btn-danger"><i class="fa fa-remove"></i> Eliminar envio</button>
+            </div>
+        </div-->
+
+        <div class="row col-md-12 m-b">
+
+            <div class="col-auto">
+                <button class="btn btn-success" onclick="recepcionarEnvios()"><i class="fa fa-inbox"></i> Recepcionar</button>
+
+                <button class="btn btn-danger2"><i class="fa fa-remove"></i> Cancelar</button>
+            </div>
+        </div>
+
+
+
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js',{ callback: 'fos.Router.setData' }) }}"></script>
+
+    <script src="{{ asset('js/envioRecepcionar.js') }}"></script>
+    <script src="{{ asset('js/lodash.min.js') }}"></script>
+
+{% endblock %}

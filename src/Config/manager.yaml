@@ -38,3 +38,9 @@ services:
         parent: App\Manager\_Manager_
         public: true
         arguments: ['@doctrine.orm.default_entity_manager']
+
+    app.manager.envio:
+        class: App\Manager\EnvioManager
+        parent: App\Manager\_Manager_
+        public: true
+        arguments: ['@doctrine.orm.default_entity_manager']
