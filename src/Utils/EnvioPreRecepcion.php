@@ -169,14 +169,6 @@ class EnvioPreRecepcion
     }
 
     /**
-     * @return string|null
-     */
-    public function __construct()
-    {
-        return $this->provincia;
-    }
-
-    /**
      * @param string|null $provincia
      * @return EnvioPreRecepcion
      */

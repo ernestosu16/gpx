@@ -4,6 +4,9 @@
 namespace App\Controller;
 
 
+use App\Entity\TrabajadorCredencial;
+use App\Manager\EnvioManager;
+use App\Manager\FacturaManager;
 use App\Repository\EnvioRepository;
 use App\Repository\FacturaRepository;
 use App\Repository\NomencladorRepository;
@@ -19,8 +22,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class FacturaController extends AbstractController
 {
     public function __construct(
+        private EnvioManager $envioManager,
+        private FacturaManager $facturaManager,
         private SacaRepository $sacaRepository,
-        private EnvioRepository $envioRepository,
         private NomencladorRepository $nomencladorRepository,
         private FacturaRepository $facturaRepository,
         private EntityManagerInterface $entityManager
@@ -58,11 +62,14 @@ class FacturaController extends AbstractController
     public function recepcionarSacasFactura(Request $request)
     {
         $noFactura = $request->get('noFactura');
-        $sacas = $request->get('sacas');
-        $envios = $request->get('envios');
+        $sacas = $request->get('sacas') ?? [];
+        $envios = $request->get('envios') ?? [];
         $todos = filter_var($request->get('todos'), FILTER_VALIDATE_BOOLEAN);
         $factura = $this->facturaRepository->getFacturaByNoFactura($noFactura);
         $estado = $this->nomencladorRepository->findOneByCodigo('APP_SACA_ESTADO_RECIBIDA');
+
+        /** @var TrabajadorCredencial $credencial */
+        $credencial = $this->getUser();
 
         foreach ($sacas as $id)
         {
@@ -75,11 +82,7 @@ class FacturaController extends AbstractController
 
         foreach ($envios as $id)
         {
-            $envio = $this->envioRepository->find($id);
-            $envio->setEstado($estado);
-
-            $this->entityManager->persist($envio);
-            $this->entityManager->flush();
+            $this->envioManager->cambiarEstado($id,$credencial);
         }
 
         if($todos)
@@ -88,6 +91,8 @@ class FacturaController extends AbstractController
             $factura->setEstado($estado);
             $this->entityManager->persist($factura);
             $this->entityManager->flush();
+
+            $this->facturaManager->createTraza($factura,$credencial);
         }
         return JsonResponse::fromJsonString('"Factura recibida correctamente"');
     }

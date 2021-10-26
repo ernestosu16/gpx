@@ -1,3 +1,7 @@
+function elementId(id){
+    return document.getElementById(id.toString());
+}
+
 function buscarEnviosSacas()
 {
     let codTracking = elementId('text_cod_tracking').value;
@@ -36,7 +40,7 @@ function buscarEnviosSacas()
 
 function recepcionarSaca(codTracking)
 {
-    let inputs = document.getElementsByClassName("checkbox-sacas");
+    let inputs = document.getElementsByClassName("checkbox-envios");
     let envios = [];
     for (let check of inputs) {
         if (check.checked)
@@ -46,7 +50,7 @@ function recepcionarSaca(codTracking)
     if (envios.length === 0){
         swal({
             title: "Ningun seleccionado",
-            text: 'Debe seleccionar al menos una saca',
+            text: 'Debe seleccionar al menos un envio',
             type: "warning"
         });
     }
@@ -82,65 +86,3 @@ function recepcionarSaca(codTracking)
 
 }
 
-function guardarAnomaliaEnvio(envioID){
-
-    var table = document.getElementById("anomaliaslist"+envioID);
-    var cells = table.getElementsByClassName("check-anomalia");
-
-    let key = [];
-    let value = [];
-
-    for (let check of cells) {
-        if(check.checked){
-            let className = check.className.split(' ');
-            let a = table.getElementsByClassName(className[2]);
-
-            key.push(a[0].value);
-            value.push(a[2].value);
-
-            /*if (a[1].innerText === 'DIFERENCIA DE PESO' && a[2].value==='')
-            {
-                swal({
-                    title: "Diferencia de peso",
-                    text: 'Debe escribir la diferencia de peso',
-                    type: "warning"
-                });
-                return;
-            }*/
-        }
-    }
-
-    let i = 0;
-    let anomalias = {};
-
-    while (i < key.length) {
-        anomalias[key[i]] = value[i]
-        i++;
-    }
-
-    let ruta = Routing.generate('envio_anomalia');
-    $.ajax({
-        type: 'POST',
-        url: ruta,
-        data: {
-            id: envioID,
-            anomalias: anomalias
-        },
-        async: true,
-        dataType: 'json',
-        loading: '',
-        success: function (data) {
-            swal({
-                title: "OK",
-                text: data,
-                type: "success"
-            });
-        },
-        error: function (error) {
-            alert('Error: ' + error.status + ' ' + error.statusText);
-            console.log('error', error.responseText)
-        }
-
-    })
-
-}

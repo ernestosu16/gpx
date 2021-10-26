@@ -27,6 +27,12 @@ class SacaController extends AbstractController
     {
     }
 
+    #[Route('/aperturar', name: 'aperturar_saca', methods: ['GET'])]
+    public function aperturarSaca()
+    {
+        return $this->render('saca/aperturar.html.twig',[]);
+    }
+
     #[Route('/save-anomalia', name: 'saca_anomalia', options: ["expose" => true] ,methods: ['POST'])]
     public function saveSacaAnomalia(Request $request)
     {
@@ -55,10 +61,10 @@ class SacaController extends AbstractController
     public function findEnviosSaca(Request $request)
     {
         $codTracking = $request->get('codTracking');
-        $envios = $this->sacaRepository->findEnviosNoFacturaAndEstado($codTracking);
+        $envios = $this->sacaRepository->findEnviosNoFacturaAndEstado($codTracking, 'APP_SACA_ESTADO_RECIBIDA');
         $anomaliasE = $this->nomencladorRepository->findByChildren('APP_ENVIO_ANOMALIA');
 
-        $html = $envios ? $this->renderView('factura/sacas.html.twig', [
+        $html = $envios ? $this->renderView('saca/envios.html.twig', [
             'envios'=>$envios,
             'anomaliasE'=>$anomaliasE->toArray(),
             'codTracking' => $codTracking]) : 'null';
@@ -73,7 +79,7 @@ class SacaController extends AbstractController
         $envios = $request->get('envios');
         $todos = filter_var($request->get('todos'), FILTER_VALIDATE_BOOLEAN);
         $saca = $this->sacaRepository->getSacaByCodigo($codTracking);
-        $estado = $this->nomencladorRepository->findOneByCodigo('APP_ENVIO_ESTADO_RECIBIDA');
+        $estado = $this->nomencladorRepository->findOneByCodigo('APP_ENVIO_ESTADO_RECEPCIONADO');
 
         foreach ($envios as $id)
         {
@@ -93,4 +99,5 @@ class SacaController extends AbstractController
         }
         return JsonResponse::fromJsonString('"Saca recibida correctamente"');
     }
+
 }

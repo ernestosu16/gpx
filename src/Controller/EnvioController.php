@@ -313,7 +313,7 @@ class EnvioController extends AbstractController
 
     }
 
-    #[Route('/save-anomalia', name: 'envio_anomalia', options: ["expose" => true] ,methods: ['POST'])]
+    #[Route('/envio/save-anomalia-envio', name: 'envio_anomalia', options: ["expose" => true] ,methods: ['POST'])]
     public function saveEnvioAnomalia(Request $request)
     {
         $id = $request->get('id');

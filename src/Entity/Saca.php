@@ -52,6 +52,9 @@ class Saca extends _Entity_
     #[ORM\JoinTable(name: 'saca_anomalia_asignada')]
     private ?Collection $anomalias;
 
+    #[ORM\OneToMany(mappedBy: 'saca', targetEntity: Envio::class)]
+    private $envios;
+
     #[ORM\Column(type: 'json', nullable: true )]
     private $observaciones;
 
@@ -283,5 +286,33 @@ class Saca extends _Entity_
 
         return $this;
     }
+    /**
+     * @return Collection|Envio[]
+     */
+    public function getEnvios(): Collection
+    {
+        return $this->envios;
+    }
 
+    public function addEnvio(Envio $envio): self
+    {
+        if (!$this->envios->contains($envio)) {
+            $this->envios[] = $envio;
+            $envio->setSaca($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEnvio(Envio $envio): self
+    {
+        if ($this->envios->removeElement($envio)) {
+            // set the owning side to null (unless already changed)
+            if ($envio->getSaca() === $this) {
+                $envio->setSaca(null);
+            }
+        }
+
+        return $this;
+    }
 }
