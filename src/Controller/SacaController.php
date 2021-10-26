@@ -92,7 +92,7 @@ class SacaController extends AbstractController
 
         if($todos)
         {
-            $estado = $this->nomencladorRepository->findOneByCodigo('APP_SACA_ESTADO_RECIBIDA');
+            $estado = $this->nomencladorRepository->findOneByCodigo('APP_SACA_ESTADO_APERTURADA');
             $saca->setEstado($estado);
             $this->entityManager->persist($saca);
             $this->entityManager->flush();

@@ -52,14 +52,14 @@
         <!----------------- ENVIOS --------------------->
         <div class="well well-lg">
 
-            <p style="border-bottom:1px solid #000000;"><strong>VALIJAS PRESENTES EN LA FACTURA</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <p style="border-bottom:1px solid #000000;"><strong>ENVIOS PRESENTES EN LA FACTURA</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 {% for envio in envios %}
-                {% if envio.estado.codigo == 'APP_ENVIO_ESTADO_RECIBIDA' %}
+                {% if envio.estado.codigo != 'APP_ENVIO_ESTADO_FACTURADO' %}
 
             <div class="panel panel-default">
                 <div class="panel-heading" role="tab" id="panelenvio_{{envio.id}}">
-                    <label class="form-label">envio No. [{{ envio.cod_tracking }}] código [{{envio.codigo}}] en estado [{{ envio.estado.nombre }}] &nbsp; + &nbsp;
-                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{envio.id}}" aria-expanded="false" aria-controls="collapse{{envio.id}}" class="collapsed">
+                    <label class="form-label">Envio codigo [{{ envio.CodTracking }}] peso [{{envio.peso}}] en estado [{{ envio.estado.nombre }}] &nbsp; + &nbsp;
+                        <a data-toggle="collapse" data-parent="#accordion" href="#ecollapse{{envio.id}}" aria-expanded="false" aria-controls="ecollapse{{envio.id}}" class="collapsed">
                             Irregularidades </a></label>
                 </div>
             </div>

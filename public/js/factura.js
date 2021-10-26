@@ -237,3 +237,13 @@ function guardarAnomaliaEnvio(envioID){
         })
     }
 }
+
+$(function() {
+    $('#form-submit').click(function(e){
+        e.preventDefault();
+        var l = Ladda.create(this);
+        l.start();
+
+        return false;
+    });
+});

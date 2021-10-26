@@ -14,7 +14,7 @@
             <button class="btn btn-primary" onclick="buscarFacturaSacas()"><i class="fa fa-search"></i> Recepcionar factura</button>
         </div>
     </div>
-
+    <button class="ladda-button ladda-button-demo btn btn-primary" data-style="zoom-in" id="form-submit"><span class="ladda-label">Submit</span><span class="ladda-spinner"></span></button>
     <div id="sacas"></div>
 
 {% endblock %}
@@ -25,5 +25,9 @@
     <script src="{{ path('fos_js_routing_js',{ callback: 'fos.Router.setData' }) }}"></script>
 
     <script src="{{ asset('js/factura.js') }}"></script>
+
+    <script>
+        Ladda.bind( '.ladda-button', { timeout: 2000 } );
+    </script>
 
 {% endblock %}

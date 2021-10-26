@@ -32,11 +32,11 @@ class FacturaController extends AbstractController
     {
     }
 
-    #[Route('/procesar', name: 'procesar_factura', methods: ['GET'])]
+    #[Route('/recepcionar', name: 'procesar_factura', methods: ['GET'])]
     public function procesarFactura()
     {
 
-        return $this->render('factura/procesarFactura.html.twig',[]);
+        return $this->render('factura/recepcionar.html.twig',[]);
     }
 
     #[Route('/find-sacas-factura', name: 'find_sacas_factura', options: ["expose" => true] ,methods: ['POST'])]
