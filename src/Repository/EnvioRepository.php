@@ -78,20 +78,10 @@ class EnvioRepository extends ServiceEntityRepository
             ->andWhere('envio.estructura_destino = :estructura_destino')
             ->andWhere('envio.estado = :estado')
             ->innerJoin(EnvioAduana::class, 'envio_aduana', Expr\Join::WITH, 'envio.id = envio_aduana.envio')
-            //->andWhere('envio_aduana.datos_despacho != :datos_despacho')
-            //->andWhere('envio_aduana.datos_despacho = :datos_despacho')
-            ->andWhere("envio_aduana.datos_despacho = '[]'")
-            //->andWhere('envio_aduana.provincia_aduana = 23')
-
-
+            ->andWhere('envio_aduana.datos_despacho IS NULL')
             ->setParameter('destinatario', $destinatario_id)
             ->setParameter('estructura_destino', $userAutenticado->getEstructura())
             ->setParameter('estado', $estadoRecepcionado->getId() )
-
-            //->setParameter('datos_despacho', [] )
-
-
-
             ->getQuery()
             ->getArrayResult();
     }
