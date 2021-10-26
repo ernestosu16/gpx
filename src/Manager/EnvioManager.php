@@ -14,7 +14,7 @@ use App\Entity\Estructura;
 use App\Entity\Localizacion;
 use App\Entity\TrabajadorCredencial;
 use App\Repository\AgenciaRepository;
-use App\Repository\EnvioManifiestoRepository;
+use App\Repository\FicheroEnvioAduanaRepository;
 use App\Repository\EnvioRepository;
 use App\Repository\EstructuraTipoRepository;
 use App\Repository\LocalizacionRepository;
@@ -33,7 +33,7 @@ class EnvioManager extends _Manager_
      */
     public function __construct(
         private LocalizacionRepository $localizacionRepository,
-        private EnvioManifiestoRepository $envioManifiestoRepository,
+        private FicheroEnvioAduanaRepository $envioManifiestoRepository,
         private PaisRepository $paisRepository,
         private NomencladorRepository $nomencladorRepository,
         private AgenciaRepository $agenciaRepository,

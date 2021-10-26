@@ -3,7 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\EnvioAduana;
+use App\Entity\Estructura;
+use App\Entity\Nomenclador;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -47,4 +50,23 @@ class EnvioAduanaRepository extends ServiceEntityRepository
         ;
     }
     */
+//    public function findByEstado(Nomenclador $estado){
+//
+//    }
+
+    /**
+      * @return EnvioAduana[] Returns an array of EnvioAduana objects
+      */
+    public function findByEstructuraAndEstado(Estructura $structura, Nomenclador $estado)
+    {
+        return $this->createQueryBuilder('e')
+            ->innerJoin('e.envio','env')
+            ->andWhere('e.estado = :val')
+            ->andWhere('env.empresa = :val1')
+            ->setParameter('val', $estado)
+            ->setParameter('val1', $structura)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }

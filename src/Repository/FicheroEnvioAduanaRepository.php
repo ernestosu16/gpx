@@ -2,23 +2,18 @@
 
 namespace App\Repository;
 
-use App\Entity\EnvioManifiesto;
+use App\Entity\FicheroEnvioAduana;
 
 /**
- * @method EnvioManifiesto|null find($id, $lockMode = null, $lockVersion = null)
- * @method EnvioManifiesto|null findOneBy(array $criteria, array $orderBy = null)
- * @method EnvioManifiesto[]    findAll()
- * @method EnvioManifiesto[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method FicheroEnvioAduana|null find($id, $lockMode = null, $lockVersion = null)
+ * @method FicheroEnvioAduana|null findOneBy(array $criteria, array $orderBy = null)
+ * @method FicheroEnvioAduana[]    findAll()
+ * @method FicheroEnvioAduana[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-final class EnvioManifiestoRepository extends _Repository_
+final class FicheroEnvioAduanaRepository extends _Repository_
 {
     protected static function classEntity(): string
     {
-        return EnvioManifiesto::class;
-    }
-
-    public function findByGuiaAndCodigo(string $numeroGuia, string $codigo): ?EnvioManifiesto
-    {
-        return $this->findOneBy(['no_guia_aerea' => $numeroGuia, 'codigo' => $codigo]);
+        return FicheroEnvioAduana::class;
     }
 }

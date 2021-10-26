@@ -1,6 +1,6 @@
 <?php
 
-namespace App\DOM;
+namespace App\DTO;
 
 use JetBrains\PhpStorm\Pure;
 use JMS\Serializer\Annotation\SerializedName;

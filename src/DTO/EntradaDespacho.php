@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\DOM;
+namespace App\DTO;
 
 
 use JMS\Serializer\Annotation\SerializedName;
