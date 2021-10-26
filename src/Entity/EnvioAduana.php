@@ -15,7 +15,7 @@ class EnvioAduana extends _Entity_
     #[ORM\Column(type: 'string', length: 13, nullable: true)]
     private string $cod_tracking;
 
-    #[ORM\Column(type: 'json')]
+    #[ORM\Column(type: 'json', nullable: true)]
     private array $datos_despacho = array();
 
     #[ORM\Column(type: 'string', length: 6, nullable: true)]
@@ -91,6 +91,8 @@ class EnvioAduana extends _Entity_
     {
         $this->datos_despacho = $datos_despacho;
     }
+
+
 
     /**
      * @return string

@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Envio;
+use App\Entity\EnvioAduana;
 use App\Entity\Nomenclador;
 use App\Entity\Trabajador;
 use App\Entity\TrabajadorCredencial;
@@ -67,30 +68,32 @@ class EnvioRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
-    public function buscarEnvioParaEntregaPorCI($destinatario_id,Trabajador $userAutenticado)
+    public function buscarEnvioParaEntregaPorCI($destinatario_id, $userAutenticado)
     {
         $em = $this->getEntityManager();
         $estadoRecepcionado = $em->getRepository(Nomenclador::class)->findOneByCodigo('APP_ENVIO_ESTADO_RECEPCIONADO');
 
         return $this->createQueryBuilder('envio')
-            ->andWhere('envio.destinatario_id = :destinatario')
-            ->andWhere('envio.estructura_destino_id = :estructura_destino')
-            ->andWhere('envio.estado_id = :estado')
-
-            ->join('envio.envio_aduana', 'envio_aduana', Expr\Join::WITH, 'envio_aduana.id=')
-            ->andWhere('envio_aduana.datos_despacho != :datos_despacho')
+            ->andWhere('envio.destinatario = :destinatario')
+            ->andWhere('envio.estructura_destino = :estructura_destino')
+            ->andWhere('envio.estado = :estado')
+            ->innerJoin(EnvioAduana::class, 'envio_aduana', Expr\Join::WITH, 'envio.id = envio_aduana.envio')
+            //->andWhere('envio_aduana.datos_despacho != :datos_despacho')
+            //->andWhere('envio_aduana.datos_despacho = :datos_despacho')
+            ->andWhere("envio_aduana.datos_despacho = '[]'")
+            //->andWhere('envio_aduana.provincia_aduana = 23')
 
 
             ->setParameter('destinatario', $destinatario_id)
             ->setParameter('estructura_destino', $userAutenticado->getEstructura())
             ->setParameter('estado', $estadoRecepcionado->getId() )
 
-            ->setParameter('datos_despacho', [] )
+            //->setParameter('datos_despacho', [] )
 
 
 
             ->getQuery()
-            ->getOneOrNullResult();
+            ->getArrayResult();
     }
 
 

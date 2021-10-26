@@ -385,6 +385,8 @@ class EnvioController extends AbstractController
 
             $enviosEntregar = $this->envioRepository->buscarEnvioParaEntregaPorCI($persona,$credencial);
 
+            dump($enviosEntregar);exit;
+
             $miRespuesta = new MyResponse();
 
 
