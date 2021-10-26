@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Factura;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\Query\Expr;
 
 /**
  * @method Factura|null find($id, $lockMode = null, $lockVersion = null)
@@ -19,6 +20,40 @@ class FacturaRepository extends ServiceEntityRepository
         parent::__construct($registry, Factura::class);
     }
 
+
+    public function getSacasNoFatura(string $noFactura)
+    {
+        $factura = $this->findOneBy(['numero_factura'=>$noFactura]);
+
+        return $factura->getSacas();
+    }
+
+    public function getFacturaByNoFactura(string $noFactura)
+    {
+        return $this->findOneBy(['numero_factura'=>$noFactura]);
+    }
+
+    public function findSacasNoFacturaAndEstado($noFactura, $estado = 'APP_FACTURA_ESTADO_CREADA')
+    {
+         $factura = $this->createQueryBuilder('f')
+            ->join('f.estado', 'e', Expr\Join::WITH, "e.codigo='$estado'")
+            ->andWhere("f.numero_factura='$noFactura'")
+            ->getQuery()
+            ->getResult();
+
+        return $factura ? $factura[0]->getSacas()->toArray() : $factura;
+    }
+
+    public function findEnviosNoFacturaAndEstado($noFactura, $estado = 'APP_FACTURA_ESTADO_CREADA')
+    {
+        $factura = $this->createQueryBuilder('f')
+            ->join('f.estado', 'e', Expr\Join::WITH, "e.codigo='$estado'")
+            ->andWhere("f.numero_factura='$noFactura'")
+            ->getQuery()
+            ->getResult();
+
+        return $factura ? $factura[0]->getEnvios()->toArray() : $factura;
+    }
     // /**
     //  * @return Factura[] Returns an array of Factura objects
     //  */

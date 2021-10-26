@@ -374,7 +374,7 @@ class EnvioController extends AbstractController
     #[Route('/envio/buscar-envioe-para-entrega-por-CI', name: 'buscar_envioe_para_entrega_por_CI', options: ["expose" => true] , methods: ['POST'])]
     public function buscarEnvioParaEntregaPorCI(Request $request){
 
-        if ($request->isXmlHttpRequest()){
+    if ($request->isXmlHttpRequest()){
 
             $numeroIdentidad = $request->request->get('noCI');
 
@@ -410,4 +410,22 @@ class EnvioController extends AbstractController
 
     }
 
+    #[Route('/save-anomalia', name: 'envio_anomalia', options: ["expose" => true] ,methods: ['POST'])]
+    public function saveEnvioAnomalia(Request $request)
+    {
+        $id = $request->get('id');
+        $anomalias = $request->get('anomalias');
+
+        try {
+            /** @var TrabajadorCredencial $credencial */
+            $user = $this->getUser();
+
+            $this->envioManager->saveEnvioAnomalias($id,$anomalias,$user);
+            return JsonResponse::fromJsonString('"Anomalias agregadas correctamente"');
+        }catch (\Exception $exception){
+            return $exception;
+        }
+
+
+    }
 }

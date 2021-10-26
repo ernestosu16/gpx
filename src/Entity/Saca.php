@@ -11,7 +11,6 @@ use JetBrains\PhpStorm\Pure;
 #[ORM\Entity(repositoryClass: SacaRepository::class)]
 class Saca extends _Entity_
 {
-
     #[ORM\Column(type: 'string', length: 13, nullable: false)]
     private string $sello;
 
@@ -55,6 +54,9 @@ class Saca extends _Entity_
 
     #[ORM\Column(type: 'json', nullable: true )]
     private $observaciones;
+
+    #[ORM\OneToMany(mappedBy: "saca", targetEntity: SacaTraza::class)]
+    private $trazas;
 
     #[Pure]
     public function __construct()
@@ -249,6 +251,36 @@ class Saca extends _Entity_
     public function setObservaciones($observaciones)
     {
         $this->observaciones = $observaciones;
+        return $this;
+    }
+
+    /**
+     * @return Collection|SacaTraza[]
+     */
+    public function getTrazas(): Collection
+    {
+        return $this->trazas;
+    }
+
+    public function addTraza(SacaTraza $traza): self
+    {
+        if (!$this->trazas->contains($traza)) {
+            $this->trazas[] = $traza;
+            $traza->setSaca($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTraza(SacaTraza $traza): self
+    {
+        if ($this->trazas->removeElement($traza)) {
+            // set the owning side to null (unless already changed)
+            if ($traza->getSaca() === $this) {
+                $traza->setSaca(null);
+            }
+        }
+
         return $this;
     }
 

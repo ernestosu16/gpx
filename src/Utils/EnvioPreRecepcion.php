@@ -4,16 +4,9 @@
 namespace App\Utils;
 
 
-use App\Entity\Localizacion;
-use App\Entity\Nomenclador;
-use App\Entity\Pais;
 use App\Entity\Persona;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use JMS\Serializer\Annotation as Serializer;
 use JMS\Serializer\Annotation\SerializedName;
 use JMS\Serializer\Annotation\Type;
-use phpDocumentor\Reflection\Location;
 
 class EnvioPreRecepcion
 {
