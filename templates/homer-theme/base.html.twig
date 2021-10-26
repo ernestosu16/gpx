@@ -14,10 +14,12 @@
     <link rel="stylesheet" href="{{ asset('homer-theme/vendor/select2-3.5.2/select2.css') }}"/>
     <link rel="stylesheet" href="{{ asset('homer-theme/vendor/select2-3.5.2/select2-bootstrap.css') }}"/>
     <link rel="stylesheet" href="{{ asset('homer-theme/vendor/sweetalert/lib/sweet-alert.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('homer-theme/vendor/toastr/build/toastr.min.css') }}"/>
     <!-- App styles -->
     <link rel="stylesheet" href="{{ asset('homer-theme/fonts/pe-icon-7-stroke/css/pe-icon-7-stroke.css') }}"/>
     <link rel="stylesheet" href="{{ asset('homer-theme/fonts/pe-icon-7-stroke/css/helper.css') }}"/>
     <link rel="stylesheet" href="{{ asset('homer-theme/styles/style.css') }}">
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
 
     {% block stylesheets %}{% endblock %}
 </head>
@@ -36,8 +38,22 @@
 <script src="{{ asset('homer-theme/vendor/select2-3.5.2/select2_locale_es.js') }}"></script>
 <script src="{{ asset('homer-theme/vendor/sweetalert/lib/sweet-alert.min.js') }}"></script>
 <script src="{{ asset('homer-theme/vendor/readmore/readmore.min.js') }}"></script>
+<script src="{{ asset('homer-theme/vendor/toastr/build/toastr.min.js') }}"></script>
 <!-- App scripts -->
 <script src="{{ asset('homer-theme/scripts/homer.min.js') }}"></script>
+<script src="{{ asset('app.min.js') }}"></script>
+
+{% if app.request.method == 'GET' %}
+    <script type="text/javascript">
+        {% set referer = app.request.headers.get('referer') %}
+        {% set from_search = app.session.has('from-search') ?? false %}
+        {% set flashes = ('buscar' in referer or not from_search) ? app.session.flashbag.get('toastr') : app.session.flashbag.peek('toastr') %}
+        {% for flash in flashes %}
+        {{ flash|raw }}
+        {% endfor %}
+    </script>
+{% endif %}
+
 
 {% block javascripts %}{% endblock %}
 </body>
