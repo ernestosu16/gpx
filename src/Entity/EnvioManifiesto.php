@@ -2,12 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\EnvioManifiestoRepository;
+use App\Repository\FicheroEnvioAduanaRepository;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\SerializedName;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity(repositoryClass: EnvioManifiestoRepository::class)]
+#[ORM\Entity(repositoryClass: FicheroEnvioAduanaRepository::class)]
 class EnvioManifiesto extends _Entity_
 {
     #[ORM\Column(type: 'string', length: 15, nullable: false)]

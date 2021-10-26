@@ -156,10 +156,6 @@ class EnvioAduana extends _Entity_
         $this->procesado = $procesado;
     }
 
-
-
-
-
     /**
      * @return Nomenclador
      */
