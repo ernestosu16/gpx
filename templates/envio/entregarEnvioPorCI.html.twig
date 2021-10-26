@@ -1,0 +1,78 @@
+{% extends 'homer-theme/layout.html.twig' %}
+
+{% block title %}Entregar envio por CI{% endblock %}
+{% block panel_title %}Entregar envio por CI{% endblock %}
+{% block panel_body %}
+
+    <div class="row col-md-12 m-b">
+
+        <div class="col-md-4">
+            <input id="input_no_identidad" class="form-control" type="text" value="" >
+        </div>
+        <div class="col-md-4">
+            <button class="btn btn-primary" onclick="buscarEnvioPreRecepcion()"><i class="fa fa-search"></i> Buscar</button>
+        </div>
+    </div>
+
+    <div id="div_datos_personales" class="row col-md-12 m-b">
+
+        <div class="col-md-4">
+            <h4>Nombre(s) y Apellidos:</h4>
+            <p id="p_nombres_apellidos"> Raynel Roberto Rodriguez Rodriguez Rodriguez</p>
+        </div>
+        <div class="col-md-7">
+            <h4>Direccion:</h4>
+            <p id="p_direccion"> sdgffdshsd dasfgs dfghgfn</p>
+        </div>
+    </div>
+
+    <div class="row col-md-12 m-b">
+        <div class="col-md-12">
+            <h4>Envios a entregar:</h4>
+            <div class="table-responsive">
+            <table class="table table-hover table-bordered table-striped">
+            <thead>
+            <tr>
+                <th></th>
+                <th>Código de tracking</th>
+                <th>Peso</th>
+                <th>AGR</th>
+                <th>Transitaria</th>
+                <th>Aforo</th>
+            </tr>
+            </thead>
+            <tbody id="resultado">
+
+            </tbody>
+        </table>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <label class="pull-right">
+                Costo total: <label>60 </label>
+            </label>
+        </div>
+
+    </div>
+
+    <div class="row col-md-12 m-b">
+
+        <div class="col-md-12">
+            <button class="pull-right btn btn-success" onclick="entregarEnvios()" >
+                <i class="fa fa-inbox"></i>
+                Entregar
+            </button>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js',{ callback: 'fos.Router.setData' }) }}"></script>
+
+    <script src="{{ asset('js/envioEntregarPorCI.js') }}"></script>
+
+{% endblock %}

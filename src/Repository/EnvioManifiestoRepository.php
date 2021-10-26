@@ -19,6 +19,6 @@ final class EnvioManifiestoRepository extends _Repository_
 
     public function findByGuiaAndCodigo(string $numeroGuia, string $codigo): ?EnvioManifiesto
     {
-        return $this->findOneBy(['no_guia_aerea' => $numeroGuia, 'codigo' => $codigo]);
+        return $this->findOneBy(['no_guia_aerea' => $numeroGuia, 'codigo' => $codigo, 'recepcionado'=>false]);
     }
 }

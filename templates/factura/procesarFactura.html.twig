@@ -1,0 +1,29 @@
+{% extends 'homer-theme/layout.html.twig' %}
+
+{% block title %}Recepción de factura y saca{% endblock %}
+{% block panel_title %}Recepción de factura y saca{% endblock %}
+{% block panel_body %}
+    <p style="border-bottom:1px solid #000000;"><strong>NÚMERO DE LA FACTURA</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+    <div class="row col-md-12 m-b">
+
+        <div class="col-md-4">
+            <input id="text_no_factura" class="form-control" type="text" value="" onchange="">
+        </div>
+        <div class="col-md-4">
+            <button class="btn btn-primary" onclick="buscarFacturaSacas()"><i class="fa fa-search"></i> Recepcionar factura</button>
+        </div>
+    </div>
+
+    <div id="sacas"></div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js',{ callback: 'fos.Router.setData' }) }}"></script>
+
+    <script src="{{ asset('js/factura.js') }}"></script>
+
+{% endblock %}

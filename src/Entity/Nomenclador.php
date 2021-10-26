@@ -10,6 +10,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use JetBrains\PhpStorm\Pure;
+use JMS\Serializer\Annotation\Groups;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -32,6 +33,7 @@ use function Symfony\Component\String\u;
     "estructura_tipo" => EstructuraTipo::class,
     "localizacion_tipo" => LocalizacionTipo::class,
     "agencia" => Agencia::class,
+    "canal" => Canal::class,
 ])]
 class Nomenclador extends BaseNestedTree
 {
@@ -55,12 +57,14 @@ class Nomenclador extends BaseNestedTree
     #[ORM\Column(type: 'string', length: 100, unique: true)]
     #[Assert\NotBlank]
     #[Assert\Regex(pattern: RegexUtil::CODIGO, message: 'regex.codigo')]
+    #[Groups(['default'])]
     private string $codigo;
 
     #[ORM\Column(type: 'string', length: 50)]
     #[Assert\NotBlank]
     #[Assert\Regex(pattern: RegexUtil::TEXTO_ACENTO_ESPACIO, message: 'regex.nombre')]
     #[Assert\Length(min: 3, max: 100)]
+    #[Groups(['default'])]
     private string $nombre;
 
     #[ORM\Column(type: 'text', length: 500)]
