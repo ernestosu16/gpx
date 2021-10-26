@@ -1,9 +1,9 @@
 envio:
     anomalia:
-        - 'envio faltante'
-        - 'envio mal encaminado'
-        - 'envio mojado'
-        - 'envio roto'
+        - 'Faltante'
+        - 'Mal encaminado'
+        - 'Mojado'
+        - 'Roto'
     estado:
         - 'RECEPCIONADO'
         - 'ENTREGADO ADUANA'
