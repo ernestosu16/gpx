@@ -59,7 +59,7 @@ final class ProcesarEnviosAduanaCommand extends BaseCommand implements BaseComma
         $estructurasTransitaria = $em->getRepository(Estructura::class)->findEstructuraByTipo('EMPRESA');
 
         foreach ($estructurasTransitaria as $transitaria){
-            $envioAduanaResepcionado =  $this->envioAduanaRepository->findByEstructuraAndEstado($transitaria,$this->getRepository(Nomenclador::class)->findOneByCodigo(self::ESTADO_RECEPCIONADO));
+            $envioAduanaResepcionado =  $this->envioAduanaRepository->findEnvioAduanaByEstructuraAndEstado($transitaria,$this->getRepository(Nomenclador::class)->findOneByCodigo(self::ESTADO_RECEPCIONADO));
 
             $entradaDespacho = new EntradaDespacho();
             $entradaDespacho->setCodigoAduana("0302");

@@ -57,7 +57,7 @@ class EnvioAduanaRepository extends ServiceEntityRepository
     /**
       * @return EnvioAduana[] Returns an array of EnvioAduana objects
       */
-    public function findByEstructuraAndEstado(Estructura $structura, Nomenclador $estado)
+    public function findEnvioAduanaByEstructuraAndEstado(Estructura $structura, Nomenclador $estado)
     {
         return $this->createQueryBuilder('e')
             ->innerJoin('e.envio','env')
