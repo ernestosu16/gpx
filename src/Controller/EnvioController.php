@@ -18,6 +18,7 @@ use App\Repository\LocalizacionRepository;
 use App\Repository\NomencladorRepository;
 use App\Repository\PaisRepository;
 use App\Utils\EnvioPreRecepcion;
+use App\Utils\ModoRecepcion;
 use App\Utils\MyResponse;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerBuilder;
@@ -28,6 +29,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Serializer;
+use function PHPUnit\Framework\equalToIgnoringCase;
 use function PHPUnit\Framework\throwException;
 use function Sodium\add;
 
@@ -40,7 +42,8 @@ class EnvioController extends AbstractController
         private EnvioManager $envioManager,
         private PaisRepository $paisRepository,
         private AgenciaRepository $agenciaRepository,
-        private NomencladorRepository $nomencladorRepository
+        private NomencladorRepository $nomencladorRepository,
+        private EnvioRepository $envioRepository,
     )
     {
     }
@@ -98,6 +101,43 @@ class EnvioController extends AbstractController
                 "curries" => $curries,
                 "municipios" => $municipios
             ]);
+
+        }
+    }
+
+    #[Route('/entregar-envio-por-ci', name: 'entregar_envio_por_ci', methods: ['GET'])]
+    public function entregarEnvioPorCI(Request $request): Response
+    {
+
+        if ($request->isXmlHttpRequest()){
+
+            //Obtener array de envios a recepcionar
+            $datos = $request->request->get('id');
+
+            $miRespuesta = new MyResponse();
+
+            if ($this->envioManager->recepcionarEnvios($datos)){
+
+                $miRespuesta->setEstado(true);
+                $miRespuesta->setData(null);
+                $miRespuesta->setMensaje("OK");
+
+            }else{
+
+                $miRespuesta->setEstado(false);
+                $miRespuesta->setData(null);
+                $miRespuesta->setMensaje("Error al recepcionar los envios correspondientes");
+
+            }
+
+            $serializer = SerializerBuilder::create()->build();
+            $miRespuestaJson = $serializer->serialize($miRespuesta,"json");
+
+            return JsonResponse::fromJsonString($miRespuestaJson);
+
+        }else {
+
+            return $this->render('envio/entregarEnvioPorCI.html.twig', []);
 
         }
     }
@@ -184,39 +224,57 @@ class EnvioController extends AbstractController
     }
 
 
-
-    #[Route('/envio/buscar-envio-manifestado', name: 'envio_manifestado', options: ["expose" => true] , methods: ['POST'])]
-    public function buscarEnvioManifestado(Request $request){
+    #[Route('/envio/buscar-envio-pre-recepcion', name: 'buscar_envio_pre_recepcion', options: ["expose" => true] , methods: ['POST'])]
+    public function buscarEnvioPreRecepcion(Request $request){
 
         if ($request->isXmlHttpRequest()){
 
             $guia = $request->request->get('noGuia');
             $tracking = $request->request->get('codTracking');
-
-            $envioManifestadoService = $this->envioManager->obtnerEnvioManifestado($guia,$tracking);
+            $modoRecepcion = $request->request->get('modoRecepcion');
 
             $miRespuesta = new MyResponse();
 
-            //Si no existe el envio
-            if ( ! $envioManifestadoService ){
 
-                $miRespuesta->setEstado(false);
-                $miRespuesta->setData(null);
-                $miRespuesta->setMensaje("No existe el envio en la guia solicitada");
+            //Envios sin manifestar
+            if ( $modoRecepcion == ModoRecepcion::$SINMANIFESTAR ){
 
-                //Si existe pero es interes de aduana
-            }else if($envioManifestadoService->entidad_ctrl_aduana){
+                $envioSinManifestar = $this->envioRepository->findByEnvioToCodTrackingCalendarYear($tracking);
+
+                $requiere_pareo = (bool)$envioSinManifestar;
 
                 $miRespuesta->setEstado(true);
-                $miRespuesta->setData($envioManifestadoService);
-                $miRespuesta->setMensaje("El envio solicitado es interés de aduana.");
+                $miRespuesta->setData($requiere_pareo);
+                $miRespuesta->setMensaje( $requiere_pareo ? 'Este envio requiere ser pareado.' : 'Este envio no requiere ser pareado.');
 
-                //Si existe y esta correcto
+
+            //Envios manifestados
             }else{
 
-                $miRespuesta->setEstado(true);
-                $miRespuesta->setData($envioManifestadoService);
-                $miRespuesta->setMensaje("Envio buscado con exito");
+                $envioManifestadoService = $this->envioManager->obtnerEnvioManifestado($guia,$tracking);
+
+                //Si no existe el envio
+                if ( ! $envioManifestadoService ){
+
+                    $miRespuesta->setEstado(false);
+                    $miRespuesta->setData(null);
+                    $miRespuesta->setMensaje("No existe el envio en la guia solicitada");
+
+                    //Si existe pero es interes de aduana
+                }else if($envioManifestadoService->entidad_ctrl_aduana){
+
+                    $miRespuesta->setEstado(true);
+                    $miRespuesta->setData($envioManifestadoService);
+                    $miRespuesta->setMensaje("El envio solicitado es interés de aduana.");
+
+                    //Si existe y esta correcto
+                }else{
+
+                    $miRespuesta->setEstado(true);
+                    $miRespuesta->setData($envioManifestadoService);
+                    $miRespuesta->setMensaje("Envio buscado con exito");
+
+                }
 
             }
 
@@ -242,7 +300,7 @@ class EnvioController extends AbstractController
             /** @var TrabajadorCredencial $credencial */
             $credencial = $this->getUser();
 
-            $result = $this->envioManager->recepcionarEnvios($envios,$credencial);
+            $result = $this->envioManager->recepcionarEnvios($envios,$credencial,$request->getClientIp());
 
             $miRespuesta = new MyResponse();
 
@@ -313,7 +371,48 @@ class EnvioController extends AbstractController
 
     }
 
-    #[Route('/envio/save-anomalia-envio', name: 'envio_anomalia', options: ["expose" => true] ,methods: ['POST'])]
+    #[Route('/envio/buscar-envioe-para-entrega-por-CI', name: 'buscar_envioe_para_entrega_por_CI', options: ["expose" => true] , methods: ['POST'])]
+    public function buscarEnvioParaEntregaPorCI(Request $request){
+
+    if ($request->isXmlHttpRequest()){
+
+            $numeroIdentidad = $request->request->get('noCI');
+
+            $persona = $this->getDoctrine()->getRepository(Persona::class)->findOneByNumeroIdentidad($numeroIdentidad);
+
+            /** @var TrabajadorCredencial $credencial */
+            $credencial = $this->getUser();
+
+            $enviosEntregar = $this->envioRepository->buscarEnvioParaEntregaPorCI($persona,$credencial);
+
+            dump($enviosEntregar);exit;
+
+            $miRespuesta = new MyResponse();
+
+
+            if ( $persona){
+
+                $miRespuesta->setEstado(true);
+                $miRespuesta->setData($persona);
+                $miRespuesta->setMensaje( true ? 'Este envio requiere ser pareado.' : 'Este envio no requiere ser pareado.');
+
+
+                //Envios manifestados
+            }
+
+            $serializer = SerializerBuilder::create()->build();
+            $miRespuestaJson = $serializer->serialize($miRespuesta,"json");
+
+            return JsonResponse::fromJsonString($miRespuestaJson);
+
+        }else{
+            dump("Hacker");
+            throwException('Hacker');
+        }
+
+    }
+
+    #[Route('/envio/save-anomalia', name: 'envio_anomalia', options: ["expose" => true] ,methods: ['POST'])]
     public function saveEnvioAnomalia(Request $request)
     {
         $id = $request->get('id');
