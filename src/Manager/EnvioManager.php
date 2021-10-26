@@ -236,6 +236,7 @@ class EnvioManager extends _Manager_
                 $envioAduana->setMunicipioAduana($municipio->getCodigoAduana());
                 $envioAduana->setEstado($estadoRecepcionado);
                 $envioAduana->setArancel( $envioManifestado ? $envioManifestado->isArancel() : false );
+                $envioAduana->setDatosDespacho(null);
                 $this->entityManager->persist($envioAduana);
 
                 /**

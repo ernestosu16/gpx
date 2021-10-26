@@ -378,7 +378,7 @@ class EnvioController extends AbstractController
 
             $numeroIdentidad = $request->request->get('noCI');
 
-            $persona = $this->getDoctrine()->getRepository(Persona::class)->findOneByNumeroIdentidad($numeroIdentidad)?->getId();
+            $persona = $this->getDoctrine()->getRepository(Persona::class)->findOneByNumeroIdentidad($numeroIdentidad);
 
             /** @var TrabajadorCredencial $credencial */
             $credencial = $this->getUser();
