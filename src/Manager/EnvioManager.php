@@ -142,7 +142,7 @@ class EnvioManager extends _Manager_
                     $this->entityManager->getRepository(EstructuraTipo::class)->findOneByCodigo('EMPRESA')
                 ));
 
-                $canalVerde = $this->entityManager->getRepository(Nomenclador::class)->findOneByCodigo('CANAL_VERDE');
+                $canalVerde = $this->entityManager->getRepository(Nomenclador::class)->findOneByCodigo('APP_ENVIO_CANAL_VERDE');
                 $envio->setCanal($canalVerde);
 
                 /** @var Localizacion $provincia */
