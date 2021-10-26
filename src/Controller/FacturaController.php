@@ -4,6 +4,7 @@
 namespace App\Controller;
 
 
+use App\Repository\EnvioRepository;
 use App\Repository\FacturaRepository;
 use App\Repository\NomencladorRepository;
 use App\Repository\SacaRepository;
@@ -19,6 +20,7 @@ class FacturaController extends AbstractController
 {
     public function __construct(
         private SacaRepository $sacaRepository,
+        private EnvioRepository $envioRepository,
         private NomencladorRepository $nomencladorRepository,
         private FacturaRepository $facturaRepository,
         private EntityManagerInterface $entityManager
@@ -42,7 +44,7 @@ class FacturaController extends AbstractController
         $anomalias = $this->nomencladorRepository->findByChildren('APP_SACA_ANOMALIA');
         $anomaliasE = $this->nomencladorRepository->findByChildren('APP_ENVIO_ANOMALIA');
 
-        $html = $sacas ? $this->renderView('factura/sacas.html.twig', [
+        $html = $sacas || $envios ? $this->renderView('factura/sacas.html.twig', [
             'sacas'=>$sacas,
             'envios'=>$envios,
             'anomalias'=>$anomalias->toArray(),
@@ -57,6 +59,7 @@ class FacturaController extends AbstractController
     {
         $noFactura = $request->get('noFactura');
         $sacas = $request->get('sacas');
+        $envios = $request->get('envios');
         $todos = filter_var($request->get('todos'), FILTER_VALIDATE_BOOLEAN);
         $factura = $this->facturaRepository->getFacturaByNoFactura($noFactura);
         $estado = $this->nomencladorRepository->findOneByCodigo('APP_SACA_ESTADO_RECIBIDA');
@@ -67,6 +70,15 @@ class FacturaController extends AbstractController
             $saca->setEstado($estado);
 
             $this->entityManager->persist($saca);
+            $this->entityManager->flush();
+        }
+
+        foreach ($envios as $id)
+        {
+            $envio = $this->envioRepository->find($id);
+            $envio->setEstado($estado);
+
+            $this->entityManager->persist($envio);
             $this->entityManager->flush();
         }
 

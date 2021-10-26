@@ -4,12 +4,14 @@
 namespace App\Controller;
 
 
+use App\Repository\EnvioRepository;
 use App\Repository\NomencladorRepository;
 use App\Repository\SacaRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/saca')]
@@ -19,6 +21,7 @@ class SacaController extends AbstractController
     public function __construct(
         private SacaRepository $sacaRepository,
         private NomencladorRepository $nomencladorRepository,
+        private EnvioRepository $envioRepository,
         private EntityManagerInterface $entityManager
     )
     {
@@ -46,5 +49,48 @@ class SacaController extends AbstractController
         $this->entityManager->flush();
 
         return JsonResponse::fromJsonString('"Anomalias agregadas correctamente"');
+    }
+
+    #[Route('/find-envios-saca', name: 'find_envios_saca', options: ["expose" => true] ,methods: ['POST'])]
+    public function findEnviosSaca(Request $request)
+    {
+        $codTracking = $request->get('codTracking');
+        $envios = $this->sacaRepository->findEnviosNoFacturaAndEstado($codTracking);
+        $anomaliasE = $this->nomencladorRepository->findByChildren('APP_ENVIO_ANOMALIA');
+
+        $html = $envios ? $this->renderView('factura/sacas.html.twig', [
+            'envios'=>$envios,
+            'anomaliasE'=>$anomaliasE->toArray(),
+            'codTracking' => $codTracking]) : 'null';
+
+        return new Response($html);
+    }
+
+    #[Route('/recepcionar-envios-saca', name: 'recepcionar_envios_saca', options: ["expose" => true] ,methods: ['POST'])]
+    public function recepcionarEnviosSaca(Request $request)
+    {
+        $codTracking = $request->get('codTracking');
+        $envios = $request->get('envios');
+        $todos = filter_var($request->get('todos'), FILTER_VALIDATE_BOOLEAN);
+        $saca = $this->sacaRepository->getSacaByCodigo($codTracking);
+        $estado = $this->nomencladorRepository->findOneByCodigo('APP_ENVIO_ESTADO_RECIBIDA');
+
+        foreach ($envios as $id)
+        {
+            $envio = $this->envioRepository->find($id);
+            $envio->setEstado($estado);
+
+            $this->entityManager->persist($envio);
+            $this->entityManager->flush();
+        }
+
+        if($todos)
+        {
+            $estado = $this->nomencladorRepository->findOneByCodigo('APP_SACA_ESTADO_RECIBIDA');
+            $saca->setEstado($estado);
+            $this->entityManager->persist($saca);
+            $this->entityManager->flush();
+        }
+        return JsonResponse::fromJsonString('"Saca recibida correctamente"');
     }
 }
