@@ -4,7 +4,6 @@ let listEnvios = [];
 //-----------------Funciones de Saca---------------------------------------------------------------------------
 
 function AgregarEnvios() {
-    $("#mensaje").html('')
     var ruta = Routing.generate('Annadir')
     var res = $("#input_codTracking").val();
     const oficina = $("#select_oficinas").val();
@@ -12,20 +11,7 @@ function AgregarEnvios() {
     const resultado = listEnvios.find( envio => envio.cod === res );
 
     if (resultado){
-        var valor = '';
-        valor = '<div style="font-family: Century Gothic,CenturyGothic,AppleGothic,sans-serif; \n' +
-            'color: #ffffff; \n' +
-            'font-size: 18px; \n' +
-            'font-weight: 400; \n' +
-            'text-align: center; \n' +
-            'background: #889ccf; \n' +
-            'margin: 0 0 25px; \n' +
-            'overflow: hidden; \n' +
-            'padding: 20px; \n' +
-            'border-radius: 20px 20px 20px 20px; \n' +
-            '-moz-border-radius: 20px 20px 20px 20px; \n' +
-            '-webkit-border-radius: 20px 20px 20px 20px;">'+'<p>'+ 'El envío ya se encuentra en la tabla' +'</p>'+'</div>'
-        $("#mensaje").html(valor);
+        toastr.warning('El envío ya se encuentra en la tabla');
         $("#input_codTracking").val('');
     }else{
         $.ajax({
@@ -36,24 +22,11 @@ function AgregarEnvios() {
             dataType: "json",
             success: function (respuesta) {
                 if (respuesta.respuesta == true){
-                    var valor = '';
-                    valor = '<div style="font-family: Century Gothic,CenturyGothic,AppleGothic,sans-serif; \n' +
-                        'color: #ffffff; \n' +
-                        'font-size: 18px; \n' +
-                        'font-weight: 400; \n' +
-                        'text-align: center; \n' +
-                        'background: #889ccf; \n' +
-                        'margin: 0 0 25px; \n' +
-                        'overflow: hidden; \n' +
-                        'padding: 20px; \n' +
-                        'border-radius: 20px 20px 20px 20px; \n' +
-                        '-moz-border-radius: 20px 20px 20px 20px; \n' +
-                        '-webkit-border-radius: 20px 20px 20px 20px;">'+'<p>'+ respuesta.mensaje +'</p>'+'</div>'
-                    $("#mensaje").html(valor)
+                    toastr.warning(respuesta.mensaje);
                 }else{
                     listEnvios.push(respuesta)
                     ActualizarList();
-                    $("#mensaje").html('')
+                    $("#mensaje_tabla").html('')
                 }
 
             },
@@ -93,7 +66,7 @@ function eliminarEnvio(postionArray){
 
 function GuardarSaca() {
     var ruta = Routing.generate('Guardar');
-    const oficina = $("#select_oficinas_saca").val();
+    const oficina = $("#select_oficinas").val();
     var sello = $("#input_sello").val();
     var peso = $("#input_peso").val();
     let l = [];
@@ -184,6 +157,9 @@ function validaForm(){
         $('#mensaje_sello').html(v);
         $("#input_sello").focus();
         return false;
+    }else
+    {
+        $('#mensaje_sello').html('');
     }
     if($("#input_peso").val() == ""){
         var v = '';
@@ -191,6 +167,9 @@ function validaForm(){
         $('#mensaje_peso').html(v);
         $("#input_peso").focus();
         return false;
+    }else
+    {
+        $('#mensaje_peso').html('');
     }
 
     return true; // Si todo está correcto

@@ -49,20 +49,7 @@ function AgregarSaca() {
     const resultado = listSacas.find( saca => saca.cod === res );
 
     if (resultado){
-        var valor = '';
-        valor = '<div style="font-family: Century Gothic,CenturyGothic,AppleGothic,sans-serif; \n' +
-            'color: #ffffff; \n' +
-            'font-size: 18px; \n' +
-            'font-weight: 400; \n' +
-            'text-align: center; \n' +
-            'background: #889ccf; \n' +
-            'margin: 0 0 25px; \n' +
-            'overflow: hidden; \n' +
-            'padding: 20px; \n' +
-            'border-radius: 20px 20px 20px 20px; \n' +
-            '-moz-border-radius: 20px 20px 20px 20px; \n' +
-            '-webkit-border-radius: 20px 20px 20px 20px;">'+'<p>'+ respuesta.mensaje +'</p>'+'</div>'
-        $("#mensaje_saca").html(valor)
+        toastr.warning('El envío o la saca ya se encuentra en la tabla');
         $("#input_sello").val('');
     }else{
         $.ajax({
@@ -73,24 +60,10 @@ function AgregarSaca() {
             dataType: "json",
             success: function (respuesta) {
                 if (respuesta.respuesta == true){
-                    var valor = '';
-                    valor = '<div style="font-family: Century Gothic,CenturyGothic,AppleGothic,sans-serif; \n' +
-                        'color: #ffffff; \n' +
-                        'font-size: 18px; \n' +
-                        'font-weight: 400; \n' +
-                        'text-align: center; \n' +
-                        'background: #889ccf; \n' +
-                        'margin: 0 0 25px; \n' +
-                        'overflow: hidden; \n' +
-                        'padding: 20px; \n' +
-                        'border-radius: 20px 20px 20px 20px; \n' +
-                        '-moz-border-radius: 20px 20px 20px 20px; \n' +
-                        '-webkit-border-radius: 20px 20px 20px 20px;">'+'<p>'+ respuesta.mensaje +'</p>'+'</div>'
-                    $("#mensaje_saca").html(valor)
+                    toastr.warning(respuesta.mensaje);
                 }else{
                     listSacas.push(respuesta)
                     ActualizarListSaca();
-                    $("#mensaje_saca").html('')
                     $("#mensaje_tabla").html('')
                 }
             },
@@ -152,11 +125,7 @@ function GuardarFactura() {
             success: function (data) {
                 limpiarFormulario()
                 mi_funcion();
-                swal({
-                    title: "",
-                    text: "Se ha creado la factura correctamente",
-                    type: "success"
-                });
+                toastr.success('Se ha creado la factura correctamente');
                 document.getElementById('generar_factura').setAttribute('href', 'imprimir/' + data);
             }
         });

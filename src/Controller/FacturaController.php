@@ -107,8 +107,6 @@ class FacturaController extends AbstractController
             /** @var Saca $saca */
             $saca = $em->getRepository(Saca::class)->findOneBy(['sello'=>$sello]);
 
-            //dump($saca->getEstado()).exit();
-
             if ($saca == null){
                 /** @var Envio $saca */
                 $saca = $em->getRepository(Envio::class)->findOneBy(['cod_tracking'=>$sello]);
@@ -155,10 +153,7 @@ class FacturaController extends AbstractController
                     $respuesta = 'La saca no se encuentra en el sistema';
                 }
             }
-
-
-
-            return new JsonResponse(['respuesta'=>true ,'mensaje'=>$respuesta]);
+           return new JsonResponse(['respuesta'=>true ,'mensaje'=>$respuesta]);
 
         } else {
             throwException('Hacker');
@@ -182,6 +177,9 @@ class FacturaController extends AbstractController
 
             /** @var Nomenclador $estado */
             $estado = $em->getRepository(Nomenclador::class)->findOneBy(['codigo'=>'APP_ENVIO_FACTURA_ESTADO_CREADA']);
+
+            if (!$estado)
+                return new JsonResponse(['error' => 'Error el estado de la factura "CREADA" no existe'], 500);
 
             /** @var Nomenclador $tipo_vehiculo */
             $tipo_vehiculo = $em->getRepository(Nomenclador::class)->find($request->request->get('tipo_vehiculo'));
@@ -209,11 +207,16 @@ class FacturaController extends AbstractController
             }else{
                 $numFactura = $consecutiva->getNumero() + 1;
                 $consecutiva->setNumero($numFactura);
+                $em->persist($consecutiva);
             }
-            $em->persist($consecutiva);
 
             $estEnvioFacturada = $em->getRepository(Nomenclador::class)->findOneBy(['codigo'=>'APP_ENVIO_ESTADO_FACTURADO']);
-            $estSacaFacturada = $em->getRepository(Nomenclador::class)->findOneBy(['codigo'=>'APP_SACA_ESTADO_FACTURADA']);
+            if (!$estEnvioFacturada)
+                return new JsonResponse(['error' => 'Error el estado del envío "FACTURADO" no existe'], 500);
+
+            $estSacaFacturada = $em->getRepository(Nomenclador::class)->findOneBy(['codigo'=>'APP_ENVIO_SACA_ESTADO_FACTURADA']);
+            if (!$estSacaFacturada)
+                return new JsonResponse(['error' => 'Error el estado de la saca "FACTURADA" no existe'], 500);
 
             $codFactura = $estructura_origen->getCodigoPostal() . $estructura_destino->getCodigoPostal() . $numFactura . $anno->format('Y');
             //dump($codFactura).exit();
@@ -247,8 +250,22 @@ class FacturaController extends AbstractController
             $factura->setTrabajador($usuario);
             $factura->setOrigen($estructura_origen);
             $factura->setDestino($estructura_destino);
-
             $em->persist($factura);
+
+            /**
+             * Factura trazas
+             */
+
+            /** @var SacaTraza $sacaTraza */
+            $sacaTraza = new SacaTraza();
+            $sacaTraza->setFecha($date);
+            $sacaTraza->setPeso($request->request->get('peso'));
+            $sacaTraza->setEstado($estado);
+            $sacaTraza->setSaca($saca);
+            $sacaTraza->setEstructura($estructura_destino);
+            $sacaTraza->setTrabajador($trabajador);
+            $sacaTraza->setIp('');
+            $em->persist($sacaTraza);
             $em->flush();
 
             $id_factura = $factura->getId();

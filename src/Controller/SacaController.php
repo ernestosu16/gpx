@@ -7,6 +7,7 @@ use App\Entity\Estructura;
 use App\Entity\Nomenclador;
 use App\Entity\Saca;
 use App\Entity\SacaConsecutivo;
+use App\Entity\SacaTraza;
 use App\Entity\Trabajador;
 use App\Repository\NomencladorRepository;
 use DateTime;
@@ -21,6 +22,7 @@ use function PHPUnit\Framework\throwException;
 #[Route('/saca')]
 class SacaController extends AbstractController
 {
+
     #[Route('/imprimir/{id}/', name: 'imprimir_saca')]
     public function Imprimir($id): Response
     {
@@ -68,6 +70,23 @@ class SacaController extends AbstractController
             //dump($envio->getEstado()->getCodigo());exit();
             $respuesta = '';
 
+            $url= "https://sua.aduana.cu/GINASUA/servicios.php/serviciosExternos.wsdl";
+
+            $soapClient = new \SoapClient($url);
+
+            $result = $soapCliente->__soapCall('GABLDespachado',
+                array(
+                    'usuario'=>'aerov',
+                    'clave'=>'eh7443fx',
+                    'manifiesto'=>'590/2021',
+                    'blga'=>'703-10541510 5089198',
+                    'codigoaduana' => '0202'
+                ));
+
+
+
+
+
             if ($envio != null) {
                 if ($envio->getEstado()->getCodigo() != 'APP_ENVIO_ESTADO_CLASIFICADO' && $envio->getEstado()->getCodigo() != 'APP_ENVIO_ESTADO_FACTURADO') {
                     if ($envio->getEstructuraDestino()->getId() == $oficina_dest) {
@@ -112,8 +131,9 @@ class SacaController extends AbstractController
 
             /** @var Trabajador $user */
             $user = $this->getUser();
-            //$trab = $em->getRepository(Trabajador::class)->find($user->getPersona()->getId());
-            //dump($trab).exit();
+
+            /** @var Trabajador $usuario */
+            $trabajador = $em->getRepository(Trabajador::class)->findOneBy(['persona' => $user->getPersona()->getId()]);
 
             $estructura_origen = $user->getEstructura();
 
@@ -166,6 +186,10 @@ class SacaController extends AbstractController
             }
 
             $date = new DateTime();
+
+            /**
+             * Saca
+             */
             $saca->setFechaCreacion($date);
             $saca->setCodigo($codSaca);
             $saca->setOrigen($estructura_origen);
@@ -175,6 +199,22 @@ class SacaController extends AbstractController
             $saca->setSello($request->request->get('sello'));
             $saca->setPeso($request->request->get('peso'));
             $em->persist($saca);
+
+            /**
+             * Saca trazas
+             */
+
+            /** @var SacaTraza $sacaTraza */
+            $sacaTraza = new SacaTraza();
+            $sacaTraza->setFecha($date);
+            $sacaTraza->setPeso($request->request->get('peso'));
+            $sacaTraza->setEstado($estado);
+            $sacaTraza->setSaca($saca);
+            $sacaTraza->setEstructura($estructura_destino);
+            $sacaTraza->setTrabajador($trabajador);
+            $sacaTraza->setIp('');
+            $em->persist($sacaTraza);
+
             $em->flush();
 
             $id = $saca->getId();
