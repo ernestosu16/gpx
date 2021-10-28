@@ -74,6 +74,7 @@ class EnvioRepository extends ServiceEntityRepository
         $estadoRecepcionado = $em->getRepository(Nomenclador::class)->findOneByCodigo('APP_ENVIO_ESTADO_RECEPCIONADO');
 
         return $this->createQueryBuilder('envio')
+            ->addSelect('envio_aduana.datos_despacho')
             ->andWhere('envio.destinatario = :destinatario')
             ->andWhere('envio.estructura_destino = :estructura_destino')
             ->andWhere('envio.estado = :estado')
@@ -85,6 +86,7 @@ class EnvioRepository extends ServiceEntityRepository
             ->getQuery()
             ->getArrayResult();
     }
+
 
 
 

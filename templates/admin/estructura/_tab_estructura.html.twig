@@ -1,0 +1,36 @@
+<div class="row">
+    <div class="col-lg-6">
+        {% set fields = {
+            parent: {class:'col-sm-12'},
+            nombre: {class:'col-sm-8'},
+            codigo_postal: {class:'col-sm-4'},
+            descripcion: {class:'col-sm-12'},
+            municipio: {class:'col-sm-12'},
+            habilitado: {class:'col-sm-12'}
+        } %}
+        {% for key,field in fields %}
+            <div class="form-group {{ field.class }}">
+                {{ form_label(form[key]) }}
+                {{ form_widget(form[key]) }}
+                {{ form_help(form[key]) }}
+                {{ form_errors(form[key]) }}
+            </div>
+        {% endfor %}
+    </div>
+    <div class="col-lg-6">
+        {% set fields = {
+            codigo: {class:'col-sm-12'},
+            tipos: {class:'col-sm-12'},
+            grupos: {class:'col-sm-12'},
+        } %}
+        {% for key,field in fields %}
+            <div class="form-group {{ field.class }}">
+                {{ form_label(form[key]) }}
+                {{ form_widget(form[key]) }}
+                {{ form_help(form[key]) }}
+                {{ form_errors(form[key]) }}
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% include('@App/admin/estructura/_form_inputs.html.twig') %}
