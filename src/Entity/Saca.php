@@ -14,57 +14,48 @@ class Saca extends _Entity_
     #[ORM\Column(type: 'string', length: 13, nullable: false)]
     private string $sello;
 
-    #[ORM\Column(type: 'datetime')]
-    private $fecha_creacion;
+    #[ORM\Column(type: 'datetime',nullable: false)]
+    private \DateTime $fecha_creacion;
 
-    #[ORM\Column(type: 'string', length: 31)]
-    private $codigo;
+    #[ORM\Column(type: 'string', length: 31, nullable: false)]
+    private string $codigo;
 
-    #[ORM\Column(type: 'float')]
-    private $peso;
-
-    #[ORM\ManyToOne(targetEntity: Nomenclador::class)]
-    #[ORM\JoinColumn(nullable: false)]
-    private $estado;
-
-    #[ORM\ManyToOne(targetEntity: Factura::class, inversedBy: 'sacas')]
-    private $factura;
-
-    #[ORM\ManyToOne(targetEntity: Estructura::class)]
-    #[ORM\JoinColumn(nullable: false)]
-    private $origen;
-
-    #[ORM\ManyToOne(targetEntity: Estructura::class)]
-    #[ORM\JoinColumn(nullable: false)]
-    private $destino;
+    #[ORM\Column(type: 'float', nullable: false)]
+    private float $peso;
 
     #[ORM\ManyToOne(targetEntity: Nomenclador::class)]
+    #[ORM\JoinColumn(name: 'estado_id', referencedColumnName: 'id', nullable: false)]
+    private Nomenclador $estado;
+
+    #[ORM\ManyToOne(targetEntity: Factura::class)]
+    #[ORM\JoinColumn(name: 'factura_id', referencedColumnName: 'id', nullable: true)]
+    private ?Factura $factura;
+
+    #[ORM\ManyToOne(targetEntity: Estructura::class, cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: false)]
-    private $tipo_embalaje;
+    private Estructura $origen;
 
-    #[ORM\ManyToOne(targetEntity: Saca::class, inversedBy: 'sacas_children')]
-    private $saca_colectora;
+    #[ORM\ManyToOne(targetEntity: Estructura::class, cascade: ['persist'])]
+    #[ORM\JoinColumn(nullable: false)]
+    private Estructura $destino;
 
-    #[ORM\OneToMany(mappedBy: 'saca_colectora', targetEntity: Saca::class)]
-    private $sacas_children;
+    #[ORM\ManyToOne(targetEntity: Nomenclador::class, cascade: ['persist'])]
+    #[ORM\JoinColumn(nullable: false)]
+    private Nomenclador $tipo_embalaje;
 
-    #[ORM\ManyToMany(targetEntity: Nomenclador::class, cascade: ['persist'])]
-    #[ORM\JoinTable(name: 'saca_anomalia_asignada')]
-    private ?Collection $anomalias;
-
-    #[ORM\OneToMany(mappedBy: 'saca', targetEntity: Envio::class)]
-    private $envios;
+    #[ORM\OneToMany(mappedBy: 'saca', targetEntity: Envio::class, cascade: ['persist'])]
+    private ?Collection $envios;
 
     #[ORM\Column(type: 'json', nullable: true )]
     private $observaciones;
 
     #[ORM\OneToMany(mappedBy: "saca", targetEntity: SacaTraza::class)]
     private $trazas;
-
+    
     #[Pure]
     public function __construct()
     {
-        $this->sacas_children = new ArrayCollection();
+        $this->envios = new ArrayCollection();
     }
 
     /**
@@ -77,165 +68,155 @@ class Saca extends _Entity_
 
     /**
      * @param string $sello
+     * @return Saca
      */
-    public function setSello(string $sello): void
+    public function setSello(string $sello): Saca
     {
         $this->sello = $sello;
+        return $this;
     }
 
-    public function getFechaCreacion(): ?\DateTimeInterface
+    /**
+     * @return mixed
+     */
+    public function getFechaCreacion()
     {
         return $this->fecha_creacion;
     }
 
-    public function setFechaCreacion(\DateTimeInterface $fecha_creacion): self
+    /**
+     * @param mixed $fecha_creacion
+     * @return Saca
+     */
+    public function setFechaCreacion($fecha_creacion)
     {
         $this->fecha_creacion = $fecha_creacion;
-
         return $this;
     }
 
-    public function getCodigo(): ?string
+    /**
+     * @return mixed
+     */
+    public function getCodigo()
     {
         return $this->codigo;
     }
 
-    public function setCodigo(string $codigo): self
+    /**
+     * @param mixed $codigo
+     * @return Saca
+     */
+    public function setCodigo($codigo)
     {
         $this->codigo = $codigo;
-
         return $this;
     }
 
-    public function getPeso(): ?float
+    /**
+     * @return mixed
+     */
+    public function getPeso()
     {
         return $this->peso;
     }
 
-    public function setPeso(float $peso): self
+    /**
+     * @param mixed $peso
+     * @return Saca
+     */
+    public function setPeso($peso)
     {
         $this->peso = $peso;
-
         return $this;
     }
 
-    public function getEstado(): ?Nomenclador
+    /**
+     * @return mixed
+     */
+    public function getEstado()
     {
         return $this->estado;
     }
 
-    public function setEstado(?Nomenclador $estado): self
+    /**
+     * @param mixed $estado
+     * @return Saca
+     */
+    public function setEstado($estado)
     {
         $this->estado = $estado;
-
         return $this;
     }
 
-    public function getFactura(): ?Factura
+    /**
+     * @return mixed
+     */
+    public function getFactura()
     {
         return $this->factura;
     }
 
-    public function setFactura(?Factura $factura): self
+    /**
+     * @param mixed $factura
+     * @return Saca
+     */
+    public function setFactura($factura)
     {
         $this->factura = $factura;
-
         return $this;
     }
 
-    public function getOrigen(): ?Estructura
+    /**
+     * @return mixed
+     */
+    public function getOrigen()
     {
         return $this->origen;
     }
 
-    public function setOrigen(?Estructura $origen): self
+    /**
+     * @param mixed $origen
+     * @return Saca
+     */
+    public function setOrigen($origen)
     {
         $this->origen = $origen;
-
         return $this;
     }
 
-    public function getDestino(): ?Estructura
+    /**
+     * @return mixed
+     */
+    public function getDestino()
     {
         return $this->destino;
     }
 
-    public function setDestino(?Estructura $destino): self
+    /**
+     * @param mixed $destino
+     * @return Saca
+     */
+    public function setDestino($destino)
     {
         $this->destino = $destino;
-
         return $this;
     }
 
-    public function getTipoEmbalaje(): ?Nomenclador
+    /**
+     * @return mixed
+     */
+    public function getTipoEmbalaje()
     {
         return $this->tipo_embalaje;
     }
 
-    public function setTipoEmbalaje(?Nomenclador $tipo_embalaje): self
-    {
-        $this->tipo_embalaje = $tipo_embalaje;
-
-        return $this;
-    }
-
-    public function getSacaColectora(): ?self
-    {
-        return $this->saca_colectora;
-    }
-
-    public function setSacaColectora(?self $saca_colectora): self
-    {
-        $this->saca_colectora = $saca_colectora;
-
-        return $this;
-    }
-
     /**
-     * @return Collection|self[]
-     */
-    public function getSacasChildren(): Collection
-    {
-        return $this->sacas_children;
-    }
-
-    public function addSacasChild(self $sacasChild): self
-    {
-        if (!$this->sacas_children->contains($sacasChild)) {
-            $this->sacas_children[] = $sacasChild;
-            $sacasChild->setSacaColectora($this);
-        }
-
-        return $this;
-    }
-
-    public function removeSacasChild(self $sacasChild): self
-    {
-        if ($this->sacas_children->removeElement($sacasChild)) {
-            // set the owning side to null (unless already changed)
-            if ($sacasChild->getSacaColectora() === $this) {
-                $sacasChild->setSacaColectora(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|null
-     */
-    public function getAnomalias(): ?Collection
-    {
-        return $this->anomalias;
-    }
-
-    /**
-     * @param Collection|null $anomalias
+     * @param mixed $tipo_embalaje
      * @return Saca
      */
-    public function setAnomalias(?Collection $anomalias): Saca
+    public function setTipoEmbalaje($tipo_embalaje)
     {
-        $this->anomalias = $anomalias;
+        $this->tipo_embalaje = $tipo_embalaje;
         return $this;
     }
 
@@ -286,33 +267,5 @@ class Saca extends _Entity_
 
         return $this;
     }
-    /**
-     * @return Collection|Envio[]
-     */
-    public function getEnvios(): Collection
-    {
-        return $this->envios;
-    }
 
-    public function addEnvio(Envio $envio): self
-    {
-        if (!$this->envios->contains($envio)) {
-            $this->envios[] = $envio;
-            $envio->setSaca($this);
-        }
-
-        return $this;
-    }
-
-    public function removeEnvio(Envio $envio): self
-    {
-        if ($this->envios->removeElement($envio)) {
-            // set the owning side to null (unless already changed)
-            if ($envio->getSaca() === $this) {
-                $envio->setSaca(null);
-            }
-        }
-
-        return $this;
-    }
 }

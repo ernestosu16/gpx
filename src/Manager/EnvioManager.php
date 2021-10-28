@@ -9,10 +9,12 @@ use App\Entity\EnvioAduanaTraza;
 use App\Entity\EnvioAnomaliaTraza;
 use App\Entity\EnvioManifiesto;
 use App\Entity\EnvioTraza;
+use App\Entity\Estructura;
 use App\Entity\EstructuraTipo;
 use App\Entity\Localizacion;
 use App\Entity\Nomenclador;
 use App\Entity\Pais;
+use App\Entity\Trabajador;
 use App\Entity\TrabajadorCredencial;
 use App\Utils\EnvioDireccion;
 use App\Utils\EnvioPreRecepcion;
@@ -317,6 +319,66 @@ class EnvioManager extends _Manager_
         $this->entityManager->persist($envio);
 
         $this->entityManager->flush();
+
+    }
+
+    public function addDespachoAduanaEnvio($url, $envio_aduana, $cod_envio){
+
+        $em = $this->getDoctrine()->getManager();
+
+        $soapClient = new \nusoap_client($url);
+        $soapClient->soap_defencoding = 'UTF-8';
+        $soapClient->decode_utf8 = false;
+
+        /** @var EnvioManifiesto $manifiesto */
+        $manifiesto = $em->getRepository(EnvioManifiesto::class)->findOneBy(['codigo'=>$cod_envio]);
+
+        /** @var Trabajador $user */
+        $user = $this->getUser();
+
+        /** @var Estructura $estructura */
+        $empresa = $em->getRepository(Estructura::class)->find($user->getEstructura()->getId());
+        $valor = json_encode($empresa->getParametros());
+        $cod_aduana = json_decode($valor);
+
+        $result = $soapClient->call('GABLDespachado',
+            [
+                'usuario'=>'aerov',
+                'clave'=>'eh7443fx',
+                'manifiesto'=>$manifiesto->getCodigo(),
+                'blga'=>$manifiesto->getNoGuiaAerea(),
+                'codigoaduana' => $cod_aduana->codigo_aduana
+            ]);
+        $res = json_decode($result);
+        if($res->success == true){
+            $res = json_decode($result, true);
+            $envio_aduana->setDatosDespacho($res);
+            $respuesta = true;
+        }else{
+            $respuesta = false;
+        }
+        return $respuesta;
+    }
+
+    public function verificarConectAduana($url){
+
+        set_time_limit(120);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL,$url);
+        curl_exec($ch);
+
+        $info = curl_getinfo($ch);
+        curl_close($ch);
+
+        if($info["connect_time"]==0)
+        {
+            return 0;
+        }
+        else
+        {
+            return 1;
+
+        }
 
     }
 }
