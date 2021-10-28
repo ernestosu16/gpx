@@ -44,7 +44,9 @@
                     {% for trabajador in pagination %}
                         <tr>
                             <td {% if loop.index is odd %}class="color"{% endif %}>
-                                {{ trabajador.persona.numeroIdentidad }}
+                                <a href="{{ path('admin_trabajador_edit', {'id': trabajador.id}) }}">
+                                    {{ trabajador.persona.numeroIdentidad }}
+                                </a>
                             </td>
                             <td>{{ trabajador.nombreCompleto }}</td>
                             <td>{{ trabajador.sexo }}</td>

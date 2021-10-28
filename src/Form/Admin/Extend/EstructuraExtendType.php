@@ -16,19 +16,20 @@ final class EstructuraExtendType extends _Form_
                 'attr' => ['autocomplete' => 'off', 'class' => 'form-control input-sm'],
                 'label' => 'codigo_aduana',
                 'label_attr' => ['class' => 'control-label'],
+                'required' => true,
             ])
             ->add('codigo_operador', TextType::class, [
                 'attr' => ['autocomplete' => 'off', 'class' => 'form-control input-sm'],
                 'label' => 'codigo_operador',
                 'label_attr' => ['class' => 'control-label'],
+                'required' => true,
             ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'translation_domain' => 'admin',
-            'required' => false,
+            'translation_domain' => 'admin'
         ]);
     }
 
