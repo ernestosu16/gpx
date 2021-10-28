@@ -12,8 +12,11 @@ use App\Entity\SacaConsecutivo;
 use App\Entity\SacaTraza;
 use App\Entity\Trabajador;
 use App\Manager\EnvioManager;
+use App\Repository\EnvioRepository;
 use App\Repository\NomencladorRepository;
+use App\Repository\SacaRepository;
 use DateTime;
+use Doctrine\ORM\EntityManagerInterface;
 use SoapClient;
 use JMS\Serializer\SerializerBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -30,7 +33,8 @@ class SacaController extends AbstractController
         private SacaRepository $sacaRepository,
         private NomencladorRepository $nomencladorRepository,
         private EnvioRepository $envioRepository,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private EnvioManager $envioManager
     )
     {
     }

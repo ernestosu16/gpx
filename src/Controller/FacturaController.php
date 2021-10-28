@@ -4,6 +4,17 @@
 namespace App\Controller;
 
 
+use App\Entity\Envio;
+use App\Entity\EnvioAduana;
+use App\Entity\Estructura;
+use App\Entity\Factura;
+use App\Entity\FacturaConsecutivo;
+use App\Entity\FacturaTraza;
+use App\Entity\Grupo;
+use App\Entity\Nomenclador;
+use App\Entity\Persona;
+use App\Entity\Saca;
+use App\Entity\Trabajador;
 use App\Entity\TrabajadorCredencial;
 use App\Manager\EnvioManager;
 use App\Manager\FacturaManager;
@@ -12,11 +23,13 @@ use App\Repository\FacturaRepository;
 use App\Repository\NomencladorRepository;
 use App\Repository\SacaRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use JMS\Serializer\SerializerBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use function PHPUnit\Framework\throwException;
 
 #[Route('/factura')]
 class FacturaController extends AbstractController
@@ -168,20 +181,20 @@ class FacturaController extends AbstractController
                                     if ($this->envioManager->addDespachoAduanaEnvio($url, $envio_aduana, $cod)){
                                         return JsonResponse::fromJsonString($miRespuestaJson);
                                     }else{
-                                        $respuesta = 'El servicio del despacho de la aduana no está funcionando, por favor intentelo mas tarde.';
+                                        $respuesta = 'El servicio del despacho de la aduana no estï¿½ funcionando, por favor intentelo mas tarde.';
                                     }
                                 }else{
-                                    $respuesta = 'La conexión con el servicio de aduana esta tardando mucho, por favor intentelo mas tarde.';
+                                    $respuesta = 'La conexiï¿½n con el servicio de aduana esta tardando mucho, por favor intentelo mas tarde.';
                                 }
                             }
                         }else{
-                            $respuesta = 'El envío esta mal reeencaminado';
+                            $respuesta = 'El envï¿½o esta mal reeencaminado';
                         }
                     }else{
-                        $respuesta = 'El envío ya esta clasificado o facturado';
+                        $respuesta = 'El envï¿½o ya esta clasificado o facturado';
                     }
                 }else{
-                    $respuesta = 'El envío no se encuentra en el sistema';
+                    $respuesta = 'El envï¿½o no se encuentra en el sistema';
                 }
             }else{
                 if ($saca != null){
@@ -199,7 +212,7 @@ class FacturaController extends AbstractController
                             $respuesta = 'La saca esta mal reeencaminado';
                         }
                     }else{
-                        $respuesta = 'La saca ya está facturada';
+                        $respuesta = 'La saca ya estï¿½ facturada';
                     }
                 }else{
                     $respuesta = 'La saca no se encuentra en el sistema';
@@ -264,7 +277,7 @@ class FacturaController extends AbstractController
 
             $estEnvioFacturada = $em->getRepository(Nomenclador::class)->findOneBy(['codigo'=>'APP_ENVIO_ESTADO_FACTURADO']);
             if (!$estEnvioFacturada)
-                return new JsonResponse(['error' => 'Error el estado del envío "FACTURADO" no existe'], 500);
+                return new JsonResponse(['error' => 'Error el estado del envï¿½o "FACTURADO" no existe'], 500);
 
             $estSacaFacturada = $em->getRepository(Nomenclador::class)->findOneBy(['codigo'=>'APP_ENVIO_SACA_ESTADO_FACTURADA']);
             if (!$estSacaFacturada)
