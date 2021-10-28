@@ -44,9 +44,3 @@ services:
         parent: App\Manager\_Manager_
         public: true
         arguments: ['@doctrine.orm.default_entity_manager']
-
-    app.manager.fichero_envio_aduana:
-        class: App\Manager\FicheroEnvioAduanaManager
-        parent: App\Manager\_Manager_
-        public: true
-
