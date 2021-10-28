@@ -4,9 +4,12 @@ function elementId(id){
 
 function buscarFacturaSacas()
 {
+    $('#sacas').html('')
     let noFactura = elementId('text_no_factura').value;
 
     if (noFactura !== '') {
+        var l = Ladda.create(elementId('button_no_factura'));
+        l.start();
         let ruta = Routing.generate('find_sacas_factura')
         $.ajax({
             type: 'POST',
@@ -18,6 +21,7 @@ function buscarFacturaSacas()
             dataType: 'html',
             loading: '',
             success: function (data) {
+                l.stop();
                 if (data === 'null'){
                     swal({
                         title: "No se encuentra",
@@ -32,6 +36,7 @@ function buscarFacturaSacas()
             error: function (error) {
                 alert('Error: ' + error.status + ' ' + error.statusText);
                 console.log('error', error.responseText)
+                l.stop();
             }
 
         })
@@ -71,6 +76,8 @@ function recepcionarFactura(noFactura)
     else{
         let todos = sacas.length === inputsacas.length && envios.length === inputenvios.length;
         let ruta = Routing.generate('recepcionar_sacas_factura');
+        var l = Ladda.create(elementId('button_recepcionar_factura'));
+        l.start();
         $.ajax({
             type: 'POST',
             url: ruta,
@@ -90,10 +97,12 @@ function recepcionarFactura(noFactura)
                     type: "success"
                 });
                 $('#sacas').html('')
+                l.stop();
             },
             error: function (error) {
                 alert('Error: ' + error.status + ' ' + error.statusText);
                 console.log('error', error.responseText)
+                l.stop();
             }
 
         })
@@ -146,6 +155,8 @@ function guardarAnomalia(sacaID){
             i++;
         }
 
+        var l = Ladda.create(elementId('btn-anomalia-saca-'+sacaID));
+        l.start();
         let ruta = Routing.generate('saca_anomalia');
         $.ajax({
             type: 'POST',
@@ -158,6 +169,7 @@ function guardarAnomalia(sacaID){
             dataType: 'json',
             loading: '',
             success: function (data) {
+                l.stop();
                 swal({
                     title: "OK",
                     text: data,
@@ -167,6 +179,7 @@ function guardarAnomalia(sacaID){
             error: function (error) {
                 alert('Error: ' + error.status + ' ' + error.statusText);
                 console.log('error', error.responseText)
+                l.stop();
             }
 
         })
@@ -181,8 +194,7 @@ function guardarAnomaliaEnvio(envioID){
 
     let key = [];
     let value = [];
-    console.log(table);
-    console.log(cells)
+
     for (let check of cells) {
         if(check.checked){
             let className = check.className.split(' ');
@@ -209,9 +221,10 @@ function guardarAnomaliaEnvio(envioID){
             anomalias[key[i]] = value[i]
             i++;
         }
-        console.log(anomalias)
+
         let ruta = Routing.generate('envio_anomalia');
-        console.log(ruta)
+        var l = Ladda.create(elementId('btn-anomalia-envio-'+envioID));
+        l.start();
         $.ajax({
             type: 'POST',
             url: ruta,
@@ -223,6 +236,7 @@ function guardarAnomaliaEnvio(envioID){
             dataType: 'json',
             loading: '',
             success: function (data) {
+                l.stop();
                 swal({
                     title: "OK",
                     text: data,
@@ -232,18 +246,9 @@ function guardarAnomaliaEnvio(envioID){
             error: function (error) {
                 alert('Error: ' + error.status + ' ' + error.statusText);
                 console.log('error', error.responseText)
+                l.stop();
             }
 
         })
     }
 }
-
-$(function() {
-    $('#form-submit').click(function(e){
-        e.preventDefault();
-        var l = Ladda.create(this);
-        l.start();
-
-        return false;
-    });
-});

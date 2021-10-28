@@ -11,7 +11,7 @@
 
             <div class="panel panel-default">
                 <div class="panel-heading" role="tab" id="panelenvio_{{envio.id}}">
-                    <label class="form-label">envio No. [{{ envio.cod_tracking }}] código [{{envio.codigo}}] en estado [{{ envio.estado.nombre }}] &nbsp; + &nbsp;
+                    <label class="form-label">Envio codigo <span class="text-info">[{{ envio.CodTracking }}]</span> peso <span class="text-info">[{{envio.peso}}]</span> en estado <span class="text-info">[{{ envio.estado.nombre }}]</span> &nbsp; + &nbsp;
                         <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{envio.id}}" aria-expanded="false" aria-controls="collapse{{envio.id}}" class="collapsed">
                             Irregularidades </a></label>
                 </div>
@@ -21,7 +21,7 @@
                     <div class="panel-heading" role="tab" id="panelenvio_{{envio.id}}">
 
                         <input class="form-check-input checkbox-envios" type="checkbox" value="{{envio.id}}" id="checkenvio_{{envio.id}}" checked>
-                        <label class="form-label">Envio codigo [{{ envio.CodTracking }}] peso [{{envio.peso}}] en estado [{{ envio.estado.nombre }}] &nbsp; + &nbsp;
+                        <label class="form-label">Envio codigo <span class="text-info">[{{ envio.CodTracking }}]</span> peso <span class="text-info">[{{envio.peso}}]</span> en estado <span class="text-info">[{{ envio.estado.nombre }}]</span> &nbsp; + &nbsp;
                             <a data-toggle="collapse" data-parent="#accordion" href="#ecollapse{{envio.id}}" aria-expanded="false" aria-controls="ecollapse{{envio.id}}" class="collapsed ecollapse{{envio.id}}">
                                 Irregularidades </a></label>
 
@@ -40,7 +40,7 @@
                                 </div>
                             {% endfor %}
                             <div class="pull-right" style="margin-top: 25px;">
-                                <button class="btn btn-primary" onclick="guardarAnomaliaEnvio('{{ envio.id }}')"><i class="fa fa-check"></i> Guardar </button>
+                                <button class="ladda-button btn btn-primary" data-style="expand-left" onclick="guardarAnomaliaEnvio('{{ envio.id }}')" id="btn-anomalia-envio-{{ envio.id }}"> <span class="ladda-label"><i class="fa fa-check"></i> Guardar</span><span class="ladda-spinner"></span></button>
                             </div>
 
                         </div>
@@ -56,7 +56,7 @@
     <div class="row col-md-12 m-b">
 
         <div class="col-md-4">
-            <button class="btn btn-primary" onclick="recepcionarSaca({{codTracking}})"><i class="fa fa-check"></i> Recepcionar valijas</button>
+            <button class="ladda-button btn btn-primary" data-style="expand-left" onclick="aperturarSaca({{codTracking}})" id="button_aperturar_saca"> <span class="ladda-label"><i class="fa fa-check"></i> Aperturar saca</span><span class="ladda-spinner"></span></button>
         </div>
     </div>
 

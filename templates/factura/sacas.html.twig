@@ -10,9 +10,13 @@
 
             <div class="panel panel-default">
                 <div class="panel-heading" role="tab" id="panelSaca_{{saca.id}}">
-                    <label class="form-label">SACA No. [{{ saca.sello }}] código [{{saca.codigo}}] en estado [{{ saca.estado.nombre }}] &nbsp; + &nbsp;
-                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{saca.id}}" aria-expanded="false" aria-controls="collapse{{saca.id}}" class="collapsed">
-                            Irregularidades </a></label>
+                    <label class="form-label">SACA No. <span class="text-info">[{{ saca.sello }}]</span> código <span class="text-info">[{{saca.codigo}}]</span> en estado <span class="text-info">[{{ saca.estado.nombre }}]</span> &nbsp; + &nbsp;
+                        <span class="text-danger">                            Irregularidades [
+                            {% for key, irr in saca.observaciones %}
+                                {{ key }}:{{ irr }},
+                            {% endfor %}
+                            ]</span>
+                    </label>
                 </div>
             </div>
             {% else %}
@@ -20,7 +24,7 @@
                     <div class="panel-heading" role="tab" id="panelSaca_{{saca.id}}">
 
                         <input class="form-check-input checkbox-sacas" type="checkbox" value="{{saca.id}}" id="checkSaca_{{saca.id}}" checked>
-                        <label class="form-label">SACA No. [{{ saca.sello }}] código [{{saca.codigo}}] en estado [{{ saca.estado.nombre }}] &nbsp; + &nbsp;
+                        <label class="form-label">SACA No. <span class="text-info">[{{ saca.sello }}]</span> código <span class="text-info">[{{saca.codigo}}]</span> en estado <span class="text-info">[{{ saca.estado.nombre }}]</span> &nbsp; + &nbsp;
                             <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{saca.id}}" aria-expanded="false" aria-controls="collapse{{saca.id}}" class="collapsed collapse{{saca.id}}">
                                 Irregularidades </a></label>
 
@@ -39,7 +43,7 @@
                                 </div>
                             {% endfor %}
                             <div class="pull-right" style="margin-top: 25px;">
-                                <button class="btn btn-primary" onclick="guardarAnomalia('{{ saca.id }}')"><i class="fa fa-check"></i> Guardar </button>
+                                <button class="ladda-button btn btn-primary" data-style="expand-left" onclick="guardarAnomalia('{{ saca.id }}')" id="btn-anomalia-saca-{{ saca.id }}"> <span class="ladda-label"><i class="fa fa-check"></i> Guardar</span><span class="ladda-spinner"></span></button>
                             </div>
 
                         </div>
@@ -58,7 +62,7 @@
 
             <div class="panel panel-default">
                 <div class="panel-heading" role="tab" id="panelenvio_{{envio.id}}">
-                    <label class="form-label">Envio codigo [{{ envio.CodTracking }}] peso [{{envio.peso}}] en estado [{{ envio.estado.nombre }}] &nbsp; + &nbsp;
+                    <label class="form-label">Envio codigo <span class="text-info">[{{ envio.CodTracking }}]</span> peso <span class="text-info">[{{envio.peso}}]</span> en estado <span class="text-info">[{{ envio.estado.nombre }}]</span> &nbsp; + &nbsp;
                         <a data-toggle="collapse" data-parent="#accordion" href="#ecollapse{{envio.id}}" aria-expanded="false" aria-controls="ecollapse{{envio.id}}" class="collapsed">
                             Irregularidades </a></label>
                 </div>
@@ -68,7 +72,7 @@
                     <div class="panel-heading" role="tab" id="panelenvio_{{envio.id}}">
 
                         <input class="form-check-input checkbox-envios" type="checkbox" value="{{envio.id}}" id="checkenvio_{{envio.id}}" checked>
-                        <label class="form-label">Envio codigo [{{ envio.CodTracking }}] peso [{{envio.peso}}] en estado [{{ envio.estado.nombre }}] &nbsp; + &nbsp;
+                        <label class="form-label">Envio codigo <span class="text-info">[{{ envio.CodTracking }}]</span> peso <span class="text-info">[{{envio.peso}}]</span> en estado <span class="text-info">[{{ envio.estado.nombre }}]</span> &nbsp; + &nbsp;
                             <a data-toggle="collapse" data-parent="#accordion" href="#ecollapse{{envio.id}}" aria-expanded="false" aria-controls="ecollapse{{envio.id}}" class="collapsed ecollapse{{envio.id}}">
                                 Irregularidades </a></label>
 
@@ -87,7 +91,7 @@
                                 </div>
                             {% endfor %}
                             <div class="pull-right" style="margin-top: 25px;">
-                                <button class="btn btn-primary" onclick="guardarAnomaliaEnvio('{{ envio.id }}')"><i class="fa fa-check"></i> Guardar </button>
+                                <button class="ladda-button btn btn-primary" data-style="expand-left" onclick="guardarAnomaliaEnvio('{{ envio.id }}')" id="btn-anomalia-envio-{{ envio.id }}"> <span class="ladda-label"><i class="fa fa-check"></i> Guardar</span><span class="ladda-spinner"></span></button>
                             </div>
 
                         </div>
@@ -103,7 +107,7 @@
     <div class="row col-md-12 m-b">
 
         <div class="col-md-4">
-            <button class="btn btn-primary" onclick="recepcionarFactura({{noFactura}})"><i class="fa fa-check"></i> Recepcionar valijas</button>
+            <button class="ladda-button btn btn-primary" data-style="expand-left" onclick="recepcionarFactura({{noFactura}})" id="button_recepcionar_factura"> <span class="ladda-label"><i class="fa fa-check"></i> Recepcionar valijas</span><span class="ladda-spinner"></span></button>
         </div>
     </div>
 {% endblock %}
