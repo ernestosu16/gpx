@@ -3,24 +3,25 @@
 
 namespace App\Controller;
 
+
 use App\Entity\Envio;
 use App\Entity\EnvioAduana;
-use App\Entity\EnvioManifiesto;
 use App\Entity\Estructura;
 use App\Entity\Factura;
 use App\Entity\FacturaConsecutivo;
-use App\Manager\EnvioManager;
-use App\Repository\FacturaRepository;
 use App\Entity\FacturaTraza;
 use App\Entity\Grupo;
 use App\Entity\Nomenclador;
 use App\Entity\Persona;
 use App\Entity\Saca;
 use App\Entity\Trabajador;
-use App\Repository\FacturaConsecutivoRepository;
+use App\Entity\TrabajadorCredencial;
+use App\Manager\EnvioManager;
+use App\Manager\FacturaManager;
+use App\Repository\EnvioRepository;
+use App\Repository\FacturaRepository;
 use App\Repository\NomencladorRepository;
 use App\Repository\SacaRepository;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use JMS\Serializer\SerializerBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -34,20 +35,21 @@ use function PHPUnit\Framework\throwException;
 class FacturaController extends AbstractController
 {
     public function __construct(
+        private EnvioManager $envioManager,
+        private FacturaManager $facturaManager,
         private SacaRepository $sacaRepository,
         private NomencladorRepository $nomencladorRepository,
         private FacturaRepository $facturaRepository,
-        private EntityManagerInterface $entityManager,
-        private EnvioManager $envioManager
+        private EntityManagerInterface $entityManager
     )
     {
     }
 
-    #[Route('/procesar', name: 'procesar_factura', methods: ['GET'])]
+    #[Route('/recepcionar', name: 'procesar_factura', methods: ['GET'])]
     public function procesarFactura()
     {
 
-        return $this->render('factura/procesarFactura.html.twig',[]);
+        return $this->render('factura/recepcionar.html.twig',[]);
     }
 
     #[Route('/find-sacas-factura', name: 'find_sacas_factura', options: ["expose" => true] ,methods: ['POST'])]
@@ -59,7 +61,7 @@ class FacturaController extends AbstractController
         $anomalias = $this->nomencladorRepository->findByChildren('APP_SACA_ANOMALIA');
         $anomaliasE = $this->nomencladorRepository->findByChildren('APP_ENVIO_ANOMALIA');
 
-        $html = $sacas ? $this->renderView('factura/sacas.html.twig', [
+        $html = $sacas || $envios ? $this->renderView('factura/sacas.html.twig', [
             'sacas'=>$sacas,
             'envios'=>$envios,
             'anomalias'=>$anomalias->toArray(),
@@ -73,10 +75,14 @@ class FacturaController extends AbstractController
     public function recepcionarSacasFactura(Request $request)
     {
         $noFactura = $request->get('noFactura');
-        $sacas = $request->get('sacas');
+        $sacas = $request->get('sacas') ?? [];
+        $envios = $request->get('envios') ?? [];
         $todos = filter_var($request->get('todos'), FILTER_VALIDATE_BOOLEAN);
         $factura = $this->facturaRepository->getFacturaByNoFactura($noFactura);
         $estado = $this->nomencladorRepository->findOneByCodigo('APP_SACA_ESTADO_RECIBIDA');
+
+        /** @var TrabajadorCredencial $credencial */
+        $credencial = $this->getUser();
 
         foreach ($sacas as $id)
         {
@@ -87,12 +93,19 @@ class FacturaController extends AbstractController
             $this->entityManager->flush();
         }
 
+        foreach ($envios as $id)
+        {
+            $this->envioManager->cambiarEstado($id,$credencial);
+        }
+
         if($todos)
         {
             $estado = $this->nomencladorRepository->findOneByCodigo('APP_FACTURA_ESTADO_RECIBIDA');
             $factura->setEstado($estado);
             $this->entityManager->persist($factura);
             $this->entityManager->flush();
+
+            $this->facturaManager->createTraza($factura,$credencial);
         }
         return JsonResponse::fromJsonString('"Factura recibida correctamente"');
     }
@@ -168,20 +181,20 @@ class FacturaController extends AbstractController
                                     if ($this->envioManager->addDespachoAduanaEnvio($url, $envio_aduana, $cod)){
                                         return JsonResponse::fromJsonString($miRespuestaJson);
                                     }else{
-                                        $respuesta = 'El servicio del despacho de la aduana no está funcionando, por favor intentelo mas tarde.';
+                                        $respuesta = 'El servicio del despacho de la aduana no est� funcionando, por favor intentelo mas tarde.';
                                     }
                                 }else{
-                                    $respuesta = 'La conexión con el servicio de aduana esta tardando mucho, por favor intentelo mas tarde.';
+                                    $respuesta = 'La conexi�n con el servicio de aduana esta tardando mucho, por favor intentelo mas tarde.';
                                 }
                             }
                         }else{
-                            $respuesta = 'El envío esta mal reeencaminado';
+                            $respuesta = 'El env�o esta mal reeencaminado';
                         }
                     }else{
-                        $respuesta = 'El envío ya esta clasificado o facturado';
+                        $respuesta = 'El env�o ya esta clasificado o facturado';
                     }
                 }else{
-                    $respuesta = 'El envío no se encuentra en el sistema';
+                    $respuesta = 'El env�o no se encuentra en el sistema';
                 }
             }else{
                 if ($saca != null){
@@ -199,7 +212,7 @@ class FacturaController extends AbstractController
                             $respuesta = 'La saca esta mal reeencaminado';
                         }
                     }else{
-                        $respuesta = 'La saca ya está facturada';
+                        $respuesta = 'La saca ya est� facturada';
                     }
                 }else{
                     $respuesta = 'La saca no se encuentra en el sistema';
@@ -264,7 +277,7 @@ class FacturaController extends AbstractController
 
             $estEnvioFacturada = $em->getRepository(Nomenclador::class)->findOneBy(['codigo'=>'APP_ENVIO_ESTADO_FACTURADO']);
             if (!$estEnvioFacturada)
-                return new JsonResponse(['error' => 'Error el estado del envío "FACTURADO" no existe'], 500);
+                return new JsonResponse(['error' => 'Error el estado del env�o "FACTURADO" no existe'], 500);
 
             $estSacaFacturada = $em->getRepository(Nomenclador::class)->findOneBy(['codigo'=>'APP_ENVIO_SACA_ESTADO_FACTURADA']);
             if (!$estSacaFacturada)

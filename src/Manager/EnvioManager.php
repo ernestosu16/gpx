@@ -43,6 +43,16 @@ class EnvioManager extends _Manager_
         $this->entityManager = $doctrineEntityManager;
     }
 
+    private function getEnvioRepository(): EnvioRepository
+    {
+        return $this->entityManager->getRepository(Envio::class);
+    }
+
+    private function getNomencladorRepository(): NomencladorRepository
+    {
+        return $this->entityManager->getRepository(Nomenclador::class);
+    }
+
 
     /***
      * @param string $noGuia
@@ -233,7 +243,7 @@ class EnvioManager extends _Manager_
                 $envioAduana->setProvinciaAduana($provincia->getCodigoAduana());
                 $envioAduana->setMunicipioAduana($municipio->getCodigoAduana());
                 $envioAduana->setEstado($estadoRecepcionado);
-                $envioAduana->setArancel( $envioManifestado ? $envioManifestado->isArancel() : false );
+                $envioAduana->setArancel($envioManifestado ? $envioManifestado->isArancel() : false);
                 $envioAduana->setDatosDespacho(null);
                 $this->entityManager->persist($envioAduana);
 
@@ -269,7 +279,9 @@ class EnvioManager extends _Manager_
         $envioTraza->setEstado($envio->getEstado());
         $envioTraza->setTrabajador($user->getTrabajador());
         $envioTraza->setEstructuraOrigen($user->getEstructura());
-        $envioTraza->setIp('');
+        $ip = array_key_exists('REMOTE_ADDR', $_SERVER) ? $_SERVER['REMOTE_ADDR'] : '127.0.0.1';
+        $envioTraza->setIp($ip);
+        $envioTraza->setCanal($envio->getCanal());
 
         $this->entityManager->persist($envioTraza);
 
@@ -283,6 +295,31 @@ class EnvioManager extends _Manager_
             $this->entityManager->persist($envioAnomaliaTraza);
             $this->entityManager->flush();
         }
+    }
+
+    public function cambiarEstado($id, TrabajadorCredencial $user)
+    {
+        $envio = $this->getEnvioRepository()->find($id);
+        $estado = $this->getNomencladorRepository()->findOneByCodigo('APP_ENVIO_ESTADO_RECEPCIONADO');
+
+        $envio->setEstado($estado);
+        $this->entityManager->persist($envio);
+
+        $traza = new EnvioTraza();
+        $traza->setEstado($estado);
+        $traza->setCanal($envio->getCanal());
+        $traza->setEnvio($envio);
+        $traza->setEstructuraDestino($envio->getEstructuraDestino());
+        $traza->setEstructuraOrigen($envio->getEstructuraOrigen());
+        $traza->setFecha(new \DateTime());
+        $ip = array_key_exists('REMOTE_ADDR', $_SERVER) ? $_SERVER['REMOTE_ADDR'] : '127.0.0.1';
+        $traza->setIp($ip);
+        $traza->setPeso($envio->getPeso());
+        $traza->setTrabajador($user->getTrabajador());
+        $this->entityManager->persist($envio);
+
+        $this->entityManager->flush();
+
     }
 
     public function addDespachoAduanaEnvio($url, $envio_aduana, $cod_envio){
@@ -344,5 +381,5 @@ class EnvioManager extends _Manager_
         }
 
     }
-
 }
+
