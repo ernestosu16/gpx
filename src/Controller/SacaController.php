@@ -11,6 +11,7 @@ use App\Entity\Saca;
 use App\Entity\SacaConsecutivo;
 use App\Entity\SacaTraza;
 use App\Entity\Trabajador;
+use App\Manager\EnvioManager;
 use App\Repository\NomencladorRepository;
 use DateTime;
 use SoapClient;
@@ -25,6 +26,11 @@ use function PHPUnit\Framework\throwException;
 #[Route('/saca')]
 class SacaController extends AbstractController
 {
+    public function __construct(
+        private EnvioManager $envioManager
+    )
+    {
+    }
 
     #[Route('/imprimir/{id}/', name: 'imprimir_saca')]
     public function Imprimir($id): Response
@@ -85,40 +91,22 @@ class SacaController extends AbstractController
                         $miRespuestaJson = $serializer->serialize(['id' => $id, 'cod' => $cod, 'peso' => $peso], "json");
 
                         /** @var EnvioAduana $envio_aduana */
-                        $envio_aduana = $em->getRepository(EnvioAduana::class)->find($id);
+                        $envio_aduana = $em->getRepository(EnvioAduana::class)->findOneBy(['envio'=>$id]);
 
                         if ($envio_aduana->getDatosDespacho() == null){
                             $url= "https://sua.aduana.cu/GINASUA/serviciosExternos?wsdl";
-                            set_time_limit(120);
-                            $ch = curl_init();
-                            curl_setopt($ch, CURLOPT_URL,$url);
-                            curl_exec($ch);
 
-                            $info = curl_getinfo($ch);
-                            curl_close($ch);
-
-                            $soapClient = new \nusoap_client($url);
-                            $soapClient->soap_defencoding = 'UTF-8';
-                            $soapClient->decode_utf8 = false;
-
-                            /** @var EnvioManifiesto $manifiesto */
-                            $manifiesto = $em->getRepository(EnvioManifiesto::class)->findOneBy(['codigo'=>$cod]);
-
-                            $result = $soapClient->call('GABLDespachado',
-                                [
-                                    'usuario'=>'aerov',
-                                    'clave'=>'eh7443fx',
-                                    'manifiesto'=>$manifiesto->getCodigo(),
-                                    'blga'=>$manifiesto->getNoGuiaAerea(),
-                                    'codigoaduana' => '0202'
-                                ]);
-                            $res = json_decode($result, true);
-
-                            $envio_aduana->setDatosDespacho($res);
-
+                            if ($this->envioManager->verificarConectAduana($url) == 1){
+                                if ($this->envioManager->addDespachoAduanaEnvio($url, $envio_aduana, $cod)){
+                                    return JsonResponse::fromJsonString($miRespuestaJson);
+                                }else{
+                                    $respuesta = 'El servicio del despacho de la aduana no está funcionando, por favor intentelo mas tarde.';
+                                }
+                            }else{
+                                $respuesta = 'La conexión con el servicio de aduana esta tardando mucho, por favor intentelo mas tarde.';
+                            }
                         }
 
-                        return JsonResponse::fromJsonString($miRespuestaJson);
                     } else {
                         $respuesta = 'El envío esta mal reeencaminado';
                     }

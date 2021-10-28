@@ -4,9 +4,12 @@
 namespace App\Controller;
 
 use App\Entity\Envio;
+use App\Entity\EnvioAduana;
+use App\Entity\EnvioManifiesto;
 use App\Entity\Estructura;
 use App\Entity\Factura;
 use App\Entity\FacturaConsecutivo;
+use App\Manager\EnvioManager;
 use App\Repository\FacturaRepository;
 use App\Entity\FacturaTraza;
 use App\Entity\Grupo;
@@ -34,7 +37,8 @@ class FacturaController extends AbstractController
         private SacaRepository $sacaRepository,
         private NomencladorRepository $nomencladorRepository,
         private FacturaRepository $facturaRepository,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private EnvioManager $envioManager
     )
     {
     }
@@ -154,7 +158,22 @@ class FacturaController extends AbstractController
                             $serializer = SerializerBuilder::create()->build();
                             $miRespuestaJson = $serializer->serialize(['id'=>$id, 'cod'=>$cod, 'peso'=>$peso],"json");
 
-                            return JsonResponse::fromJsonString($miRespuestaJson);
+                            /** @var EnvioAduana $envio_aduana */
+                            $envio_aduana = $em->getRepository(EnvioAduana::class)->find($id);
+
+                            if ($envio_aduana->getDatosDespacho() == null){
+                                $url= "https://sua.aduana.cu/GINASUA/serviciosExternos?wsdl";
+
+                                if ($this->envioManager->verificarConectAduana($url) == 1){
+                                    if ($this->envioManager->addDespachoAduanaEnvio($url, $envio_aduana, $cod)){
+                                        return JsonResponse::fromJsonString($miRespuestaJson);
+                                    }else{
+                                        $respuesta = 'El servicio del despacho de la aduana no está funcionando, por favor intentelo mas tarde.';
+                                    }
+                                }else{
+                                    $respuesta = 'La conexión con el servicio de aduana esta tardando mucho, por favor intentelo mas tarde.';
+                                }
+                            }
                         }else{
                             $respuesta = 'El envío esta mal reeencaminado';
                         }
