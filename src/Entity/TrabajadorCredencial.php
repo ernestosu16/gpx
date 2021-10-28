@@ -32,6 +32,9 @@ class TrabajadorCredencial implements UserInterface, PasswordAuthenticatedUserIn
     #[ORM\Column(type: 'json')]
     private array $ultima_conexion = [];
 
+    #[ORM\Column(type: 'boolean', options: ['default' => true])]
+    private bool $forzar_cambio_contrasena = true;
+
     public function __toString(): string
     {
         return $this->usuario;
@@ -101,6 +104,16 @@ class TrabajadorCredencial implements UserInterface, PasswordAuthenticatedUserIn
         return $this;
     }
 
+    public function isForzarCambioContrasena(): bool
+    {
+        return $this->forzar_cambio_contrasena;
+    }
+
+    public function setForzarCambioContrasena(bool $forzar_cambio_contrasena): TrabajadorCredencial
+    {
+        $this->forzar_cambio_contrasena = $forzar_cambio_contrasena;
+        return $this;
+    }
 
     public function getTrabajador(): ?Trabajador
     {
