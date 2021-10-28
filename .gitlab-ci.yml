@@ -41,6 +41,12 @@ phpunit:
         - bin/console app:trabajador:nuevo --numero-identidad=00000000000 --nombre=Admin --apellido-primero="del" --apellido-segundo="Sistema" --cargo="admin" --usuario=admin --password=admin --estructura=0 --grupo=0 --admin=y
         - bin/phpunit --testdox
 
+sonarqube:
+    image: sonarsource/sonar-scanner-cli
+    stage: build
+    script:
+        - sonar-scanner -Dsonar.projectKey=gpx -Dsonar.sources=. -Dsonar.host.url=http://sonarqube.dap.ecc.cu -Dsonar.login=e816f0309c1cc10e53fc9ed23f5d2966f879ff68
+
 docker-build:
     variables:
         GIT_STRATEGY: clone
