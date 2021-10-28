@@ -52,7 +52,7 @@ class ForzarCambioContrasenaSubscriber extends _Subscriber_
         }
 
         // if it's not their first login, and they do not need to change their password, move on
-        if (!$user->isForzarCambioContrasena()) {
+        if (!$user->getForzarCambioContrasena()) {
             return;
         }
 

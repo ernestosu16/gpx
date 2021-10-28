@@ -40,8 +40,8 @@ class TrabajadorCredencial implements UserInterface, PasswordAuthenticatedUserIn
     #[ORM\Column(type: 'datetime', options: ["default" => "CURRENT_TIMESTAMP"])]
     private DateTime $ultimo_acceso;
 
-    #[ORM\Column(type: 'boolean', options: ['default' => true])]
-    private bool $forzar_cambio_contrasena = true;
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    private bool $forzar_cambio_contrasena = false;
 
     #[ORM\Column(type: 'string', length: 40, nullable: true)]
     private ?string $salt;
@@ -141,7 +141,7 @@ class TrabajadorCredencial implements UserInterface, PasswordAuthenticatedUserIn
         return $this;
     }
 
-    public function isForzarCambioContrasena(): bool
+    public function getForzarCambioContrasena(): bool
     {
         return $this->forzar_cambio_contrasena;
     }
