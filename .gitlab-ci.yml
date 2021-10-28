@@ -44,6 +44,8 @@ phpunit:
 sonarqube:
     image: sonarsource/sonar-scanner-cli
     stage: build
+    only:
+        - master
     script:
         - sonar-scanner -Dsonar.projectKey=gpx -Dsonar.sources=. -Dsonar.host.url=http://sonarqube.dap.ecc.cu -Dsonar.login=e816f0309c1cc10e53fc9ed23f5d2966f879ff68
 
