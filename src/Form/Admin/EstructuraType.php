@@ -8,8 +8,10 @@ use App\Entity\Grupo;
 use App\Entity\Localizacion;
 use App\Entity\Trabajador;
 use App\Entity\TrabajadorCredencial;
+use App\Form\Admin\Extend\EstructuraExtendType;
 use App\Repository\LocalizacionRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\Form\ChoiceList\ChoiceList;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -42,32 +44,34 @@ class EstructuraType extends BaseAdminType
                 'required' => false,
                 'label' => 'pertenece',
                 'attr' => ['class' => 'form-control input-sm select2'],
-                'label_attr' => ['class' => 'col-sm-2 control-label'],
+                'label_attr' => ['class' => 'control-label'],
                 'choices' => $collection,
-                'disabled' => $data === $estructura && !in_array('ROLE_ADMIN', $credencial->getRoles())
+                'disabled' => $data === $estructura && !in_array('ROLE_ADMIN', $credencial->getRoles()),
+                'help' => 'Estructura principal al que se subordina.'
             ])
             ->add('codigo', TextType::class, [
                 'attr' => ['class' => 'form-control input-sm'],
                 'label' => 'codigo',
-                'label_attr' => ['class' => 'col-sm-2 control-label'],
+                'label_attr' => ['class' => 'control-label'],
                 'disabled' => $data === $estructura && !in_array('ROLE_ADMIN', $credencial->getRoles()),
+                'help' => 'Código único que identifica la estructura. Ejemplo "GECC", "EMCI", etc.'
             ])
             ->add('nombre', TextType::class, [
                 'attr' => ['class' => 'form-control input-sm'],
                 'label' => 'nombre',
-                'label_attr' => ['class' => 'col-sm-2 control-label'],
+                'label_attr' => ['class' => 'control-label'],
             ])
             ->add('descripcion', TextareaType::class, [
                 'required' => false,
                 'empty_data' => '',
                 'attr' => ['class' => 'form-control input-sm'],
                 'label' => 'descripcion',
-                'label_attr' => ['class' => 'col-sm-2 control-label'],
+                'label_attr' => ['class' => 'control-label'],
             ])
             ->add('codigo_postal', TextType::class, [
                 'attr' => ['class' => 'form-control input-sm'],
                 'label' => 'codigo_postal',
-                'label_attr' => ['class' => 'col-sm-2 control-label'],
+                'label_attr' => ['class' => 'control-label'],
             ])
             ->add('tipos', EntityType::class, [
                 'class' => EstructuraTipo::class,
@@ -76,9 +80,9 @@ class EstructuraType extends BaseAdminType
                 'choices' => $this->getTipos($credencial, $estructura),
                 'disabled' => $data === $estructura && !in_array('ROLE_ADMIN', $credencial->getRoles()),
                 'label' => 'tipos',
-                'label_attr' => ['class' => 'col-sm-2 control-label'],
+                'label_attr' => ['class' => 'control-label'],
                 'attr' => ['class' => 'form-control input-sm select2'],
-                'help' => 'Tipo de estructura. Puede ser una o varios.',
+                'help' => 'Tipos de estructuras.',
             ])
             ->add('grupos', EntityType::class, [
                 'class' => Grupo::class,
@@ -86,7 +90,7 @@ class EstructuraType extends BaseAdminType
                 'label' => 'grupos',
                 'multiple' => true,
                 'attr' => ['class' => 'form-control input-sm select2'],
-                'label_attr' => ['class' => 'col-sm-2 control-label'],
+                'label_attr' => ['class' => 'control-label'],
                 'help' => 'Grupos validos que admite esta estructura.',
                 'disabled' => $data === $estructura && !in_array('ROLE_ADMIN', $credencial->getRoles())
             ])
@@ -99,22 +103,28 @@ class EstructuraType extends BaseAdminType
                 'group_by' => ChoiceList::groupBy($this, 'parent'),
                 'label' => 'municipio',
                 'attr' => ['class' => 'form-control input-sm select2'],
-                'label_attr' => ['class' => 'col-sm-2 control-label'],
+                'label_attr' => ['class' => 'control-label'],
                 'help' => 'Municipio el que pertenece la estructura.',
                 'disabled' => $data === $estructura && !in_array('ROLE_ADMIN', $credencial->getRoles())
             ])
             ->add('habilitado', CheckboxType::class, [
                 'label' => 'habilitado',
-                'label_attr' => ['class' => 'col-sm-2 control-label'],
+                'required' => false,
+                'label_attr' => ['class' => 'control-label'],
                 'disabled' => $data === $estructura && !in_array('ROLE_ADMIN', $credencial->getRoles())
+            ])
+            ->add('parametros', EstructuraExtendType::class, [
+                'required' => false
             ]);
+
+
+        $this->dispatcher->dispatch(new GenericEvent($builder), 'form.estructura');
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
             'data_class' => Estructura::class,
-            'attr' => ['class' => 'form-horizontal'],
             'translation_domain' => 'admin',
         ]);
     }
