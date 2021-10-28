@@ -33,7 +33,6 @@ class GrupoType extends AbstractType
                 'attr' => ['class' => 'form-control input-sm'],
                 'label' => 'codigo',
                 'label_attr' => ['class' => 'col-sm-2 control-label'],
-                'help' => 'El código debe ser único y debe iniciar con el prefijo "GRUPO". Ejemplo "GRUPO_ADMINISTRADOR"',
             ])
             ->add('nombre', TextType::class, [
                 'attr' => ['class' => 'form-control input-sm'],

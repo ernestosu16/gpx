@@ -41,7 +41,7 @@ class CurlConectionManager extends _Manager_
         $options = [
             CURLOPT_USERPWD        => $this->ftp_config['user'].':'.$this->ftp_config['pass'],
             CURLOPT_PORT           => $port,
-            CURLOPT_TIMEOUT        => 30,
+            CURLOPT_TIMEOUT        => 60,
             CURLOPT_FTP_SSL        => CURLFTPSSL_ALL, // require SSL For both control and data connections
             CURLOPT_FTPSSLAUTH     => CURLFTPAUTH_DEFAULT, // let cURL choose the FTP authentication method (either SSL or TLS)
             CURLOPT_SSL_CIPHER_LIST => 'DEFAULT@SECLEVEL=1'

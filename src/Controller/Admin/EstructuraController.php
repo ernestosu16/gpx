@@ -44,8 +44,6 @@ final class EstructuraController extends _CrudController_
             ],
             'templates' => [
                 self::INDEX => 'admin/estructura/index.html.twig',
-                self::NEW => 'admin/estructura/form.html.twig',
-                self::EDIT => 'admin/estructura/form.html.twig',
             ],
             'routes' => [
                 self::INDEX => 'admin_estructura_index',

@@ -7,18 +7,16 @@ use App\Entity\TrabajadorCredencial;
 use App\Repository\EstructuraRepository;
 use App\Repository\GrupoRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 abstract class BaseAdminType extends AbstractType
 {
     public function __construct(
-        protected EntityManagerInterface   $entityManager,
-        protected TokenStorageInterface    $tokenStorage,
-        protected GrupoRepository          $grupoRepository,
-        protected EstructuraRepository     $estructuraRepository,
-        protected EventDispatcherInterface $dispatcher
+        protected EntityManagerInterface $entityManager,
+        protected TokenStorageInterface  $tokenStorage,
+        protected GrupoRepository        $grupoRepository,
+        protected EstructuraRepository   $estructuraRepository
     )
     {
     }
