@@ -241,7 +241,7 @@ class EnvioManager extends _Manager_
                 $envioAduana->setProvinciaAduana($provincia->getCodigoAduana());
                 $envioAduana->setMunicipioAduana($municipio->getCodigoAduana());
                 $envioAduana->setEstado($estadoRecepcionado);
-                $envioAduana->setArancel( $envioManifestado ? $envioManifestado->isArancel() : false );
+                $envioAduana->setArancel($envioManifestado ? $envioManifestado->isArancel() : false);
                 $envioAduana->setDatosDespacho(null);
                 $this->entityManager->persist($envioAduana);
 
@@ -295,7 +295,7 @@ class EnvioManager extends _Manager_
         }
     }
 
-    public function cambiarEstado($id,TrabajadorCredencial $user)
+    public function cambiarEstado($id, TrabajadorCredencial $user)
     {
         $envio = $this->getEnvioRepository()->find($id);
         $estado = $this->getNomencladorRepository()->findOneByCodigo('APP_ENVIO_ESTADO_RECEPCIONADO');
@@ -319,4 +319,5 @@ class EnvioManager extends _Manager_
         $this->entityManager->flush();
 
     }
+}
 
