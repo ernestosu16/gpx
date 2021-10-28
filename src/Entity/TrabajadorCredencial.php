@@ -49,6 +49,7 @@ class TrabajadorCredencial implements UserInterface, PasswordAuthenticatedUserIn
     public function __construct()
     {
         $this->creado = new DateTime();
+        $this->ultimo_acceso = new DateTime();
     }
 
     public function __toString(): string
