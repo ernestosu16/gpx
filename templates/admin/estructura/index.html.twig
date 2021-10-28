@@ -5,8 +5,8 @@
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-lg-7 pull-right">
             {{ knp_pagination_filter(pagination, {
-                'e.nombre': 'nombre'|trans({},'admin'),
                 'e.codigo_postal': 'codigo_postal'|trans({},'admin'),
+                'e.nombre': 'nombre'|trans({},'admin'),
             },{
                 'button': 'filtrar',
                 'reset': {
@@ -36,7 +36,11 @@
                     <tbody>
                     {% for estructura in pagination %}
                         <tr>
-                            <td>{{ estructura.nombre }}</td>
+                            <td>
+                                <a href="{{ path('admin_estructura_edit', {'id': estructura.id}) }}">
+                                    {{ estructura.nombre }}
+                                </a>
+                            </td>
                             <td>{{ estructura.codigoPostal }}</td>
                             <td>{{ estructura.municipio.parent }}</td>
                             <td>{{ estructura.municipio }}</td>
@@ -58,7 +62,6 @@
                             </td>
                             <td>{{ estructura.habilitado ? 'si'|trans([],'admin') : 'no'|trans([],'admin') }}</td>
                             <td>
-
                                 <a class="btn btn-xs btn-default"
                                    href="{{ path('admin_estructura_edit', {'id': estructura.id}) }}"
                                    title="{{ 'editar'|trans([],'admin') }}">

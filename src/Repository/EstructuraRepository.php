@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\Estructura;
-use App\Entity\EstructuraTipo;
 
 final class EstructuraRepository extends _NestedTreeRepository_
 {
@@ -15,19 +14,5 @@ final class EstructuraRepository extends _NestedTreeRepository_
     public function findAll(): array
     {
         return $this->findBy([], ['lft' => 'ASC']);
-    }
-
-    /**
-     * @return Estructura[] Returns an array of EnvioAduana objects
-     */
-    public function findEstructuraByTipo(string $tipo)
-    {
-        return $this->createQueryBuilder('e')
-            ->innerJoin('e.tipos','t')
-            ->andWhere('t.codigo = :val')
-            ->setParameter('val', $tipo)
-            ->getQuery()
-            ->getResult()
-            ;
     }
 }

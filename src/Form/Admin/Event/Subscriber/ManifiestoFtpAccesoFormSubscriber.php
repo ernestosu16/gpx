@@ -1,17 +1,19 @@
 <?php
 
-namespace App\Event\Subscriber\Nomenclador\Envio;
+namespace App\Form\Admin\Event\Subscriber;
 
 use App\Config\Data\Nomenclador\EnvioData\ManifiestoFtpAccesoData;
 use App\Entity\Nomenclador;
 use App\Event\Subscriber\_Subscriber_;
 use App\Form\Admin\Nomenclador\FtpAccesoType;
+use JetBrains\PhpStorm\ArrayShape;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\Form\FormBuilder;
 
 final class ManifiestoFtpAccesoFormSubscriber extends _Subscriber_
 {
-    public static function getSubscribedEvents()
+    #[ArrayShape(['form.nomenclador' => "string"])]
+    public static function getSubscribedEvents(): array
     {
         return [
             'form.nomenclador' => 'formManifiesto',

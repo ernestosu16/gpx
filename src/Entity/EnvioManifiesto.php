@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\EnvioManifiestoRepository;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\SerializedName;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: EnvioManifiestoRepository::class)]
 class EnvioManifiesto extends _Entity_
