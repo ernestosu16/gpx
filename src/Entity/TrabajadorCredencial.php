@@ -44,7 +44,7 @@ class TrabajadorCredencial implements UserInterface, PasswordAuthenticatedUserIn
     private bool $forzar_cambio_contrasena = false;
 
     #[ORM\Column(type: 'string', length: 40, nullable: true)]
-    private ?string $salt;
+    private ?string $salt = null;
 
     public function __construct()
     {
