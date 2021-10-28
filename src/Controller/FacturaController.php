@@ -7,6 +7,7 @@ use App\Entity\Envio;
 use App\Entity\Estructura;
 use App\Entity\Factura;
 use App\Entity\FacturaConsecutivo;
+use App\Entity\FacturaTraza;
 use App\Entity\Grupo;
 use App\Entity\Nomenclador;
 use App\Entity\Persona;
@@ -60,7 +61,7 @@ class FacturaController extends AbstractController
         return new Response($html);
     }
 
-    #[Route('/crear_factura', name: 'crear_factura')]
+    #[Route('/crear', name: 'crear_factura')]
     public function CrearFactura(): Response
     {
         $choferes = new ArrayCollection();
@@ -240,6 +241,10 @@ class FacturaController extends AbstractController
             }
 
             $date = new \DateTime();
+
+            /**
+             * Factura
+             */
             $factura->setFecha($date);
             $factura->setNumeroFactura($numFactura);
             $factura->setCodigoFactura($codFactura);
@@ -256,16 +261,16 @@ class FacturaController extends AbstractController
              * Factura trazas
              */
 
-            /** @var SacaTraza $sacaTraza */
-            $sacaTraza = new SacaTraza();
-            $sacaTraza->setFecha($date);
-            $sacaTraza->setPeso($request->request->get('peso'));
-            $sacaTraza->setEstado($estado);
-            $sacaTraza->setSaca($saca);
-            $sacaTraza->setEstructura($estructura_destino);
-            $sacaTraza->setTrabajador($trabajador);
-            $sacaTraza->setIp('');
-            $em->persist($sacaTraza);
+            /** @var FacturaTraza $facturaTraza */
+            $facturaTraza = new FacturaTraza();
+            $facturaTraza->setFecha($date);
+            $facturaTraza->setEstadoFactura($estado);
+            $facturaTraza->setFactura($factura);
+            $facturaTraza->setEstructura($estructura_destino);
+            $facturaTraza->setTrabajador($usuario);
+            $facturaTraza->setIp('');
+            $em->persist($facturaTraza);
+
             $em->flush();
 
             $id_factura = $factura->getId();

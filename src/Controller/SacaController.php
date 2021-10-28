@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Envio;
+use App\Entity\EnvioAduana;
+use App\Entity\EnvioManifiesto;
 use App\Entity\Estructura;
 use App\Entity\Nomenclador;
 use App\Entity\Saca;
@@ -11,6 +13,7 @@ use App\Entity\SacaTraza;
 use App\Entity\Trabajador;
 use App\Repository\NomencladorRepository;
 use DateTime;
+use SoapClient;
 use JMS\Serializer\SerializerBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -41,7 +44,7 @@ class SacaController extends AbstractController
         ]);
     }
 
-    #[Route('/crear_saca', name: 'crear_saca')]
+    #[Route('/crear', name: 'crear_saca')]
     public function CrearSaca(): Response
     {
         $em = $this->getDoctrine()->getManager();
@@ -67,25 +70,8 @@ class SacaController extends AbstractController
 
             /** @var Envio $envio */
             $envio = $em->getRepository(Envio::class)->findOneBy(['cod_tracking' => $codTracking]);
-            //dump($envio->getEstado()->getCodigo());exit();
+            //dump($envio);exit();
             $respuesta = '';
-
-            $url= "https://sua.aduana.cu/GINASUA/servicios.php/serviciosExternos.wsdl";
-
-            $soapClient = new \SoapClient($url);
-
-            $result = $soapCliente->__soapCall('GABLDespachado',
-                array(
-                    'usuario'=>'aerov',
-                    'clave'=>'eh7443fx',
-                    'manifiesto'=>'590/2021',
-                    'blga'=>'703-10541510 5089198',
-                    'codigoaduana' => '0202'
-                ));
-
-
-
-
 
             if ($envio != null) {
                 if ($envio->getEstado()->getCodigo() != 'APP_ENVIO_ESTADO_CLASIFICADO' && $envio->getEstado()->getCodigo() != 'APP_ENVIO_ESTADO_FACTURADO') {
@@ -97,6 +83,40 @@ class SacaController extends AbstractController
 
                         $serializer = SerializerBuilder::create()->build();
                         $miRespuestaJson = $serializer->serialize(['id' => $id, 'cod' => $cod, 'peso' => $peso], "json");
+
+                        /** @var EnvioAduana $envio_aduana */
+                        $envio_aduana = $em->getRepository(EnvioAduana::class)->find($id);
+
+                        if ($envio_aduana->getDatosDespacho() == null){
+                            $url= "https://sua.aduana.cu/GINASUA/serviciosExternos?wsdl";
+                            set_time_limit(120);
+                            $ch = curl_init();
+                            curl_setopt($ch, CURLOPT_URL,$url);
+                            curl_exec($ch);
+
+                            $info = curl_getinfo($ch);
+                            curl_close($ch);
+
+                            $soapClient = new \nusoap_client($url);
+                            $soapClient->soap_defencoding = 'UTF-8';
+                            $soapClient->decode_utf8 = false;
+
+                            /** @var EnvioManifiesto $manifiesto */
+                            $manifiesto = $em->getRepository(EnvioManifiesto::class)->findOneBy(['codigo'=>$cod]);
+
+                            $result = $soapClient->call('GABLDespachado',
+                                [
+                                    'usuario'=>'aerov',
+                                    'clave'=>'eh7443fx',
+                                    'manifiesto'=>$manifiesto->getCodigo(),
+                                    'blga'=>$manifiesto->getNoGuiaAerea(),
+                                    'codigoaduana' => '0202'
+                                ]);
+                            $res = json_decode($result, true);
+
+                            $envio_aduana->setDatosDespacho($res);
+
+                        }
 
                         return JsonResponse::fromJsonString($miRespuestaJson);
                     } else {
@@ -132,7 +152,7 @@ class SacaController extends AbstractController
             /** @var Trabajador $user */
             $user = $this->getUser();
 
-            /** @var Trabajador $usuario */
+            /** @var Trabajador $trabajador */
             $trabajador = $em->getRepository(Trabajador::class)->findOneBy(['persona' => $user->getPersona()->getId()]);
 
             $estructura_origen = $user->getEstructura();
