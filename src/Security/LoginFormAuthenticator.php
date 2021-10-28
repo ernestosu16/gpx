@@ -3,6 +3,7 @@
 namespace App\Security;
 
 use App\Entity\TrabajadorCredencial;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -49,11 +50,11 @@ final class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
+        $this->setCredencialTrabajador($token, $request);
+
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
         }
-
-        $this->setCredencialTrabajador($token, $request);
 
         return new RedirectResponse($this->urlGenerator->generate('app_dashboard'));
     }
@@ -67,8 +68,10 @@ final class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
     {
         /** @var TrabajadorCredencial $credencial */
         $credencial = $token->getUser();
+        $credencial->setUltimoAcceso(new DateTime());
         $credencial->setUltimaConexion($request->getClientIps());
         $credencial->setNavegador($request->headers->get('user-agent'));
+        $credencial->setSalt(sha1(random_int(PHP_INT_MIN, PHP_INT_MAX)));
         $this->entityManager->persist($credencial);
         $this->entityManager->flush();
     }

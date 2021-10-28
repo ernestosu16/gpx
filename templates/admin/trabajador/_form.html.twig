@@ -78,6 +78,14 @@
                 {{ form_errors(form.grupos) }}
             </div>
         </div>
+        <div class="form-group">
+            {{ form_label(form.credencial.forzarCambioContrasena) }}
+            <div class="col-sm-8">
+                {{ form_widget(form.credencial.forzarCambioContrasena) }}
+                {{ form_help(form.credencial.forzarCambioContrasena) }}
+                {{ form_errors(form.credencial.forzarCambioContrasena) }}
+            </div>
+        </div>
     </div>
 </div>
 <button class="btn btn-sm btn-success">{{ button_label|default('guardar'|trans({},'admin')) }}</button>
