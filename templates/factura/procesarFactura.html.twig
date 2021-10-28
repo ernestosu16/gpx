@@ -15,7 +15,64 @@
         </div>
     </div>
 
-    <div id="sacas"></div>
+    <div class="row col-md-12 m-b">
+
+        <div class="well well-lg">
+
+            <p style="border-bottom:1px solid #000000;"><strong>VALIJAS PRESENTES EN LA FACTURA</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingOne">
+                        <input id="checkbox3" type="checkbox" class="checkbox">
+                        <label> Aqui van las sacas <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="collapsed">
+                                Irregularidades
+                            </a></label>
+
+
+                    </div>
+                    <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne" aria-expanded="false" style="height: 0px;">
+                        <div class="panel-body">
+                            A wonderful serenity has taken possession of my entire soul, like these sweet mornings of spring which I enjoy with my whole heart. I am alone, and feel the charm of existence in this spot, which was created for the bliss of souls like mine.
+                        </div>
+                    </div>
+                </div>
+
+                {% for saca in sacas %}
+
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="panelSaca_{{saca.id}}">
+
+                            <input class="form-check-input" type="checkbox" value="" id="checkSaca_{{saca.id}}" >
+                            <label class="form-label">asd <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{saca.id}}" aria-expanded="false" aria-controls="collapse{{saca.id}}" class="collapsed">
+                                    Irregularidades </a></label>
+
+                    </div>
+                    <div id="collapse{{saca.id}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="panelSaca_{{saca.id}}" aria-expanded="false">
+                        {% for an in anomalias %}
+                        <div class="panel-body">
+                            A wonderful serenity has taken possession of my entire soul, like these sweet mornings of spring which I enjoy with my whole heart. I am alone, and feel the charm of existence in this spot, which was created for the bliss of souls like mine.
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+
+    </div>
+
+    <p style="border-bottom:1px solid #000000;"><strong>RECEPCIÓN DE LA VALIJA</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+    <div class="row col-md-12 m-b">
+
+        <div class="col-md-4">
+            <button class="btn btn-primary" onclick="recepcionarFactura()"><i class="fa fa-check"></i> Recepcionar valijas</button>
+        </div>
+    </div>
+
+
 
 {% endblock %}
 

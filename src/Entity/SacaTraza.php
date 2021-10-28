@@ -5,179 +5,183 @@ namespace App\Entity;
 use App\Repository\SacaTrazaRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass:SacaTrazaRepository::class)]
+#[ORM\Entity(repositoryClass: SacaTrazaRepository::class)]
 class SacaTraza extends _Entity_
 {
-    #[ORM\Column(type: 'datetime')]
-    private $fecha;
+    #[ORM\Column(type: 'datetime', length: 10, nullable: false)]
+    private \DateTime $fecha;
 
     #[ORM\Column(type: 'float', nullable: false)]
-    private $peso;
+    private float $peso;
 
     #[ORM\ManyToOne(targetEntity: Nomenclador::class)]
-    #[ORM\JoinColumn(nullable: false)]
-    private $estado;
+    #[ORM\JoinColumn(name: 'estado_id', referencedColumnName: 'id', nullable: false)]
+    private Nomenclador $estado;
 
     #[ORM\ManyToOne(targetEntity: Saca::class)]
-    #[ORM\JoinColumn(nullable: false)]
-    private $saca;
+    #[ORM\JoinColumn(name: 'saca_id', referencedColumnName: 'id', nullable: false)]
+    private Saca $saca;
 
     #[ORM\ManyToOne(targetEntity: Factura::class)]
-    #[ORM\JoinColumn(nullable: false)]
-    private $factura;
+    #[ORM\JoinColumn(name: 'factura_id', referencedColumnName: 'id', nullable: true)]
+    private ?Factura $factura;
 
-    #[ORM\Column(type: 'string', length: 15)]
-    private $ip;
+    #[ORM\ManyToOne(targetEntity: Estructura::class, cascade: ['persist'])]
+    #[ORM\JoinColumn(name: 'estructura_id', referencedColumnName: 'id', nullable: true)]
+    private ?Estructura $estructura;
 
-    #[ORM\ManyToOne(targetEntity: Trabajador::class)]
-    #[ORM\JoinColumn(nullable: false)]
-    private $trabajador;
+    #[ORM\ManyToOne(targetEntity: Trabajador::class, cascade: ['persist'])]
+    #[ORM\JoinColumn(name: 'trabajador_id', referencedColumnName: 'id', nullable: true)]
+    private ?Trabajador $trabajador;
 
-    #[ORM\ManyToOne(targetEntity: Estructura::class)]
-    #[ORM\JoinColumn(nullable: false)]
-    private $estructura;
+    #[ORM\Column(type: 'string', length: 20, nullable: true)]
+    private string $ip;
+
+    public function __construct()
+    {
+    }
 
     /**
-     * @return mixed
+     * @return \DateTime
      */
-    public function getFecha()
+    public function getFecha(): \DateTime
     {
         return $this->fecha;
     }
 
     /**
-     * @param mixed $fecha
+     * @param \DateTime $fecha
      * @return SacaTraza
      */
-    public function setFecha($fecha)
+    public function setFecha(\DateTime $fecha): SacaTraza
     {
         $this->fecha = $fecha;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return float
      */
-    public function getPeso()
+    public function getPeso(): float
     {
         return $this->peso;
     }
 
     /**
-     * @param mixed $peso
+     * @param float $peso
      * @return SacaTraza
      */
-    public function setPeso($peso)
+    public function setPeso(float $peso): SacaTraza
     {
         $this->peso = $peso;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return Nomenclador
      */
-    public function getEstado()
+    public function getEstado(): Nomenclador
     {
         return $this->estado;
     }
 
     /**
-     * @param mixed $estado
+     * @param Nomenclador $estado
      * @return SacaTraza
      */
-    public function setEstado($estado)
+    public function setEstado(Nomenclador $estado): SacaTraza
     {
         $this->estado = $estado;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return Saca
      */
-    public function getSaca()
+    public function getSaca(): Saca
     {
         return $this->saca;
     }
 
     /**
-     * @param mixed $saca
+     * @param Saca $saca
      * @return SacaTraza
      */
-    public function setSaca($saca)
+    public function setSaca(Saca $saca): SacaTraza
     {
         $this->saca = $saca;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return Factura|null
      */
-    public function getFactura()
+    public function getFactura(): ?Factura
     {
         return $this->factura;
     }
 
     /**
-     * @param mixed $factura
+     * @param Factura|null $factura
      * @return SacaTraza
      */
-    public function setFactura($factura)
+    public function setFactura(?Factura $factura): SacaTraza
     {
         $this->factura = $factura;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return Estructura|null
      */
-    public function getIp()
+    public function getEstructura(): ?Estructura
     {
-        return $this->ip;
+        return $this->estructura;
     }
 
     /**
-     * @param mixed $ip
+     * @param Estructura|null $estructura
      * @return SacaTraza
      */
-    public function setIp($ip)
+    public function setEstructura(?Estructura $estructura): SacaTraza
     {
-        $this->ip = $ip;
+        $this->estructura = $estructura;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return Trabajador|null
      */
-    public function getTrabajador()
+    public function getTrabajador(): ?Trabajador
     {
         return $this->trabajador;
     }
 
     /**
-     * @param mixed $trabajador
+     * @param Trabajador|null $trabajador
      * @return SacaTraza
      */
-    public function setTrabajador($trabajador)
+    public function setTrabajador(?Trabajador $trabajador): SacaTraza
     {
         $this->trabajador = $trabajador;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getEstructura()
+    public function getIp(): string
     {
-        return $this->estructura;
+        return $this->ip;
     }
 
     /**
-     * @param mixed $estructura
+     * @param string $ip
      * @return SacaTraza
      */
-    public function setEstructura($estructura)
+    public function setIp(string $ip): SacaTraza
     {
-        $this->estructura = $estructura;
+        $this->ip = $ip;
         return $this;
     }
 
