@@ -85,10 +85,7 @@ final class EstructuraController extends _CrudController_
         if (in_array('ROLE_ADMIN', $credencial->getRoles()))
             return $query;
 
-        # Obtengo la lista de estructura subordinadas y principal del trabajador
-        $query->andWhere('e.parent = :parent ')->setParameter('parent', $credencial->getTrabajador()->getEstructura())
-            ->orWhere('e = :estructura ')->setParameter('estructura', $credencial->getTrabajador()->getEstructura());
-
-        return $query;
+        return $this->estructuraRepository->childrenQueryBuilder($credencial->getTrabajador()->getEstructura())
+            ->orWhere('node = :estructura ')->setParameter('estructura', $credencial->getTrabajador()->getEstructura());
     }
 }
