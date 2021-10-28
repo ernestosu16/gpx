@@ -7,40 +7,44 @@ use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\Pure;
 
 #[ORM\Entity(repositoryClass: EnvioRepository::class)]
+#[ORM\Index(columns: ['estructura_origen_id'], name: 'IDX_ESTRUCTURA_ORIGEN_ID')]
+#[ORM\Index(columns: ['estructura_destino_id'], name: 'IDX_ESTRUCTURA_DESTINO_ID')]
+#[ORM\Index(columns: ['destinatario_id'], name: 'IDX_DESTINATARIO_ID')]
+#[ORM\Index(columns: ['remitente_id'], name: 'IDX_REMITENTE_ID')]
+#[ORM\Index(columns: ['endosatario_id'], name: 'IDX_ENDOSATARIO_ID')]
 class Envio extends _Entity_
 {
-
     #[ORM\Column(type: 'datetime', length: 10, nullable: false)]
     private \DateTime $fecha_recepcion;
 
     #[ORM\Column(type: 'string', length: 13, nullable: false)]
     private string $cod_tracking;
 
-    #[ORM\Column(type: 'string', length: 13, nullable: false)]
-    private string $pareo;
+    #[ORM\Column(type: 'string', length: 13, nullable: true)]
+    private ?string $pareo;
 
     #[ORM\Column(type: 'float', nullable: false)]
     private float $peso;
 
     #[ORM\ManyToOne(targetEntity: Estructura::class, cascade: ['persist'])]
-    #[ORM\JoinColumn(name: 'estructura_origen_id', referencedColumnName: 'id', nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Estructura $estructura_origen;
 
     #[ORM\ManyToOne(targetEntity: Estructura::class, cascade: ['persist'])]
-    #[ORM\JoinColumn(name: 'estructura_destino_id', referencedColumnName: 'id', nullable: true)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Estructura $estructura_destino;
 
     #[ORM\ManyToOne(targetEntity: Persona::class, cascade: ['persist'])]
-    #[ORM\JoinColumn(name: 'destinatario_id', referencedColumnName: 'id', nullable: true)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Persona $destinatario;
 
     #[ORM\ManyToOne(targetEntity: Persona::class, cascade: ['persist'])]
-    #[ORM\JoinColumn(name: 'remitente_id ', referencedColumnName: 'id', nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Persona $remitente;
 
     // cambiar Nomenclador por endosatario_id cuando se cree
-    #[ORM\ManyToOne(targetEntity: Persona::class )]
-    #[ORM\JoinColumn(name: 'endosatario_id ', referencedColumnName: 'id', nullable: true)]
+    #[ORM\ManyToOne(targetEntity: Persona::class)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Persona $endosatario;
 
     // cambiar Nomenclador por FormaEntrega cuando se cree
@@ -50,25 +54,22 @@ class Envio extends _Entity_
 
     // cambiar Nomenclador por Canal cuando se cree
     #[ORM\ManyToOne(targetEntity: Nomenclador::class)]
-    #[ORM\JoinColumn(name: 'canal_id', referencedColumnName: 'id', nullable: false)]
+    #[ORM\JoinColumn(name: 'canal_id', referencedColumnName: 'id', nullable: true)]
     private ?Nomenclador $canal;
 
     // cambiar Nomenclador por Agencia cuando se cree
     #[ORM\ManyToOne(targetEntity: Nomenclador::class)]
-    #[ORM\JoinColumn(name: 'agencia_id', referencedColumnName: 'id', nullable: false)]
+    #[ORM\JoinColumn(name: 'agencia_id', referencedColumnName: 'id', nullable: true)]
     private ?Nomenclador $agencia;
 
-    // cambiar Nomenclador por Estado cuando se cree
     #[ORM\ManyToOne(targetEntity: Nomenclador::class)]
     #[ORM\JoinColumn(name: 'estado_id', referencedColumnName: 'id', nullable: false)]
     private Nomenclador $estado;
 
-    // cambiar Nomenclador por pais_origen cuando se cree
     #[ORM\ManyToOne(targetEntity: Pais::class)]
     #[ORM\JoinColumn(name: 'pais_origen_id', referencedColumnName: 'id', nullable: false)]
     private Pais $pais_origen;
 
-    // cambiar Nomenclador por pais_destino cuando se cree
     #[ORM\ManyToOne(targetEntity: Pais::class)]
     #[ORM\JoinColumn(name: 'pais_destino_id', referencedColumnName: 'id', nullable: false)]
     private Pais $pais_destino;
@@ -141,17 +142,17 @@ class Envio extends _Entity_
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getPareo(): string
+    public function getPareo(): ?string
     {
         return $this->pareo;
     }
 
     /**
-     * @param string $pareo
+     * @param string|null $pareo
      */
-    public function setPareo(string $pareo): void
+    public function setPareo(?string $pareo): void
     {
         $this->pareo = $pareo;
     }
@@ -427,7 +428,6 @@ class Envio extends _Entity_
     {
         $this->factura = $factura;
     }
-
 
 
     /**

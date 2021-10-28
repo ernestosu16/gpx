@@ -7,6 +7,7 @@ use App\Entity\Envio;
 use App\Entity\Estructura;
 use App\Entity\Factura;
 use App\Entity\FacturaConsecutivo;
+use App\Repository\FacturaRepository;
 use App\Entity\FacturaTraza;
 use App\Entity\Grupo;
 use App\Entity\Nomenclador;
@@ -17,6 +18,7 @@ use App\Repository\FacturaConsecutivoRepository;
 use App\Repository\NomencladorRepository;
 use App\Repository\SacaRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityManagerInterface;
 use JMS\Serializer\SerializerBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -30,7 +32,9 @@ class FacturaController extends AbstractController
 {
     public function __construct(
         private SacaRepository $sacaRepository,
-        private NomencladorRepository $nomencladorRepository
+        private NomencladorRepository $nomencladorRepository,
+        private FacturaRepository $facturaRepository,
+        private EntityManagerInterface $entityManager
     )
     {
     }
@@ -38,27 +42,55 @@ class FacturaController extends AbstractController
     #[Route('/procesar', name: 'procesar_factura', methods: ['GET'])]
     public function procesarFactura()
     {
-        $anomalias = $this->nomencladorRepository->findByChildren('APP_SACA_ANOMALIA');
-        return $this->render('factura/procesarFactura.html.twig',[
-            "anomalias" => $anomalias,
-        ]);
+
+        return $this->render('factura/procesarFactura.html.twig',[]);
     }
 
-    #[Route('/factura/find-sacas-factura', name: 'find_sacas_factura', options: ["expose" => true] ,methods: ['POST'])]
+    #[Route('/find-sacas-factura', name: 'find_sacas_factura', options: ["expose" => true] ,methods: ['POST'])]
     public function findSacasFactura(Request $request)
     {
         $noFactura = $request->get('noFactura');
-        $sacas = $this->sacaRepository->findSacasNoFactura($noFactura);
+        $sacas = $this->facturaRepository->findSacasNoFacturaAndEstado($noFactura);
+        $envios = $this->facturaRepository->findEnviosNoFacturaAndEstado($noFactura);
         $anomalias = $this->nomencladorRepository->findByChildren('APP_SACA_ANOMALIA');
-/*
-        $serializer = SerializerBuilder::create()->build();
-        $miRespuestaJson = $serializer->serialize($sacas,"json");
+        $anomaliasE = $this->nomencladorRepository->findByChildren('APP_ENVIO_ANOMALIA');
 
-        return JsonResponse::fromJsonString($miRespuestaJson);*/
-
-        $html = $this->renderView('factura/sacas.html.twig', ['sacas'=>$sacas, 'anomalias'=>$anomalias->toArray()]);
+        $html = $sacas ? $this->renderView('factura/sacas.html.twig', [
+            'sacas'=>$sacas,
+            'envios'=>$envios,
+            'anomalias'=>$anomalias->toArray(),
+            'anomaliasE'=>$anomaliasE->toArray(),
+            'noFactura' => $noFactura]) : 'null';
 
         return new Response($html);
+    }
+
+    #[Route('/recepcionar-sacas-factura', name: 'recepcionar_sacas_factura', options: ["expose" => true] ,methods: ['POST'])]
+    public function recepcionarSacasFactura(Request $request)
+    {
+        $noFactura = $request->get('noFactura');
+        $sacas = $request->get('sacas');
+        $todos = filter_var($request->get('todos'), FILTER_VALIDATE_BOOLEAN);
+        $factura = $this->facturaRepository->getFacturaByNoFactura($noFactura);
+        $estado = $this->nomencladorRepository->findOneByCodigo('APP_SACA_ESTADO_RECIBIDA');
+
+        foreach ($sacas as $id)
+        {
+            $saca = $this->sacaRepository->find($id);
+            $saca->setEstado($estado);
+
+            $this->entityManager->persist($saca);
+            $this->entityManager->flush();
+        }
+
+        if($todos)
+        {
+            $estado = $this->nomencladorRepository->findOneByCodigo('APP_FACTURA_ESTADO_RECIBIDA');
+            $factura->setEstado($estado);
+            $this->entityManager->persist($factura);
+            $this->entityManager->flush();
+        }
+        return JsonResponse::fromJsonString('"Factura recibida correctamente"');
     }
 
     #[Route('/crear', name: 'crear_factura')]

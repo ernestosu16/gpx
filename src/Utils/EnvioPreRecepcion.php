@@ -4,24 +4,17 @@
 namespace App\Utils;
 
 
-use App\Entity\Localizacion;
-use App\Entity\Nomenclador;
-use App\Entity\Pais;
 use App\Entity\Persona;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use JMS\Serializer\Annotation as Serializer;
 use JMS\Serializer\Annotation\SerializedName;
 use JMS\Serializer\Annotation\Type;
-use phpDocumentor\Reflection\Location;
 
 class EnvioPreRecepcion
 {
     #[SerializedName('id')]
-    public string $id;
+    public ?string $id;
 
     #[SerializedName('no_guia')]
-    public string $no_guia;
+    public ?string $no_guia;
 
     #[SerializedName('cod_tracking')]
     public string $cod_tracking;
@@ -48,7 +41,7 @@ class EnvioPreRecepcion
     public ?string $municipio;
 
     #[SerializedName('pareo')]
-    public string $pareo = "";
+    public ?string $pareo = "";
 
     #[SerializedName('requiere_pareo')]
     public bool $requiere_pareo = false;
@@ -62,15 +55,15 @@ class EnvioPreRecepcion
     public array $irregularidades = [];
 
     #[SerializedName('destinatario')]
-    public Persona $destinatario;
+    public ?Persona $destinatario;
 
     #[SerializedName('remitente')]
-    public Persona $remitente;
+    public ?Persona $remitente;
 
-    /**
-     * @param string $no_guia
-     */
-    public function __construct()
+    #[SerializedName('modo_recepcion')]
+    public string $modo_recepcion = "";
+
+   public function __construct()
     {
     }
 

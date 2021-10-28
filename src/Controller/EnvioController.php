@@ -3,8 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Envio;
-use App\Entity\EnvioManifiesto;
-use App\Entity\Estructura;
 use App\Entity\Localizacion;
 use App\Entity\LocalizacionTipo;
 use App\Entity\Persona;
@@ -17,30 +15,28 @@ use App\Repository\EnvioRepository;
 use App\Repository\LocalizacionRepository;
 use App\Repository\NomencladorRepository;
 use App\Repository\PaisRepository;
-use App\Utils\EnvioPreRecepcion;
+use App\Utils\ModoRecepcion;
 use App\Utils\MyResponse;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerBuilder;
-use phpDocumentor\Reflection\Types\False_;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\Serializer;
 use function PHPUnit\Framework\throwException;
-use function Sodium\add;
 
 #[Route('/envio')]
 class EnvioController extends AbstractController
 {
     public function __construct(
-        private LocalizacionRepository $localizacion,
+        private LocalizacionRepository    $localizacion,
         private EnvioManifiestoRepository $envioManifiesto,
-        private EnvioManager $envioManager,
-        private PaisRepository $paisRepository,
-        private AgenciaRepository $agenciaRepository,
-        private NomencladorRepository $nomencladorRepository
+        private EnvioManager              $envioManager,
+        private PaisRepository            $paisRepository,
+        private AgenciaRepository         $agenciaRepository,
+        private NomencladorRepository     $nomencladorRepository,
+        private EnvioRepository           $envioRepository,
     )
     {
     }
@@ -48,21 +44,21 @@ class EnvioController extends AbstractController
     #[Route('/', name: 'envio_index', methods: ['GET'])]
     public function index(Request $request): Response
     {
-
-        if ($request->isXmlHttpRequest()){
+        $this->denyAccessUnlessGranted([], $request);
+        if ($request->isXmlHttpRequest()) {
 
             //Obtener array de envios a recepcionar
             $datos = $request->request->get['data'];
 
             $miRespuesta = new MyResponse();
 
-            if ($this->envioManager->recepcionarEnvios($datos)){
+            if ($this->envioManager->recepcionarEnvios($datos)) {
 
                 $miRespuesta->setEstado(true);
                 $miRespuesta->setData(null);
                 $miRespuesta->setMensaje("OK");
 
-            }else{
+            } else {
 
                 $miRespuesta->setEstado(false);
                 $miRespuesta->setData(null);
@@ -71,11 +67,11 @@ class EnvioController extends AbstractController
             }
 
             $serializer = SerializerBuilder::create()->build();
-            $miRespuestaJson = $serializer->serialize($miRespuesta,"json");
+            $miRespuestaJson = $serializer->serialize($miRespuesta, "json");
 
             return JsonResponse::fromJsonString($miRespuestaJson);
 
-        }else {
+        } else {
 
 
             $provincias = $this->localizacion->findAllProvincia();
@@ -102,6 +98,43 @@ class EnvioController extends AbstractController
         }
     }
 
+    #[Route('/entregar-envio-por-ci', name: 'entregar_envio_por_ci', methods: ['GET'])]
+    public function entregarEnvioPorCI(Request $request): Response
+    {
+
+        if ($request->isXmlHttpRequest()) {
+
+            //Obtener array de envios a recepcionar
+            $datos = $request->request->get('id');
+
+            $miRespuesta = new MyResponse();
+
+            if ($this->envioManager->recepcionarEnvios($datos)) {
+
+                $miRespuesta->setEstado(true);
+                $miRespuesta->setData(null);
+                $miRespuesta->setMensaje("OK");
+
+            } else {
+
+                $miRespuesta->setEstado(false);
+                $miRespuesta->setData(null);
+                $miRespuesta->setMensaje("Error al recepcionar los envios correspondientes");
+
+            }
+
+            $serializer = SerializerBuilder::create()->build();
+            $miRespuestaJson = $serializer->serialize($miRespuesta, "json");
+
+            return JsonResponse::fromJsonString($miRespuestaJson);
+
+        } else {
+
+            return $this->render('envio/entregarEnvioPorCI.html.twig', []);
+
+        }
+    }
+
     /*public function obtenerEnvioManifestado(string $codTracking){
 
         $envioManifestado = $this->envioManifestado->findOneBySomeField($codTracking);
@@ -113,7 +146,6 @@ class EnvioController extends AbstractController
         }
 
     }*/
-
 
 
     /*#[Route('/', name: 'envio_index', methods: ['GET'])]
@@ -174,7 +206,7 @@ class EnvioController extends AbstractController
     #[Route('/{id}', name: 'envio_delete', methods: ['POST'])]
     public function delete(Request $request, Envio $envio): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$envio->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $envio->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($envio);
             $entityManager->flush();
@@ -184,76 +216,96 @@ class EnvioController extends AbstractController
     }
 
 
+    #[Route('/envio/buscar-envio-pre-recepcion', name: 'buscar_envio_pre_recepcion', options: ["expose" => true], methods: ['POST'])]
+    public function buscarEnvioPreRecepcion(Request $request)
+    {
 
-    #[Route('/envio/buscar-envio-manifestado', name: 'envio_manifestado', options: ["expose" => true] , methods: ['POST'])]
-    public function buscarEnvioManifestado(Request $request){
-
-        if ($request->isXmlHttpRequest()){
+        if ($request->isXmlHttpRequest()) {
 
             $guia = $request->request->get('noGuia');
             $tracking = $request->request->get('codTracking');
-
-            $envioManifestadoService = $this->envioManager->obtnerEnvioManifestado($guia,$tracking);
+            $modoRecepcion = $request->request->get('modoRecepcion');
 
             $miRespuesta = new MyResponse();
 
-            //Si no existe el envio
-            if ( ! $envioManifestadoService ){
 
-                $miRespuesta->setEstado(false);
-                $miRespuesta->setData(null);
-                $miRespuesta->setMensaje("No existe el envio en la guia solicitada");
+            //Envios sin manifestar
+            if ($modoRecepcion == ModoRecepcion::$SINMANIFESTAR) {
 
-                //Si existe pero es interes de aduana
-            }else if($envioManifestadoService->entidad_ctrl_aduana){
+                $envioSinManifestar = $this->envioRepository->findByEnvioToCodTrackingCalendarYear($tracking);
+
+                $requiere_pareo = (bool)$envioSinManifestar;
 
                 $miRespuesta->setEstado(true);
-                $miRespuesta->setData($envioManifestadoService);
-                $miRespuesta->setMensaje("El envio solicitado es interés de aduana.");
+                $miRespuesta->setData($requiere_pareo);
+                $miRespuesta->setMensaje($requiere_pareo ? 'Este envio requiere ser pareado.' : 'Este envio no requiere ser pareado.');
 
-                //Si existe y esta correcto
-            }else{
 
-                $miRespuesta->setEstado(true);
-                $miRespuesta->setData($envioManifestadoService);
-                $miRespuesta->setMensaje("Envio buscado con exito");
+                //Envios manifestados
+            } else {
+
+                $envioManifestadoService = $this->envioManager->obtnerEnvioManifestado($guia, $tracking);
+
+                //Si no existe el envio
+                if (!$envioManifestadoService) {
+
+                    $miRespuesta->setEstado(false);
+                    $miRespuesta->setData(null);
+                    $miRespuesta->setMensaje("No existe el envio en la guia solicitada");
+
+                    //Si existe pero es interes de aduana
+                } else if ($envioManifestadoService->entidad_ctrl_aduana) {
+
+                    $miRespuesta->setEstado(true);
+                    $miRespuesta->setData($envioManifestadoService);
+                    $miRespuesta->setMensaje("El envio solicitado es interés de aduana.");
+
+                    //Si existe y esta correcto
+                } else {
+
+                    $miRespuesta->setEstado(true);
+                    $miRespuesta->setData($envioManifestadoService);
+                    $miRespuesta->setMensaje("Envio buscado con exito");
+
+                }
 
             }
 
             $serializer = SerializerBuilder::create()->build();
-            $miRespuestaJson = $serializer->serialize($miRespuesta,"json");
+            $miRespuestaJson = $serializer->serialize($miRespuesta, "json");
 
             return JsonResponse::fromJsonString($miRespuestaJson);
 
-        }else{
+        } else {
             dump("Hacker");
             throwException('Hacker');
         }
 
     }
 
-    #[Route('/envio/recepcionar-envios', name: 'recepcionar_envios', options: ["expose" => true] , methods: ['POST'])]
-    public function recepcionarEnvios(Request $request){
+    #[Route('/envio/recepcionar-envios', name: 'recepcionar_envios', options: ["expose" => true], methods: ['POST'])]
+    public function recepcionarEnvios(Request $request)
+    {
 
-        if ($request->isXmlHttpRequest()){
+        if ($request->isXmlHttpRequest()) {
 
             $envios = $request->request->get('envios');
 
             /** @var TrabajadorCredencial $credencial */
             $credencial = $this->getUser();
 
-            $result = $this->envioManager->recepcionarEnvios($envios,$credencial);
+            $result = $this->envioManager->recepcionarEnvios($envios, $credencial, $request->getClientIp());
 
             $miRespuesta = new MyResponse();
 
             //Si dio algun error par aguardar los envios
-            if ( ! $result ){
+            if (!$result) {
 
                 $miRespuesta->setEstado(false);
                 $miRespuesta->setData(null);
                 $miRespuesta->setMensaje("Se ha producido un error durante la recepcion de los envios");
 
-            }else{
+            } else {
 
                 $miRespuesta->setEstado(true);
                 $miRespuesta->setData('');
@@ -262,62 +314,22 @@ class EnvioController extends AbstractController
             }
 
             $serializer = SerializerBuilder::create()->build();
-            $miRespuestaJson = $serializer->serialize($miRespuesta,"json");
+            $miRespuestaJson = $serializer->serialize($miRespuesta, "json");
 
             return JsonResponse::fromJsonString($miRespuestaJson);
 
-        }else{
+        } else {
             dump("Hacker");
             throwException('Hacker');
         }
 
     }
 
-    #[Route('/envio/buscar-municipio1', name: 'mun_prov_seleccionada1', options: ["expose" => true] , methods: ['POST'])]
-    public function municipioDeUnaProvincia1(Request $request){
+    #[Route('/envio/buscar-municipio', name: 'mun_prov_seleccionada', options: ["expose" => true], methods: ['POST'])]
+    public function municipioDeUnaProvincia(Request $request)
+    {
 
-        if ($request->isXmlHttpRequest()){
-
-            $idProvincia = $request->request->get('idProvincia');
-
-            /** @var Localizacion $provincia */
-            $provincia = $this->localizacion->find($idProvincia);
-
-            $municipios = $provincia->getChildren()->toArray();
-
-            $miRespuesta = new MyResponse();
-
-            //Si no existen municipios
-            if ( ! $municipios ){
-
-                $miRespuesta->setEstado(false);
-                $miRespuesta->setData(null);
-                $miRespuesta->setMensaje("No existen municipios en la provincia solicitada");
-
-
-            }else{
-
-                $miRespuesta->setEstado(true);
-                $miRespuesta->setData($municipios);
-                $miRespuesta->setMensaje("Municipios buscados con exito");
-            }
-
-            $serializer = SerializerBuilder::create()->build();
-            $miRespuestaJson = $serializer->serialize($miRespuesta,"json");
-
-            return JsonResponse::fromJsonString($miRespuestaJson);
-
-        }else{
-            dump("Hacker");
-            throwException('Hacker');
-        }
-
-    }
-
-    #[Route('/envio/buscar-municipio', name: 'mun_prov_seleccionada', options: ["expose" => true] , methods: ['POST'])]
-    public function municipioDeUnaProvincia(Request $request){
-
-        if ($request->isXmlHttpRequest()){
+        if ($request->isXmlHttpRequest()) {
 
             $idProvincia = $request->request->get('idProvincia');
 
@@ -329,29 +341,87 @@ class EnvioController extends AbstractController
             $miRespuesta = new MyResponse();
             $serializer = SerializerBuilder::create()->build();
             //Si no existen municipios
-            if ( ! $municipios ){
+            if (!$municipios) {
 
                 $miRespuesta->setEstado(false);
                 $miRespuesta->setData(null);
                 $miRespuesta->setMensaje("No existen municipios en la provincia solicitada");
 
 
-            }else{
+            } else {
 
                 $miRespuesta->setEstado(true);
-                $mi = $serializer->serialize($municipios,"json", SerializationContext::create()->setGroups('default'));
-                $miRespuesta->setData(json_decode($mi, true, 512, JSON_THROW_ON_ERROR) );
+                $mi = $serializer->serialize($municipios, "json", SerializationContext::create()->setGroups('default'));
+                $miRespuesta->setData(json_decode($mi, true, 512, JSON_THROW_ON_ERROR));
                 $miRespuesta->setMensaje("Municipios buscados con exito");
             }
 
-            $miRespuestaJson = $serializer->serialize($miRespuesta,"json");
+            $miRespuestaJson = $serializer->serialize($miRespuesta, "json");
             return JsonResponse::fromJsonString($miRespuestaJson);
 
-        }else{
+        } else {
             dump("Hacker");
             throwException('Hacker');
         }
 
     }
 
+    #[Route('/envio/buscar-envioe-para-entrega-por-CI', name: 'buscar_envioe_para_entrega_por_CI', options: ["expose" => true], methods: ['POST'])]
+    public function buscarEnvioParaEntregaPorCI(Request $request)
+    {
+
+        if ($request->isXmlHttpRequest()) {
+
+            $numeroIdentidad = $request->request->get('noCI');
+
+            $persona = $this->getDoctrine()->getRepository(Persona::class)->findOneByNumeroIdentidad($numeroIdentidad)?->getId();
+
+            /** @var TrabajadorCredencial $credencial */
+            $credencial = $this->getUser();
+
+            $enviosEntregar = $this->envioRepository->buscarEnvioParaEntregaPorCI($persona, $credencial);
+
+            $miRespuesta = new MyResponse();
+
+
+            if ($persona) {
+
+                $miRespuesta->setEstado(true);
+                $miRespuesta->setData($persona);
+                $miRespuesta->setMensaje(true ? 'Este envio requiere ser pareado.' : 'Este envio no requiere ser pareado.');
+
+
+                //Envios manifestados
+            }
+
+            $serializer = SerializerBuilder::create()->build();
+            $miRespuestaJson = $serializer->serialize($miRespuesta, "json");
+
+            return JsonResponse::fromJsonString($miRespuestaJson);
+
+        } else {
+            dump("Hacker");
+            throwException('Hacker');
+        }
+
+    }
+
+    #[Route('/save-anomalia', name: 'envio_anomalia', options: ["expose" => true], methods: ['POST'])]
+    public function saveEnvioAnomalia(Request $request)
+    {
+        $id = $request->get('id');
+        $anomalias = $request->get('anomalias');
+
+        try {
+            /** @var TrabajadorCredencial $credencial */
+            $user = $this->getUser();
+
+            $this->envioManager->saveEnvioAnomalias($id, $anomalias, $user);
+            return JsonResponse::fromJsonString('"Anomalias agregadas correctamente"');
+        } catch (\Exception $exception) {
+            return $exception;
+        }
+
+
+    }
 }

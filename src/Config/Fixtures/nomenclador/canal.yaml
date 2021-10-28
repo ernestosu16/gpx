@@ -1,0 +1,14 @@
+canales:
+    -   codigo: 'APP_ENVIO_CANAL'
+        nombre: 'Canales de la aduana'
+        descripcion: 'Canales que pasan los envíos'
+        children:
+            -   nombre: 'Verde'
+                descripcion: ''
+                codigo: 'APP_ENVIO_CANAL_VERDE'
+            -   nombre: 'Rojo'
+                descripcion: ''
+                codigo: 'APP_ENVIO_CANAL_ROJO'
+            -   nombre: 'Naranja'
+                descripcion: ''
+                codigo: 'APP_ENVIO_CANAL_NARANJA'

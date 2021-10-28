@@ -62,3 +62,13 @@ menu:
                 nombre: 'Tipos de estructuras'
                 route: 'admin_estructura_tipo_index'
                 icon: null
+
+    -   codigo: 'ENVIO'
+        nombre: 'Envio'
+        route: null
+        icon: null
+        children:
+            -   codigo: 'ENVIO_RECEPCION'
+                nombre: 'Recepción de envío'
+                route: 'envio_index'
+                icon: null

@@ -2,8 +2,6 @@
 
 namespace App\Manager;
 
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use App\Controller\EnvioController;
 use App\Entity\Agencia;
 use App\Entity\Envio;
 use App\Entity\EnvioAduana;
@@ -11,25 +9,18 @@ use App\Entity\EnvioAduanaTraza;
 use App\Entity\EnvioAnomaliaTraza;
 use App\Entity\EnvioManifiesto;
 use App\Entity\EnvioTraza;
-use App\Entity\Estructura;
 use App\Entity\EstructuraTipo;
 use App\Entity\Localizacion;
 use App\Entity\Nomenclador;
 use App\Entity\Pais;
 use App\Entity\TrabajadorCredencial;
-use App\Repository\AgenciaRepository;
-use App\Repository\EnvioManifiestoRepository;
-use App\Repository\EnvioRepository;
-use App\Repository\EstructuraTipoRepository;
-use App\Repository\LocalizacionRepository;
-use App\Repository\NomencladorRepository;
-use App\Repository\PaisRepository;
-use App\Utils\EnvioAnomalia;
 use App\Utils\EnvioDireccion;
 use App\Utils\EnvioPreRecepcion;
+use App\Utils\ModoRecepcion;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\ORMException;
 use JMS\Serializer\SerializerBuilder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 
 class EnvioManager extends _Manager_
@@ -61,15 +52,13 @@ class EnvioManager extends _Manager_
         $envioPreRecepcion = new EnvioPreRecepcion();
 
         /** @var $envioManifestado EnvioManifiesto * */
-        $envioManifestado = $this->entityManager->getRepository(EnvioManifiesto::class)->findByGuiaAndCodigo($noGuia,$codTracking);
+        $envioManifestado = $this->entityManager->getRepository(EnvioManifiesto::class)->findByGuiaAndCodigo($noGuia, $codTracking);
 
-        $envioIgualCodTracking = $this->entityManager->getRepository(Envio::class)->findOneBy(['cod_tracking'=> $codTracking]);
-        //Coger la fecha y si esdel mismo a;o entoces hacer el pareo decirlo al cliente y hacer validaciones
+        $envioIgualCodTracking = $this->entityManager->getRepository(Envio::class)->findByEnvioToCodTrackingCalendarYear($codTracking);
+
         $parearEnvio = (bool)$envioIgualCodTracking;
 
-        dump($envioManifestado,'$envioManifestado');
-
-        if (  $envioManifestado ) {
+        if ($envioManifestado) {
 
             $envioPreRecepcion->id = $envioManifestado->getId();
             $envioPreRecepcion->no_guia = $envioManifestado->getNoGuiaAerea();
@@ -95,48 +84,27 @@ class EnvioManager extends _Manager_
             $envioPreRecepcion->remitente = $envioManifestado->getRemitente();
             $envioPreRecepcion->destinatario = $envioManifestado->getDestinatario();
 
-            /*$direccion = new EnvioDireccion();
-            $direccion->setCalle($envioManifestado->getCalleDestinatario());
-            $direccion->setEntreCalle($envioManifestado->getEntreCalleDestinatario());
-            $direccion->setYCalle($envioManifestado->getYCalleDestinatario());
-            $direccion->setNumero($envioManifestado->getNoDestinatario());
-            $direccion->setPiso($envioManifestado->getPisoDestinatario());
-            $direccion->setApto($envioManifestado->getAptoDestinatario());
-            $direccion->setProvincia(
-                $envioManifestado->getProvinciaDestinatario()
-            );
-            $direccion->setMunicipio(
-                $envioManifestado->getMunicipioDestinatario()
-            );
+            $envioPreRecepcion->modo_recepcion = ModoRecepcion::$MANIFESTADO;
 
-            $envioPreRecepcion->direcciones = [];
-            $envioPreRecepcion->direcciones[] = $direccion;
-            */
-
-        }else{
+        } else {
             $envioPreRecepcion = null;
         }
 
         return $envioPreRecepcion;
     }
 
-    public function recepcionarEnvios($envios,TrabajadorCredencial $user): bool{
+    public function recepcionarEnvios($envios, TrabajadorCredencial $user, $clientIP): bool
+    {
         $recepcionados = true;
 
         $deserializer = SerializerBuilder::create()->build();
-        try{
+        try {
             foreach ($envios as $envio) {
 
                 /** @var EnvioPreRecepcion $envioPreRecepcion */
                 $envioPreRecepcion = $deserializer->deserialize(json_encode($envio), EnvioPreRecepcion::class, 'json');
 
                 /** @var $envioManifestado EnvioManifiesto * */
-                $envioManifestado = $this->entityManager->getRepository(EnvioManifiesto::class)->find($envioPreRecepcion->id);
-                $envioManifestado->setRecepcionado(true);
-                $this->entityManager->persist($envioManifestado);
-
-
-
 
                 $fechaActual = new \DateTime();
 
@@ -149,11 +117,8 @@ class EnvioManager extends _Manager_
                 $envio->setPareo($envioPreRecepcion->pareo);
                 $envio->setPeso($envioPreRecepcion->peso);
 
-                //Coger la del user autenticado
                 $envio->setEstructuraOrigen($user->getEstructura());
-
-                $envio->setDestinatario($envioManifestado->getDestinatario());
-                $envio->setRemitente($envioManifestado->getRemitente());
+                $envio->setEstructuraDestino($user->getEstructura());
 
                 $envio->setAgencia($this->entityManager->getRepository(Agencia::class)->find($envioPreRecepcion->agencia));
 
@@ -164,11 +129,16 @@ class EnvioManager extends _Manager_
 
                 $envio->setPaisDestino($this->entityManager->getRepository(Pais::class)->getPaisCuba());
 
-                $envio->setEmpresa($user->getEstructura()->searchParentsByTipo(
-                    $this->entityManager->getRepository(EstructuraTipo::class)->findOneByCodigo('EMPRESA')
-                ));
+                $empresa = $user->getEstructura()->searchParentsByTipo(
+                    $this->entityManager->getRepository(EstructuraTipo::class)->findOneByCodigo(EstructuraTipo::EMPRESA)
+                );
 
-                $canalVerde = $this->entityManager->getRepository(Nomenclador::class)->findOneByCodigo('CANAL_VERDE');
+                if (!$empresa)
+                    throw new ORMException('La empresa no existe');
+
+                $envio->setEmpresa($empresa);
+
+                $canalVerde = $this->entityManager->getRepository(Nomenclador::class)->findOneByCodigo('APP_ENVIO_CANAL_VERDE');
                 $envio->setCanal($canalVerde);
 
                 /** @var Localizacion $provincia */
@@ -179,29 +149,45 @@ class EnvioManager extends _Manager_
                 $municipio = $this->entityManager->getRepository(Localizacion::class)->find($envioPreRecepcion->municipio);
                 $envio->setMunicipio($municipio);
 
-                $direccion = new EnvioDireccion();
-                $direccion->setCalle($envioManifestado->getCalleDestinatario());
-                $direccion->setEntreCalle($envioManifestado->getEntreCalleDestinatario());
-                $direccion->setYCalle($envioManifestado->getYCalleDestinatario());
-                $direccion->setNumero($envioManifestado->getNoDestinatario());
-                $direccion->setPiso($envioManifestado->getPisoDestinatario());
-                $direccion->setApto($envioManifestado->getAptoDestinatario());
-                $direccion->setProvincia(
-                    $envioManifestado->getProvinciaDestinatario()?->getId()
-                );
-                $direccion->setMunicipio(
-                    $envioManifestado->getMunicipioDestinatario()?->getId()
-                );
+                /**
+                 * Para envios manifestados
+                 */
+                if ($envioPreRecepcion->modo_recepcion == ModoRecepcion::$MANIFESTADO) {
 
-                $normalizers = [new ObjectNormalizer()];
-                $serializer = new Serializer($normalizers, []);
+                    $envioManifestado = $this->entityManager->getRepository(EnvioManifiesto::class)->find($envioPreRecepcion->id);
+                    $envioManifestado->setRecepcionado(true);
+                    $this->entityManager->persist($envioManifestado);
 
-                $dereccionesSerializadas = $serializer->normalize($direccion);
+                    $envio->setDestinatario($envioManifestado->getDestinatario());
+                    $envio->setRemitente($envioManifestado->getRemitente());
 
-                $direcciones = [];
-                $direcciones[] = $dereccionesSerializadas;
+                    $direccion = new EnvioDireccion();
+                    $direccion->setCalle($envioManifestado->getCalleDestinatario());
+                    $direccion->setEntreCalle($envioManifestado->getEntreCalleDestinatario());
+                    $direccion->setYCalle($envioManifestado->getYCalleDestinatario());
+                    $direccion->setNumero($envioManifestado->getNoDestinatario());
+                    $direccion->setPiso($envioManifestado->getPisoDestinatario());
+                    $direccion->setApto($envioManifestado->getAptoDestinatario());
+                    $direccion->setProvincia(
+                        $envioManifestado->getProvinciaDestinatario()?->getId()
+                    );
+                    $direccion->setMunicipio(
+                        $envioManifestado->getMunicipioDestinatario()?->getId()
+                    );
 
-                $envio->setDirecciones($direcciones);
+                    $normalizers = [new ObjectNormalizer()];
+                    $serializer = new Serializer($normalizers, []);
+
+                    $dereccionesSerializadas = $serializer->normalize($direccion);
+
+                    $direcciones = [];
+                    $direcciones[] = $dereccionesSerializadas;
+
+                    $envio->setDirecciones($direcciones);
+
+                } else {
+                    $envioManifestado = null;
+                }
 
                 $this->entityManager->persist($envio);
 
@@ -209,7 +195,6 @@ class EnvioManager extends _Manager_
                  * Envio trazas
                  */
 
-                /** @var EnvioTraza $envioTraza */
                 $envioTraza = new EnvioTraza();
                 $envioTraza->setFecha($fechaActual);
                 $envioTraza->setPeso($envioPreRecepcion->peso);
@@ -217,7 +202,7 @@ class EnvioManager extends _Manager_
                 $envioTraza->setEstado($estadoRecepcionado);
                 $envioTraza->setTrabajador($user->getTrabajador());
                 $envioTraza->setEstructuraOrigen($user->getEstructura());
-                $envioTraza->setIp('');
+                $envioTraza->setIp($clientIP);
                 $envioTraza->setCanal($canalVerde);
 
                 $this->entityManager->persist($envioTraza);
@@ -246,8 +231,7 @@ class EnvioManager extends _Manager_
                 $envioAduana->setProvinciaAduana($provincia->getCodigoAduana());
                 $envioAduana->setMunicipioAduana($municipio->getCodigoAduana());
                 $envioAduana->setEstado($estadoRecepcionado);
-                $envioAduana->setArancel($envioManifestado->isArancel());
-
+                $envioAduana->setArancel($envioManifestado ? $envioManifestado->isArancel() : false);
                 $this->entityManager->persist($envioAduana);
 
                 /**
@@ -261,17 +245,41 @@ class EnvioManager extends _Manager_
 
                 $this->entityManager->persist($envioAduanaTraza);
 
-                /**
-                 * Cambiar en la tabla envio manifiesto el campo por recepcionado
-                 */
             }
 
             $this->entityManager->flush();
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             return false;
         }
 
         return $recepcionados;
+    }
+
+    public function saveEnvioAnomalias(string $id, array $anomalias, TrabajadorCredencial $user)
+    {
+        $envio = $this->entityManager->getRepository(Envio::class)->find($id);
+
+        $envioTraza = new EnvioTraza();
+        $envioTraza->setFecha(new \DateTime());
+        $envioTraza->setPeso($envio->getPeso());
+        $envioTraza->setEnvio($envio);
+        $envioTraza->setEstado($envio->getEstado());
+        $envioTraza->setTrabajador($user->getTrabajador());
+        $envioTraza->setEstructuraOrigen($user->getEstructura());
+        $envioTraza->setIp('');
+
+        $this->entityManager->persist($envioTraza);
+
+        foreach ($anomalias as $key => $value) {
+
+            $envioAnomaliaTraza = new EnvioAnomaliaTraza();
+            $envioAnomaliaTraza->setAnomalia($this->entityManager->getRepository(Nomenclador::class)->findOneBy(['codigo' => $key]));
+            $envioAnomaliaTraza->setDescripcion($value);
+            $envioAnomaliaTraza->setEnvioTraza($envioTraza);
+
+            $this->entityManager->persist($envioAnomaliaTraza);
+            $this->entityManager->flush();
+        }
     }
 
 }
