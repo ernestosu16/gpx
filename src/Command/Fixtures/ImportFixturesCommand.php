@@ -5,7 +5,6 @@ namespace App\Command\Fixtures;
 use App\Command\BaseCommand;
 use App\Command\BaseCommandInterface;
 use App\Config\Data\Nomenclador\AgenciaData;
-use App\Config\Data\Nomenclador\CanalData;
 use App\Config\Data\Nomenclador\EnvioData;
 use App\Config\Data\Nomenclador\FacturaData;
 use App\Config\Data\Nomenclador\SacaData;
@@ -13,7 +12,6 @@ use App\Config\Data\Nomenclador\EstructuraTipoData;
 use App\Config\Data\Nomenclador\GrupoData;
 use App\Config\Data\Nomenclador\MenuData;
 use App\Entity\Agencia;
-use App\Entity\Canal;
 use App\Entity\Estructura;
 use App\Entity\EstructuraTipo;
 use App\Entity\Grupo;
@@ -469,24 +467,38 @@ final class ImportFixturesCommand extends BaseCommand implements BaseCommandInte
 
     private function configurarCanales()
     {
-        /** @var ?Canal $root */
-        $root = $this->getRepository(Canal::class)->findOneBy(['codigo' => CanalData::code()]);
+        /** @var ?Nomenclador $root */
+        $root = $this->getRepository(Nomenclador::class)->findOneBy(['codigo' => 'APP_ENVIO']);
 
-        if ($root->getChildren()->count())
+        /** @var ?Nomenclador $root_canal */
+        $canales= Yaml::parseFile($this->getKernel()->getProjectDir() . '/src/Config/Fixtures/nomenclador/canal.yaml')['canales'][0];
+
+        if ($this->getRepository(Nomenclador::class)->findOneBy(['codigo' => $canales['codigo']]))
             return;
 
-        $canal = Yaml::parseFile($this->getKernel()->getProjectDir() . '/src/Config/Fixtures/canal.yaml');
-        foreach ($canal['canales'] as $canal) {
-            if ($this->getRepository(Canal::class)->findOneBy(['codigo' => $canal['codigo']]))
+        $roort_canal = new Nomenclador();
+        $roort_canal->setRoot($root->getRoot());
+        $roort_canal->setCodigo($canales['codigo']);
+        $roort_canal->setNombre($canales['nombre']);
+        $roort_canal->setDescripcion($canales['descripcion']);
+
+        $root->addChild($roort_canal);
+        $this->getEntityManager()->persist($root);
+
+        foreach ($canales['children'] as $canal) {
+            if ($this->getRepository(Nomenclador::class)->findOneBy(['codigo' => $canal['codigo']]))
                 continue;
 
-            $canalEntity = new Canal();
-            $canalEntity->setRoot($root);
+            $canalEntity = new Nomenclador();
+            $canalEntity->setRoot($root->getRoot());
             $canalEntity->setCodigo($canal['codigo']);
             $canalEntity->setNombre($canal['nombre']);
             $canalEntity->setDescripcion($canal['descripcion']);
 
-            $root->addChild($canalEntity);
+            $roort_canal->addChild($canalEntity);
+
+            $this->getEntityManager()->persist($canalEntity);
+            $this->getEntityManager()->persist($roort_canal);
         }
         $this->getEntityManager()->persist($root);
         $this->getEntityManager()->flush();

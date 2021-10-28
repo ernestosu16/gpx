@@ -633,6 +633,10 @@ function obtenerIrregularidades(){
  */
 function buscarMunDeUnaProv()
 {
+    $('#select_municipios')
+        .val('')
+        .trigger('change.select2');
+
     var idProv = $('#select_provincias').val()
     var selectMunicipio = $('#select_municipios')
     if (idProv) {

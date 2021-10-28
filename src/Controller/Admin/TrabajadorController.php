@@ -58,7 +58,6 @@ final class TrabajadorController extends _CrudController_
         ];
     }
 
-
     #[Route('/', name: '_index', methods: ['GET'])]
     public function index(Request $request): Response
     {
