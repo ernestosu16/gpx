@@ -38,11 +38,6 @@ class TrabajadorCredencialType extends AbstractType
                     'label' => 'repetir contrasena',
                     'label_attr' => ['class' => 'col-sm-4 control-label'],
                 ],
-            ])
-            ->add('forzarCambioContrasena', CheckboxType::class, [
-                'required' => false,
-                'label' => 'Forzar cambio de la contraseña',
-                'label_attr' => ['class' => 'col-sm-4 control-label'],
             ]);
     }
 
