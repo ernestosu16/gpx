@@ -46,18 +46,20 @@ sonarqube-check:
         name: sonarsource/sonar-scanner-cli
         entrypoint: [""]
     stage: build
-    variables:
-        SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
-        GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
+    allow_failure: true
+    only:
+        - master # or the name of your main branch
     cache:
         key: "${CI_JOB_NAME}"
         paths:
             - .sonar/cache
+    variables:
+        GIT_STRATEGY: clone
+        SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
+        GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
     script:
+        - npx browserslist@latest --update-db
         - sonar-scanner
-    allow_failure: true
-    only:
-        - master # or the name of your main branch
 
 docker-build:
     variables:
