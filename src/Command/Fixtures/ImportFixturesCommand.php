@@ -278,7 +278,7 @@ final class ImportFixturesCommand extends BaseCommand implements BaseCommandInte
 
     private function procesarEstructura(array $datos): ?Estructura
     {
-        $estructura = $root ?? new Estructura();
+        $estructura = new Estructura();
         $estructura->setNombre($datos['nombre']);
         $estructura->setCodigoPostal($datos['codigo_postal']);
         $estructura->setDescripcion($datos['descripcion']);
