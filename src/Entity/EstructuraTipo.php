@@ -12,6 +12,7 @@ use JetBrains\PhpStorm\Pure;
 #[ORM\Cache]
 class EstructuraTipo extends Nomenclador
 {
+    const MINISTERIO = 'MINISTERIO';
     const EMPRESA = 'EMPRESA';
 
     #[ORM\ManyToMany(targetEntity: Estructura::class, mappedBy: 'tipos')]
