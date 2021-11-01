@@ -7,8 +7,8 @@ use App\Repository\EstructuraRepository;
 use App\Utils\RegexUtil;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Exception\ORMException;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\ORMException;
 use Gedmo\Mapping\Annotation as Gedmo;
 use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
@@ -251,6 +251,23 @@ class Estructura extends BaseNestedTree
         return $this;
     }
 
+    public function hasParametro($key): bool
+    {
+        return isset($this->parametros[$key]);
+    }
+
+    public function setParametro(string $key, mixed $value): static
+    {
+        $this->parametros[$key] = $value;
+
+        return $this;
+    }
+
+    public function getParametro($key): mixed
+    {
+        return $this->hasParametro($key) ? $this->parametros[$key] : null;
+    }
+
     public function isHabilitado(): bool
     {
         return $this->habilitado;
@@ -266,6 +283,18 @@ class Estructura extends BaseNestedTree
     public function getHabilitado(): ?bool
     {
         return $this->habilitado;
+    }
+
+    public function getLogo()
+    {
+        return $this->getParametro('logo');
+    }
+
+    public function setLogo(string $fileName): static
+    {
+        $this->setParametro('logo', $fileName);
+
+        return $this;
     }
 
     #[Pure] public function getMunicipio(): ?Localizacion

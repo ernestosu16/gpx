@@ -1,15 +1,17 @@
-<div class="col-lg-12">
-    <button class="btn btn-sm btn-success">{{ button_label|default('guardar'|trans([],'admin')) }}</button>
+<div class="row">
+    <div class="col-lg-12">
+        <button class="btn btn-sm btn-success">{{ button_label|default('guardar'|trans([],'admin')) }}</button>
 
-    <a href="{{ path(settings.routes.index) }}"
-       class="btn btn-sm btn-default">{{ 'volver a la lista'|trans([],'admin') }}
-    </a>
+        <a href="{{ path(settings.routes.index) }}"
+           class="btn btn-sm btn-default">{{ 'volver a la lista'|trans([],'admin') }}
+        </a>
 
-    {% if entity.id %}
-        <div class="pull-right">
-            <button type="button" class="btn btn-sm btn-danger delete">
-                {{ 'eliminar'|trans([],settings.translation_domain) }}
-            </button>
-        </div>
-    {% endif %}
+        {% if entity.id %}
+            <div class="pull-right">
+                <button type="button" class="btn btn-sm btn-danger delete">
+                    {{ 'eliminar'|trans([],settings.translation_domain) }}
+                </button>
+            </div>
+        {% endif %}
+    </div>
 </div>

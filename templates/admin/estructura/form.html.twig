@@ -1,8 +1,9 @@
 {% extends 'homer-theme/layout.html.twig' %}
 {% block title %}{{ settings.titles.index }}{% endblock %}
 {% block body %}
-    {# @var form \App\Entity\Estructura #}
+    {# @let form \App\Entity\Estructura #}
     {{ form_start(form) }}
+    {{ form_errors(form) }}
     <div class="row">
         <div class="col-lg-12" style="">
             <div class="hpanel">
@@ -32,7 +33,67 @@
     </div>
     {{ form_end(form) }}
 {% endblock %}
+{% block stylesheets %}
+    <style>
+        .btn-file {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-file input[type=file] {
+            position: absolute;
+            top: 0;
+            right: 0;
+            min-width: 100%;
+            min-height: 100%;
+            font-size: 100px;
+            text-align: right;
+            filter: alpha(opacity=0);
+            opacity: 0;
+            outline: none;
+            background: white;
+            cursor: inherit;
+            display: block;
+        }
+
+        .preview {
+            background-repeat: no-repeat;
+            height: 100px;
+            border: 1px solid #bbbbbb;
+            padding: 3px;
+            border-radius: 3px 3px 0 0;
+        }
+
+        .preview img {
+            width: 100%;
+            max-height: 92px;
+        }
+
+        .remove_radio {
+            border-radius: 0 0 3px 3px !important;
+        }
+    </style>
+{% endblock %}
 {% block javascripts %}
+    <script>
+        $(function () {
+            $('#estructura_logo').on("change", function () {
+                let files = !!this.files ? this.files : [];
+
+                if (!files.length || !window.FileReader)
+                    return; // no file selected, or no FileReader support
+
+                $('#imageName').val(files[0].name);
+                if (/^image/.test(files[0].type)) { // only image file
+                    let reader = new FileReader(); // instance of the FileReader
+                    reader.readAsDataURL(files[0]); // read the local file
+                    reader.onloadend = function () { // set image data as background of div
+                        $('#imagePreview').attr("src", this.result);
+                    }
+                }
+            });
+        });
+    </script>
     <script type="text/javascript">
         $(document).on('ready', function (e) {
             let estructura = {
