@@ -285,22 +285,21 @@ class EnvioManager extends _Manager_
         }
     }
 
-    public function addDespachoAduanaEnvio($url, $envio_aduana, $cod_envio){
+    public function addDespachoAduanaEnvio($url, $env_aduana_id, $cod_envio, $empresa){
 
-        $em = $this->getDoctrine()->getManager();
+        //$em = $this->getDoctrine()->getManager();
 
         $soapClient = new \nusoap_client($url);
         $soapClient->soap_defencoding = 'UTF-8';
         $soapClient->decode_utf8 = false;
 
         /** @var EnvioManifiesto $manifiesto */
-        $manifiesto = $em->getRepository(EnvioManifiesto::class)->findOneBy(['codigo'=>$cod_envio]);
+        $manifiesto = $this->entityManager->getRepository(EnvioManifiesto::class)->findOneBy(['codigo'=>$cod_envio]);
 
-        /** @var Trabajador $user */
-        $user = $this->getUser();
+        /** @var EnvioAduana $envio_aduana */
+        $envio_aduana = $this->entityManager->getRepository(EnvioAduana::class)->find($env_aduana_id);
 
-        /** @var Estructura $estructura */
-        $empresa = $em->getRepository(Estructura::class)->find($user->getEstructura()->getId());
+
         $valor = json_encode($empresa->getParametros());
         $cod_aduana = json_decode($valor);
 
@@ -312,14 +311,19 @@ class EnvioManager extends _Manager_
                 'blga'=>$manifiesto->getNoGuiaAerea(),
                 'codigoaduana' => $cod_aduana->codigo_aduana
             ]);
+
         $res = json_decode($result);
+
         if($res->success == true){
             $res = json_decode($result, true);
             $envio_aduana->setDatosDespacho($res);
+            $this->entityManager->persist($envio_aduana);
+            $this->entityManager->flush();
             $respuesta = true;
         }else{
             $respuesta = false;
         }
+        //dump($respuesta).exit();
         return $respuesta;
     }
 

@@ -141,6 +141,12 @@ class FacturaController extends AbstractController
             $sello = $request->request->get('codTracking');
             $oficina_dest = $request->request->get('oficina_dest');
 
+            /** @var Trabajador $user */
+            $user = $this->getUser();
+
+            /** @var Estructura $estructura */
+            $empresa = $em->getRepository(Estructura::class)->find($user->getEstructura()->getId());
+
             /** @var Saca $saca */
             $saca = $em->getRepository(Saca::class)->findOneBy(['sello'=>$sello]);
 
@@ -165,7 +171,7 @@ class FacturaController extends AbstractController
                                 $url= "https://sua.aduana.cu/GINASUA/serviciosExternos?wsdl";
 
                                 if ($this->envioManager->verificarConectAduana($url) == 1){
-                                    if ($this->envioManager->addDespachoAduanaEnvio($url, $envio_aduana, $cod)){
+                                    if ($this->envioManager->addDespachoAduanaEnvio($url, $envio_aduana->getId(), $cod, $empresa)){
                                         return JsonResponse::fromJsonString($miRespuestaJson);
                                     }else{
                                         $respuesta = 'El servicio del despacho de la aduana no está funcionando, por favor intentelo mas tarde.';
