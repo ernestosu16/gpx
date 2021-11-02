@@ -2,31 +2,21 @@
 
 namespace App\Manager;
 
-use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Contracts\Service\Attribute\Required;
 
 abstract class _Manager_
 {
-    private ContainerInterface $container;
-    private LoggerInterface $logger;
+    private ?ContainerInterface $container;
 
-    public function get(string $id, int $invalidBehavior = ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE): ?object
-    {
-        return $this->container->get($id, $invalidBehavior);
-    }
-
-    public function setContainer(ContainerInterface $container): void
+    #[Required]
+    public function setContainer(ContainerInterface $container = null): void
     {
         $this->container = $container;
     }
 
-    public function getLogger(): LoggerInterface
+    public function get(string $id, int $invalidBehavior = ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE): ?object
     {
-        return $this->logger;
-    }
-
-    public function setLogger(LoggerInterface $logger): void
-    {
-        $this->logger = $logger;
+        return $this->container->get($id, $invalidBehavior);
     }
 }

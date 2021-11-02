@@ -22,6 +22,27 @@
     <link rel="stylesheet" href="{{ asset('homer-theme/fonts/pe-icon-7-stroke/css/helper.css') }}"/>
     <link rel="stylesheet" href="{{ asset('homer-theme/styles/style.css') }}">
 
+    <style>
+        .frame {
+            height: 80px;
+            width: 260px;
+            text-align: center;
+            margin: 1em 0;
+        }
+
+        .frame:before, .frame_before {
+            content: "";
+            display: inline-block;
+            height: 100%;
+            vertical-align: middle;
+        }
+
+        .frame img {
+            vertical-align: middle;
+            max-height: 75px;
+            width: 80%;
+        }
+    </style>
 </head>
 <body class="landing-page">
 <!-- Simple splash screen-->
@@ -321,35 +342,22 @@
         <div class="row text-center">
             <div class="col-md-6 col-md-offset-3">
                 <h2><span class="text-success">Nuestros mejores</span> Clientes</h2>
-                <p>
-                    Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text
-                    Text Text Text Text Text Text.
-                </p>
+                <p></p>
             </div>
         </div>
         <div class="row text-center m-t-lg">
             <div class="col-md-6 col-md-offset-3">
                 <div class="row">
-
-                    <div class="col-md-6">
-                        <div class="client">Company logo</div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="client">Company logo</div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="client">Company logo</div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="client">Company logo</div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="client">Company logo</div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="client">Company logo</div>
-                    </div>
-
+                    {% for cliente in clientes %}
+                        {% if cliente.logo %}
+                            <div class="col-md-6">
+                                <div class="frame">
+                                    <img src="{{ asset('uploads/estructura/logo/' ~ cliente.logo) }}"
+                                         alt="{{ cliente.codigo }}">
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
                 </div>
             </div>
         </div>

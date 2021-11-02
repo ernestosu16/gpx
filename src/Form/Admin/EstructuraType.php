@@ -8,16 +8,18 @@ use App\Entity\Grupo;
 use App\Entity\Localizacion;
 use App\Entity\Trabajador;
 use App\Entity\TrabajadorCredencial;
+use App\Form\Admin\Event\EstructuraTypeSubscriber;
 use App\Form\Admin\Extend\EstructuraExtendType;
 use App\Repository\LocalizacionRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\Form\ChoiceList\ChoiceList;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File;
 
 class EstructuraType extends BaseAdminType
 {
@@ -39,6 +41,22 @@ class EstructuraType extends BaseAdminType
             $collection = $this->getChoiceEstructuras([], [$data]);
 
         $builder
+            ->add('logo', FileType::class, [
+                'mapped' => false,
+                'label' => 'Logo (Archivo de imagen)',
+                'required' => false,
+                'constraints' => [
+                    new File([
+                        'maxSize' => '256k',
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                            'image/svg+xml',
+                        ],
+                        'mimeTypesMessage' => 'Cargue una imagen válida',
+                    ])
+                ],
+            ])
             ->add('parent', EntityType::class, [
                 'class' => Estructura::class,
                 'required' => false,
@@ -116,7 +134,7 @@ class EstructuraType extends BaseAdminType
             ->add('parametros', EstructuraExtendType::class);
 
 
-        $this->dispatcher->dispatch(new GenericEvent($builder), 'form.estructura');
+        $builder->addEventSubscriber(new EstructuraTypeSubscriber($this->container));
     }
 
     public function configureOptions(OptionsResolver $resolver)
