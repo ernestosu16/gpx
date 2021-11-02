@@ -11,10 +11,9 @@
             <input id="text_no_factura" class="form-control" type="text" value="" onchange="">
         </div>
         <div class="col-md-4">
-            <button class="btn btn-primary" onclick="buscarFacturaSacas()"><i class="fa fa-search"></i> Recepcionar factura</button>
+            <button class="ladda-button btn btn-primary" data-style="expand-left" onclick="buscarFacturaSacas()" id="button_no_factura"> <span class="ladda-label"><i class="fa fa-search"></i> Recepcionar factura</span><span class="ladda-spinner"></span></button>
         </div>
     </div>
-
     <div id="sacas"></div>
 
 {% endblock %}

@@ -333,110 +333,39 @@ final class ImportFixturesCommand extends BaseCommand implements BaseCommandInte
         return $entity;
     }
 
-    private function configurarNomenclador()
+    private function setNomenclador($data, $path)
     {
-        $this->envio();
-        $this->factura();
-        $this->saca();
-    }
+        /** @var ?Menu $root */
+        $root = $this->getRepository(Nomenclador::class)->findOneByCodigo($data);
 
-    private function envio()
-    {
-        /** @var array $collection */
-        $collection = Yaml::parseFile($this->getKernel()->getProjectDir() . '/src/Config/Fixtures/nomenclador/envio.yaml');
+       /* if ($root->getChildren()->count())
+            return;*/
 
-        $instance = EnvioData::newInstance();
-        /** @var NomencladorRepository $repository */
-        $repository = $this->getRepository(Nomenclador::class);
-        $parent = $repository->findOneByCodigo($instance->getCodeComplete());
-        foreach ($collection['envio'] as $key => $item) {
-            $codigo = $parent->getCodigo() . '_' . $key;
-
-            if ($repository->findOneByCodigo($codigo))
+        $file = Yaml::parseFile($this->getKernel()->getProjectDir() . $path);
+        foreach ($file[array_key_first($file)] as $nom) {
+            if ($this->getRepository(Nomenclador::class)->findOneByCodigo(strtoupper($root->getCodigo().'_'.$nom['codigo'])))
                 continue;
 
-            $entity = new Nomenclador();
-            $entity->setCodigo($parent->getCodigo() . '_' . $key);
-            $entity->setNombre($key);
+            $nomEntity = new Nomenclador();
+            $nomEntity->setRoot($root->getRoot());
+            $nomEntity->setCodigo(strtoupper($root->getCodigo().'_'.$nom['codigo']));
+            $nomEntity->setNombre($nom['nombre']);
 
-            foreach ($item as $value) {
-                $lv2 = new Nomenclador();
-                $lv2->setCodigo($entity->getCodigo() . '_' . $value);
-                $lv2->setNombre($value);
-                $entity->addChild($lv2);
+            foreach ($nom['children'] as $child) {
+                if ($this->getRepository(Nomenclador::class)->findOneByCodigo(strtoupper($nomEntity->getCodigo().'_'.$child['codigo'])))
+                    continue;
+
+                $nomChildEntity = new Nomenclador();
+                $nomChildEntity->setRoot($root->getRoot());
+                $nomChildEntity->setCodigo(strtoupper($nomEntity->getCodigo().'_'.$child['codigo']));
+                $nomChildEntity->setNombre($child['nombre']);
+                $nomChildEntity->setDescripcion($child['descripcion']);
+                $nomEntity->addChild($nomChildEntity);
             }
 
-            $parent->addChild($entity);
-            $this->getEntityManager()->persist($parent);
+            $root->addChild($nomEntity);
         }
-        $this->getEntityManager()->flush();
-    }
-
-    private function factura()
-    {
-        /** @var array $collection */
-        $collection = Yaml::parseFile($this->getKernel()->getProjectDir() . '/src/Config/Fixtures/nomenclador/factura.yaml');
-
-        $instance = FacturaData::newInstance();
-        /** @var NomencladorRepository $repository */
-        $repository = $this->getRepository(Nomenclador::class);
-        $parent = $repository->findOneByCodigo($instance->getCodeComplete());
-        foreach ($collection['factura'] as $key => $item) {
-            $codigo = $parent->getCodigo() . '_' . $key;
-
-            if ($repository->findOneByCodigo($codigo))
-                continue;
-
-            $entity = new Nomenclador();
-            $entity->setCodigo($parent->getCodigo() . '_' . $key);
-            $entity->setNombre($key);
-            $entity->setRoot($parent->getRoot());
-
-            foreach ($item as $value) {
-                $lv2 = new Nomenclador();
-                $lv2->setCodigo($entity->getCodigo() . '_' . $value);
-                $lv2->setNombre($value);
-                $lv2->setRoot($parent->getRoot());
-                $entity->addChild($lv2);
-            }
-
-            $parent->addChild($entity);
-            $this->getEntityManager()->persist($parent);
-        }
-        $this->getEntityManager()->flush();
-    }
-
-    private function saca()
-    {
-        /** @var array $collection */
-        $collection = Yaml::parseFile($this->getKernel()->getProjectDir() . '/src/Config/Fixtures/nomenclador/saca.yaml');
-
-        $instance = SacaData::newInstance();
-        /** @var NomencladorRepository $repository */
-        $repository = $this->getRepository(Nomenclador::class);
-        $parent = $repository->findOneByCodigo($instance->getCodeComplete());
-        foreach ($collection['saca'] as $key => $item) {
-            $codigo = $parent->getCodigo() . '_' . $key;
-
-            if ($repository->findOneByCodigo($codigo))
-                continue;
-
-            $entity = new Nomenclador();
-            $entity->setCodigo($parent->getCodigo() . '_' . $key);
-            $entity->setNombre($key);
-            $entity->setRoot($parent->getRoot());
-
-            foreach ($item as $value) {
-                $lv2 = new Nomenclador();
-                $lv2->setCodigo($entity->getCodigo() . '_' . $value);
-                $lv2->setNombre($value);
-                $lv2->setRoot($parent->getRoot());
-                $entity->addChild($lv2);
-            }
-
-            $parent->addChild($entity);
-            $this->getEntityManager()->persist($parent);
-        }
+        $this->getEntityManager()->persist($root);
         $this->getEntityManager()->flush();
     }
 
@@ -502,5 +431,15 @@ final class ImportFixturesCommand extends BaseCommand implements BaseCommandInte
         }
         $this->getEntityManager()->persist($root);
         $this->getEntityManager()->flush();
+    }
+
+    private function configurarNomenclador()
+    {
+        $this->setNomenclador('APP_'.FacturaData::code(), '/src/Config/Fixtures/nomenclador/factura.yaml');
+
+        $this->setNomenclador('APP_'.SacaData::code(), '/src/Config/Fixtures/nomenclador/saca.yaml');
+
+        $this->setNomenclador('APP_'.EnvioData::code(), '/src/Config/Fixtures/nomenclador/envio.yaml');
+
     }
 }

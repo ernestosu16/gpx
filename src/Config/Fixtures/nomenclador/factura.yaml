@@ -1,8 +1,25 @@
 factura:
-  anomalia:
-    - 'SACA FALTANTE'
-  estado:
-    - 'CREADA'
-    - 'RECIBIDA'
-    - 'PAGADA'
-    - 'ENTREGADA'
+    - codigo: 'ANOMALIA'
+      nombre: 'Anomalia'
+      descripcion: ''
+      children:
+        - codigo: 'SACA FALTANTE'
+          nombre: 'SACA FALTANTE'
+          descripcion: ''
+
+    - codigo: 'ESTADO'
+      nombre: 'Estado'
+      descripcion: ''
+      children:
+        - codigo: 'CREADA'
+          nombre: 'CREADA'
+          descripcion: ''
+        - codigo: 'RECIBIDA'
+          nombre: 'RECIBIDA'
+          descripcion: ''
+        - codigo: 'PAGADA'
+          nombre: 'PAGADA'
+          descripcion: ''
+        - codigo: 'ENTREGADA'
+          nombre: 'ENTREGADA'
+          descripcion: ''

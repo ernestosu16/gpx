@@ -29,6 +29,22 @@ class SacaRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findEnviosNoFacturaAndEstado($codTracking, $estado = 'APP_SACA_ESTADO_CREADA')
+    {
+        $saca = $this->createQueryBuilder('f')
+            ->join('f.estado', 'e', Expr\Join::WITH, "e.codigo='$estado'")
+            ->andWhere("f.codigo='$codTracking'")
+            ->getQuery()
+            ->getResult();
+
+        return $saca ? $saca[0]->getEnvios()->toArray() : $saca;
+    }
+
+    public function getSacaByCodigo($codigo)
+    {
+        return $this->findOneBy(['codigo'=>$codigo]);
+    }
+
     // /**
     //  * @return Saca[] Returns an array of Saca objects
     //  */

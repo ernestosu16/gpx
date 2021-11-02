@@ -1,0 +1,101 @@
+{% extends 'homer-theme/layout.html.twig' %}
+
+{% block title %}Crear Saca{% endblock %}
+{% block panel_title %}Creación de saca Paqueteria Currier{% endblock %}
+{% block panel_body %}
+
+    <div id="miForm">
+        <div class="row col-md-12 m-b">
+
+            <legend><h5>Selección destino</h5></legend>
+
+            <div class="col-md-3">
+                <label class="form-label">Oficina de destino</label>
+                <select id="select_oficinas" class="form-control input-sm select2" aria-label="Oficinas">
+                    <option  value="0" selected>Seleccione</option>
+                    {% for estructura in findAll %}
+
+                        <option value="{{ estructura.id }}">{{ estructura }}</option>
+
+                    {% endfor %}
+                </select>
+                <div id="mensaje_oficina"></div>
+            </div>
+
+        </div>
+
+        <div class="row col-md-12 m-b">
+
+            <legend><h5>Datos de los envíos</h5></legend>
+
+            <div class="col-md-6">
+                <label class="form-label">Código de tracking</label>
+                <input id="input_codTracking" type="text">
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-info" onclick="AgregarEnvios()" id="button_anndir_envios">
+                    <i class="fa fa-plus"></i>
+                    Añadir
+                </button>
+            </div>
+
+            <br><br><br>
+
+            <div class="col-md-8">
+                <table class="table table-hover table-bordered table-striped" id="tabla_envios">
+                    <thead>
+                    <tr>
+                        <th>Código de tracking</th>
+                        <th>Peso</th>
+                    </tr>
+                    </thead>
+                    <tbody id="resultado">
+
+                    </tbody>
+                </table>
+                <div id="mensaje_tabla"></div>
+            </div>
+
+
+        </div>
+
+        <div class="row col-md-12 m-b">
+
+            <legend><h5>Creación del embalaje</h5></legend>
+
+            <div class="col-md-2">
+                <label class="form-label">Sello</label>
+                <input id="input_sello" class="form-control input-sm" type="text">
+                <div id="mensaje_sello"></div>
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label">Peso (Kg)</label>
+                <input id="input_peso" class="form-control input-sm" type="number" placeholder="1.0" step="0.01" onKeypress="if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;">
+                <div id="mensaje_peso"></div>
+            </div>
+
+        </div>
+
+        <hr>
+
+        <div class="row col-md-12 m-b">
+
+            <div class="col-auto" id="botones">
+                <button class="btn btn-success" onclick="GuardarSaca()" id="button_crear_saca">Crear Saca</button>
+
+                <a rel="nofollow" id="enlace" href="#" class="btn btn btn-primary">Generar documento</a>
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js',{ callback: 'fos.Router.setData' }) }}"></script>
+
+    <script src="{{ asset('js/saca.js') }}"></script>
+
+{% endblock %}
