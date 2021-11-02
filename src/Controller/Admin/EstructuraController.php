@@ -80,7 +80,10 @@ final class EstructuraController extends _CrudController_
         /** @var TrabajadorCredencial $credencial */
         $credencial = $this->getUser();
 
-        $query = $this->estructuraRepository->createQueryBuilder('e');
+        $query = $this->estructuraRepository
+            ->createQueryBuilder('e')
+            ->addOrderBy('e.level', 'ASC')
+            ->addOrderBy('e.lft', 'ASC');
 
         if (in_array('ROLE_ADMIN', $credencial->getRoles()))
             return $query;
