@@ -19,6 +19,7 @@ class EstructuraManager extends _Manager_
         $qb = $this->estructuraRepository
             ->createQueryBuilder('e')
             ->where('e.level IN (:level)')->setParameter('level', [0, 1, 2])
+            ->andWhere('e.habilitado = :habilitado')->setParameter('habilitado', true)
             ->setFirstResult(6);
 
         $result = $qb->getQuery()->getResult();
