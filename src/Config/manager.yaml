@@ -3,6 +3,8 @@ services:
         abstract: true
         public: false
         tags: [ 'manager' ]
+        calls:
+            - [ 'setContainer',[ '@service_container' ] ]
 
     app.manager.estructura:
         class: App\Manager\EstructuraManager
