@@ -1,9 +1,14 @@
 services:
     App\Manager\_Manager_:
         abstract: true
-        calls:
-            -   setContainer: [ '@service_container' ]
-            -   setLogger: [ '@logger' ]
+        public: false
+        tags: [ 'manager' ]
+
+    app.manager.estructura:
+        class: App\Manager\EstructuraManager
+        parent: App\Manager\_Manager_
+        public: true
+        tags: [ 'manager' ]
 
     app.manager.persona:
         parent: App\Manager\_Manager_
@@ -15,17 +20,12 @@ services:
         class: App\Manager\RouteManager
         public: true
         calls:
-            -   setRoute: [ '@router' ]
+            - setRoute: [ '@router' ]
 
     app.manager.fixture:
         class: App\Manager\FixtureManager
         parent: App\Manager\_Manager_
         arguments: [ '%kernel.project_dir%/src/Config/Fixtures' ]
-        public: true
-
-    app.manager.grupo:
-        class: App\Manager\GrupoManager
-        arguments: [ '%security.role_hierarchy.roles%' ]
         public: true
 
     app.manager.envio_manifiesto:
@@ -37,10 +37,10 @@ services:
         class: App\Manager\CurlConectionManager
         parent: App\Manager\_Manager_
         public: true
-        arguments: ['@doctrine.orm.default_entity_manager']
+        arguments: [ '@doctrine.orm.default_entity_manager' ]
 
     app.manager.envio:
         class: App\Manager\EnvioManager
         parent: App\Manager\_Manager_
         public: true
-        arguments: ['@doctrine.orm.default_entity_manager']
+        arguments: [ '@doctrine.orm.default_entity_manager' ]
