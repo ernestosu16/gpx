@@ -2,14 +2,14 @@ FROM dap/php:8.0-apache
 
 # Instalando paquete
 RUN apt-get -y update && \
-    apt-get install -y libicu-dev
+    apt-get install -y libicu-dev libxml2-dev
 
 # Configurando extenciones
 RUN docker-php-ext-configure intl && \
     docker-php-ext-install intl
 
 RUN docker-php-ext-configure opcache --enable-opcache \
-    && docker-php-ext-install opcache
+    && docker-php-ext-install opcache soap
 
 # Install xdebug
 RUN pecl install xdebug \

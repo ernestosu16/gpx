@@ -9,10 +9,12 @@ use App\Entity\EnvioAduanaTraza;
 use App\Entity\EnvioAnomaliaTraza;
 use App\Entity\EnvioManifiesto;
 use App\Entity\EnvioTraza;
+use App\Entity\Estructura;
 use App\Entity\EstructuraTipo;
 use App\Entity\Localizacion;
 use App\Entity\Nomenclador;
 use App\Entity\Pais;
+use App\Entity\Trabajador;
 use App\Entity\TrabajadorCredencial;
 use App\Utils\EnvioDireccion;
 use App\Utils\EnvioPreRecepcion;
@@ -39,6 +41,16 @@ class EnvioManager extends _Manager_
     )
     {
         $this->entityManager = $doctrineEntityManager;
+    }
+
+    private function getEnvioRepository(): EnvioRepository
+    {
+        return $this->entityManager->getRepository(Envio::class);
+    }
+
+    private function getNomencladorRepository(): NomencladorRepository
+    {
+        return $this->entityManager->getRepository(Nomenclador::class);
     }
 
 
@@ -232,6 +244,7 @@ class EnvioManager extends _Manager_
                 $envioAduana->setMunicipioAduana($municipio->getCodigoAduana());
                 $envioAduana->setEstado($estadoRecepcionado);
                 $envioAduana->setArancel($envioManifestado ? $envioManifestado->isArancel() : false);
+                $envioAduana->setDatosDespacho(null);
                 $this->entityManager->persist($envioAduana);
 
                 /**
@@ -266,7 +279,9 @@ class EnvioManager extends _Manager_
         $envioTraza->setEstado($envio->getEstado());
         $envioTraza->setTrabajador($user->getTrabajador());
         $envioTraza->setEstructuraOrigen($user->getEstructura());
-        $envioTraza->setIp('');
+        $ip = array_key_exists('REMOTE_ADDR', $_SERVER) ? $_SERVER['REMOTE_ADDR'] : '127.0.0.1';
+        $envioTraza->setIp($ip);
+        $envioTraza->setCanal($envio->getCanal());
 
         $this->entityManager->persist($envioTraza);
 
@@ -282,4 +297,89 @@ class EnvioManager extends _Manager_
         }
     }
 
+    public function cambiarEstado($id, TrabajadorCredencial $user)
+    {
+        $envio = $this->getEnvioRepository()->find($id);
+        $estado = $this->getNomencladorRepository()->findOneByCodigo('APP_ENVIO_ESTADO_RECEPCIONADO');
+
+        $envio->setEstado($estado);
+        $this->entityManager->persist($envio);
+
+        $traza = new EnvioTraza();
+        $traza->setEstado($estado);
+        $traza->setCanal($envio->getCanal());
+        $traza->setEnvio($envio);
+        $traza->setEstructuraDestino($envio->getEstructuraDestino());
+        $traza->setEstructuraOrigen($envio->getEstructuraOrigen());
+        $traza->setFecha(new \DateTime());
+        $ip = array_key_exists('REMOTE_ADDR', $_SERVER) ? $_SERVER['REMOTE_ADDR'] : '127.0.0.1';
+        $traza->setIp($ip);
+        $traza->setPeso($envio->getPeso());
+        $traza->setTrabajador($user->getTrabajador());
+        $this->entityManager->persist($envio);
+
+        $this->entityManager->flush();
+
+    }
+
+    public function addDespachoAduanaEnvio($url, $envio_aduana, $cod_envio){
+
+        $em = $this->getDoctrine()->getManager();
+
+        $soapClient = new \nusoap_client($url);
+        $soapClient->soap_defencoding = 'UTF-8';
+        $soapClient->decode_utf8 = false;
+
+        /** @var EnvioManifiesto $manifiesto */
+        $manifiesto = $em->getRepository(EnvioManifiesto::class)->findOneBy(['codigo'=>$cod_envio]);
+
+        /** @var Trabajador $user */
+        $user = $this->getUser();
+
+        /** @var Estructura $estructura */
+        $empresa = $em->getRepository(Estructura::class)->find($user->getEstructura()->getId());
+        $valor = json_encode($empresa->getParametros());
+        $cod_aduana = json_decode($valor);
+
+        $result = $soapClient->call('GABLDespachado',
+            [
+                'usuario'=>'aerov',
+                'clave'=>'eh7443fx',
+                'manifiesto'=>$manifiesto->getCodigo(),
+                'blga'=>$manifiesto->getNoGuiaAerea(),
+                'codigoaduana' => $cod_aduana->codigo_aduana
+            ]);
+        $res = json_decode($result);
+        if($res->success == true){
+            $res = json_decode($result, true);
+            $envio_aduana->setDatosDespacho($res);
+            $respuesta = true;
+        }else{
+            $respuesta = false;
+        }
+        return $respuesta;
+    }
+
+    public function verificarConectAduana($url){
+
+        set_time_limit(120);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL,$url);
+        curl_exec($ch);
+
+        $info = curl_getinfo($ch);
+        curl_close($ch);
+
+        if($info["connect_time"]==0)
+        {
+            return 0;
+        }
+        else
+        {
+            return 1;
+
+        }
+
+    }
 }
+
