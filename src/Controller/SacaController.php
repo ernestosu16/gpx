@@ -99,7 +99,7 @@ class SacaController extends AbstractController
                         /** @var EnvioAduana $envio_aduana */
                         $envio_aduana = $em->getRepository(EnvioAduana::class)->findOneBy(['envio'=>$id]);
 
-                        if ($envio_aduana->getDatosDespacho() == null){
+                        if ($envio_aduana != null && $envio_aduana->getDatosDespacho() == null){
                             $url= "https://sua.aduana.cu/GINASUA/serviciosExternos?wsdl";
 
                             if ($this->envioManager->verificarConectAduana($url) == 1){
@@ -111,6 +111,8 @@ class SacaController extends AbstractController
                             }else{
                                 $respuesta = 'La conexión con el servicio de aduana esta tardando mucho, por favor intentelo mas tarde.';
                             }
+                        }else{
+                            $respuesta = 'El envío aduana no exite';
                         }
 
                     } else {
