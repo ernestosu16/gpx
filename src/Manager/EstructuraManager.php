@@ -20,7 +20,7 @@ class EstructuraManager extends _Manager_
             ->createQueryBuilder('e')
             ->where('e.level IN (:level)')->setParameter('level', [0, 1, 2])
             ->andWhere('e.habilitado = :habilitado')->setParameter('habilitado', true)
-            ->setFirstResult(6);
+            ->setMaxResults(6);
 
         $result = $qb->getQuery()->getResult();
         return new ArrayCollection($result);
