@@ -148,7 +148,7 @@ class FacturaController extends AbstractController
         }
 
         return $this->render('factura/crear_factura.html.twig', [
-            'findAll' => $empresa,
+            'findAll' => $empresa->getChildren()->toArray(),
             'vehiculos' => $vehiculos,
             'choferes' => $choferes
 
@@ -169,6 +169,9 @@ class FacturaController extends AbstractController
             /** @var Estructura $estructura */
             $empresa = $em->getRepository(Estructura::class)->find($user->getEstructura()->getId());
 
+            /** @var Estructura $ofic_dest */
+            $ofic_dest = $em->getRepository(Estructura::class)->find($oficina_dest);
+
             /** @var Saca $saca */
             $saca = $em->getRepository(Saca::class)->findOneBy(['sello'=>$sello]);
 
@@ -178,7 +181,7 @@ class FacturaController extends AbstractController
 
                 if ($saca != null){
                     if ($saca->getEstado()->getCodigo() != 'APP_ENVIO_ESTADO_CLASIFICADO' && $saca->getEstado()->getCodigo() != 'APP_ENVIO_ESTADO_FACTURADO'){
-                        if ($saca->getProvincia()->getId() == $oficina_dest){
+                        if ($saca->getMunicipio()->getId() == $ofic_dest->getMunicipio()->getId()){
                             $id = $saca->getId();
                             $cod = $saca->getCodTracking();
                             $peso = $saca->getPeso();
@@ -187,19 +190,24 @@ class FacturaController extends AbstractController
                             $miRespuestaJson = $serializer->serialize(['id'=>$id, 'cod'=>$cod, 'peso'=>$peso],"json");
 
                             /** @var EnvioAduana $envio_aduana */
-                            $envio_aduana = $em->getRepository(EnvioAduana::class)->find($id);
+                            $envio_aduana = $em->getRepository(EnvioAduana::class)->findOneBy(['envio'=>$id]);
+                            //dump($envio_aduana);exit();
 
-                            if ($envio_aduana != null && $envio_aduana->getDatosDespacho() == null){
-                                $url= "https://sua.aduana.cu/GINASUA/serviciosExternos?wsdl";
+                            if ($envio_aduana != null){
+                                if ($envio_aduana->getDatosDespacho() == null){
+                                    $url= "https://sua.aduana.cu/GINASUA/serviciosExternos?wsdl";
 
-                                if ($this->envioManager->verificarConectAduana($url) == 1){
-                                    if ($this->envioManager->addDespachoAduanaEnvio($url, $envio_aduana->getId(), $cod, $empresa)){
-                                        return JsonResponse::fromJsonString($miRespuestaJson);
+                                    if ($this->envioManager->verificarConectAduana($url) == 1){
+                                        if ($this->envioManager->addDespachoAduanaEnvio($url, $envio_aduana->getId(), $cod, $empresa)){
+                                            return JsonResponse::fromJsonString($miRespuestaJson);
+                                        }else{
+                                            $respuesta = 'El servicio del despacho de la aduana no está funcionando, por favor intentelo mas tarde.';
+                                        }
                                     }else{
-                                        $respuesta = 'El servicio del despacho de la aduana no está funcionando, por favor intentelo mas tarde.';
+                                        $respuesta = 'La conexión con el servicio de aduana esta tardando mucho, por favor intentelo mas tarde.';
                                     }
                                 }else{
-                                    $respuesta = 'La conexión con el servicio de aduana esta tardando mucho, por favor intentelo mas tarde.';
+                                    return JsonResponse::fromJsonString($miRespuestaJson);
                                 }
                             }else{
                                 $respuesta = 'El envío aduana no exite';
@@ -215,7 +223,7 @@ class FacturaController extends AbstractController
                 }
             }else{
                 if ($saca != null){
-                    if ($saca->getEstado()->getCodigo() == 'APP_ENVIO_SACA_ESTADO_CREADA'){
+                    if ($saca->getEstado()->getCodigo() == 'APP_SACA_ESTADO_CREADA'){
                         if ($saca->getDestino()->getId() == $oficina_dest){
                             $id = $saca->getId();
                             $cod = $saca->getSello();
@@ -258,7 +266,7 @@ class FacturaController extends AbstractController
             $chofer = $em->getRepository(Trabajador::class)->findOneBy(['persona' => $request->request->get('chofer')]);
 
             /** @var Nomenclador $estado */
-            $estado = $em->getRepository(Nomenclador::class)->findOneBy(['codigo'=>'APP_ENVIO_FACTURA_ESTADO_CREADA']);
+            $estado = $em->getRepository(Nomenclador::class)->findOneBy(['codigo'=>'APP_FACTURA_ESTADO_CREADA']);
 
             if (!$estado)
                 return new JsonResponse(['error' => 'Error el estado de la factura "CREADA" no existe'], 500);
@@ -296,7 +304,7 @@ class FacturaController extends AbstractController
             if (!$estEnvioFacturada)
                 return new JsonResponse(['error' => 'Error el estado del envío "FACTURADO" no existe'], 500);
 
-            $estSacaFacturada = $em->getRepository(Nomenclador::class)->findOneBy(['codigo'=>'APP_ENVIO_SACA_ESTADO_FACTURADA']);
+            $estSacaFacturada = $em->getRepository(Nomenclador::class)->findOneBy(['codigo'=>'APP_SACA_ESTADO_FACTURADA']);
             if (!$estSacaFacturada)
                 return new JsonResponse(['error' => 'Error el estado de la saca "FACTURADA" no existe'], 500);
 

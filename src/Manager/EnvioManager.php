@@ -351,6 +351,7 @@ class EnvioManager extends _Manager_
 
         $res = json_decode($result);
 
+        //dump($res);exit();
         if($res->success == true){
             $res = json_decode($result, true);
             $envio_aduana->setDatosDespacho($res);
