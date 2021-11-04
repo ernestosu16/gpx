@@ -1,3 +1,6 @@
+let listSacas = [];
+
+
 function elementId(id){
     return document.getElementById(id.toString());
 }
@@ -307,7 +310,7 @@ function AgregarSaca() {
     const resultado = listSacas.find( saca => saca.cod === res );
 
     if (resultado){
-        toastr.warning('El envío o la saca ya se encuentra en la tabla');
+        toastr.warning('El envï¿½o o la saca ya se encuentra en la tabla');
         $("#input_sello").val('');
     }else{
         $.ajax({
@@ -395,7 +398,7 @@ function GuardarFactura() {
 function validaForm(){
     if($("#select_oficinas_factura").val() == "0"){
         var v = '';
-        v = '<p style="color: #d62c1a">* Campo vacío</p>'
+        v = '<p style="color: #d62c1a">* Campo vacï¿½o</p>'
         $('#mensaje_oficina').html(v);
         return false;
     }else
@@ -404,7 +407,7 @@ function validaForm(){
     }
     if(listSacas.length == 0){
         var v = '';
-        v = '<p style="color: #d62c1a">* Tabla vacío</p>'
+        v = '<p style="color: #d62c1a">* Tabla vacï¿½o</p>'
         $('#mensaje_tabla').html(v);
         return false;
     }else
@@ -413,7 +416,7 @@ function validaForm(){
     }
     if($("#select_tipo_vehiculo").val() == "0"){
         var v = '';
-        v = '<p style="color: #d62c1a">* Campo vacío</p>'
+        v = '<p style="color: #d62c1a">* Campo vacï¿½o</p>'
         $('#mensaje_tipo_vehiculo').html(v);
         return false;
     }else
@@ -422,7 +425,7 @@ function validaForm(){
     }
     if($("#input_chapa").val() == ""){
         var v = '';
-        v = '<p style="color: #d62c1a">* Campo vacío</p>'
+        v = '<p style="color: #d62c1a">* Campo vacï¿½o</p>'
         $('#mensaje_chapa').html(v);
         $("#input_chapa").focus();
         return false;
@@ -432,7 +435,7 @@ function validaForm(){
     }
     if($("#select_choferes").val() == "0"){
         var v = '';
-        v = '<p style="color: #d62c1a">* Campo vacío</p>'
+        v = '<p style="color: #d62c1a">* Campo vacï¿½o</p>'
         $('#mensaje_choferes').html(v);
         return false;
     }else
@@ -440,7 +443,7 @@ function validaForm(){
         $('#mensaje_choferes').html('');
     }
 
-    return true; // Si todo está correcto
+    return true; // Si todo estï¿½ correcto
 }
 
 $(document).ready(function(){
