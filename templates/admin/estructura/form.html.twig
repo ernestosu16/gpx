@@ -106,7 +106,6 @@
                     });
                 },
                 checkTab: function (tab, selected, text) {
-                    console.log($(tab[0].hash).find('input').attr('disabled', 'disabled'));
                     if (selected.filter(tipos => tipos.text === text).length > 0) {
                         tab.show()
                         $(tab[0].hash).find('input').removeAttr('disabled', 'disabled')

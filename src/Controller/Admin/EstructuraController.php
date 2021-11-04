@@ -6,6 +6,7 @@ use App\Entity\Estructura;
 use App\Entity\TrabajadorCredencial;
 use App\Form\Admin\EstructuraType;
 use App\Repository\EstructuraRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\QueryBuilder;
 use JetBrains\PhpStorm\Pure;
 use Knp\Component\Pager\PaginatorInterface;
@@ -43,7 +44,7 @@ final class EstructuraController extends _CrudController_
                 self::EDIT => 'Editar estructura',
             ],
             'templates' => [
-                self::INDEX => 'admin/estructura/index.html.twig',
+                self::INDEX => 'admin/estructura/index_nestable.html.twig',
                 self::NEW => 'admin/estructura/form.html.twig',
                 self::EDIT => 'admin/estructura/form.html.twig',
             ],
@@ -62,16 +63,9 @@ final class EstructuraController extends _CrudController_
         $this->denyAccessUnlessGranted([], $request);
 
         $settings = $this->settings();
-
-        $pagination = $this->paginator->paginate(
-            $this->getEstructuras(),
-            $request->query->getInt('page', 1),
-            $settings['page']['limit']
-        );
-
         return $this->render($settings['templates'][self::INDEX], [
             'settings' => $settings,
-            'pagination' => $pagination,
+            'nodes' => $this->getRootNodes(),
         ]);
     }
 
@@ -90,5 +84,16 @@ final class EstructuraController extends _CrudController_
 
         return $this->estructuraRepository->childrenQueryBuilder($credencial->getTrabajador()->getEstructura())
             ->orWhere('node = :estructura ')->setParameter('estructura', $credencial->getTrabajador()->getEstructura());
+    }
+
+    private function getRootNodes()
+    {
+        /** @var TrabajadorCredencial $credencial */
+        $credencial = $this->getUser();
+
+        if (in_array('ROLE_ADMIN', $credencial->getRoles()))
+            return $this->estructuraRepository->getRootNodes('nombre');
+
+        return new ArrayCollection([$credencial->getEstructura()]);
     }
 }

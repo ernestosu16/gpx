@@ -429,7 +429,7 @@
 }
 
 .modal-dialog {
-  margin-top: 80px;
+  margin-top: 40px;
 }
 
 .modal-title {
@@ -438,7 +438,7 @@
 }
 
 .modal-header {
-  padding: 40px 30px;
+  padding: 20px 30px;
   background: #f7f9fa;
 }
 

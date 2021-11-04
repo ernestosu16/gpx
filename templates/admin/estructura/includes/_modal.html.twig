@@ -1,0 +1,39 @@
+<div class="modal fade" id="show" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="data-nombre">Estructura</h4>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered table-striped">
+                        <tr>
+                            <th>Provincia</th>
+                            <td id="data-provincia"></td>
+                        </tr>
+                        <tr>
+                            <th>Municipio</th>
+                            <td id="data-municipio"></td>
+                        </tr>
+                        <tr>
+                            <th>Codigo Postal</th>
+                            <td id="data-codigo_postal"></td>
+                        </tr>
+                        <tr>
+                            <th>Tipos</th>
+                            <td id="data-tipos"></td>
+                        </tr>
+                        <tr>
+                            <th>Habilitado</th>
+                            <td id="data-habilitado"></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal">{{ 'cerrar'|trans([],'admin') }}</button>
+            </div>
+        </div>
+    </div>
+</div>

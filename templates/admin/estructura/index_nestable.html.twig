@@ -1,0 +1,70 @@
+{% extends 'homer-theme/layout.html.twig' %}
+{% block title %}{{ settings.titles.index }}{% endblock %}
+{% block panel_title %}{{ settings.titles.index }}{% endblock %}
+{% block panel_body %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="row">
+                <div class="col-md-6">
+                    <div id="nestable-menu">
+                        <a class="btn btn-sm btn-primary" href="{{ path('admin_estructura_new') }}">
+                            Nueva estructura
+                        </a>
+                        <button type="button" data-action="expand-all" class="btn btn-default btn-sm">Expandir todo
+                        </button>
+                        <button type="button" data-action="collapse-all" class="btn btn-default btn-sm">Contraer todo
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% if nodes|length > 0 %}
+                <div class="dd" id="nestable2">
+                    {% include 'admin/estructura/includes/_nestable.html.twig' with {'nodes': nodes} only %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% include 'admin/estructura/includes/_modal.html.twig' %}
+{% endblock %}
+{% block javascripts %}
+    <script src="{{ asset('homer-theme/vendor/nestable/jquery.nestable.js') }}"></script>
+    <script>
+        $(function () {
+            $('#nestable2').nestable();
+            $('.dd').nestable('collapseAll');
+
+            $('#nestable-menu').on('click', function (e) {
+                let target = $(e.target),
+                    action = target.data('action');
+                if (action === 'expand-all') {
+                    $('.dd').nestable('expandAll');
+                }
+                if (action === 'collapse-all') {
+                    $('.dd').nestable('collapseAll');
+                }
+            });
+
+            $('.info').on('click', function (e) {
+                let target = $(e.target);
+                let item = target.closest('.dd-item')
+
+                item.each(function () {
+                    $.each(this.attributes, function () {
+                        if (this.specified) {
+                            let id = this.name;
+
+                            let value = this.value;
+                            if (this.name === 'data-tipos') {
+                                value = JSON.parse(this.value);
+                                value = value.join(', ');
+                            }
+                            $('#' + id).text(value);
+                        }
+                    });
+                });
+            });
+        });
+
+    </script>
+{% endblock %}
