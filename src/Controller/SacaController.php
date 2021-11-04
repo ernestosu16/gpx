@@ -6,17 +6,15 @@ use App\Entity\Envio;
 use App\Entity\EnvioAduana;
 use App\Entity\EnvioManifiesto;
 use App\Entity\Estructura;
+use App\Entity\EstructuraTipo;
 use App\Entity\Nomenclador;
 use App\Entity\Saca;
 use App\Entity\SacaConsecutivo;
 use App\Entity\SacaTraza;
 use App\Entity\Trabajador;
 use App\Manager\EnvioManager;
-use App\Repository\EnvioRepository;
 use App\Repository\NomencladorRepository;
-use App\Repository\SacaRepository;
 use DateTime;
-use Doctrine\ORM\EntityManagerInterface;
 use SoapClient;
 use JMS\Serializer\SerializerBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -30,10 +28,6 @@ use function PHPUnit\Framework\throwException;
 class SacaController extends AbstractController
 {
     public function __construct(
-        private SacaRepository $sacaRepository,
-        private NomencladorRepository $nomencladorRepository,
-        private EnvioRepository $envioRepository,
-        private EntityManagerInterface $entityManager,
         private EnvioManager $envioManager
     )
     {
@@ -61,15 +55,16 @@ class SacaController extends AbstractController
     public function CrearSaca(): Response
     {
         $em = $this->getDoctrine()->getManager();
-        ///** @var Trabajador $user */
-        //$user = $this->getUser();
+        /** @var Trabajador $user */
+        $user = $this->getUser();
 
-        ///** @var Estructura $estructura */
-        //$oficina = $em->getRepository(Estructura::class)->find($user->getEstructura()->getId());
+        $empresa = $user->getEstructura()->searchParentsByTipo(
+            $em->getRepository(EstructuraTipo::class)->findOneByCodigo(EstructuraTipo::OSDE)
+        );
 
-        $oficina = $em->getRepository(Estructura::class)->findAll();
+        //$oficina = $em->getRepository(Estructura::class)->findAll();
         return $this->render('saca/crear_saca.html.twig', [
-            'findAll' => $oficina
+            'findAll' => $empresa
         ]);
     }
 
@@ -81,6 +76,12 @@ class SacaController extends AbstractController
             $codTracking = $request->request->get('codTracking');
             $oficina_dest = $request->request->get('oficina_dest');
 
+            /** @var Trabajador $user */
+            $user = $this->getUser();
+
+            /** @var Estructura $estructura */
+            $empresa = $em->getRepository(Estructura::class)->find($user->getEstructura()->getId());
+
             /** @var Envio $envio */
             $envio = $em->getRepository(Envio::class)->findOneBy(['cod_tracking' => $codTracking]);
             //dump($envio);exit();
@@ -88,7 +89,7 @@ class SacaController extends AbstractController
 
             if ($envio != null) {
                 if ($envio->getEstado()->getCodigo() != 'APP_ENVIO_ESTADO_CLASIFICADO' && $envio->getEstado()->getCodigo() != 'APP_ENVIO_ESTADO_FACTURADO') {
-                    if ($envio->getEstructuraDestino()->getId() == $oficina_dest) {
+                    if ($envio->getProvincia()->getId() == $oficina_dest) {
 
                         $id = $envio->getId();
                         $cod = $envio->getCodTracking();
@@ -100,11 +101,11 @@ class SacaController extends AbstractController
                         /** @var EnvioAduana $envio_aduana */
                         $envio_aduana = $em->getRepository(EnvioAduana::class)->findOneBy(['envio'=>$id]);
 
-                        if ($envio_aduana->getDatosDespacho() == null){
+                        if ($envio_aduana != null && $envio_aduana->getDatosDespacho() == null){
                             $url= "https://sua.aduana.cu/GINASUA/serviciosExternos?wsdl";
 
                             if ($this->envioManager->verificarConectAduana($url) == 1){
-                                if ($this->envioManager->addDespachoAduanaEnvio($url, $envio_aduana, $cod)){
+                                if ($this->envioManager->addDespachoAduanaEnvio($url, $envio_aduana->getId(), $cod, $empresa)){
                                     return JsonResponse::fromJsonString($miRespuestaJson);
                                 }else{
                                     $respuesta = 'El servicio del despacho de la aduana no está funcionando, por favor intentelo mas tarde.';
@@ -112,6 +113,8 @@ class SacaController extends AbstractController
                             }else{
                                 $respuesta = 'La conexión con el servicio de aduana esta tardando mucho, por favor intentelo mas tarde.';
                             }
+                        }else{
+                            $respuesta = 'El envío aduana no exite';
                         }
 
                     } else {
@@ -240,76 +243,5 @@ class SacaController extends AbstractController
         }
     }
 
-#[Route('/aperturar', name: 'aperturar_saca', methods: ['GET'])]
-    public function aperturarSaca()
-    {
-        return $this->render('saca/aperturar.html.twig',[]);
-    }
 
-    #[Route('/save-anomalia', name: 'saca_anomalia', options: ["expose" => true] ,methods: ['POST'])]
-    public function saveSacaAnomalia(Request $request)
-    {
-        $id = $request->get('id');
-        $anomalias = $request->get('anomalias');
-        $saca = $this->sacaRepository->find($id);
-        if (array_key_exists('DIFERENCIA DE PESO', $anomalias)){
-            $actual = $saca->getPeso();
-            $real = (float)$anomalias['DIFERENCIA DE PESO'];
-            $diff = $real - $actual;
-
-            $anomalias['DIFERENCIA DE PESO'] = [
-                'peso real' => $real,
-                'peso actual' => $actual,
-                'diferencia' => $diff
-            ];
-        }
-        $saca->setObservaciones($anomalias);
-        $this->entityManager->persist($saca);
-        $this->entityManager->flush();
-
-        return JsonResponse::fromJsonString('"Anomalias agregadas correctamente"');
-    }
-
-    #[Route('/find-envios-saca', name: 'find_envios_saca', options: ["expose" => true] ,methods: ['POST'])]
-    public function findEnviosSaca(Request $request)
-    {
-        $codTracking = $request->get('codTracking');
-        $envios = $this->sacaRepository->findEnviosNoFacturaAndEstado($codTracking, 'APP_SACA_ESTADO_RECIBIDA');
-        $anomaliasE = $this->nomencladorRepository->findByChildren('APP_ENVIO_ANOMALIA');
-
-        $html = $envios ? $this->renderView('saca/envios.html.twig', [
-            'envios'=>$envios,
-            'anomaliasE'=>$anomaliasE->toArray(),
-            'codTracking' => $codTracking]) : 'null';
-
-        return new Response($html);
-    }
-
-    #[Route('/recepcionar-envios-saca', name: 'recepcionar_envios_saca', options: ["expose" => true] ,methods: ['POST'])]
-    public function recepcionarEnviosSaca(Request $request)
-    {
-        $codTracking = $request->get('codTracking');
-        $envios = $request->get('envios');
-        $todos = filter_var($request->get('todos'), FILTER_VALIDATE_BOOLEAN);
-        $saca = $this->sacaRepository->getSacaByCodigo($codTracking);
-        $estado = $this->nomencladorRepository->findOneByCodigo('APP_ENVIO_ESTADO_RECEPCIONADO');
-
-        foreach ($envios as $id)
-        {
-            $envio = $this->envioRepository->find($id);
-            $envio->setEstado($estado);
-
-            $this->entityManager->persist($envio);
-            $this->entityManager->flush();
-        }
-
-        if($todos)
-        {
-            $estado = $this->nomencladorRepository->findOneByCodigo('APP_SACA_ESTADO_APERTURADA');
-            $saca->setEstado($estado);
-            $this->entityManager->persist($saca);
-            $this->entityManager->flush();
-        }
-        return JsonResponse::fromJsonString('"Saca recibida correctamente"');
-    }
 }
