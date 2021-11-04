@@ -13,7 +13,7 @@ class EstructuraControllerTest extends AdminWebTestCase
         $this->assertEquals(3, $crawler->filter('li[class="dd-item"]')->count());
 //        $this->assertSelectorExists('select[name="filterField"]');
 //        $this->assertSelectorExists('input[name="filterValue"]');
-        $this->assertSelectorTextContains('button[class="btn btn-sm btn-success btn-block"]', 'Filtrar');
+//        $this->assertSelectorTextContains('button[class="btn btn-sm btn-success btn-block"]', 'Filtrar');
         $this->assertSelectorTextContains('div[class="panel-heading hbuilt"]', 'Listado de las estructuras');
     }
 
