@@ -8,14 +8,14 @@
     <div class="row col-md-12 m-b">
 
         <div class="col-md-4">
-            <input id="text_no_factura" class="form-control" type="text" value="" onchange="">
+            <input id="text_cod_tracking" class="form-control" type="text" value="" onchange="">
         </div>
         <div class="col-md-4">
-            <button class="btn btn-primary" onclick="buscarEnviosSacas()"><i class="fa fa-search"></i> Recepcionar factura</button>
+            <button class="ladda-button btn btn-primary" data-style="expand-left" onclick="buscarEnviosSacas()" id="button_cod_tracking"> <span class="ladda-label"><i class="fa fa-search"></i> Buscar saca</span><span class="ladda-spinner"></span></button>
         </div>
     </div>
 
-    <div id="sacas"></div>
+    <div id="envios"></div>
 
 {% endblock %}
 

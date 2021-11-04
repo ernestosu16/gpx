@@ -1,47 +1,112 @@
-//Variables
-
-let listSacas = [];
-
-
-//-------------Funciones de Factura------------------------------------------------------------------------------
-
 function elementId(id){
     return document.getElementById(id.toString());
 }
 
 function buscarFacturaSacas()
 {
+    $('#sacas').html('')
     let noFactura = elementId('text_no_factura').value;
 
-    let ruta = Routing.generate('find_sacas_factura')
-    $.ajax({
-        type: 'POST',
-        url: ruta,
-        data: {
-            noFactura: noFactura
-        },
-        async: true,
-        dataType: 'html',
-        loading: '',
-        success: function (data) {
-            if (data === 'null'){
-                swal({
-                    title: "No se encuentra",
-                    text: 'No existe factura con ese numero o ya ha sido entregada',
-                    type: "warning"
-                });
+    if (noFactura !== '') {
+        var l = Ladda.create(elementId('button_no_factura'));
+        l.start();
+        let ruta = Routing.generate('find_sacas_factura')
+        $.ajax({
+            type: 'POST',
+            url: ruta,
+            data: {
+                noFactura: noFactura
+            },
+            async: true,
+            dataType: 'html',
+            loading: '',
+            success: function (data) {
+                l.stop();
+                if (data === 'null'){
+                    swal({
+                        title: "No se encuentra",
+                        text: 'No existe factura con ese numero o ya ha sido entregada',
+                        type: "warning"
+                    });
 
-            }else {
-                $('#sacas').html(data)
+                }else {
+                    $('#sacas').html(data)
+                }
+            },
+            error: function (error) {
+                alert('Error: ' + error.status + ' ' + error.statusText);
+                console.log('error', error.responseText)
+                l.stop();
             }
-        },
-        error: function (error) {
-            alert('Error: ' + error.status + ' ' + error.statusText);
-            console.log('error', error.responseText)
-        }
 
-    })
+        })
+    }
+    else {
+        swal({
+            title: "Campo vacio",
+            text: 'Debe escribir el numero de la factura',
+            type: "warning"
+        });
+    }
+}
 
+function recepcionarFactura(noFactura)
+{
+    let inputsacas = document.getElementsByClassName("checkbox-sacas");
+    let sacas = [];
+    for (let check of inputsacas) {
+        if (check.checked)
+            sacas.push(check.value)
+    }
+
+    let inputenvios = document.getElementsByClassName("checkbox-envios");
+    let envios = [];
+    for (let check of inputenvios) {
+        if (check.checked)
+            envios.push(check.value)
+    }
+
+    if (sacas.length === 0 && envios.length === 0){
+        swal({
+            title: "Ningun seleccionado",
+            text: 'Debe seleccionar al menos una saca o envio',
+            type: "warning"
+        });
+    }
+    else{
+        let todos = sacas.length === inputsacas.length && envios.length === inputenvios.length;
+        let ruta = Routing.generate('recepcionar_sacas_factura');
+        var l = Ladda.create(elementId('button_recepcionar_factura'));
+        l.start();
+        $.ajax({
+            type: 'POST',
+            url: ruta,
+            data: {
+                noFactura: noFactura,
+                sacas: sacas,
+                envios: envios,
+                todos: todos
+            },
+            async: true,
+            dataType: 'html',
+            loading: '',
+            success: function (data) {
+                swal({
+                    title: "OK",
+                    text: data,
+                    type: "success"
+                });
+                $('#sacas').html('')
+                l.stop();
+            },
+            error: function (error) {
+                alert('Error: ' + error.status + ' ' + error.statusText);
+                console.log('error', error.responseText)
+                l.stop();
+            }
+
+        })
+    }
 
 }
 
@@ -73,44 +138,58 @@ function guardarAnomalia(sacaID){
         }
     }
 
-    let i = 0;
-    let anomalias = {};
+    if (key.length === 0)
+    {
+        swal({
+            title: "Ningun seleccionado",
+            text: 'Debe seleccionar al menos una anomalia',
+            type: "warning"
+        });
+    }else {
 
-    while (i < key.length) {
-        anomalias[key[i]] = value[i]
-        i++;
-    }
+        let i = 0;
+        let anomalias = {};
 
-    let ruta = Routing.generate('saca_anomalia');
-    $.ajax({
-        type: 'POST',
-        url: ruta,
-        data: {
-            id: sacaID,
-            anomalias: anomalias
-        },
-        async: true,
-        dataType: 'json',
-        loading: '',
-        success: function (data) {
-            swal({
-                title: "OK",
-                text: data,
-                type: "success"
-            });
-        },
-        error: function (error) {
-            alert('Error: ' + error.status + ' ' + error.statusText);
-            console.log('error', error.responseText)
+        while (i < key.length) {
+            anomalias[key[i]] = value[i]
+            i++;
         }
 
-    })
+        var l = Ladda.create(elementId('btn-anomalia-saca-'+sacaID));
+        l.start();
+        let ruta = Routing.generate('saca_anomalia');
+        $.ajax({
+            type: 'POST',
+            url: ruta,
+            data: {
+                id: sacaID,
+                anomalias: anomalias
+            },
+            async: true,
+            dataType: 'json',
+            loading: '',
+            success: function (data) {
+                l.stop();
+                swal({
+                    title: "OK",
+                    text: data,
+                    type: "success"
+                });
+            },
+            error: function (error) {
+                alert('Error: ' + error.status + ' ' + error.statusText);
+                console.log('error', error.responseText)
+                l.stop();
+            }
+
+        })
+    }
 
 }
 
 function guardarAnomaliaEnvio(envioID){
 
-    var table = document.getElementById("anomaliaslist"+envioID);
+    var table = document.getElementById("envioanomaliaslist"+envioID);
     var cells = table.getElementsByClassName("check-anomalia");
 
     let key = [];
@@ -123,54 +202,56 @@ function guardarAnomaliaEnvio(envioID){
 
             key.push(a[0].value);
             value.push(a[2].value);
+        }
+    }
 
-            /*if (a[1].innerText === 'DIFERENCIA DE PESO' && a[2].value==='')
-            {
+    if (key.length === 0)
+    {
+        swal({
+            title: "Ningun seleccionado",
+            text: 'Debe seleccionar al menos una anomalia',
+            type: "warning"
+        });
+    }else {
+
+        let i = 0;
+        let anomalias = {};
+
+        while (i < key.length) {
+            anomalias[key[i]] = value[i]
+            i++;
+        }
+
+        let ruta = Routing.generate('envio_anomalia');
+        var l = Ladda.create(elementId('btn-anomalia-envio-'+envioID));
+        l.start();
+        $.ajax({
+            type: 'POST',
+            url: ruta,
+            data: {
+                id: envioID,
+                anomalias: anomalias
+            },
+            async: true,
+            dataType: 'json',
+            loading: '',
+            success: function (data) {
+                l.stop();
                 swal({
-                    title: "Diferencia de peso",
-                    text: 'Debe escribir la diferencia de peso',
-                    type: "warning"
+                    title: "OK",
+                    text: data,
+                    type: "success"
                 });
-                return;
-            }*/
-        }
+            },
+            error: function (error) {
+                alert('Error: ' + error.status + ' ' + error.statusText);
+                console.log('error', error.responseText)
+                l.stop();
+            }
+
+        })
     }
-
-    let i = 0;
-    let anomalias = {};
-
-    while (i < key.length) {
-        anomalias[key[i]] = value[i]
-        i++;
-    }
-
-    let ruta = Routing.generate('envio_anomalia');
-    $.ajax({
-        type: 'POST',
-        url: ruta,
-        data: {
-            id: envioID,
-            anomalias: anomalias
-        },
-        async: true,
-        dataType: 'json',
-        loading: '',
-        success: function (data) {
-            swal({
-                title: "OK",
-                text: data,
-                type: "success"
-            });
-        },
-        error: function (error) {
-            alert('Error: ' + error.status + ' ' + error.statusText);
-            console.log('error', error.responseText)
-        }
-
-    })
-
 }
-
 
 function recepcionarFactura(noFactura)
 {
@@ -226,7 +307,7 @@ function AgregarSaca() {
     const resultado = listSacas.find( saca => saca.cod === res );
 
     if (resultado){
-        toastr.warning('El env√≠o o la saca ya se encuentra en la tabla');
+        toastr.warning('El envÌo o la saca ya se encuentra en la tabla');
         $("#input_sello").val('');
     }else{
         $.ajax({
@@ -314,7 +395,7 @@ function GuardarFactura() {
 function validaForm(){
     if($("#select_oficinas_factura").val() == "0"){
         var v = '';
-        v = '<p style="color: #d62c1a">* Campo vac√≠o</p>'
+        v = '<p style="color: #d62c1a">* Campo vacÌo</p>'
         $('#mensaje_oficina').html(v);
         return false;
     }else
@@ -323,7 +404,7 @@ function validaForm(){
     }
     if(listSacas.length == 0){
         var v = '';
-        v = '<p style="color: #d62c1a">* Tabla vac√≠o</p>'
+        v = '<p style="color: #d62c1a">* Tabla vacÌo</p>'
         $('#mensaje_tabla').html(v);
         return false;
     }else
@@ -332,7 +413,7 @@ function validaForm(){
     }
     if($("#select_tipo_vehiculo").val() == "0"){
         var v = '';
-        v = '<p style="color: #d62c1a">* Campo vac√≠o</p>'
+        v = '<p style="color: #d62c1a">* Campo vacÌo</p>'
         $('#mensaje_tipo_vehiculo').html(v);
         return false;
     }else
@@ -341,7 +422,7 @@ function validaForm(){
     }
     if($("#input_chapa").val() == ""){
         var v = '';
-        v = '<p style="color: #d62c1a">* Campo vac√≠o</p>'
+        v = '<p style="color: #d62c1a">* Campo vacÌo</p>'
         $('#mensaje_chapa').html(v);
         $("#input_chapa").focus();
         return false;
@@ -351,7 +432,7 @@ function validaForm(){
     }
     if($("#select_choferes").val() == "0"){
         var v = '';
-        v = '<p style="color: #d62c1a">* Campo vac√≠o</p>'
+        v = '<p style="color: #d62c1a">* Campo vacÌo</p>'
         $('#mensaje_choferes').html(v);
         return false;
     }else
@@ -359,7 +440,7 @@ function validaForm(){
         $('#mensaje_choferes').html('');
     }
 
-    return true; // Si todo est√° correcto
+    return true; // Si todo est· correcto
 }
 
 $(document).ready(function(){

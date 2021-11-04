@@ -1,45 +1,115 @@
 
 {% block panel_body %}
-<div class="row col-md-12 m-b">
+    <div class="row col-md-12 m-b">
 
-    <div class="well well-lg">
+        <div class="well well-lg">
 
-        <p style="border-bottom:1px solid #000000;"><strong>VALIJAS PRESENTES EN LA FACTURA</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <p style="border-bottom:1px solid #000000;"><strong>VALIJAS PRESENTES EN LA FACTURA</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                {% for saca in sacas %}
+                {% if saca.estado.codigo == 'APP_SACA_ESTADO_RECIBIDA' %}
 
-            {% for saca in sacas %}
-
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="panelSaca_{{saca.id}}">
+                    <label class="form-label">SACA No. <span class="text-info">[{{ saca.sello }}]</span> código <span class="text-info">[{{saca.codigo}}]</span> en estado <span class="text-info">[{{ saca.estado.nombre }}]</span> &nbsp; + &nbsp;
+                        <span class="text-danger">                            Irregularidades [
+                            {% for key, irr in saca.observaciones %}
+                                {{ key }}:{{ irr }},
+                            {% endfor %}
+                            ]</span>
+                    </label>
+                </div>
+            </div>
+            {% else %}
                 <div class="panel panel-default">
                     <div class="panel-heading" role="tab" id="panelSaca_{{saca.id}}">
 
-                        <input class="form-check-input" type="checkbox" value="" id="checkSaca_{{saca.id}}" >
-                        <label class="form-label">SACA No. [{{ saca.sello }}] código [{{saca.codigo}}] en estado [{{ saca.estado.nombre }}]
-                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{saca.id}}" aria-expanded="false" aria-controls="collapse{{saca.id}}" class="collapsed">
+                        <input class="form-check-input checkbox-sacas" type="checkbox" value="{{saca.id}}" id="checkSaca_{{saca.id}}" checked>
+                        <label class="form-label">SACA No. <span class="text-info">[{{ saca.sello }}]</span> código <span class="text-info">[{{saca.codigo}}]</span> en estado <span class="text-info">[{{ saca.estado.nombre }}]</span> &nbsp; + &nbsp;
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{saca.id}}" aria-expanded="false" aria-controls="collapse{{saca.id}}" class="collapsed collapse{{saca.id}}">
                                 Irregularidades </a></label>
 
                     </div>
-                    <div id="collapse{{saca.id}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="panelSaca_{{saca.id}}" aria-expanded="false">
-                        {% for an in anomalias %}
-                            <div class="panel-body">
-                                {{an.nombre}}
+                    <div id="collapse{{saca.id}}" class="panel-collapse collapse collapse{{saca.id}}" role="tabpanel" aria-labelledby="panelSaca_{{saca.id}}" aria-expanded="false">
+                        <div class="panel-body" id="anomaliaslist{{saca.id}}">
+                            {% for an in anomalias %}
+                                <div class="col-md-12" style="margin-bottom: 10px;">
+                                    <div class="col-md-4">
+                                        <input class="form-check-input check-anomalia {{an.codigo}}" type="checkbox" value="{{saca.id}}" >
+                                        <label class="form-label {{an.codigo}}">{{an.nombre}}</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input class="form-control {{an.codigo}}" type="text" value="" id="{{saca.id}}_anomalia_{{an.codigo}}">
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            <div class="pull-right" style="margin-top: 25px;">
+                                <button class="ladda-button btn btn-primary" data-style="expand-left" onclick="guardarAnomalia('{{ saca.id }}')" id="btn-anomalia-saca-{{ saca.id }}"> <span class="ladda-label"><i class="fa fa-check"></i> Guardar</span><span class="ladda-spinner"></span></button>
                             </div>
-                        {% endfor %}
+
+                        </div>
                     </div>
                 </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+
+        <!----------------- ENVIOS --------------------->
+        <div class="well well-lg">
+
+            <p style="border-bottom:1px solid #000000;"><strong>ENVIOS PRESENTES EN LA FACTURA</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                {% for envio in envios %}
+                {% if envio.estado.codigo != 'APP_ENVIO_ESTADO_FACTURADO' %}
+
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="panelenvio_{{envio.id}}">
+                    <label class="form-label">Envio codigo <span class="text-info">[{{ envio.CodTracking }}]</span> peso <span class="text-info">[{{envio.peso}}]</span> en estado <span class="text-info">[{{ envio.estado.nombre }}]</span> &nbsp; + &nbsp;
+                        <a data-toggle="collapse" data-parent="#accordion" href="#ecollapse{{envio.id}}" aria-expanded="false" aria-controls="ecollapse{{envio.id}}" class="collapsed">
+                            Irregularidades </a></label>
+                </div>
+            </div>
+            {% else %}
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="panelenvio_{{envio.id}}">
+
+                        <input class="form-check-input checkbox-envios" type="checkbox" value="{{envio.id}}" id="checkenvio_{{envio.id}}" checked>
+                        <label class="form-label">Envio codigo <span class="text-info">[{{ envio.CodTracking }}]</span> peso <span class="text-info">[{{envio.peso}}]</span> en estado <span class="text-info">[{{ envio.estado.nombre }}]</span> &nbsp; + &nbsp;
+                            <a data-toggle="collapse" data-parent="#accordion" href="#ecollapse{{envio.id}}" aria-expanded="false" aria-controls="ecollapse{{envio.id}}" class="collapsed ecollapse{{envio.id}}">
+                                Irregularidades </a></label>
+
+                    </div>
+                    <div id="ecollapse{{envio.id}}" class="panel-collapse collapse ecollapse{{envio.id}}" role="tabpanel" aria-labelledby="panelenvio_{{envio.id}}" aria-expanded="false">
+                        <div class="panel-body" id="envioanomaliaslist{{envio.id}}">
+                            {% for an in anomaliasE %}
+                                <div class="col-md-12" style="margin-bottom: 10px;">
+                                    <div class="col-md-4">
+                                        <input class="form-check-input check-anomalia {{an.codigo}}" type="checkbox" value="{{an.codigo}}" >
+                                        <label class="form-label {{an.codigo}}">{{an.nombre}}</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input class="form-control {{an.codigo}}" type="text" value="" id="{{envio.id}}_anomalia_{{an.codigo}}">
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            <div class="pull-right" style="margin-top: 25px;">
+                                <button class="ladda-button btn btn-primary" data-style="expand-left" onclick="guardarAnomaliaEnvio('{{ envio.id }}')" id="btn-anomalia-envio-{{ envio.id }}"> <span class="ladda-label"><i class="fa fa-check"></i> Guardar</span><span class="ladda-spinner"></span></button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
             {% endfor %}
         </div>
     </div>
 
+    <p style="border-bottom:1px solid #000000;"><strong>RECEPCIÓN DE LA VALIJA</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
-</div>
+    <div class="row col-md-12 m-b">
 
-<p style="border-bottom:1px solid #000000;"><strong>RECEPCIÓN DE LA VALIJA</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
-<div class="row col-md-12 m-b">
-
-    <div class="col-md-4">
-        <button class="btn btn-primary" onclick="recepcionarFactura()"><i class="fa fa-check"></i> Recepcionar valijas</button>
+        <div class="col-md-4">
+            <button class="ladda-button btn btn-primary" data-style="expand-left" onclick="recepcionarFactura({{noFactura}})" id="button_recepcionar_factura"> <span class="ladda-label"><i class="fa fa-check"></i> Recepcionar valijas</span><span class="ladda-spinner"></span></button>
+        </div>
     </div>
-</div>
 {% endblock %}
 
 {% block javascripts %}
