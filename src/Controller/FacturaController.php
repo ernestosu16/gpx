@@ -3,12 +3,15 @@
 
 namespace App\Controller;
 
-
 use App\Entity\Envio;
 use App\Entity\EnvioAduana;
+use App\Entity\EnvioManifiesto;
 use App\Entity\Estructura;
+use App\Entity\EstructuraTipo;
 use App\Entity\Factura;
 use App\Entity\FacturaConsecutivo;
+use App\Manager\EnvioManager;
+use App\Repository\FacturaRepository;
 use App\Entity\FacturaTraza;
 use App\Entity\Grupo;
 use App\Entity\Nomenclador;
@@ -16,12 +19,12 @@ use App\Entity\Persona;
 use App\Entity\Saca;
 use App\Entity\Trabajador;
 use App\Entity\TrabajadorCredencial;
-use App\Manager\EnvioManager;
-use App\Manager\FacturaManager;
 use App\Repository\EnvioRepository;
-use App\Repository\FacturaRepository;
+use App\Manager\FacturaManager;
+use App\Repository\FacturaConsecutivoRepository;
 use App\Repository\NomencladorRepository;
 use App\Repository\SacaRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use JMS\Serializer\SerializerBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -35,12 +38,12 @@ use function PHPUnit\Framework\throwException;
 class FacturaController extends AbstractController
 {
     public function __construct(
-        private EnvioManager $envioManager,
-        private FacturaManager $facturaManager,
         private SacaRepository $sacaRepository,
+        private FacturaManager $facturaManager,
         private NomencladorRepository $nomencladorRepository,
         private FacturaRepository $facturaRepository,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private EnvioManager $envioManager
     )
     {
     }
@@ -115,7 +118,13 @@ class FacturaController extends AbstractController
     {
         $choferes = new ArrayCollection();
         $em = $this->getDoctrine()->getManager();
-        $oficinas = $em->getRepository(Estructura::class)->findAll();
+        /** @var Trabajador $user */
+        $user = $this->getUser();
+
+        $empresa = $user->getEstructura()->searchParentsByTipo(
+            $em->getRepository(EstructuraTipo::class)->findOneByCodigo(EstructuraTipo::OSDE)
+        );
+
         /** @var Nomenclador $nom */
         $nom = $em->getRepository(Nomenclador::class)->findOneByCodigo('APP_TIPO_VEHICULO');
         $vehiculos = $nom->getChildren()->getValues();
@@ -128,7 +137,7 @@ class FacturaController extends AbstractController
             /** @var Trabajador $item */
             foreach ($item->getGrupos()->getValues() as $g){
                 /** @var Grupo $g */
-                if ($g->getCodigo() == 'GRUPO_ADMINISTRADOR'){
+                if ($g->getCodigo() == 'GRUPO_CHOFER'){
                     $id = $item->getPersona()->getId();
                     /** @var Persona $c */
                     $c = $em->getRepository(Persona::class)->find($id);
@@ -139,7 +148,7 @@ class FacturaController extends AbstractController
         }
 
         return $this->render('factura/crear_factura.html.twig', [
-            'findAll' => $oficinas,
+            'findAll' => $empresa,
             'vehiculos' => $vehiculos,
             'choferes' => $choferes
 
@@ -154,6 +163,12 @@ class FacturaController extends AbstractController
             $sello = $request->request->get('codTracking');
             $oficina_dest = $request->request->get('oficina_dest');
 
+            /** @var Trabajador $user */
+            $user = $this->getUser();
+
+            /** @var Estructura $estructura */
+            $empresa = $em->getRepository(Estructura::class)->find($user->getEstructura()->getId());
+
             /** @var Saca $saca */
             $saca = $em->getRepository(Saca::class)->findOneBy(['sello'=>$sello]);
 
@@ -163,7 +178,7 @@ class FacturaController extends AbstractController
 
                 if ($saca != null){
                     if ($saca->getEstado()->getCodigo() != 'APP_ENVIO_ESTADO_CLASIFICADO' && $saca->getEstado()->getCodigo() != 'APP_ENVIO_ESTADO_FACTURADO'){
-                        if ($saca->getEstructuraDestino()->getId() == $oficina_dest){
+                        if ($saca->getProvincia()->getId() == $oficina_dest){
                             $id = $saca->getId();
                             $cod = $saca->getCodTracking();
                             $peso = $saca->getPeso();
@@ -174,27 +189,29 @@ class FacturaController extends AbstractController
                             /** @var EnvioAduana $envio_aduana */
                             $envio_aduana = $em->getRepository(EnvioAduana::class)->find($id);
 
-                            if ($envio_aduana->getDatosDespacho() == null){
+                            if ($envio_aduana != null && $envio_aduana->getDatosDespacho() == null){
                                 $url= "https://sua.aduana.cu/GINASUA/serviciosExternos?wsdl";
 
                                 if ($this->envioManager->verificarConectAduana($url) == 1){
-                                    if ($this->envioManager->addDespachoAduanaEnvio($url, $envio_aduana, $cod)){
+                                    if ($this->envioManager->addDespachoAduanaEnvio($url, $envio_aduana->getId(), $cod, $empresa)){
                                         return JsonResponse::fromJsonString($miRespuestaJson);
                                     }else{
-                                        $respuesta = 'El servicio del despacho de la aduana no est� funcionando, por favor intentelo mas tarde.';
+                                        $respuesta = 'El servicio del despacho de la aduana no está funcionando, por favor intentelo mas tarde.';
                                     }
                                 }else{
-                                    $respuesta = 'La conexi�n con el servicio de aduana esta tardando mucho, por favor intentelo mas tarde.';
+                                    $respuesta = 'La conexión con el servicio de aduana esta tardando mucho, por favor intentelo mas tarde.';
                                 }
+                            }else{
+                                $respuesta = 'El envío aduana no exite';
                             }
                         }else{
-                            $respuesta = 'El env�o esta mal reeencaminado';
+                            $respuesta = 'El envío esta mal reeencaminado';
                         }
                     }else{
-                        $respuesta = 'El env�o ya esta clasificado o facturado';
+                        $respuesta = 'El envío ya esta clasificado o facturado';
                     }
                 }else{
-                    $respuesta = 'El env�o no se encuentra en el sistema';
+                    $respuesta = 'El envío no se encuentra en el sistema';
                 }
             }else{
                 if ($saca != null){
@@ -212,7 +229,7 @@ class FacturaController extends AbstractController
                             $respuesta = 'La saca esta mal reeencaminado';
                         }
                     }else{
-                        $respuesta = 'La saca ya est� facturada';
+                        $respuesta = 'La saca ya está facturada';
                     }
                 }else{
                     $respuesta = 'La saca no se encuentra en el sistema';
@@ -277,7 +294,7 @@ class FacturaController extends AbstractController
 
             $estEnvioFacturada = $em->getRepository(Nomenclador::class)->findOneBy(['codigo'=>'APP_ENVIO_ESTADO_FACTURADO']);
             if (!$estEnvioFacturada)
-                return new JsonResponse(['error' => 'Error el estado del env�o "FACTURADO" no existe'], 500);
+                return new JsonResponse(['error' => 'Error el estado del envío "FACTURADO" no existe'], 500);
 
             $estSacaFacturada = $em->getRepository(Nomenclador::class)->findOneBy(['codigo'=>'APP_ENVIO_SACA_ESTADO_FACTURADA']);
             if (!$estSacaFacturada)
