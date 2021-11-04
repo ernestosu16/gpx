@@ -33,8 +33,8 @@ phpunit:
     dependencies:
         - build
     services:
-        -   name: dap/mysql:8.0
-            alias: db
+        - name: dap/mysql:8.0
+          alias: db
     script:
         - sed -i 's/APP_ENV=dev/APP_ENV=test/g' .env
         - ./proyect-init.sh
@@ -44,7 +44,7 @@ phpunit:
 sonarqube-check:
     image:
         name: sonarsource/sonar-scanner-cli
-        entrypoint: [""]
+        entrypoint: [ "" ]
     stage: build
     allow_failure: true
     only:
@@ -59,6 +59,7 @@ sonarqube-check:
         GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
     script:
         - sonar-scanner
+    when: manual
 
 docker-build:
     variables:
@@ -67,8 +68,8 @@ docker-build:
         DOCKER_TLS_CERTDIR: ""
     stage: release
     services:
-        -   name: dap/docker:dind
-            alias: docker_dind
+        - name: dap/docker:dind
+          alias: docker_dind
     only:
         - tags
     image: dap/docker:stable

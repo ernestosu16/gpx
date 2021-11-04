@@ -1,0 +1,36 @@
+<ol class="dd-list">
+    {% for node in nodes %}
+        {% set tipos = [] %}
+        {% for tipo in node.tipos %}
+            {% set tipos = tipos|merge([tipo.nombre]) %}
+        {% endfor %}
+        <li class="dd-item"
+            data-id="{{ node.id }}"
+            data-codigo_postal="{{ node.codigoPostal }}"
+            data-nombre="{{ node.nombre }}"
+            data-provincia="{{ node.municipio.parent }}"
+            data-municipio="{{ node.municipio }}"
+            data-tipos="{{ tipos|json_encode }}"
+            data-habilitado="{{ node.habilitado ? 'si'|trans([],'admin') : 'no'|trans([],'admin') }}">
+            <div class="dd-handle dd-nodrag">
+                <span class="pull-right">
+                    <a class="btn btn-xs btn-primary2"
+                       href="{{ path('admin_estructura_edit', {'id': node.id}) }}"
+                       title="{{ 'editar'|trans([],'admin') }}">
+                        <i class="fa fa-pencil"></i>
+                    </a>
+                    <button class="btn btn-xs btn-primary info" type="button" data-toggle="modal" data-target="#show">
+                        <i class="fa fa-info"></i>
+                    </button>
+                </span>
+                {% if node.children|length > 0 %}
+                <span class="label h-bg-navy-blue"><i class="fa fa-sitemap"></i></span>
+                {% endif %}
+                {{ node.nombre }}
+            </div>
+            {% if node.children|length > 0 %}
+                {% include 'admin/estructura/includes/_nestable.html.twig' with {'nodes': node.children} only %}
+            {% endif %}
+        </li>
+    {% endfor %}
+</ol>
