@@ -14,6 +14,7 @@ class EstructuraTipo extends Nomenclador
 {
     const MINISTERIO = 'MINISTERIO';
     const EMPRESA = 'EMPRESA';
+    const OSDE = 'OSDE';
 
     #[ORM\ManyToMany(targetEntity: Estructura::class, mappedBy: 'tipos')]
     #[ORM\JoinTable(name: 'estructura_tipo_asignado')]
