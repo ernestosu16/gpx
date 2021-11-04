@@ -1,0 +1,96 @@
+{% extends 'homer-theme/layout.html.twig' %}
+
+{% block panel_body %}
+    <div id="printableArea">
+        <div class="col-md-12">
+            <table class="table table-hover table-bordered table-striped">
+                <thead>
+                <tr>
+                    <td colspan="3" align="center">GUÍA DE CLASIFICACIÓN</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td colspan="3" align="center">{{ saca.codigo }}</td>
+                </tr>
+                <tr>
+                    <td>
+                        Oficina de Origen: {{ saca.origen}}
+                        <br>
+                        Oficina de Destino: {{ saca.destino}}
+                    </td>
+                    <td>
+                        Sello: {{ saca.sello }}
+                    </td>
+                    <td>
+                        Fecha: {{ fecha }}
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-12">
+            <label>Inscripción individual</label>
+        </div>
+        <div class="col-md-6">
+            <table class="table table-hover table-bordered table-striped">
+                <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>No. del envío</th>
+                    <th>Peso</th>
+                    <th>Observaciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in envios %}
+                    <tr>
+                        <th>{{ numero + 1 }}</th>
+                        <th>{{ item.codtracking }}</th>
+                        <th>{{ item.peso }}</th>
+                        <th></th>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-12">
+            <label>Peso total: {{ saca.peso }}</label>
+        </div>
+        <div class="col-md-6">
+            <label>Firma Oficina expendidora</label>
+            <hr>
+        </div>
+        <div class="col-md-6">
+            <label>Firma Oficina de destino</label>
+            <hr>
+        </div>
+
+    </div>
+    <div class="col-sm-12">
+        <input type="button" onclick="printDiv('printableArea')" value="Imprimir" class="btn btn-primary"/>
+        <a rel="nofollow" href="{{ path('crear_saca') }}" class="btn btn btn-default">Volver</a>
+    </div>
+
+
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js',{ callback: 'fos.Router.setData' }) }}"></script>
+
+    <script>
+
+        function printDiv(divName) {
+            var printContents = document.getElementById(divName).innerHTML;
+            var originalContents = document.body.innerHTML;
+
+            document.body.innerHTML = printContents;
+
+            window.print();
+
+            document.body.innerHTML = originalContents;
+        }
+    </script>
+
+{% endblock %}

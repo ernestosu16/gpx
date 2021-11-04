@@ -13,6 +13,7 @@ use JetBrains\PhpStorm\Pure;
 class EstructuraTipo extends Nomenclador
 {
     const EMPRESA = 'EMPRESA';
+    const OSDE = 'OSDE';
 
     #[ORM\ManyToMany(targetEntity: Estructura::class, mappedBy: 'tipos')]
     #[ORM\JoinTable(name: 'estructura_tipo_asignado')]
