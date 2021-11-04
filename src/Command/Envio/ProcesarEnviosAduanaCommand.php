@@ -62,8 +62,8 @@ final class ProcesarEnviosAduanaCommand extends BaseCommand implements BaseComma
             $envioAduanaResepcionado =  $this->envioAduanaRepository->findEnvioAduanaByEstructuraAndEstado($transitaria,$this->getRepository(Nomenclador::class)->findOneByCodigo(self::ESTADO_RECEPCIONADO));
 
             $entradaDespacho = new EntradaDespacho();
-            $entradaDespacho->setCodigoAduana("0302");
-            $entradaDespacho->setOperador("CP002253909XP");
+            $entradaDespacho->setCodigoAduana($transitaria->getCodigoAduana());
+            $entradaDespacho->setOperador($transitaria->getCodigoOperador());
             $incertarElementos = new InsertarElementos();
             $count = 0;
 
@@ -85,22 +85,7 @@ final class ProcesarEnviosAduanaCommand extends BaseCommand implements BaseComma
                 $entradaDespacho->setInsertarElementos($incertarElementos);
                 $this->createAndSaveXML($entradaDespacho);
             }
-
-//            for ($i = 0; $i <= 4; $i++) {
-//                $incertarElementos->addInsertar(new Insertar('CP002253909XP','XM','23','09','PAN',1.7));
-//            }
-
-
         }
-
-
-
-
-
-
-
-
-
 
         $this->io->success('Comando ejecutado satisfactoriamente.');
 

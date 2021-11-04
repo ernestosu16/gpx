@@ -14,7 +14,8 @@ class CurlConectionManager extends _Manager_
     const FTP_ENVIO_MANIFIESTO = "APP_ENVIO_MANIFIESTO_FTP_ACCESO";
     const FTP_DIERECTORI_ERROR_NAME = "manifiestoError";
     private array $ftp_config = [];
-    private $ch;
+    private array $curl_options;
+    //private $ch;
     private string $urlBase;
     private EntityManagerInterface $entityManager;
 
@@ -32,13 +33,8 @@ class CurlConectionManager extends _Manager_
         $this->getFTPConfi();
         // set host/initial path
         $this->urlBase = $protocol.'://'.$this->ftp_config['host'].'/'.$remote_path;
-        // setup connection
-        $this->ch = curl_init();
-        // check for successful connection
-        if (!$this->ch)
-            throw new \Exception('Could not initialize cURL.');
-        // connection options
-        $options = [
+
+        $this->curl_options = [
             CURLOPT_USERPWD        => $this->ftp_config['user'].':'.$this->ftp_config['pass'],
             CURLOPT_PORT           => $port,
             CURLOPT_TIMEOUT        => 60,
@@ -48,20 +44,14 @@ class CurlConectionManager extends _Manager_
         ];
         // cURL FTP enables passive mode by default, so disable it by enabling the PORT command and allowing cURL to select the IP address for the data connection
         if (!$passive_mode)
-            $options[CURLOPT_FTPPORT] = '-';
+            $this->curl_options[CURLOPT_FTPPORT] = '-';
         // If implicit mode
         if ($implicit) {
-            $options[CURLOPT_SSL_VERIFYPEER] = false;
-            $options[CURLOPT_SSL_VERIFYHOST] = false;
+            $this->curl_options[CURLOPT_SSL_VERIFYPEER] = false;
+            $this->curl_options[CURLOPT_SSL_VERIFYHOST] = false;
         } else { // No implicit mode
-            $options[CURLOPT_SSL_VERIFYPEER] = true;
-            $options[CURLOPT_SSL_VERIFYHOST] = true;
-        }
-
-        // set connection options, use foreach so useful errors can be caught instead of a generic "cannot set options" error with curl_setopt_array()
-        foreach ($options as $option_name => $option_value) {
-            if (!curl_setopt($this->ch, $option_name, $option_value))
-                throw new \Exception(sprintf('Could not set cURL option: %s', $option_name));
+            $this->curl_options[CURLOPT_SSL_VERIFYPEER] = true;
+            $this->curl_options[CURLOPT_SSL_VERIFYHOST] = true;
         }
     }
 
@@ -90,10 +80,13 @@ class CurlConectionManager extends _Manager_
      */
     public function getDirectories(string $strURL = null): array
     {
-        $curl = $this->ch;
-        curl_setopt($curl, CURLOPT_URL, $strURL);
-        curl_setopt($curl, CURLOPT_FTPLISTONLY, true);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        $options = [
+            CURLOPT_URL => $strURL,
+            CURLOPT_FTPLISTONLY => true,
+            CURLOPT_RETURNTRANSFER => true
+        ];
+
+        $curl = $this->curlInit($options);
         $rsData = curl_exec($curl);
         if (!$rsData)
             throw new \Exception(sprintf('Making request failed: [%s] - %s', curl_errno($curl), curl_error($curl)));
@@ -102,27 +95,9 @@ class CurlConectionManager extends _Manager_
         $content = preg_replace('#\n+#', ' ', $rsData);
         $content = trim($content);
         $result_directories = explode(' ', $content);
-        return $result_directories;
-    }
 
-    /**
-     * @throws \Exception
-     */
-    public function getFilesFromDirectories(string $url = null): array
-    {
-        $urlBase = $this->urlBase . $url . '/';
-        $curl = $this->ch;
-        curl_setopt($curl, CURLOPT_URL, $urlBase);
-        curl_setopt($curl, CURLOPT_FTPLISTONLY, true);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        $rsData = curl_exec($curl);
-        if (!$rsData)
-            throw new \Exception(sprintf('Making request failed: [%s] - %s', curl_errno($curl), curl_error($curl)));
         curl_close($curl);
 
-        $content = preg_replace('#\n+#', ' ', $rsData);
-        $content = trim($content);
-        $result_directories = explode(' ', $content);
         return $result_directories;
     }
 
@@ -136,12 +111,7 @@ class CurlConectionManager extends _Manager_
 
     public function upload($remote_file_name, $local_file , $remote_file_path)
     {
-        $curl = $this->ch;
-        curl_setopt($curl, CURLOPT_UPLOAD, true);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, false);
-        // set file name
-        if (!curl_setopt($curl, CURLOPT_URL, $this->getUrl(). $remote_file_path . self::FTP_DIERECTORI_ERROR_NAME . '/' . $remote_file_name))
-            throw new \Exception ("Could not set cURL file name: $remote_file_name");
+
         // open memory stream for writing
         $stream = fopen('php://temp', 'w+');
         // check for valid stream handle
@@ -151,48 +121,27 @@ class CurlConectionManager extends _Manager_
         fwrite($stream, file_get_contents($local_file));
         // rewind the stream pointer
         rewind($stream);
-        // set the file to be uploaded
-        if (!curl_setopt($curl, CURLOPT_INFILE, $stream))
-            throw new \Exception("Could not load file $remote_file_name");
+
+        $options = [
+            CURLOPT_UPLOAD => true,
+            CURLOPT_RETURNTRANSFER => false,
+            CURLOPT_FTP_CREATE_MISSING_DIRS => true,
+            CURLOPT_URL => $this->getUrl(). $remote_file_path . self::FTP_DIERECTORI_ERROR_NAME . '/' . $remote_file_name,
+            CURLOPT_INFILE => $stream
+        ];
+
+        $curl = $this->curlInit($options);
         // upload file
         if (!curl_exec($curl))
             throw new \Exception(sprintf('Could not upload file. cURL Error: [%s] - %s', curl_errno($curl), curl_error($curl)));
         // close the stream handle
         fclose($stream);
+
+        unlink($local_file);
     }
 
     public function download(string $remote_file,string $local_file, string $file_name)
     {
-//        if(!file_exists ($local_file)){
-//            mkdir($local_file,0777,true);
-//        }
-//
-//        $file_handle = fopen($local_file . '/' . $file_name, "w+");
-//
-//        $curl = $this->ch;
-//        curl_setopt($curl, CURLOPT_URL, $remote_file);
-//        curl_setopt($curl, CURLOPT_UPLOAD, false);
-//        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-//        //Pass our file handle to cURL.
-//        curl_setopt($curl, CURLOPT_FILE, $file_handle);
-//
-//        dump($curl);
-//        curl_exec($curl);
-//        $statusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-//
-//        curl_close($curl);
-//
-//        fclose($file_handle);
-//
-//        if($statusCode == 200){
-//            echo 'Downloaded!';
-//        } else{
-//            echo "Status Code: " . $statusCode;
-//        }
-//
-//        exit;
-
-
         //The path & filename to save to.
         $saveTo = $local_file . '/' . $file_name;
 
@@ -208,31 +157,11 @@ class CurlConectionManager extends _Manager_
             throw new \Exception('Could not open: ' . $saveTo);
         }
 
-        //Create a cURL handle.
-        $curl = curl_init($remote_file);
-
         $options = [
-            CURLOPT_USERPWD        => $this->ftp_config['user'].':'.$this->ftp_config['pass'],
-            CURLOPT_PORT           => 21,
-            CURLOPT_TIMEOUT        => 30,
-            CURLOPT_FTP_SSL        => CURLFTPSSL_ALL, // require SSL For both control and data connections
-            CURLOPT_FTPSSLAUTH     => CURLFTPAUTH_DEFAULT, // let cURL choose the FTP authentication method (either SSL or TLS)
-            CURLOPT_SSL_CIPHER_LIST => 'DEFAULT@SECLEVEL=1'
+            CURLOPT_FILE => $fp
         ];
 
-        $options[CURLOPT_SSL_VERIFYPEER] = false;
-        $options[CURLOPT_SSL_VERIFYHOST] = false;
-
-        foreach ($options as $option_name => $option_value) {
-            if (!curl_setopt($curl, $option_name, $option_value))
-                throw new \Exception(sprintf('Could not set cURL option: %s', $option_name));
-        }
-
-        //Pass our file handle to cURL.
-        curl_setopt($curl, CURLOPT_FILE, $fp);
-
-        //Timeout if the file doesn't download after 20 seconds.
-        curl_setopt($curl, CURLOPT_TIMEOUT, 20);
+        $curl = $this->curlInit($options,$remote_file);
 
         //Execute the request.
         curl_exec($curl);
@@ -285,43 +214,33 @@ class CurlConectionManager extends _Manager_
 
     function deleteFileFromFTP(string $strURL,string $deletePath)
     {
-        $ch = curl_init();
-
         $options = [
-            CURLOPT_USERPWD        => $this->ftp_config['user'].':'.$this->ftp_config['pass'],
-            CURLOPT_PORT           => 21,
-            CURLOPT_TIMEOUT        => 30,
-            CURLOPT_FTP_SSL        => CURLFTPSSL_ALL, // require SSL For both control and data connections
-            CURLOPT_FTPSSLAUTH     => CURLFTPAUTH_DEFAULT, // let cURL choose the FTP authentication method (either SSL or TLS)
-            CURLOPT_SSL_CIPHER_LIST => 'DEFAULT@SECLEVEL=1',
             CURLOPT_QUOTE => array( $deletePath),
-            //CURLOPT_QUOTE => array('DELE /EMCI/DHL/' . $filename),
-            CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_SSL_VERIFYHOST => false,
             CURLOPT_RETURNTRANSFER =>true,
             CURLOPT_URL => $strURL
         ];
 
-//        $options[CURLOPT_SSL_VERIFYPEER] = false;
-//        $options[CURLOPT_SSL_VERIFYHOST] = false;
-
-        //curl_setopt_array();//para pasar las opciones completas
-
-        foreach ($options as $option_name => $option_value) {
-            if (!curl_setopt($ch, $option_name, $option_value))
-                throw new \Exception(sprintf('Could not set cURL option: %s', $option_name));
-        }
-
-        //curl_setopt($ch, CURLOPT_URL, $strURL);
-        //curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-
-//        $result = curl_exec($ch);
-//        $result = json_decode($result);
+        $ch = $this->curlInit($options);
 
         if (!curl_exec($ch))
             throw new \Exception(sprintf('Could not delete file. cURL Error: [%s] - %s', curl_errno($ch), curl_error($ch)));
 
         curl_close($ch);
+    }
+
+    public function curlInit(array $options, $remote_file = null)
+    {
+        $opt =  array_replace($this->curl_options,$options);
+
+        if($remote_file)
+        {
+            $ch = curl_init($remote_file);
+        }else{
+            $ch = curl_init();
+        }
+        if (!curl_setopt_array($ch, $opt))
+                throw new \Exception('Could not set cURL option correctly');
+
+        return $ch;
     }
 }
