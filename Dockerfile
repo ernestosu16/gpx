@@ -34,7 +34,7 @@ RUN composer install --no-scripts
 RUN ln -s /app /var/www/app
 
 # Configure cron jobs, and ensure crontab-file permissions
-COPY conf/cron.d/crontab /etc/cron.d/app-cron
+COPY docker/app/conf/cron.d/crontab /etc/cron.d/app-cron
 RUN chmod 0644 /etc/cron.d/app-cron && \
     crontab /etc/cron.d/app-cron && \
     touch /var/log/cron.log
