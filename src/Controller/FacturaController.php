@@ -7,6 +7,7 @@ use App\Entity\Envio;
 use App\Entity\EnvioAduana;
 use App\Entity\EnvioManifiesto;
 use App\Entity\Estructura;
+use App\Entity\EstructuraTipo;
 use App\Entity\Factura;
 use App\Entity\FacturaConsecutivo;
 use App\Manager\EnvioManager;
@@ -102,7 +103,13 @@ class FacturaController extends AbstractController
     {
         $choferes = new ArrayCollection();
         $em = $this->getDoctrine()->getManager();
-        $oficinas = $em->getRepository(Estructura::class)->findAll();
+        /** @var Trabajador $user */
+        $user = $this->getUser();
+
+        $empresa = $user->getEstructura()->searchParentsByTipo(
+            $em->getRepository(EstructuraTipo::class)->findOneByCodigo(EstructuraTipo::OSDE)
+        );
+
         /** @var Nomenclador $nom */
         $nom = $em->getRepository(Nomenclador::class)->findOneByCodigo('APP_TIPO_VEHICULO');
         $vehiculos = $nom->getChildren()->getValues();
@@ -115,7 +122,7 @@ class FacturaController extends AbstractController
             /** @var Trabajador $item */
             foreach ($item->getGrupos()->getValues() as $g){
                 /** @var Grupo $g */
-                if ($g->getCodigo() == 'GRUPO_ADMINISTRADOR'){
+                if ($g->getCodigo() == 'GRUPO_CHOFER'){
                     $id = $item->getPersona()->getId();
                     /** @var Persona $c */
                     $c = $em->getRepository(Persona::class)->find($id);
@@ -126,7 +133,7 @@ class FacturaController extends AbstractController
         }
 
         return $this->render('factura/crear_factura.html.twig', [
-            'findAll' => $oficinas,
+            'findAll' => $empresa,
             'vehiculos' => $vehiculos,
             'choferes' => $choferes
 
@@ -156,7 +163,7 @@ class FacturaController extends AbstractController
 
                 if ($saca != null){
                     if ($saca->getEstado()->getCodigo() != 'APP_ENVIO_ESTADO_CLASIFICADO' && $saca->getEstado()->getCodigo() != 'APP_ENVIO_ESTADO_FACTURADO'){
-                        if ($saca->getEstructuraDestino()->getId() == $oficina_dest){
+                        if ($saca->getProvincia()->getId() == $oficina_dest){
                             $id = $saca->getId();
                             $cod = $saca->getCodTracking();
                             $peso = $saca->getPeso();

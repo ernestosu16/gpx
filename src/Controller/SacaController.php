@@ -6,6 +6,7 @@ use App\Entity\Envio;
 use App\Entity\EnvioAduana;
 use App\Entity\EnvioManifiesto;
 use App\Entity\Estructura;
+use App\Entity\EstructuraTipo;
 use App\Entity\Nomenclador;
 use App\Entity\Saca;
 use App\Entity\SacaConsecutivo;
@@ -54,15 +55,16 @@ class SacaController extends AbstractController
     public function CrearSaca(): Response
     {
         $em = $this->getDoctrine()->getManager();
-        ///** @var Trabajador $user */
-        //$user = $this->getUser();
+        /** @var Trabajador $user */
+        $user = $this->getUser();
 
-        ///** @var Estructura $estructura */
-        //$oficina = $em->getRepository(Estructura::class)->find($user->getEstructura()->getId());
+        $empresa = $user->getEstructura()->searchParentsByTipo(
+            $em->getRepository(EstructuraTipo::class)->findOneByCodigo(EstructuraTipo::OSDE)
+        );
 
-        $oficina = $em->getRepository(Estructura::class)->findAll();
+        //$oficina = $em->getRepository(Estructura::class)->findAll();
         return $this->render('saca/crear_saca.html.twig', [
-            'findAll' => $oficina
+            'findAll' => $empresa
         ]);
     }
 
@@ -87,7 +89,7 @@ class SacaController extends AbstractController
 
             if ($envio != null) {
                 if ($envio->getEstado()->getCodigo() != 'APP_ENVIO_ESTADO_CLASIFICADO' && $envio->getEstado()->getCodigo() != 'APP_ENVIO_ESTADO_FACTURADO') {
-                    if ($envio->getEstructuraDestino()->getId() == $oficina_dest) {
+                    if ($envio->getProvincia()->getId() == $oficina_dest) {
 
                         $id = $envio->getId();
                         $cod = $envio->getCodTracking();
