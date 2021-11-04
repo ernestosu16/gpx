@@ -91,9 +91,9 @@ final class ImportarManifiestoEnvioCommand extends BaseCommand implements BaseCo
 
                     if(!$result){//manifiesto leido correctamente
                         $this->io->error('El manifiesto' . $file['file'] . ' no se pudo leer correctamente.');
-                        $localFile = $this->get('kernel')->getProjectDir() . '/public/download/envioManifiesto/EMCI/DHL/Manifiesto202108080340SA.xml';
+                        //$localFile = $this->get('kernel')->getProjectDir() . '/public/download/envioManifiesto/EMCI/DHL/Manifiesto202108080340SA.xml';
                         $emCurl->upload($file['file'],$local_directory . '/' . $file['file'] ,$transitoria['file'] . '/' . $agencia['file'] . '/');
-                        unlink($local_directory . '/' . $file['file']);
+                        //unlink($local_directory . '/' . $file['file']);
                     }
 
                     $deletePath = 'DELE /' . $transitoria['file'] . '/' . $agencia['file'] . '/' .  $file['file'];
@@ -208,8 +208,8 @@ final class ImportarManifiestoEnvioCommand extends BaseCommand implements BaseCo
             try{
                 foreach ($envios as $env){
                     $newenvio = $this->crearEnvioManifiesto($guia, $agencia, $no_vuelo, $transitaria, $env );
-                    if($newenvio->getId() == null){
-                        throw new \Exception('Manifiesto '.$newenvio->getCodigo().' no es valido.');
+                    if($newenvio == null){
+                        throw new \Exception('Manifiesto '.$fileNameWithExtension.' no es valido.');
                     }
                 }
                 $this->getEntityManager()->commit();
@@ -235,12 +235,19 @@ final class ImportarManifiestoEnvioCommand extends BaseCommand implements BaseCo
 
         $remitente->setNumeroPasaporte(null);
         $remitente->setNumeroIdentidad(null);
+        //dump($env->remitente->persona->nacionalidad);exit;
+        if(!$this->paisRepository->findOneByCodigoAduana($env->remitente->persona->nacionalidad)){
+            return null;
+        }
         $remitente->setPais($this->paisRepository->findOneByCodigoAduana($env->remitente->persona->nacionalidad));
 
 
         /** @var Persona $destinatario */
         $destinatario = $serializer->deserialize($env->destinatario->persona->asXML(), Persona::class, 'xml');
         $destinatario->setNumeroPasaporte(null);
+        if(!$this->paisRepository->findOneByCodigoAduana($env->destinatario->persona->nacionalidad)){
+            return null;
+        }
         $destinatario->setPais($this->paisRepository->findOneByCodigoAduana($env->destinatario->persona->nacionalidad));
 
         $existRemitente = $this->getEntityManager()->getRepository(Persona::class)->findOneBy(["hash"=>$emPersona->generarHash($remitente)]);
@@ -275,6 +282,6 @@ final class ImportarManifiestoEnvioCommand extends BaseCommand implements BaseCo
             return $emManifiesto->createEnvioManifiesto($newEnvioManifiesto);
         }
 
-        return $newEnvioManifiesto;
+        return null;
     }
 }
