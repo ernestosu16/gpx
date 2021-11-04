@@ -38,9 +38,6 @@ RUN composer install --no-scripts
 # Publicando el proyecto
 RUN ln -s /app /var/www/app
 
-# Apache mod
-RUN a2enmod ssl
-
 EXPOSE 80
 RUN mkdir -p /var/log/supervisor
 COPY ./docker/app/conf/supervisord.conf /etc/supervisor/supervisord.conf
