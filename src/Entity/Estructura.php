@@ -369,4 +369,12 @@ class Estructura extends BaseNestedTree
             return $element === $tipo;
         })) ? $estructura : $this->searchParentByTipo($estructura->getParent(), $tipo);
     }
+
+    public function getCodigoAduana(){
+        return $this->getParametros()['codigo_aduana'];
+    }
+
+    public function getCodigoOperador(){
+        return $this->getParametros()['codigo_operador'];
+    }
 }
