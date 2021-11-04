@@ -32,9 +32,6 @@ RUN chmod 0644 /etc/cron.d/app-cron && \
     crontab /etc/cron.d/app-cron && \
     touch /var/log/cron.log
 
-# Apache mod
-RUN a2enmod ssl
-
 EXPOSE 80
 RUN mkdir -p /var/log/supervisor
 COPY ./conf/supervisord.conf /etc/supervisor/supervisord.conf

@@ -33,7 +33,7 @@ function buscarEnvioPreRecepcion()
         error: function (error) {
             alert('Error: ' + error.status + ' ' + error.statusText);
             console.log('error', error.responseText)
-            //limpiarCampos();
+            limpiarCampos();
         }
     })
 }

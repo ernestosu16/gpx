@@ -33,7 +33,6 @@ class MenuType extends AbstractType
                 'label' => 'codigo',
                 'label_attr' => ['class' => 'col-sm-2 control-label'],
                 'attr' => ['autocomplete' => 'off', 'class' => 'form-control input-sm'],
-                'help' => 'El código debe ser único y debe iniciar con el prefijo "MENU". Ejemplo "MENU_NOMENCLADOR"',
             ])
             ->add('nombre', TextType::class, [
                 'label' => 'nombre',

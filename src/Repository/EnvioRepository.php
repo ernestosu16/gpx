@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\Envio;
-use App\Entity\EnvioAduana;
 use App\Entity\Nomenclador;
 use App\Entity\Trabajador;
 use App\Entity\TrabajadorCredencial;
@@ -68,25 +67,31 @@ class EnvioRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
-    public function buscarEnvioParaEntregaPorCI($destinatario_id, $userAutenticado)
+    public function buscarEnvioParaEntregaPorCI($destinatario_id,Trabajador $userAutenticado)
     {
         $em = $this->getEntityManager();
         $estadoRecepcionado = $em->getRepository(Nomenclador::class)->findOneByCodigo('APP_ENVIO_ESTADO_RECEPCIONADO');
 
         return $this->createQueryBuilder('envio')
-            ->addSelect('envio_aduana.datos_despacho')
-            ->andWhere('envio.destinatario = :destinatario')
-            ->andWhere('envio.estructura_destino = :estructura_destino')
-            ->andWhere('envio.estado = :estado')
-            ->innerJoin(EnvioAduana::class, 'envio_aduana', Expr\Join::WITH, 'envio.id = envio_aduana.envio')
-            ->andWhere('envio_aduana.datos_despacho IS NULL')
+            ->andWhere('envio.destinatario_id = :destinatario')
+            ->andWhere('envio.estructura_destino_id = :estructura_destino')
+            ->andWhere('envio.estado_id = :estado')
+
+            ->join('envio.envio_aduana', 'envio_aduana', Expr\Join::WITH, 'envio_aduana.id=')
+            ->andWhere('envio_aduana.datos_despacho != :datos_despacho')
+
+
             ->setParameter('destinatario', $destinatario_id)
             ->setParameter('estructura_destino', $userAutenticado->getEstructura())
             ->setParameter('estado', $estadoRecepcionado->getId() )
-            ->getQuery()
-            ->getArrayResult();
-    }
 
+            ->setParameter('datos_despacho', [] )
+
+
+
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 
 
 
