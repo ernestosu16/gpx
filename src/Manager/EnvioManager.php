@@ -243,7 +243,7 @@ class EnvioManager extends _Manager_
                 $envioAduana->setProvinciaAduana($provincia->getCodigoAduana());
                 $envioAduana->setMunicipioAduana($municipio->getCodigoAduana());
                 $envioAduana->setEstado($estadoRecepcionado);
-                $envioAduana->setArancel($envioManifestado ? $envioManifestado->isArancel() : false);
+                $envioAduana->setArancel( $envioManifestado ? $envioManifestado->isArancel() : false );
                 $envioAduana->setDatosDespacho(null);
                 $this->entityManager->persist($envioAduana);
 
@@ -351,6 +351,7 @@ class EnvioManager extends _Manager_
 
         $res = json_decode($result);
 
+        //dump($res);exit();
         if($res->success == true){
             $res = json_decode($result, true);
             $envio_aduana->setDatosDespacho($res);
