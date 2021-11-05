@@ -21,6 +21,10 @@ build:
         - curl -sS https://get.symfony.com/cli/installer | bash
         - mv /root/.symfony/bin/symfony /usr/local/bin/symfony
     script:
+        - apt-get -y update && apt-get install -y libicu-dev libxml2-dev libsodium-dev
+        - docker-php-ext-configure intl && docker-php-ext-install intl
+        - docker-php-ext-configure opcache --enable-opcache && docker-php-ext-install opcache
+        - docker-php-ext-install bcmath pcntl pdo_mysql sockets sodium soap zip
         - symfony composer install
 
 phpunit:
@@ -36,6 +40,10 @@ phpunit:
         - name: dap/mysql:8.0
           alias: db
     script:
+        - apt-get -y update && apt-get install -y libicu-dev libxml2-dev libsodium-dev
+        - docker-php-ext-configure intl && docker-php-ext-install intl
+        - docker-php-ext-configure opcache --enable-opcache && docker-php-ext-install opcache
+        - docker-php-ext-install bcmath pcntl pdo_mysql sockets sodium soap zip
         - sed -i 's/APP_ENV=dev/APP_ENV=test/g' .env
         - ./proyect-init.sh
         - bin/console app:trabajador:nuevo --numero-identidad=00000000000 --nombre=Admin --apellido-primero="del" --apellido-segundo="Sistema" --cargo="admin" --usuario=admin --password=admin --estructura=0 --grupo=0 --admin=y
