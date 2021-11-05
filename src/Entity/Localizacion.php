@@ -13,6 +13,7 @@ use JetBrains\PhpStorm\Pure;
 use JMS\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
+use function Symfony\Component\String\u;
 
 /** @Gedmo\Tree(type="nested") */
 #[ORM\Entity(repositoryClass: LocalizacionRepository::class)]
@@ -83,7 +84,7 @@ class Localizacion extends BaseNestedTree
 
     public function setCodigo(string $codigo): self
     {
-        $this->codigo = mb_strtoupper($codigo);
+        $this->codigo =  u($codigo)->replace(' ', '_')->upper();
 
         return $this;
     }

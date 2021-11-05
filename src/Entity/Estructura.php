@@ -13,6 +13,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
+use function Symfony\Component\String\u;
 
 /** @Gedmo\Tree(type="nested") */
 #[ORM\Entity(repositoryClass: EstructuraRepository::class)]
@@ -198,7 +199,7 @@ class Estructura extends BaseNestedTree
 
     public function setCodigo(string $codigo): self
     {
-        $this->codigo = $codigo;
+        $this->codigo = u($codigo)->replace(' ', '_')->upper();
 
         return $this;
     }

@@ -151,9 +151,7 @@ class Nomenclador extends BaseNestedTree
 
     public function setCodigo(string $codigo): self
     {
-        $codigo = u($codigo)->replace(' ', '_');
-
-        $this->codigo = mb_strtoupper($codigo);
+        $this->codigo = u($codigo)->replace(' ', '_')->upper();
 
         return $this;
     }
