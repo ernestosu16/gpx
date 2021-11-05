@@ -17,11 +17,12 @@ RUN apt-get -y update && \
 
 # Configurando extenciones
 RUN docker-php-ext-configure intl && \
-    docker-php-ext-install intl pcntl
+    docker-php-ext-install intl
 
 RUN docker-php-ext-configure opcache --enable-opcache \
-    && docker-php-ext-install opcache soap
+    && docker-php-ext-install opcache
 
+RUN docker-php-ext-install bcmath pcntl pdo_mysql sockets sodium soap zip
 # APACHE
 COPY ./docker/app/conf/apache /etc/apache2
 # PHP
