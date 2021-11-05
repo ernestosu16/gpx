@@ -135,6 +135,9 @@ class FacturaController extends AbstractController
                 }
             }
 
+            //if ($item->getTipos()->getValues() == )
+        }
+
         /** @var Nomenclador $nom */
         $nom = $em->getRepository(Nomenclador::class)->findOneByCodigo('APP_TIPO_VEHICULO');
         $vehiculos = $nom->getChildren()->getValues();
@@ -158,7 +161,7 @@ class FacturaController extends AbstractController
         }
 
         return $this->render('factura/crear_factura.html.twig', [
-            'findAll' => $empresas,
+            'findAll' => $empresa->getChildren()->toArray(),
             'vehiculos' => $vehiculos,
             'choferes' => $choferes
 
