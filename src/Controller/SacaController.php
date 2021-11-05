@@ -15,6 +15,7 @@ use App\Entity\Trabajador;
 use App\Manager\EnvioManager;
 use App\Repository\NomencladorRepository;
 use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
 use SoapClient;
 use JMS\Serializer\SerializerBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,6 +24,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use function PHPUnit\Framework\throwException;
+use function Sodium\add;
 
 #[Route('/saca')]
 class SacaController extends AbstractController
@@ -54,19 +56,30 @@ class SacaController extends AbstractController
     #[Route('/crear', name: 'crear_saca')]
     public function CrearSaca(): Response
     {
+        $empresas = new ArrayCollection();
         $em = $this->getDoctrine()->getManager();
         /** @var Trabajador $user */
         $user = $this->getUser();
 
         $empresa = $user->getEstructura()->searchParentsByTipo(
-            $em->getRepository(EstructuraTipo::class)->findOneByCodigo(EstructuraTipo::OSDE)
+            $em->getRepository(EstructuraTipo::class)->findOneByCodigo(EstructuraTipo::EMPRESA)
         );
 
-        //dump($empresa->getChildren()->toArray());exit();
+        /** @var Estructura $item */
+        foreach ($empresa->getChildren()->toArray() as $item){
+            /** @var EstructuraTipo $i */
+            foreach ($item->getTipos()->getValues() as $i){
+                if ($i->getCodigo() == 'OFICINA_CCP'){
+                    $empresas->add($empresa);
+                }
+            }
+
+            //if ($item->getTipos()->getValues() == )
+        }
 
         //$oficina = $em->getRepository(Estructura::class)->findAll();
         return $this->render('saca/crear_saca.html.twig', [
-            'findAll' => $empresa->getChildren()->toArray()
+            'findAll' => $empresas
         ]);
     }
 

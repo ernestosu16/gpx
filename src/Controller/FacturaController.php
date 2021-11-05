@@ -117,13 +117,23 @@ class FacturaController extends AbstractController
     public function CrearFactura(): Response
     {
         $choferes = new ArrayCollection();
+        $empresas = new ArrayCollection();
         $em = $this->getDoctrine()->getManager();
         /** @var Trabajador $user */
         $user = $this->getUser();
 
         $empresa = $user->getEstructura()->searchParentsByTipo(
-            $em->getRepository(EstructuraTipo::class)->findOneByCodigo(EstructuraTipo::OSDE)
+            $em->getRepository(EstructuraTipo::class)->findOneByCodigo(EstructuraTipo::EMPRESA)
         );
+
+        /** @var Estructura $item */
+        foreach ($empresa->getChildren()->toArray() as $item){
+            /** @var EstructuraTipo $i */
+            foreach ($item->getTipos()->getValues() as $i){
+                if ($i->getCodigo() == 'OFICINA_CCP'){
+                    $empresas->add($empresa);
+                }
+            }
 
         /** @var Nomenclador $nom */
         $nom = $em->getRepository(Nomenclador::class)->findOneByCodigo('APP_TIPO_VEHICULO');
@@ -148,7 +158,7 @@ class FacturaController extends AbstractController
         }
 
         return $this->render('factura/crear_factura.html.twig', [
-            'findAll' => $empresa->getChildren()->toArray(),
+            'findAll' => $empresas,
             'vehiculos' => $vehiculos,
             'choferes' => $choferes
 
