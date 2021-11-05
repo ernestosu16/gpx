@@ -2,7 +2,7 @@ FROM dap/php:8.0-apache
 
 # Instalando paquete
 RUN apt-get -y update && \
-    apt-get install -y libicu-dev libxml2-dev
+    apt-get install -y libicu-dev libxml2-dev libsodium-dev
 
 # Configurando extenciones
 RUN docker-php-ext-configure intl && \

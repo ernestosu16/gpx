@@ -21,7 +21,7 @@ build:
         - curl -sS https://get.symfony.com/cli/installer | bash
         - mv /root/.symfony/bin/symfony /usr/local/bin/symfony
     script:
-        - apt-get -y update && apt-get install -y libicu-dev libxml2-dev
+        - apt-get -y update && apt-get install -y libicu-dev libxml2-dev libsodium-dev
         - docker-php-ext-configure intl && docker-php-ext-install intl
         - docker-php-ext-configure opcache --enable-opcache && docker-php-ext-install opcache
         - docker-php-ext-install bcmath pcntl pdo_mysql sockets sodium soap zip
@@ -40,7 +40,7 @@ phpunit:
         - name: dap/mysql:8.0
           alias: db
     script:
-        - apt-get -y update && apt-get install -y libicu-dev libxml2-dev
+        - apt-get -y update && apt-get install -y libicu-dev libxml2-dev libsodium-dev
         - docker-php-ext-configure intl && docker-php-ext-install intl
         - docker-php-ext-configure opcache --enable-opcache && docker-php-ext-install opcache
         - docker-php-ext-install bcmath pcntl pdo_mysql sockets sodium soap zip

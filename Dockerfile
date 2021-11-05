@@ -13,7 +13,7 @@ COPY templates /app/templates
 
 # Instalando paquete
 RUN apt-get -y update && \
-    apt-get install -y libicu-dev libxml2-dev
+    apt-get install -y libicu-dev libxml2-dev libsodium-dev
 
 # Configurando extenciones
 RUN docker-php-ext-configure intl && \
@@ -22,7 +22,7 @@ RUN docker-php-ext-configure intl && \
 RUN docker-php-ext-configure opcache --enable-opcache \
     && docker-php-ext-install opcache
 
-RUN docker-php-ext-install bcmath pcntl pdo_mysql sockets sodium soap zip
+RUN docker-php-ext-install pcntl bcmath  pdo_mysql sockets sodium soap zip
 # APACHE
 COPY ./docker/app/conf/apache /etc/apache2
 # PHP
