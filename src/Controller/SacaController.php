@@ -62,9 +62,11 @@ class SacaController extends AbstractController
             $em->getRepository(EstructuraTipo::class)->findOneByCodigo(EstructuraTipo::OSDE)
         );
 
+        //dump($empresa->getChildren()->toArray());exit();
+
         //$oficina = $em->getRepository(Estructura::class)->findAll();
         return $this->render('saca/crear_saca.html.twig', [
-            'findAll' => $empresa
+            'findAll' => $empresa->getChildren()->toArray()
         ]);
     }
 
@@ -82,14 +84,17 @@ class SacaController extends AbstractController
             /** @var Estructura $estructura */
             $empresa = $em->getRepository(Estructura::class)->find($user->getEstructura()->getId());
 
+            /** @var Estructura $ofic_dest */
+            $ofic_dest = $em->getRepository(Estructura::class)->find($oficina_dest);
+
             /** @var Envio $envio */
             $envio = $em->getRepository(Envio::class)->findOneBy(['cod_tracking' => $codTracking]);
-            //dump($envio);exit();
+            //dump($ofic_dest);exit();
             $respuesta = '';
 
             if ($envio != null) {
                 if ($envio->getEstado()->getCodigo() != 'APP_ENVIO_ESTADO_CLASIFICADO' && $envio->getEstado()->getCodigo() != 'APP_ENVIO_ESTADO_FACTURADO') {
-                    if ($envio->getProvincia()->getId() == $oficina_dest) {
+                    if ($envio->getMunicipio()->getId() == $ofic_dest->getMunicipio()->getId()) {
 
                         $id = $envio->getId();
                         $cod = $envio->getCodTracking();
@@ -100,18 +105,22 @@ class SacaController extends AbstractController
 
                         /** @var EnvioAduana $envio_aduana */
                         $envio_aduana = $em->getRepository(EnvioAduana::class)->findOneBy(['envio'=>$id]);
+                        //dump($envio_aduana);exit();
+                        if ($envio_aduana != null){
+                            if ($envio_aduana->getDatosDespacho() == null){
+                                $url= "https://sua.aduana.cu/GINASUA/serviciosExternos?wsdl";
 
-                        if ($envio_aduana != null && $envio_aduana->getDatosDespacho() == null){
-                            $url= "https://sua.aduana.cu/GINASUA/serviciosExternos?wsdl";
-
-                            if ($this->envioManager->verificarConectAduana($url) == 1){
-                                if ($this->envioManager->addDespachoAduanaEnvio($url, $envio_aduana->getId(), $cod, $empresa)){
-                                    return JsonResponse::fromJsonString($miRespuestaJson);
+                                if ($this->envioManager->verificarConectAduana($url) == 1){
+                                    if ($this->envioManager->addDespachoAduanaEnvio($url, $envio_aduana->getId(), $cod, $empresa)){
+                                        return JsonResponse::fromJsonString($miRespuestaJson);
+                                    }else{
+                                        $respuesta = 'El servicio del despacho de la aduana no está funcionando, por favor intentelo mas tarde.';
+                                    }
                                 }else{
-                                    $respuesta = 'El servicio del despacho de la aduana no está funcionando, por favor intentelo mas tarde.';
+                                    $respuesta = 'La conexión con el servicio de aduana esta tardando mucho, por favor intentelo mas tarde.';
                                 }
                             }else{
-                                $respuesta = 'La conexión con el servicio de aduana esta tardando mucho, por favor intentelo mas tarde.';
+                                return JsonResponse::fromJsonString($miRespuestaJson);
                             }
                         }else{
                             $respuesta = 'El envío aduana no exite';
@@ -156,13 +165,13 @@ class SacaController extends AbstractController
             $estructura_origen = $user->getEstructura();
 
             /** @var Nomenclador $estado */
-            $estado = $em->getRepository(Nomenclador::class)->findOneBy(['codigo' => 'APP_ENVIO_SACA_ESTADO_CREADA']);
+            $estado = $em->getRepository(Nomenclador::class)->findOneBy(['codigo' => 'APP_SACA_ESTADO_CREADA']);
 
             if (!$estado)
                 return new JsonResponse(['error' => 'Error el estado de la saca "CREADO" no existe'], 500);
 
             /** @var Nomenclador $tipo */
-            $tipo = $nomencladorRepository->findOneByCodigo('APP_ENVIO_SACA_TIPO_EMBALAJE_SACA');
+            $tipo = $nomencladorRepository->findOneByCodigo('APP_SACA_TIPO_EMBALAJE_SACA');
 
             if (!$tipo)
                 return new JsonResponse(['error' => 'Error el en tipo de embalaje "SACA" no existe'], 500);
