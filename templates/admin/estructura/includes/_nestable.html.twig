@@ -24,7 +24,9 @@
                     </button>
                 </span>
                 {% if node.children|length > 0 %}
-                <span class="label h-bg-navy-blue"><i class="fa fa-sitemap"></i></span>
+                    <span class="label h-bg-navy-blue"><i class="fa fa-sitemap"></i></span>
+                {% else %}
+                    <span class="label h-bg-navy-blue"><i class="fa fa-industry"></i></span>
                 {% endif %}
                 {{ node.nombre }}
             </div>
