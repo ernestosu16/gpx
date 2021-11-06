@@ -298,6 +298,11 @@ class Estructura extends BaseNestedTree
         return $this;
     }
 
+    #[Pure] public function getProvincia(): ?Localizacion
+    {
+        return $this->getMunicipio()?->getParent();
+    }
+
     #[Pure] public function getMunicipio(): ?Localizacion
     {
 
@@ -400,11 +405,13 @@ class Estructura extends BaseNestedTree
         })) ? $estructura : $this->searchParentByTipo($estructura->getParent(), $tipo);
     }
 
-    public function getCodigoAduana(){
+    public function getCodigoAduana()
+    {
         return $this->getParametros()['codigo_aduana'];
     }
 
-    public function getCodigoOperador(){
+    public function getCodigoOperador()
+    {
         return $this->getParametros()['codigo_operador'];
     }
 }

@@ -43,9 +43,10 @@ abstract class BaseAdminType extends AbstractType
         ));
 
         # Quitando de la lista
-        foreach ($collection as $key => $item) {
-            if (in_array($item, $excluir))
-                unset($collection[$key]);
+        foreach ($excluir as $item) {
+            $collection = array_filter($collection, function (Estructura $estructura) use ($item) {
+                return $estructura !== $item ? $estructura : null;
+            });
         }
 
         return $collection;

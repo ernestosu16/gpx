@@ -1,3 +1,4 @@
+{# @var node \App\Entity\Estructura #}
 <ol class="dd-list">
     {% for node in nodes %}
         {% set tipos = [] %}
@@ -13,7 +14,8 @@
             data-tipos="{{ tipos|json_encode }}"
             data-habilitado="{{ node.habilitado ? 'si'|trans([],'admin') : 'no'|trans([],'admin') }}">
             <div class="dd-handle dd-nodrag">
-                <span class="pull-right">
+                <div style="margin-left: 22px">
+                    <span class="pull-right">
                     <a class="btn btn-xs btn-primary2"
                        href="{{ path('admin_estructura_edit', {'id': node.id}) }}"
                        title="{{ 'editar'|trans([],'admin') }}">
@@ -23,12 +25,21 @@
                         <i class="fa fa-info"></i>
                     </button>
                 </span>
-                {% if node.children|length > 0 %}
-                    <span class="label h-bg-navy-blue"><i class="fa fa-sitemap"></i></span>
-                {% else %}
-                    <span class="label h-bg-navy-blue"><i class="fa fa-industry"></i></span>
-                {% endif %}
-                {{ node.nombre }}
+                    {{ node.nombre }}
+                    <span class="label h-bg-navy-blue" title="Provincia, Municipio y Código Postal">
+                        <i class="fa fa-map-signs"></i>
+                        {{ node.provincia }}, {{ node.municipio }}, {{ node.codigoPostal }}
+                    </span>
+                    <span class="label h-bg-navy-blue" title="Tipo de estructura">
+                        <i class="fa fa-industry"></i>
+                        {{ node.tipos.toArray|join(', ') }}
+                    </span>
+                    {% if node.habilitado %}
+                        <span class="label h-bg-green" title="Hablitado"><i class="fa fa-check"></i></span>
+                    {% else %}
+                        <span class="label h-bg-red" title="Deshabilitado"><i class="fa fa-close"></i></span>
+                    {% endif %}
+                </div>
             </div>
             {% if node.children|length > 0 %}
                 {% include 'admin/estructura/includes/_nestable.html.twig' with {'nodes': node.children} only %}
