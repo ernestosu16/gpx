@@ -228,4 +228,9 @@ class TrabajadorCredencial implements UserInterface, PasswordAuthenticatedUserIn
     {
         return null;
     }
+
+    #[Pure] public function getHabilitado(): ?bool
+    {
+        return $this->getTrabajador()?->getHabilitado();
+    }
 }

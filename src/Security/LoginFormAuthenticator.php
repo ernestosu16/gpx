@@ -3,13 +3,16 @@
 namespace App\Security;
 
 use App\Entity\TrabajadorCredencial;
+use App\Repository\TrabajadorCredencialRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Http\Authenticator\AbstractLoginFormAuthenticator;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\CsrfTokenBadge;
@@ -26,16 +29,18 @@ final class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
     public const LOGIN_ROUTE = 'app_login';
 
     public function __construct(
-        private UrlGeneratorInterface  $urlGenerator,
-        private EntityManagerInterface $entityManager
+        private UrlGeneratorInterface          $urlGenerator,
+        private EntityManagerInterface         $entityManager,
+        private TrabajadorCredencialRepository $credencialRepository
     )
     {
-
     }
 
     public function authenticate(Request $request): PassportInterface
     {
         $usuario = $request->request->get('usuario', '');
+
+        $this->checkCredencial($usuario);
 
         $request->getSession()->set(Security::LAST_USERNAME, $usuario);
 
@@ -48,6 +53,9 @@ final class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
         );
     }
 
+    /**
+     * @throws Exception
+     */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
         $this->setCredencialTrabajador($token, $request);
@@ -64,6 +72,9 @@ final class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
         return $this->urlGenerator->generate(self::LOGIN_ROUTE);
     }
 
+    /**
+     * @throws Exception
+     */
     private function setCredencialTrabajador(TokenInterface $token, Request $request)
     {
         /** @var TrabajadorCredencial $credencial */
@@ -74,5 +85,19 @@ final class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
         $credencial->setSalt(sha1(random_int(PHP_INT_MIN, PHP_INT_MAX)));
         $this->entityManager->persist($credencial);
         $this->entityManager->flush();
+    }
+
+    private function checkCredencial(string $usuario)
+    {
+        /** @var TrabajadorCredencial $credencial */
+        $credencial = $this->credencialRepository->findOneByUsuario($usuario);
+        if (!$credencial)
+            return;
+
+        if (!$credencial->getHabilitado())
+            throw new CustomUserMessageAuthenticationException('El trabajador esta deshabilitado.');
+
+        if (!$credencial->getEstructura()->getHabilitado())
+            throw new CustomUserMessageAuthenticationException('La estructura a la que pertenece está deshabilitada.');
     }
 }
