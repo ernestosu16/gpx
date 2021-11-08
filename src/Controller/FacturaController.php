@@ -168,7 +168,7 @@ class FacturaController extends AbstractController
         }
 
         return $this->render('factura/crear_factura.html.twig', [
-            'findAll' => $empresa->getChildren()->toArray(),
+            'findAll' => $empresas,
             'vehiculos' => $vehiculos,
             'choferes' => $choferes
 
