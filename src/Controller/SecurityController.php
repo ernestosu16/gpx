@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\TrabajadorCredencial;
 use App\Form\Security\PerfilType;
+use App\Form\Security\TrabajadorCredencialType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,7 +33,6 @@ class SecurityController extends AbstractController
         throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
 
-
     #[Route(path: '/profile', name: 'app_profile')]
     public function profile(Request $request): Response
     {
@@ -52,6 +52,31 @@ class SecurityController extends AbstractController
         }
 
         return $this->renderForm('homer-theme/profile.html.twig', [
+            'trabajador' => $credencial->getTrabajador(),
+            'form' => $form,
+        ]);
+    }
+
+    #[Route(path: '/cambiar-contrasena', name: 'app_change_password')]
+    public function cambioContrasena(Request $request): Response
+    {
+        if (!$this->getUser())
+            return $this->redirectToRoute('app_login');
+
+        /** @var TrabajadorCredencial $credencial */
+        $credencial = $this->getUser();
+
+        $form = $this->createForm(TrabajadorCredencialType::class, $credencial);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $credencial->setForzarCambioContrasena(false);
+            $this->getDoctrine()->getManager()->flush();
+
+            return $this->redirectToRoute('app_dashboard', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('homer-theme/change_password.html.twig', [
             'trabajador' => $credencial->getTrabajador(),
             'form' => $form,
         ]);

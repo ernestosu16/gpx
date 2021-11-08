@@ -1,36 +1,68 @@
+{# @var form \Symfony\Component\Form\FormView #}
 <div class="row">
-    <div class="col-lg-6">
-        {% set fields = {
-            parent: {class:'col-sm-12'},
-            nombre: {class:'col-sm-8'},
-            codigo_postal: {class:'col-sm-4'},
-            descripcion: {class:'col-sm-12'},
-            municipio: {class:'col-sm-12'},
-            habilitado: {class:'col-sm-12'}
-        } %}
-        {% for key,field in fields %}
-            <div class="form-group {{ field.class }}">
-                {{ form_label(form[key]) }}
-                {{ form_widget(form[key]) }}
-                {{ form_help(form[key]) }}
-                {{ form_errors(form[key]) }}
+    <div class="col-lg-4">
+        <div class="row">
+            <div class="form-group col-sm-12">
+                <label for="imageName">Logo de la compañía</label>
+                <div class="preview">
+                    <img id="imagePreview" class="img-responsive imagePreview" alt="Responsive image"
+                         src="{{ asset('uploads/estructura/logo/' ~ form.vars.value.logo) }}">
+                </div>
+                <div class="btn btn-xs btn-primary btn-file btn-block remove_radio">
+                    Buscar {{ form_widget(form.logo) }}</div>
+                {{ form_help(form.logo) }}
+                {{ form_errors(form.logo) }}
             </div>
-        {% endfor %}
+            {% set fields = {
+                nombre: {class:'col-sm-12'},
+                codigo_postal: {class:'col-sm-6'}
+            } %}
+            {% for key,field in fields %}
+                <div class="form-group {{ field.class }}">
+                    {{ form_label(form[key]) }}
+                    {{ form_widget(form[key]) }}
+                    {{ form_help(form[key]) }}
+                    {{ form_errors(form[key]) }}
+                </div>
+            {% endfor %}
+        </div>
     </div>
-    <div class="col-lg-6">
-        {% set fields = {
-            codigo: {class:'col-sm-12'},
-            tipos: {class:'col-sm-12'},
-            grupos: {class:'col-sm-12'},
-        } %}
-        {% for key,field in fields %}
-            <div class="form-group {{ field.class }}">
-                {{ form_label(form[key]) }}
-                {{ form_widget(form[key]) }}
-                {{ form_help(form[key]) }}
-                {{ form_errors(form[key]) }}
-            </div>
-        {% endfor %}
+    <div class="col-lg-4">
+
+        <div class="row">
+            {% set fields = {
+                parent: {class:'col-sm-12'},
+                municipio: {class:'col-sm-12'},
+                descripcion: {class:'col-sm-12'},
+                habilitado: {class:'col-sm-12'}
+            } %}
+            {% for key,field in fields %}
+                <div class="form-group {{ field.class }}">
+                    {{ form_label(form[key]) }}
+                    {{ form_widget(form[key]) }}
+                    {{ form_help(form[key]) }}
+                    {{ form_errors(form[key]) }}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="col-lg-4">
+
+        <div class="row">
+            {% set fields = {
+                tipos: {class:'col-sm-12'},
+                grupos: {class:'col-sm-12'},
+                codigo: {class:'col-sm-12'},
+            } %}
+            {% for key,field in fields %}
+                <div class="form-group {{ field.class }}">
+                    {{ form_label(form[key]) }}
+                    {{ form_widget(form[key]) }}
+                    {{ form_help(form[key]) }}
+                    {{ form_errors(form[key]) }}
+                </div>
+            {% endfor %}
+        </div>
     </div>
 </div>
 {% include('@App/admin/estructura/_form_inputs.html.twig') %}

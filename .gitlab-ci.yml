@@ -21,6 +21,10 @@ build:
         - curl -sS https://get.symfony.com/cli/installer | bash
         - mv /root/.symfony/bin/symfony /usr/local/bin/symfony
     script:
+        - apt-get -y update && apt-get install -y libicu-dev libxml2-dev libsodium-dev
+        - docker-php-ext-configure intl && docker-php-ext-install intl
+        - docker-php-ext-configure opcache --enable-opcache && docker-php-ext-install opcache
+        - docker-php-ext-install bcmath pcntl pdo_mysql sockets sodium soap zip
         - symfony composer install
 
 phpunit:
@@ -33,13 +37,37 @@ phpunit:
     dependencies:
         - build
     services:
-        -   name: dap/mysql:8.0
-            alias: db
+        - name: dap/mysql:8.0
+          alias: db
     script:
+        - apt-get -y update && apt-get install -y libicu-dev libxml2-dev libsodium-dev
+        - docker-php-ext-configure intl && docker-php-ext-install intl
+        - docker-php-ext-configure opcache --enable-opcache && docker-php-ext-install opcache
+        - docker-php-ext-install bcmath pcntl pdo_mysql sockets sodium soap zip
         - sed -i 's/APP_ENV=dev/APP_ENV=test/g' .env
         - ./proyect-init.sh
         - bin/console app:trabajador:nuevo --numero-identidad=00000000000 --nombre=Admin --apellido-primero="del" --apellido-segundo="Sistema" --cargo="admin" --usuario=admin --password=admin --estructura=0 --grupo=0 --admin=y
         - bin/phpunit --testdox
+
+sonarqube-check:
+    image:
+        name: sonarsource/sonar-scanner-cli
+        entrypoint: [ "" ]
+    stage: build
+    allow_failure: true
+    only:
+        - master # or the name of your main branch
+    cache:
+        key: "${CI_JOB_NAME}"
+        paths:
+            - .sonar/cache
+    variables:
+        GIT_STRATEGY: clone
+        SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
+        GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
+    script:
+        - sonar-scanner
+    when: manual
 
 docker-build:
     variables:
@@ -48,8 +76,8 @@ docker-build:
         DOCKER_TLS_CERTDIR: ""
     stage: release
     services:
-        -   name: dap/docker:dind
-            alias: docker_dind
+        - name: dap/docker:dind
+          alias: docker_dind
     only:
         - tags
     image: dap/docker:stable

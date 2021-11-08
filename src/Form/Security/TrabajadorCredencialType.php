@@ -10,7 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class TrabajadorCredencialType extends AbstractType
+final class TrabajadorCredencialType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -27,7 +27,7 @@ class TrabajadorCredencialType extends AbstractType
             ->add('contrasena', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'required' => false,
-                'invalid_message' => 'Los campos de la contraseña deben coincidir.',
+                'invalid_message' => 'Los campos de las contraseñas deben coincidir.',
                 'options' => ['attr' => ['class' => 'form-control input-sm password-field']],
                 'first_options' => [
                     'label' => 'contrasena',

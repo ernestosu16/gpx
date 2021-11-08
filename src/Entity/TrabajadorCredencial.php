@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\TrabajadorCredencialRepository;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -10,6 +11,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: TrabajadorCredencialRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_USUARIO', fields: ['usuario'])]
+#[ORM\HasLifecycleCallbacks]
 class TrabajadorCredencial implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -29,8 +31,26 @@ class TrabajadorCredencial implements UserInterface, PasswordAuthenticatedUserIn
     #[ORM\Column(type: 'text', length: 120, nullable: false)]
     private string $navegador = '';
 
+    #[ORM\Column(type: 'datetime', options: ["default" => "CURRENT_TIMESTAMP"])]
+    private DateTime $creado;
+
     #[ORM\Column(type: 'json')]
     private array $ultima_conexion = [];
+
+    #[ORM\Column(type: 'datetime', options: ["default" => "CURRENT_TIMESTAMP"])]
+    private DateTime $ultimo_acceso;
+
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    private bool $forzar_cambio_contrasena = false;
+
+    #[ORM\Column(type: 'string', length: 40, nullable: true)]
+    private ?string $salt = null;
+
+    public function __construct()
+    {
+        $this->creado = new DateTime();
+        $this->ultimo_acceso = new DateTime();
+    }
 
     public function __toString(): string
     {
@@ -83,10 +103,31 @@ class TrabajadorCredencial implements UserInterface, PasswordAuthenticatedUserIn
         return $this->navegador;
     }
 
-
     public function setNavegador(string $navegador): TrabajadorCredencial
     {
         $this->navegador = $navegador;
+        return $this;
+    }
+
+    public function getCreado(): DateTime
+    {
+        return $this->creado;
+    }
+
+    public function setCreado(DateTime $creado): TrabajadorCredencial
+    {
+        $this->creado = $creado;
+        return $this;
+    }
+
+    public function getUltimoAcceso(): DateTime
+    {
+        return $this->ultimo_acceso;
+    }
+
+    public function setUltimoAcceso(DateTime $ultimo_acceso): TrabajadorCredencial
+    {
+        $this->ultimo_acceso = $ultimo_acceso;
         return $this;
     }
 
@@ -101,6 +142,16 @@ class TrabajadorCredencial implements UserInterface, PasswordAuthenticatedUserIn
         return $this;
     }
 
+    public function getForzarCambioContrasena(): bool
+    {
+        return $this->forzar_cambio_contrasena;
+    }
+
+    public function setForzarCambioContrasena(bool $forzar_cambio_contrasena): TrabajadorCredencial
+    {
+        $this->forzar_cambio_contrasena = $forzar_cambio_contrasena;
+        return $this;
+    }
 
     public function getTrabajador(): ?Trabajador
     {
@@ -162,13 +213,24 @@ class TrabajadorCredencial implements UserInterface, PasswordAuthenticatedUserIn
         return $roles;
     }
 
+    public function setSalt(string $salt): static
+    {
+        $this->salt = $salt;
+        return $this;
+    }
+
     public function getSalt(): ?string
     {
-        return null;
+        return $this->salt;
     }
 
     public function eraseCredentials()
     {
         return null;
+    }
+
+    #[Pure] public function getHabilitado(): ?bool
+    {
+        return $this->getTrabajador()?->getHabilitado();
     }
 }

@@ -7,12 +7,13 @@ use App\Repository\EstructuraRepository;
 use App\Utils\RegexUtil;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Exception\ORMException;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\ORMException;
 use Gedmo\Mapping\Annotation as Gedmo;
 use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
+use function Symfony\Component\String\u;
 
 /** @Gedmo\Tree(type="nested") */
 #[ORM\Entity(repositoryClass: EstructuraRepository::class)]
@@ -198,7 +199,7 @@ class Estructura extends BaseNestedTree
 
     public function setCodigo(string $codigo): self
     {
-        $this->codigo = $codigo;
+        $this->codigo = u($codigo)->replace(' ', '_')->upper();
 
         return $this;
     }
@@ -251,6 +252,23 @@ class Estructura extends BaseNestedTree
         return $this;
     }
 
+    public function hasParametro($key): bool
+    {
+        return isset($this->parametros[$key]);
+    }
+
+    public function setParametro(string $key, mixed $value): static
+    {
+        $this->parametros[$key] = $value;
+
+        return $this;
+    }
+
+    public function getParametro($key): mixed
+    {
+        return $this->hasParametro($key) ? $this->parametros[$key] : null;
+    }
+
     public function isHabilitado(): bool
     {
         return $this->habilitado;
@@ -266,6 +284,23 @@ class Estructura extends BaseNestedTree
     public function getHabilitado(): ?bool
     {
         return $this->habilitado;
+    }
+
+    public function getLogo()
+    {
+        return $this->getParametro('logo');
+    }
+
+    public function setLogo(string $fileName): static
+    {
+        $this->setParametro('logo', $fileName);
+
+        return $this;
+    }
+
+    #[Pure] public function getProvincia(): ?Localizacion
+    {
+        return $this->getMunicipio()?->getParent();
     }
 
     #[Pure] public function getMunicipio(): ?Localizacion
@@ -370,11 +405,13 @@ class Estructura extends BaseNestedTree
         })) ? $estructura : $this->searchParentByTipo($estructura->getParent(), $tipo);
     }
 
-    public function getCodigoAduana(){
+    public function getCodigoAduana()
+    {
         return $this->getParametros()['codigo_aduana'];
     }
 
-    public function getCodigoOperador(){
+    public function getCodigoOperador()
+    {
         return $this->getParametros()['codigo_operador'];
     }
 }

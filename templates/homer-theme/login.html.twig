@@ -31,13 +31,15 @@
                             </div>
                             <div class="checkbox">
                                 <label>
-                                    <input type="checkbox" id="remember_me" name="_remember_me"  class="i-checks">
+                                    <input type="checkbox" id="remember_me" name="_remember_me" class="i-checks">
                                     Recordar sesión
                                 </label>
                                 <p class="help-block small">(Si es una computadora privada)</p>
                             </div>
-                            <button class="btn btn-success btn-block">Iniciar sesión</button>
-{#                            <a class="btn btn-default btn-block" href="#">Register</a>#}
+                            <button class="btn btn-success btn-block ladda-button"
+                                    data-style="zoom-in">Iniciar sesión
+                            </button>
+                            {# <a class="btn btn-default btn-block" href="#">Register</a> #}
                         </form>
                     </div>
                 </div>
@@ -46,8 +48,22 @@
         <div class="row">
             <div class="col-md-12 text-center">
                 Sistema de Gestión Paquetería Express<br/>
-                {{ 'now'|date('Y')}} | Derecho de autor Centro Principal Tecnológico Postal (<strong>CPTP</strong>)
+                {{ 'now'|date('Y') }} | Derecho de autor Centro Principal Tecnológico Postal (<strong>CPTP</strong>)
             </div>
         </div>
     </div>
+{% endblock %}
+{% block javascripts %}
+    <script>
+        $(function () {
+            let form = $('form');
+            let l = $('.ladda-button').ladda();
+            form.validate({
+                submitHandler: function () {
+                    l.ladda('start');
+                    return true;
+                }
+            });
+        });
+    </script>
 {% endblock %}
