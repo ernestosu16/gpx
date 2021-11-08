@@ -122,20 +122,27 @@ class FacturaController extends AbstractController
         /** @var Trabajador $user */
         $user = $this->getUser();
 
-        $empresa = $user->getEstructura()->searchParentsByTipo(
-            $em->getRepository(EstructuraTipo::class)->findOneByCodigo(EstructuraTipo::EMPRESA)
+        $osde = $user->getEstructura()->searchParentsByTipo(
+            $em->getRepository(EstructuraTipo::class)->findOneByCodigo(EstructuraTipo::OSDE)
         );
 
-        /** @var Estructura $item */
-        foreach ($empresa->getChildren()->toArray() as $item){
-            /** @var EstructuraTipo $i */
-            foreach ($item->getTipos()->getValues() as $i){
-                if ($i->getCodigo() == 'OFICINA_CCP' || $i->getCodigo() == 'OFICINA_CDD'){
-                    $empresas->add($empresa);
+        /** @var Estructura $empresa */
+        foreach ($osde->getChildren()->toArray() as $empresa){
+
+            if($empresa->getChildren()){
+                foreach ($empresa->getChildren()->toArray() as $oficina){
+                    //dump($oficina);exit();
+                    /** @var Estructura $oficina */
+                    foreach ($oficina->getTipos()->toArray() as $item){
+                        /** @var Nomenclador $item */
+                        if ($item->getCodigo() == 'OFICINA_CCP' || $item->getCodigo() == 'OFICINA_CDD'){
+                            $empresas->add($oficina);
+
+                        }
+                    }
                 }
             }
 
-            //if ($item->getTipos()->getValues() == )
         }
 
         /** @var Nomenclador $nom */
@@ -161,7 +168,7 @@ class FacturaController extends AbstractController
         }
 
         return $this->render('factura/crear_factura.html.twig', [
-            'findAll' => $empresa->getChildren()->toArray(),
+            'findAll' => $empresas,
             'vehiculos' => $vehiculos,
             'choferes' => $choferes
 
