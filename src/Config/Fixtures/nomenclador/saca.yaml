@@ -86,3 +86,17 @@ saca:
         - codigo: 'PENDIENTE ENTREGA'
           nombre: 'PENDIENTE ENTREGA'
           descripcion: ''
+
+    - codigo: 'TIPO_EMBALAJE'
+        nombre: 'Tipos de embalajes'
+        descripcion: ''
+        children:
+          - codigo: 'SACA'
+            nombre: 'SACA'
+            descripcion: ''
+          - codigo: 'CONTENEDOR'
+            nombre: 'CONTENEDOR'
+            descripcion: ''
+          - codigo: 'ENVIO_DESCUBIERTO'
+            nombre: 'ENVIO AL DESCUBIERTO'
+            descripcion: ''

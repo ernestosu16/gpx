@@ -349,9 +349,8 @@ class EnvioManager extends _Manager_
                 'codigoaduana' => $cod_aduana->codigo_aduana
             ]);
 
-        $res = json_decode($result);
+        /*$res = json_decode($result);
 
-        //dump($res);exit();
         if($res->success == true){
             $res = json_decode($result, true);
             $envio_aduana->setDatosDespacho($res);
@@ -360,8 +359,16 @@ class EnvioManager extends _Manager_
             $respuesta = true;
         }else{
             $respuesta = false;
-        }
-        //dump($respuesta).exit();
+        }*/
+
+
+        $res = json_decode($result, true);
+        $envio_aduana->setDatosDespacho($res);
+        //dump($envio_aduana);exit();
+        $this->entityManager->persist($envio_aduana);
+        $this->entityManager->flush();
+        $respuesta = true;
+
         return $respuesta;
     }
 
