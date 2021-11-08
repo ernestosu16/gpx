@@ -130,7 +130,7 @@ class FacturaController extends AbstractController
         foreach ($empresa->getChildren()->toArray() as $item){
             /** @var EstructuraTipo $i */
             foreach ($item->getTipos()->getValues() as $i){
-                if ($i->getCodigo() == 'OFICINA_CCP'){
+                if ($i->getCodigo() == 'OFICINA_CCP' || $i->getCodigo() == 'OFICINA_CDD'){
                     $empresas->add($empresa);
                 }
             }
