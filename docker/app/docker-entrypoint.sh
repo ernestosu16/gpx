@@ -5,4 +5,5 @@ bin/console cron:start
 
 chown -R www-data:www-data var/cache var/log public/uploads public/download;
 
+bin/console assets:install
 exec "$@"
