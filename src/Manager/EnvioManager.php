@@ -344,10 +344,24 @@ class EnvioManager extends _Manager_
             [
                 'usuario'=>'aerov',
                 'clave'=>'eh7443fx',
-                'manifiesto'=>$manifiesto->getCodigo(),
-                'blga'=>$manifiesto->getNoGuiaAerea(),
-                'codigoaduana' => $cod_aduana->codigo_aduana
+                'manifiesto'=>'590/2021',
+                'blga'=>'703-10541510 5089198',
+                'codigoaduana' => '0202'
             ]);
+
+        /*if ($manifiesto->getCodigo() != null && $manifiesto->getNoGuiaAerea() != null){
+            $result = $soapClient->call('GABLDespachado',
+                [
+                    'usuario'=>'aerov',
+                    'clave'=>'eh7443fx',
+                    'manifiesto'=>$manifiesto->getCodigo(),
+                    'blga'=>$manifiesto->getNoGuiaAerea(),
+                    'codigoaduana' => '0202'
+                ]);
+
+        }else{
+            return false;
+        }*/
 
         /*$res = json_decode($result);
 

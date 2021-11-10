@@ -186,8 +186,9 @@ class FacturaController extends AbstractController
             /** @var Trabajador $user */
             $user = $this->getUser();
 
-            /** @var Estructura $estructura */
-            $empresa = $em->getRepository(Estructura::class)->find($user->getEstructura()->getId());
+            $empresa = $user->getEstructura()->searchParentsByTipo(
+                $em->getRepository(EstructuraTipo::class)->findOneByCodigo(EstructuraTipo::EMPRESA)
+            );
 
             /** @var Estructura $ofic_dest */
             $ofic_dest = $em->getRepository(Estructura::class)->find($oficina_dest);
