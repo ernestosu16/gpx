@@ -3,6 +3,7 @@
 namespace App\Form\Admin\Extend;
 
 use App\Form\_Form_;
+use App\Form\Admin\Extend\Aduana\ConfiguracionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -23,7 +24,9 @@ final class EstructuraExtendType extends _Form_
                 'label' => 'codigo_operador',
                 'label_attr' => ['class' => 'control-label'],
                 'required' => true,
-            ]);
+            ])
+            ->add('aduana', ConfiguracionType::class)
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver)

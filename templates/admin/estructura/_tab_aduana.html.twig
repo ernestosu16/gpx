@@ -1,17 +1,52 @@
 <div class="row">
     <div class="col-lg-6">
-        {% set fields = {
-            codigo_aduana: {class:'col-sm-6'},
-            codigo_operador: {class:'col-sm-6'}
-        } %}
-        {% for key,field in fields %}
-            <div class="form-group {{ field.class }}">
-                {{ form_label(form.parametros[key]) }}
-                {{ form_widget(form.parametros[key]) }}
-                {{ form_help(form.parametros[key]) }}
-                {{ form_errors(form.parametros[key]) }}
-            </div>
-        {% endfor %}
+        <h3>Datos</h3>
+        <div class="row">
+            {% set fields = {
+                codigo_aduana: {class:'col-xs-6'},
+                codigo_operador: {class:'col-xs-6'}}
+            %}
+            {% for key,field in fields %}
+                <div class="form-group {{ field.class }}">
+                    {{ form_label(form.parametros[key]) }}
+                    {{ form_widget(form.parametros[key]) }}
+                    {{ form_help(form.parametros[key]) }}
+                    {{ form_errors(form.parametros[key]) }}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{#    <div class="col-lg-6">#}
+{#        <h3>{{ form_label(form.parametros.aduana) }}</h3>#}
+{#        <div class="row">#}
+{#            {% set fields = {soap:{class:'col-sm-6'}} %}#}
+{#            {% for key, field in fields %}#}
+{#                <div class="form-group {{ field.class }}">#}
+{#                    {{ form_label(form.parametros.aduana[key]) }}#}
+{#                    {{ form_widget(form.parametros.aduana[key]) }}#}
+{#                    {{ form_help(form.parametros.aduana[key]) }}#}
+{#                    {{ form_errors(form.parametros.aduana[key]) }}#}
+{#                </div>#}
+{#            {% endfor %}#}
+{#        </div>#}
+{#    </div>#}
+    <div class="col-lg-6">
+        <h3>{{ form_label(form.parametros.aduana.ftp) }}</h3>
+        <div class="row">
+            {% set fields = {
+                servidor: {class:'col-sm-4'},
+                usuario: {class:'col-sm-4'},
+                contrasena: {class:'col-sm-4'},
+            } %}
+            {% for key, field in fields %}
+                <div class="form-group {{ field.class }}">
+                    {{ form_label(form.parametros.aduana.ftp[key], null, {'label_attr':{ 'class':'control-label'}}) }}
+                    {{ form_widget(form.parametros.aduana.ftp[key]) }}
+                    {{ form_help(form.parametros.aduana.ftp[key]) }}
+                    {{ form_errors(form.parametros.aduana.ftp[key]) }}
+                </div>
+            {% endfor %}
+        </div>
     </div>
 </div>
 
