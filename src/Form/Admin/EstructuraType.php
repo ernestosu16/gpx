@@ -131,7 +131,9 @@ class EstructuraType extends BaseAdminType
                 'label_attr' => ['class' => 'control-label'],
                 'disabled' => $data === $estructura && !in_array('ROLE_ADMIN', $credencial->getRoles())
             ])
-            ->add('parametros', EstructuraExtendType::class);
+            ->add('parametros', EstructuraExtendType::class,[
+                'label' => false
+            ]);
 
 
         $builder->addEventSubscriber(new EstructuraTypeSubscriber($this->container));
