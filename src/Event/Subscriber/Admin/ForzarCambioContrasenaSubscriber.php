@@ -11,7 +11,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Security;
 
-class ForzarCambioContrasenaSubscriber extends _Subscriber_
+final class ForzarCambioContrasenaSubscriber extends _Subscriber_
 {
     private Security $security;
     private UrlGeneratorInterface $urlGenerator;

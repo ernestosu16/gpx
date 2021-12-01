@@ -52,7 +52,10 @@ final class TrabajadorCredencialDoctrineSubscriber extends _DoctrineSubscriber_
 
     private function passwordEncrypt(TrabajadorCredencial $credencial): void
     {
-        if ($credencial->getContrasena())
-            $credencial->setContrasena($this->passwordHasher->hashPassword($credencial, $credencial->getContrasena()));
+        if (!$credencial->getContrasena())
+            return;
+
+        $credencial->setContrasena($this->passwordHasher->hashPassword($credencial, $credencial->getContrasena()));
+        $credencial->setForzarCambioContrasena(true);
     }
 }

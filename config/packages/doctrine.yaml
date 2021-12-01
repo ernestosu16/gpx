@@ -17,4 +17,4 @@ doctrine:
                 prefix: 'App\Entity'
                 alias: App
         hydrators:
-                tree: Gedmo\Tree\Hydrator\ORM\TreeObjectHydrator
+            tree: Gedmo\Tree\Hydrator\ORM\TreeObjectHydrator

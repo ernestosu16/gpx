@@ -69,8 +69,6 @@ class TrabajadorTypeSubscriber implements EventSubscriberInterface
         # Si el usuario es null quitar la credencial
         if (!$trabajador->hasCredentials())
             $trabajador->setCredencial(null);
-
-        $credencial->setForzarCambioContrasena(true);
     }
 
 }

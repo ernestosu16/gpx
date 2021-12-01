@@ -7,7 +7,7 @@ use App\Event\Subscriber\_DoctrineSubscriber_;
 use Doctrine\ORM\Events;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 
-class LocalizacionDoctrineSubscriber extends _DoctrineSubscriber_
+final class LocalizacionDoctrineSubscriber extends _DoctrineSubscriber_
 {
     public function getSubscribedEvents(): array
     {
