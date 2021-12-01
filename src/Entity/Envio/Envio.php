@@ -1,7 +1,13 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Envio;
 
+use App\Entity\_Entity_;
+use App\Entity\Estructura;
+use App\Entity\Localizacion;
+use App\Entity\Nomenclador;
+use App\Entity\Pais;
+use App\Entity\Persona;
 use App\Repository\EnvioRepository;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\Pure;

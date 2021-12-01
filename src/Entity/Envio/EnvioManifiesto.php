@@ -1,7 +1,11 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Envio;
 
+use App\Entity\_Entity_;
+use App\Entity\Estructura;
+use App\Entity\Localizacion;
+use App\Entity\Persona;
 use App\Repository\EnvioManifiestoRepository;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\SerializedName;

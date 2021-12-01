@@ -12,7 +12,7 @@ use JetBrains\PhpStorm\Pure;
 class Grupo extends Nomenclador
 {
     #[ORM\ManyToMany(targetEntity: Menu::class)]
-    #[ORM\JoinTable(name: 'grupo_menu_asignado')]
+    #[ORM\JoinTable(name: 'app_grupo_menu_asignado')]
     #[ORM\JoinColumn(onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(onDelete: 'CASCADE')]
     private Collection $menus;

@@ -1,8 +1,9 @@
 <?php
 
 
-namespace App\Entity;
+namespace App\Entity\Envio;
 
+use App\Entity\_Entity_;
 use App\Enum\TipoFichero;
 use App\Repository\FicheroEnvioAduanaRepository;
 use Doctrine\ORM\Mapping as ORM;

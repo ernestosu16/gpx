@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Envio;
 
+use App\Entity\_Entity_;
+use App\Entity\Estructura;
 use App\Repository\FacturaConsecutivoRepository;
 use Doctrine\ORM\Mapping as ORM;
-use phpDocumentor\Reflection\Types\Integer;
 
 #[ORM\Entity(repositoryClass: FacturaConsecutivoRepository::class)]
 class FacturaConsecutivo extends _Entity_

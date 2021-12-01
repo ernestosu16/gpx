@@ -21,7 +21,7 @@ class EstructuraTipo extends Nomenclador
     private Collection $estructuras;
 
     #[ORM\ManyToMany(targetEntity: Grupo::class, inversedBy: 'estructura_tipos')]
-    #[ORM\JoinTable(name: 'estructura_tipo_grupo_asignado')]
+    #[ORM\JoinTable(name: 'app_estructura_tipo_grupo_asignado')]
     #[ORM\JoinColumn(onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(onDelete: 'CASCADE')]
     private Collection $grupos;

@@ -1,7 +1,9 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Envio;
 
+use App\Entity\_Entity_;
+use App\Entity\Nomenclador;
 use App\Repository\EnvioAduanaRepository;
 use Doctrine\ORM\Mapping as ORM;
 

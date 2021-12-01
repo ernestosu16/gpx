@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Envio;
 
-use App\Repository\EnvioAduanaTrazaRepository;
+use App\Entity\_Entity_;
+use App\Entity\Nomenclador;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: EnvioAduanaTraza::class)]

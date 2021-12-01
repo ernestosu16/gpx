@@ -1,7 +1,10 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Envio;
 
+use App\Entity\_Entity_;
+use App\Entity\Estructura;
+use App\Entity\Nomenclador;
 use App\Repository\SacaRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;

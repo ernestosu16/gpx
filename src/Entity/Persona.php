@@ -12,6 +12,7 @@ use JMS\Serializer\Annotation\SerializedName;
 use Symfony\Component\Validator\Constraints as Assert;
 use function Symfony\Component\String\u;
 
+#[ORM\Table(name: 'app_persona')]
 #[ORM\Entity(repositoryClass: PersonaRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_PERSONA', columns: ['hash'])]
 #[ORM\Index(fields: ['numero_identidad'], name: 'IDX_NUMERO_IDENTIDAD')]
