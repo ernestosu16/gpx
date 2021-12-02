@@ -3,7 +3,7 @@
 namespace App\Config\Data\Nomenclador;
 
 use App\Config\Data\_Data_;
-use App\Entity\LocalizacionTipo;
+use App\Entity\Nomenclador\LocalizacionTipo;
 
 final class LocalizacionTipoData extends _Data_
 {

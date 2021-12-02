@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\EstructuraTipo;
+use App\Entity\Nomenclador\EstructuraTipo;
 use Doctrine\ORM\QueryBuilder;
 
 final class EstructuraTipoRepository extends NomencladorRepository

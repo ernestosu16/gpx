@@ -2,6 +2,11 @@
 
 namespace App\Entity;
 
+use App\Entity\Nomenclador\Agencia;
+use App\Entity\Nomenclador\EstructuraTipo;
+use App\Entity\Nomenclador\Grupo;
+use App\Entity\Nomenclador\LocalizacionTipo;
+use App\Entity\Nomenclador\Menu;
 use App\Entity\Traits\VersionTrait;
 use App\Repository\NomencladorRepository;
 use App\Utils\RegexUtil;

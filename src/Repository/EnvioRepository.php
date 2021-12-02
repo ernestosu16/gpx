@@ -2,11 +2,9 @@
 
 namespace App\Repository;
 
-use App\Entity\Envio;
-use App\Entity\EnvioAduana;
+use App\Entity\Envio\Envio;
+use App\Entity\Envio\EnvioAduana;
 use App\Entity\Nomenclador;
-use App\Entity\Trabajador;
-use App\Entity\TrabajadorCredencial;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\Persistence\ManagerRegistry;

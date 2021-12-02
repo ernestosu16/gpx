@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\Menu;
+use App\Entity\Nomenclador\Menu;
 
 /**
  * @method Menu|null find($id, $lockMode = null, $lockVersion = null)

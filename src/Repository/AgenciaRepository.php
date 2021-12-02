@@ -3,8 +3,7 @@
 namespace App\Repository;
 
 use App\Config\Data\Nomenclador\AgenciaData;
-use App\Config\Data\Nomenclador\GrupoData;
-use App\Entity\Agencia;
+use App\Entity\Nomenclador\Agencia;
 use App\Entity\Nomenclador;
 use Doctrine\ORM\QueryBuilder;
 

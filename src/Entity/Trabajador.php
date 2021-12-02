@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Nomenclador\Grupo;
 use App\Repository\TrabajadorRepository;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;

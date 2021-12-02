@@ -4,9 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Envio;
 use App\Entity\EnvioAduana;
-use App\Entity\EnvioManifiesto;
+use App\Entity\Envio\EnvioManifiesto;;
 use App\Entity\Estructura;
-use App\Entity\EstructuraTipo;
+use App\Entity\Nomenclador\EstructuraTipo;
 use App\Entity\Nomenclador;
 use App\Entity\Saca;
 use App\Entity\SacaConsecutivo;

@@ -3,7 +3,7 @@
 namespace App\Menu;
 
 use App\Config\Data\Nomenclador\MenuData;
-use App\Entity\Menu;
+use App\Entity\Nomenclador\Menu;
 use App\Repository\MenuRepository;
 use Knp\Menu\ItemInterface;
 

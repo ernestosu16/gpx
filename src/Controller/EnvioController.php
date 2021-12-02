@@ -2,12 +2,11 @@
 
 namespace App\Controller;
 
-use App\Entity\Envio;
+use App\Entity\Envio\Envio;
 use App\Entity\Localizacion;
-use App\Entity\LocalizacionTipo;
+use App\Entity\Nomenclador\LocalizacionTipo;
 use App\Entity\Persona;
 use App\Entity\TrabajadorCredencial;
-use App\Form\EnvioType;
 use App\Manager\EnvioManager;
 use App\Repository\AgenciaRepository;
 use App\Repository\EnvioManifiestoRepository;

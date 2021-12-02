@@ -6,23 +6,22 @@ use App\Command\BaseCommand;
 use App\Command\BaseCommandInterface;
 use App\Config\Data\Nomenclador\AgenciaData;
 use App\Config\Data\Nomenclador\EnvioData;
-use App\Config\Data\Nomenclador\FacturaData;
-use App\Config\Data\Nomenclador\SacaData;
 use App\Config\Data\Nomenclador\EstructuraTipoData;
+use App\Config\Data\Nomenclador\FacturaData;
 use App\Config\Data\Nomenclador\GrupoData;
 use App\Config\Data\Nomenclador\MenuData;
-use App\Entity\Agencia;
+use App\Config\Data\Nomenclador\SacaData;
 use App\Entity\Estructura;
-use App\Entity\EstructuraTipo;
-use App\Entity\Grupo;
 use App\Entity\Localizacion;
-use App\Entity\LocalizacionTipo;
-use App\Entity\Menu;
 use App\Entity\Nomenclador;
+use App\Entity\Nomenclador\Agencia;
+use App\Entity\Nomenclador\EstructuraTipo;
+use App\Entity\Nomenclador\Grupo;
+use App\Entity\Nomenclador\LocalizacionTipo;
+use App\Entity\Nomenclador\Menu;
 use App\Entity\Pais;
 use App\Repository\LocalizacionRepository;
 use App\Repository\LocalizacionTipoRepository;
-use App\Repository\NomencladorRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Symfony\Component\Console\Command\Command;
@@ -338,26 +337,26 @@ final class ImportFixturesCommand extends BaseCommand implements BaseCommandInte
         /** @var ?Menu $root */
         $root = $this->getRepository(Nomenclador::class)->findOneByCodigo($data);
 
-       /* if ($root->getChildren()->count())
-            return;*/
+        /* if ($root->getChildren()->count())
+             return;*/
 
         $file = Yaml::parseFile($this->getKernel()->getProjectDir() . $path);
         foreach ($file[array_key_first($file)] as $nom) {
-            if ($this->getRepository(Nomenclador::class)->findOneByCodigo(strtoupper($root->getCodigo().'_'.$nom['codigo'])))
+            if ($this->getRepository(Nomenclador::class)->findOneByCodigo(strtoupper($root->getCodigo() . '_' . $nom['codigo'])))
                 continue;
 
             $nomEntity = new Nomenclador();
             $nomEntity->setRoot($root->getRoot());
-            $nomEntity->setCodigo(strtoupper($root->getCodigo().'_'.$nom['codigo']));
+            $nomEntity->setCodigo(strtoupper($root->getCodigo() . '_' . $nom['codigo']));
             $nomEntity->setNombre($nom['nombre']);
 
             foreach ($nom['children'] as $child) {
-                if ($this->getRepository(Nomenclador::class)->findOneByCodigo(strtoupper($nomEntity->getCodigo().'_'.$child['codigo'])))
+                if ($this->getRepository(Nomenclador::class)->findOneByCodigo(strtoupper($nomEntity->getCodigo() . '_' . $child['codigo'])))
                     continue;
 
                 $nomChildEntity = new Nomenclador();
                 $nomChildEntity->setRoot($root->getRoot());
-                $nomChildEntity->setCodigo(strtoupper($nomEntity->getCodigo().'_'.$child['codigo']));
+                $nomChildEntity->setCodigo(strtoupper($nomEntity->getCodigo() . '_' . $child['codigo']));
                 $nomChildEntity->setNombre($child['nombre']);
                 $nomChildEntity->setDescripcion($child['descripcion']);
                 $nomEntity->addChild($nomChildEntity);
@@ -400,7 +399,7 @@ final class ImportFixturesCommand extends BaseCommand implements BaseCommandInte
         $root = $this->getRepository(Nomenclador::class)->findOneBy(['codigo' => 'APP_ENVIO']);
 
         /** @var ?Nomenclador $root_canal */
-        $canales= Yaml::parseFile($this->getKernel()->getProjectDir() . '/src/Config/Fixtures/nomenclador/canal.yaml')['canales'][0];
+        $canales = Yaml::parseFile($this->getKernel()->getProjectDir() . '/src/Config/Fixtures/nomenclador/canal.yaml')['canales'][0];
 
         if ($this->getRepository(Nomenclador::class)->findOneBy(['codigo' => $canales['codigo']]))
             return;
@@ -435,11 +434,11 @@ final class ImportFixturesCommand extends BaseCommand implements BaseCommandInte
 
     private function configurarNomenclador()
     {
-        $this->setNomenclador('APP_'.FacturaData::code(), '/src/Config/Fixtures/nomenclador/factura.yaml');
+        $this->setNomenclador('APP_' . FacturaData::code(), '/src/Config/Fixtures/nomenclador/factura.yaml');
 
-        $this->setNomenclador('APP_'.SacaData::code(), '/src/Config/Fixtures/nomenclador/saca.yaml');
+        $this->setNomenclador('APP_' . SacaData::code(), '/src/Config/Fixtures/nomenclador/saca.yaml');
 
-        $this->setNomenclador('APP_'.EnvioData::code(), '/src/Config/Fixtures/nomenclador/envio.yaml');
+        $this->setNomenclador('APP_' . EnvioData::code(), '/src/Config/Fixtures/nomenclador/envio.yaml');
 
     }
 }

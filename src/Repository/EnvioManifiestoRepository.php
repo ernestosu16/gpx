@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\EnvioManifiesto;
+use App\Entity\Envio\EnvioManifiesto;;
 
 /**
  * @method EnvioManifiesto|null find($id, $lockMode = null, $lockVersion = null)

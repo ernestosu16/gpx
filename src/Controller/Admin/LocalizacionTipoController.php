@@ -3,7 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Config\Data\Nomenclador\LocalizacionTipoData;
-use App\Entity\LocalizacionTipo;
+use App\Entity\Nomenclador\LocalizacionTipo;
 use App\Form\Admin\LocalizacionTipoType;
 use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Routing\Annotation\Route;

@@ -2,8 +2,8 @@
 
 namespace App\Form\Admin;
 
-use App\Entity\Grupo;
-use App\Entity\Menu;
+use App\Entity\Nomenclador\Grupo;
+use App\Entity\Nomenclador\Menu;
 use App\Manager\RouteManager;
 use App\Repository\MenuRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;

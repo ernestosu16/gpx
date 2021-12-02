@@ -3,8 +3,8 @@
 namespace App\Form\Admin;
 
 use App\Config\Data\Nomenclador\EstructuraTipoData;
-use App\Entity\EstructuraTipo;
-use App\Entity\Grupo;
+use App\Entity\Nomenclador\EstructuraTipo;
+use App\Entity\Nomenclador\Grupo;
 use App\Repository\EstructuraTipoRepository;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;

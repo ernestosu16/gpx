@@ -11,7 +11,7 @@ use App\DTO\Insertar;
 use App\DTO\InsertarElementos;
 use App\Entity\EnvioAduana;
 use App\Entity\Estructura;
-use App\Entity\EstructuraTipo;
+use App\Entity\Nomenclador\EstructuraTipo;
 use App\Entity\Nomenclador;
 use App\Enum\TipoFichero;
 use App\Repository\EnvioAduanaRepository;

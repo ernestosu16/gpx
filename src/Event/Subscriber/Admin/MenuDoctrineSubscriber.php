@@ -2,7 +2,7 @@
 
 namespace App\Event\Subscriber\Admin;
 
-use App\Entity\Menu;
+use App\Entity\Nomenclador\Menu;
 use App\Event\Subscriber\_DoctrineSubscriber_;
 use Doctrine\ORM\Events;
 use Doctrine\Persistence\Event\LifecycleEventArgs;

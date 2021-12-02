@@ -3,25 +3,22 @@
 
 namespace App\Controller;
 
-use App\Entity\Envio;
-use App\Entity\EnvioAduana;
-use App\Entity\EnvioManifiesto;
+use App\Entity\Envio\Envio;
+use App\Entity\Envio\EnvioAduana;
+use App\Entity\Envio\Factura;
+use App\Entity\Envio\FacturaConsecutivo;
+use App\Entity\Envio\FacturaTraza;
+use App\Entity\Envio\Saca;
 use App\Entity\Estructura;
-use App\Entity\EstructuraTipo;
-use App\Entity\Factura;
-use App\Entity\FacturaConsecutivo;
-use App\Manager\EnvioManager;
-use App\Repository\FacturaRepository;
-use App\Entity\FacturaTraza;
-use App\Entity\Grupo;
 use App\Entity\Nomenclador;
+use App\Entity\Nomenclador\EstructuraTipo;
+use App\Entity\Nomenclador\Grupo;
 use App\Entity\Persona;
-use App\Entity\Saca;
 use App\Entity\Trabajador;
 use App\Entity\TrabajadorCredencial;
-use App\Repository\EnvioRepository;
+use App\Manager\EnvioManager;
 use App\Manager\FacturaManager;
-use App\Repository\FacturaConsecutivoRepository;
+use App\Repository\FacturaRepository;
 use App\Repository\NomencladorRepository;
 use App\Repository\SacaRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -38,12 +35,12 @@ use function PHPUnit\Framework\throwException;
 class FacturaController extends AbstractController
 {
     public function __construct(
-        private SacaRepository $sacaRepository,
-        private FacturaManager $facturaManager,
-        private NomencladorRepository $nomencladorRepository,
-        private FacturaRepository $facturaRepository,
+        private SacaRepository         $sacaRepository,
+        private FacturaManager         $facturaManager,
+        private NomencladorRepository  $nomencladorRepository,
+        private FacturaRepository      $facturaRepository,
         private EntityManagerInterface $entityManager,
-        private EnvioManager $envioManager
+        private EnvioManager           $envioManager
     )
     {
     }
@@ -52,10 +49,10 @@ class FacturaController extends AbstractController
     public function procesarFactura()
     {
 
-        return $this->render('factura/recepcionar.html.twig',[]);
+        return $this->render('factura/recepcionar.html.twig', []);
     }
 
-    #[Route('/find-sacas-factura', name: 'find_sacas_factura', options: ["expose" => true] ,methods: ['POST'])]
+    #[Route('/find-sacas-factura', name: 'find_sacas_factura', options: ["expose" => true], methods: ['POST'])]
     public function findSacasFactura(Request $request)
     {
         $noFactura = $request->get('noFactura');
@@ -65,16 +62,16 @@ class FacturaController extends AbstractController
         $anomaliasE = $this->nomencladorRepository->findByChildren('APP_ENVIO_ANOMALIA');
 
         $html = $sacas || $envios ? $this->renderView('factura/sacas.html.twig', [
-            'sacas'=>$sacas,
-            'envios'=>$envios,
-            'anomalias'=>$anomalias->toArray(),
-            'anomaliasE'=>$anomaliasE->toArray(),
+            'sacas' => $sacas,
+            'envios' => $envios,
+            'anomalias' => $anomalias->toArray(),
+            'anomaliasE' => $anomaliasE->toArray(),
             'noFactura' => $noFactura]) : 'null';
 
         return new Response($html);
     }
 
-    #[Route('/recepcionar-sacas-factura', name: 'recepcionar_sacas_factura', options: ["expose" => true] ,methods: ['POST'])]
+    #[Route('/recepcionar-sacas-factura', name: 'recepcionar_sacas_factura', options: ["expose" => true], methods: ['POST'])]
     public function recepcionarSacasFactura(Request $request)
     {
         $noFactura = $request->get('noFactura');
@@ -87,8 +84,7 @@ class FacturaController extends AbstractController
         /** @var TrabajadorCredencial $credencial */
         $credencial = $this->getUser();
 
-        foreach ($sacas as $id)
-        {
+        foreach ($sacas as $id) {
             $saca = $this->sacaRepository->find($id);
             $saca->setEstado($estado);
 
@@ -96,19 +92,17 @@ class FacturaController extends AbstractController
             $this->entityManager->flush();
         }
 
-        foreach ($envios as $id)
-        {
-            $this->envioManager->cambiarEstado($id,$credencial);
+        foreach ($envios as $id) {
+            $this->envioManager->cambiarEstado($id, $credencial);
         }
 
-        if($todos)
-        {
+        if ($todos) {
             $estado = $this->nomencladorRepository->findOneByCodigo('APP_FACTURA_ESTADO_RECIBIDA');
             $factura->setEstado($estado);
             $this->entityManager->persist($factura);
             $this->entityManager->flush();
 
-            $this->facturaManager->createTraza($factura,$credencial);
+            $this->facturaManager->createTraza($factura, $credencial);
         }
         return JsonResponse::fromJsonString('"Factura recibida correctamente"');
     }
@@ -127,15 +121,15 @@ class FacturaController extends AbstractController
         );
 
         /** @var Estructura $empresa */
-        foreach ($osde->getChildren()->toArray() as $empresa){
+        foreach ($osde->getChildren()->toArray() as $empresa) {
 
-            if($empresa->getChildren()){
-                foreach ($empresa->getChildren()->toArray() as $oficina){
+            if ($empresa->getChildren()) {
+                foreach ($empresa->getChildren()->toArray() as $oficina) {
                     //dump($oficina);exit();
                     /** @var Estructura $oficina */
-                    foreach ($oficina->getTipos()->toArray() as $item){
+                    foreach ($oficina->getTipos()->toArray() as $item) {
                         /** @var Nomenclador $item */
-                        if ($item->getCodigo() == 'OFICINA_CCP' || $item->getCodigo() == 'OFICINA_CDD'){
+                        if ($item->getCodigo() == 'OFICINA_CCP' || $item->getCodigo() == 'OFICINA_CDD') {
                             $empresas->add($oficina);
 
                         }
@@ -153,11 +147,11 @@ class FacturaController extends AbstractController
         $trabajador = $em->getRepository(Trabajador::class)->findAll();
         //$choferes = $trabajador->getPersona();
 
-        foreach ($trabajador as $item){
+        foreach ($trabajador as $item) {
             /** @var Trabajador $item */
-            foreach ($item->getGrupos()->getValues() as $g){
+            foreach ($item->getGrupos()->getValues() as $g) {
                 /** @var Grupo $g */
-                if ($g->getCodigo() == 'GRUPO_CHOFER'){
+                if ($g->getCodigo() == 'GRUPO_CHOFER') {
                     $id = $item->getPersona()->getId();
                     /** @var Persona $c */
                     $c = $em->getRepository(Persona::class)->find($id);
@@ -194,77 +188,77 @@ class FacturaController extends AbstractController
             $ofic_dest = $em->getRepository(Estructura::class)->find($oficina_dest);
 
             /** @var Saca $saca */
-            $saca = $em->getRepository(Saca::class)->findOneBy(['sello'=>$sello]);
+            $saca = $em->getRepository(Saca::class)->findOneBy(['sello' => $sello]);
 
-            if ($saca == null){
+            if ($saca == null) {
                 /** @var Envio $saca */
-                $saca = $em->getRepository(Envio::class)->findOneBy(['cod_tracking'=>$sello]);
+                $saca = $em->getRepository(Envio::class)->findOneBy(['cod_tracking' => $sello]);
 
-                if ($saca != null){
-                    if ($saca->getEstado()->getCodigo() != 'APP_ENVIO_ESTADO_CLASIFICADO' && $saca->getEstado()->getCodigo() != 'APP_ENVIO_ESTADO_FACTURADO'){
-                        if ($saca->getMunicipio()->getId() == $ofic_dest->getMunicipio()->getId()){
+                if ($saca != null) {
+                    if ($saca->getEstado()->getCodigo() != 'APP_ENVIO_ESTADO_CLASIFICADO' && $saca->getEstado()->getCodigo() != 'APP_ENVIO_ESTADO_FACTURADO') {
+                        if ($saca->getMunicipio()->getId() == $ofic_dest->getMunicipio()->getId()) {
                             $id = $saca->getId();
                             $cod = $saca->getCodTracking();
                             $peso = $saca->getPeso();
 
                             $serializer = SerializerBuilder::create()->build();
-                            $miRespuestaJson = $serializer->serialize(['id'=>$id, 'cod'=>$cod, 'peso'=>$peso],"json");
+                            $miRespuestaJson = $serializer->serialize(['id' => $id, 'cod' => $cod, 'peso' => $peso], "json");
 
                             /** @var EnvioAduana $envio_aduana */
-                            $envio_aduana = $em->getRepository(EnvioAduana::class)->findOneBy(['envio'=>$id]);
+                            $envio_aduana = $em->getRepository(EnvioAduana::class)->findOneBy(['envio' => $id]);
                             //dump($envio_aduana);exit();
 
-                            if ($envio_aduana != null){
-                                if ($envio_aduana->getDatosDespacho() == null){
-                                    $url= "https://sua.aduana.cu/GINASUA/serviciosExternos?wsdl";
+                            if ($envio_aduana != null) {
+                                if ($envio_aduana->getDatosDespacho() == null) {
+                                    $url = "https://sua.aduana.cu/GINASUA/serviciosExternos?wsdl";
 
-                                    if ($this->envioManager->verificarConectAduana($url) == 1){
-                                        if ($this->envioManager->addDespachoAduanaEnvio($url, $envio_aduana->getId(), $cod, $empresa)){
+                                    if ($this->envioManager->verificarConectAduana($url) == 1) {
+                                        if ($this->envioManager->addDespachoAduanaEnvio($url, $envio_aduana->getId(), $cod, $empresa)) {
                                             return JsonResponse::fromJsonString($miRespuestaJson);
-                                        }else{
+                                        } else {
                                             $respuesta = 'El servicio del despacho de la aduana no está funcionando, por favor intentelo mas tarde.';
                                         }
-                                    }else{
+                                    } else {
                                         $respuesta = 'La conexión con el servicio de aduana esta tardando mucho, por favor intentelo mas tarde.';
                                     }
-                                }else{
+                                } else {
                                     return JsonResponse::fromJsonString($miRespuestaJson);
                                 }
-                            }else{
+                            } else {
                                 $respuesta = 'El envío aduana no exite';
                             }
-                        }else{
+                        } else {
                             $respuesta = 'El envío esta mal reeencaminado';
                         }
-                    }else{
+                    } else {
                         $respuesta = 'El envío ya esta clasificado o facturado';
                     }
-                }else{
+                } else {
                     $respuesta = 'El envío no se encuentra en el sistema';
                 }
-            }else{
-                if ($saca != null){
-                    if ($saca->getEstado()->getCodigo() == 'APP_SACA_ESTADO_CREADA'){
-                        if ($saca->getDestino()->getId() == $oficina_dest){
+            } else {
+                if ($saca != null) {
+                    if ($saca->getEstado()->getCodigo() == 'APP_SACA_ESTADO_CREADA') {
+                        if ($saca->getDestino()->getId() == $oficina_dest) {
                             $id = $saca->getId();
                             $cod = $saca->getSello();
                             $peso = $saca->getPeso();
 
                             $serializer = SerializerBuilder::create()->build();
-                            $miRespuestaJson = $serializer->serialize(['id'=>$id, 'cod'=>$cod, 'peso'=>$peso],"json");
+                            $miRespuestaJson = $serializer->serialize(['id' => $id, 'cod' => $cod, 'peso' => $peso], "json");
 
                             return JsonResponse::fromJsonString($miRespuestaJson);
-                        }else{
+                        } else {
                             $respuesta = 'La saca esta mal reeencaminado';
                         }
-                    }else{
+                    } else {
                         $respuesta = 'La saca ya está facturada';
                     }
-                }else{
+                } else {
                     $respuesta = 'La saca no se encuentra en el sistema';
                 }
             }
-           return new JsonResponse(['respuesta'=>true ,'mensaje'=>$respuesta]);
+            return new JsonResponse(['respuesta' => true, 'mensaje' => $respuesta]);
 
         } else {
             throwException('Hacker');
@@ -287,7 +281,7 @@ class FacturaController extends AbstractController
             $chofer = $em->getRepository(Trabajador::class)->findOneBy(['persona' => $request->request->get('chofer')]);
 
             /** @var Nomenclador $estado */
-            $estado = $em->getRepository(Nomenclador::class)->findOneBy(['codigo'=>'APP_FACTURA_ESTADO_CREADA']);
+            $estado = $em->getRepository(Nomenclador::class)->findOneBy(['codigo' => 'APP_FACTURA_ESTADO_CREADA']);
 
             if (!$estado)
                 return new JsonResponse(['error' => 'Error el estado de la factura "CREADA" no existe'], 500);
@@ -306,8 +300,8 @@ class FacturaController extends AbstractController
             $anno = new \DateTime();
 
             /** @var FacturaConsecutivo $consecutiva */
-            $consecutiva = $em->getRepository(FacturaConsecutivo::class)->findOneBy(['oficina_origen'=>$estructura_origen, 'oficina_destino'=>$estructura_destino]);
-            if ($consecutiva == null){
+            $consecutiva = $em->getRepository(FacturaConsecutivo::class)->findOneBy(['oficina_origen' => $estructura_origen, 'oficina_destino' => $estructura_destino]);
+            if ($consecutiva == null) {
                 $facturaConsecutiva = new FacturaConsecutivo();
                 $facturaConsecutiva->setOficinaOrigen($estructura_origen);
                 $facturaConsecutiva->setOficinaDestino($estructura_destino);
@@ -315,17 +309,17 @@ class FacturaController extends AbstractController
                 $facturaConsecutiva->setNumero(1);
                 $em->persist($facturaConsecutiva);
                 $numFactura = 1;
-            }else{
+            } else {
                 $numFactura = $consecutiva->getNumero() + 1;
                 $consecutiva->setNumero($numFactura);
                 $em->persist($consecutiva);
             }
 
-            $estEnvioFacturada = $em->getRepository(Nomenclador::class)->findOneBy(['codigo'=>'APP_ENVIO_ESTADO_FACTURADO']);
+            $estEnvioFacturada = $em->getRepository(Nomenclador::class)->findOneBy(['codigo' => 'APP_ENVIO_ESTADO_FACTURADO']);
             if (!$estEnvioFacturada)
                 return new JsonResponse(['error' => 'Error el estado del envío "FACTURADO" no existe'], 500);
 
-            $estSacaFacturada = $em->getRepository(Nomenclador::class)->findOneBy(['codigo'=>'APP_SACA_ESTADO_FACTURADA']);
+            $estSacaFacturada = $em->getRepository(Nomenclador::class)->findOneBy(['codigo' => 'APP_SACA_ESTADO_FACTURADA']);
             if (!$estSacaFacturada)
                 return new JsonResponse(['error' => 'Error el estado de la saca "FACTURADA" no existe'], 500);
 
@@ -337,13 +331,13 @@ class FacturaController extends AbstractController
                 /** @var Saca $saca */
                 $saca = $em->getRepository(Saca::class)->find($item);
 
-                if ($saca == null){
+                if ($saca == null) {
                     /** @var Envio $envio */
                     $envio = $em->getRepository(Envio::class)->find($item);
                     $envio->setFactura($factura);
                     $envio->setEstado($estEnvioFacturada);
                     $em->persist($envio);
-                }else{
+                } else {
                     $saca->setFactura($factura);
                     $saca->setEstado($estSacaFacturada);
                     $em->persist($saca);
@@ -398,8 +392,8 @@ class FacturaController extends AbstractController
         /** @var Factura $factura */
         $factura = $em->getRepository(Factura::class)->find($id);
         $fecha = $factura->getFecha()->format('d-m-Y');
-        $sacas = $em->getRepository(Saca::class)->findBy(['factura'=>$id]);
-        $envios = $em->getRepository(Envio::class)->findBy(['factura'=>$id]);
+        $sacas = $em->getRepository(Saca::class)->findBy(['factura' => $id]);
+        $envios = $em->getRepository(Envio::class)->findBy(['factura' => $id]);
 
         return $this->render('factura/imprimir_factura.html.twig', [
             'factura' => $factura,

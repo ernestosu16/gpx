@@ -3,8 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Localizacion;
-use App\Entity\LocalizacionTipo;
-use Doctrine\ORM\ORMException;
+use App\Entity\Nomenclador\LocalizacionTipo;
+use Doctrine\ORM\Exception\ORMException;
 use Doctrine\ORM\QueryBuilder;
 
 class LocalizacionRepository extends _NestedTreeRepository_

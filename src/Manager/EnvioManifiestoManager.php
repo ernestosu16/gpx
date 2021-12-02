@@ -3,7 +3,7 @@
 
 namespace App\Manager;
 
-use App\Entity\EnvioManifiesto;
+use App\Entity\Envio\EnvioManifiesto;;
 use App\Entity\Pais;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Utils\Validator;

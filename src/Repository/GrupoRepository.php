@@ -3,7 +3,7 @@
 namespace App\Repository;
 
 use App\Config\Data\Nomenclador\GrupoData;
-use App\Entity\Grupo;
+use App\Entity\Nomenclador\Grupo;
 use Doctrine\ORM\QueryBuilder;
 
 /**

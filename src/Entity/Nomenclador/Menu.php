@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Nomenclador;
 
+use App\Entity\Nomenclador;
 use App\Repository\MenuRepository;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
@@ -47,6 +48,9 @@ class Menu extends Nomenclador
         return $this;
     }
 
+    /**
+     * @throws Exception
+     */
     public function getNotify(): ?DateTime
     {
         $v = $this->getParametro('notify');
@@ -61,6 +65,9 @@ class Menu extends Nomenclador
         return $this;
     }
 
+    /**
+     * @throws Exception
+     */
     public function checkNotify(): bool
     {
         $notify = $this->getNotify();

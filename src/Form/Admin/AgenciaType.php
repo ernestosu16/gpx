@@ -2,7 +2,7 @@
 
 namespace App\Form\Admin;
 
-use App\Entity\Agencia;
+use App\Entity\Nomenclador\Agencia;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AgenciaType extends BaseNomencladorType

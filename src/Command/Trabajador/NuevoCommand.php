@@ -3,8 +3,8 @@
 namespace App\Command\Trabajador;
 
 use App\Entity\Estructura;
-use App\Entity\EstructuraTipo;
-use App\Entity\Grupo;
+use App\Entity\Nomenclador\EstructuraTipo;
+use App\Entity\Nomenclador\Grupo;
 use App\Entity\Pais;
 use App\Entity\Trabajador;
 use App\Repository\EstructuraRepository;

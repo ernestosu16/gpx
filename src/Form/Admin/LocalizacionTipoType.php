@@ -3,7 +3,7 @@
 namespace App\Form\Admin;
 
 use App\Config\Data\Nomenclador\LocalizacionTipoData;
-use App\Entity\LocalizacionTipo;
+use App\Entity\Nomenclador\LocalizacionTipo;
 use App\Repository\LocalizacionTipoRepository;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;

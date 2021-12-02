@@ -3,8 +3,8 @@
 namespace App\Form\Admin;
 
 use App\Entity\Estructura;
-use App\Entity\EstructuraTipo;
-use App\Entity\Grupo;
+use App\Entity\Nomenclador\EstructuraTipo;
+use App\Entity\Nomenclador\Grupo;
 use App\Entity\Localizacion;
 use App\Entity\Trabajador;
 use App\Entity\TrabajadorCredencial;

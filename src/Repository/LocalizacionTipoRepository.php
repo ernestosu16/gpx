@@ -2,7 +2,8 @@
 
 namespace App\Repository;
 
-use App\Entity\LocalizacionTipo;
+
+use App\Entity\Nomenclador\LocalizacionTipo;
 
 class LocalizacionTipoRepository extends _NestedTreeRepository_
 {

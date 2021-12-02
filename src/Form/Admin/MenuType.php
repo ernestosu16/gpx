@@ -2,7 +2,7 @@
 
 namespace App\Form\Admin;
 
-use App\Entity\Menu;
+use App\Entity\Nomenclador\Menu;
 use App\Manager\RouteManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\AbstractType;

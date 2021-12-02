@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Nomenclador;
 
+use App\Entity\Nomenclador;
 use App\Repository\LocalizacionTipoRepository;
 use Doctrine\ORM\Mapping as ORM;
 

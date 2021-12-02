@@ -2,13 +2,16 @@
 
 namespace App\Entity;
 
+use App\Entity\Nomenclador\EstructuraTipo;
+use App\Entity\Nomenclador\Grupo;
+use App\Entity\Nomenclador\LocalizacionTipo;
 use App\Entity\Traits\VersionTrait;
 use App\Repository\EstructuraRepository;
 use App\Utils\RegexUtil;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Exception\ORMException;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\ORMException;
 use Gedmo\Mapping\Annotation as Gedmo;
 use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Serializer\Annotation\MaxDepth;

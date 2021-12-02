@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\Estructura;
-use App\Entity\EstructuraTipo;
 
 final class EstructuraRepository extends _NestedTreeRepository_
 {

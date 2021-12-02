@@ -3,7 +3,7 @@
 namespace App\Config\Data\Nomenclador;
 
 use App\Config\Data\_Data_;
-use App\Entity\Agencia;
+use App\Entity\Nomenclador\Agencia;
 
 final class AgenciaData extends _Data_
 {

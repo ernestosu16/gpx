@@ -3,7 +3,7 @@
 
 namespace App\Manager;
 
-use App\Entity\EnvioManifiesto;
+use App\Entity\Envio\EnvioManifiesto;;
 use App\Entity\Nomenclador;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\ORMException;

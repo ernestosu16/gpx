@@ -1,7 +1,9 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Nomenclador;
 
+use App\Entity\Estructura;
+use App\Entity\Nomenclador;
 use App\Repository\GrupoRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;

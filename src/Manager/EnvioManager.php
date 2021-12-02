@@ -2,19 +2,11 @@
 
 namespace App\Manager;
 
-use App\Entity\Agencia;
-use App\Entity\Envio;
-use App\Entity\EnvioAduana;
-use App\Entity\EnvioAduanaTraza;
-use App\Entity\EnvioAnomaliaTraza;
-use App\Entity\EnvioManifiesto;
-use App\Entity\EnvioTraza;
-use App\Entity\Estructura;
-use App\Entity\EstructuraTipo;
+use App\Entity\Envio\Envio;
+use App\Entity\Envio\EnvioManifiesto;
 use App\Entity\Localizacion;
 use App\Entity\Nomenclador;
 use App\Entity\Pais;
-use App\Entity\Trabajador;
 use App\Entity\TrabajadorCredencial;
 use App\Utils\EnvioDireccion;
 use App\Utils\EnvioPreRecepcion;

@@ -3,7 +3,7 @@
 namespace App\Tests\Controller\Admin;
 
 use App\Entity\Estructura;
-use App\Entity\Grupo;
+use App\Entity\Nomenclador\Grupo;
 use App\Entity\Trabajador;
 
 class TrabajadorControllerTest extends AdminWebTestCase

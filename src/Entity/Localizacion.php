@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Nomenclador\LocalizacionTipo;
 use App\Entity\Traits\VersionTrait;
 use App\Repository\LocalizacionRepository;
 use App\Utils\RegexUtil;

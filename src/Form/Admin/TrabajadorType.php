@@ -2,7 +2,7 @@
 
 namespace App\Form\Admin;
 
-use App\Entity\Grupo;
+use App\Entity\Nomenclador\Grupo;
 use App\Entity\Trabajador;
 use App\Form\Admin\Event\TrabajadorTypeSubscriber;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
