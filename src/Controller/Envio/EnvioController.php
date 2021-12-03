@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Envio;
 
 use App\Entity\Envio\Envio;
 use App\Entity\Localizacion;
