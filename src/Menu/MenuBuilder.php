@@ -4,7 +4,8 @@ namespace App\Menu;
 
 use App\Config\Data\Nomenclador\MenuData;
 use App\Entity\Nomenclador\Menu;
-use App\Repository\MenuRepository;
+use App\Repository\Nomenclador\MenuRepository;
+use Exception;
 use Knp\Menu\ItemInterface;
 
 final class MenuBuilder extends _Menu_
@@ -48,10 +49,18 @@ final class MenuBuilder extends _Menu_
         return $repository->buildTreeHierarchyEntity($this->getTrabajador()->getMenus()->toArray());
     }
 
+    /**
+     * @throws Exception
+     */
     private function createItem(ItemInterface $item, ?Menu $menu): ItemInterface
     {
         if (!$menu || !$menu->getHabilitado())
             return $item;
+
+        if ($menu->getRoute() && !$this->routeManager->find($menu->getRoute())) {
+            $this->logger->error(sprintf('La ruta "@%s" no existe.', (string)$menu->getRoute()));
+            return $item;
+        }
 
         $icon = ($menu->getIcon()) ? sprintf('<span class="%s"></span>', $menu->getIcon()) : '<span class="fa fa-list"></span>';
         $notify = ($menu->checkNotify()) ? '</span><span class="label label-success pull-right">N</span>' : '';
