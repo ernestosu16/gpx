@@ -1,8 +1,11 @@
 <?php
 
-namespace App\Repository;
+namespace App\Repository\Envio;
 
-use App\Entity\Envio\EnvioManifiesto;;
+use App\Entity\Envio\EnvioManifiesto;
+use App\Repository\_Repository_;
+
+;
 
 /**
  * @method EnvioManifiesto|null find($id, $lockMode = null, $lockVersion = null)

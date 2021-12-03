@@ -8,7 +8,7 @@ use App\Entity\Localizacion;
 use App\Entity\Nomenclador;
 use App\Entity\Pais;
 use App\Entity\Persona;
-use App\Repository\EnvioRepository;
+use App\Repository\Envio\EnvioRepository;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\Pure;
 

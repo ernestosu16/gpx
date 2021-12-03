@@ -21,7 +21,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
 
-class EstructuraType extends BaseAdminType
+final class EstructuraType extends BaseAdminType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {

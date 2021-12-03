@@ -21,7 +21,7 @@ use App\Entity\Nomenclador\LocalizacionTipo;
 use App\Entity\Nomenclador\Menu;
 use App\Entity\Pais;
 use App\Repository\LocalizacionRepository;
-use App\Repository\LocalizacionTipoRepository;
+use App\Repository\Nomenclador\LocalizacionTipoRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Symfony\Component\Console\Command\Command;

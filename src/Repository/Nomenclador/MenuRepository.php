@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Repository;
+namespace App\Repository\Nomenclador;
 
 use App\Entity\Nomenclador\Menu;
+use App\Repository\_NestedTreeRepository_;
 
 /**
  * @method Menu|null find($id, $lockMode = null, $lockVersion = null)

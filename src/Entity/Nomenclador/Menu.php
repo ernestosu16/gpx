@@ -3,7 +3,7 @@
 namespace App\Entity\Nomenclador;
 
 use App\Entity\Nomenclador;
-use App\Repository\MenuRepository;
+use App\Repository\Nomenclador\MenuRepository;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Exception;

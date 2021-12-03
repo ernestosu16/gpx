@@ -4,9 +4,10 @@ namespace App\Entity\Envio;
 
 use App\Entity\_Entity_;
 use App\Entity\Nomenclador;
+use App\Repository\Envio\EnvioAnomaliaTrazaRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: EnvioAnomaliaTraza::class)]
+#[ORM\Entity(repositoryClass: EnvioAnomaliaTrazaRepository::class)]
 class EnvioAnomaliaTraza extends _Entity_
 {
     #[ORM\Column(type: 'string', length: 2550, nullable: false)]

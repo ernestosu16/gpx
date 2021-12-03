@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Repository;
+namespace App\Repository\Envio;
 
-use App\Entity\FicheroEnvioAduana;
+use App\Entity\Envio\FicheroEnvioAduana;
+use App\Repository\_Repository_;
 
 /**
  * @method FicheroEnvioAduana|null find($id, $lockMode = null, $lockVersion = null)

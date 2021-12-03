@@ -3,7 +3,7 @@
 namespace App\Entity\Nomenclador;
 
 use App\Entity\Nomenclador;
-use App\Repository\LocalizacionTipoRepository;
+use App\Repository\Nomenclador\LocalizacionTipoRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: LocalizacionTipoRepository::class)]

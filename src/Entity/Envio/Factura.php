@@ -6,7 +6,7 @@ use App\Entity\_Entity_;
 use App\Entity\Estructura;
 use App\Entity\Nomenclador;
 use App\Entity\Trabajador;
-use App\Repository\FacturaRepository;
+use App\Repository\Envio\FacturaRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;

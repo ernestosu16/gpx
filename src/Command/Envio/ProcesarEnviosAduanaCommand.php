@@ -9,12 +9,11 @@ use App\Command\BaseCommandInterface;
 use App\DTO\EntradaDespacho;
 use App\DTO\Insertar;
 use App\DTO\InsertarElementos;
-use App\Entity\EnvioAduana;
+use App\Entity\Envio\EnvioAduana;
 use App\Entity\Estructura;
-use App\Entity\Nomenclador\EstructuraTipo;
 use App\Entity\Nomenclador;
 use App\Enum\TipoFichero;
-use App\Repository\EnvioAduanaRepository;
+use App\Repository\Envio\EnvioAduanaRepository;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -58,8 +57,8 @@ final class ProcesarEnviosAduanaCommand extends BaseCommand implements BaseComma
         /** @var Estructura[] $estructurasTransitaria */
         $estructurasTransitaria = $em->getRepository(Estructura::class)->findEstructuraByTipo('EMPRESA');
 
-        foreach ($estructurasTransitaria as $transitaria){
-            $envioAduanaResepcionado =  $this->envioAduanaRepository->findEnvioAduanaByEstructuraAndEstado($transitaria,$this->getRepository(Nomenclador::class)->findOneByCodigo(self::ESTADO_RECEPCIONADO));
+        foreach ($estructurasTransitaria as $transitaria) {
+            $envioAduanaResepcionado = $this->envioAduanaRepository->findEnvioAduanaByEstructuraAndEstado($transitaria, $this->getRepository(Nomenclador::class)->findOneByCodigo(self::ESTADO_RECEPCIONADO));
 
             $entradaDespacho = new EntradaDespacho();
             $entradaDespacho->setCodigoAduana($transitaria->getCodigoAduana());
@@ -67,11 +66,10 @@ final class ProcesarEnviosAduanaCommand extends BaseCommand implements BaseComma
             $incertarElementos = new InsertarElementos();
             $count = 0;
 
-            foreach ($envioAduanaResepcionado as $envioAduana)
-            {
+            foreach ($envioAduanaResepcionado as $envioAduana) {
                 $incertarElementos->addInsertar($this->mapEnvioAdunaToInsertar($envioAduana));
                 $count++;
-                if($count == 1000){
+                if ($count == 1000) {
                     $entradaDespacho->setInsertarElementos($incertarElementos);
                     $this->createAndSaveXML($entradaDespacho);
 
@@ -81,7 +79,7 @@ final class ProcesarEnviosAduanaCommand extends BaseCommand implements BaseComma
                 }
             }
 
-            if($count != 0){
+            if ($count != 0) {
                 $entradaDespacho->setInsertarElementos($incertarElementos);
                 $this->createAndSaveXML($entradaDespacho);
             }
@@ -95,34 +93,35 @@ final class ProcesarEnviosAduanaCommand extends BaseCommand implements BaseComma
     public function mapEnvioAdunaToInsertar(EnvioAduana $envioAduana): Insertar
     {
         $envio = $envioAduana->getEnvio();
-        $incertar = new Insertar($envio->getCodTracking(),$envio->getAgencia()->getDescripcion(),$envio->getProvincia()->getCodigoAduana(),$envio->getMunicipio()->getCodigoAduana(),$envio->getPaisOrigen()->getCodigoAduana(),$envio->getPeso());
+        $incertar = new Insertar($envio->getCodTracking(), $envio->getAgencia()->getDescripcion(), $envio->getProvincia()->getCodigoAduana(), $envio->getMunicipio()->getCodigoAduana(), $envio->getPaisOrigen()->getCodigoAduana(), $envio->getPeso());
 
         return $incertar;
     }
 
-    public function createAndSaveXML(EntradaDespacho $entradaDespacho){
+    public function createAndSaveXML(EntradaDespacho $entradaDespacho)
+    {
 
         $encoders = [new XmlEncoder(), new JsonEncoder()];
         $normalizers = [new ObjectNormalizer()];
         $serializer = new Serializer($normalizers, $encoders);
 
-        $xml_content = $serializer->serialize($entradaDespacho, 'xml',['xml_format_output' => true,'xml_root_node_name' => 'EntradaDespacho','encoder_ignored_node_types' => [
+        $xml_content = $serializer->serialize($entradaDespacho, 'xml', ['xml_format_output' => true, 'xml_root_node_name' => 'EntradaDespacho', 'encoder_ignored_node_types' => [
             \XML_PI_NODE, // removes XML declaration (the leading xml tag)
         ]]);
 
         $local_directory = $this->get('kernel')->getProjectDir() . '/public/download/envioAduana/paso1/';
-        if(!file_exists ($local_directory)){
-            mkdir($local_directory,0777,true);
+        if (!file_exists($local_directory)) {
+            mkdir($local_directory, 0777, true);
         }
-        $file_name = date('Ymdhis').'paso1.xml';
+        $file_name = date('Ymdhis') . 'paso1.xml';
 
-        $stream = fopen($local_directory . $file_name , 'w+');
+        $stream = fopen($local_directory . $file_name, 'w+');
         fwrite($stream, $xml_content);
         fclose($stream);
 
-        /**@var $emFichero \App\Manager\FicheroEnvioAduanaManager **/
+        /**@var $emFichero \App\Manager\FicheroEnvioAduanaManager * */
         $emFichero = $this->getContainer()->get('app.manager.fichero_envio_aduana');
 
-        $emFichero->createFicheroEnvioAduana($file_name, TipoFichero::TYPE_PASO1 );
+        $emFichero->createFicheroEnvioAduana($file_name, TipoFichero::TYPE_PASO1);
     }
 }

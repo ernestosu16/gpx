@@ -3,7 +3,7 @@
 namespace App\Entity\Nomenclador;
 
 use App\Entity\Nomenclador;
-use App\Repository\AgenciaRepository;
+use App\Repository\Nomenclador\AgenciaRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: AgenciaRepository::class)]

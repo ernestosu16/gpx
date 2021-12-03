@@ -4,7 +4,7 @@ namespace App\Entity\Nomenclador;
 
 use App\Entity\Estructura;
 use App\Entity\Nomenclador;
-use App\Repository\EstructuraTipoRepository;
+use App\Repository\Nomenclador\EstructuraTipoRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;

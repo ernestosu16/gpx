@@ -4,7 +4,7 @@ namespace App\Entity\Envio;
 
 use App\Entity\_Entity_;
 use App\Entity\Estructura;
-use App\Repository\SacaConsecutivoRepository;
+use App\Repository\Envio\SacaConsecutivoRepository;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\Pure;

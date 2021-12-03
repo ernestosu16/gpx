@@ -5,7 +5,7 @@ namespace App\Entity\Envio;
 use App\Entity\_Entity_;
 use App\Entity\Estructura;
 use App\Entity\Nomenclador;
-use App\Repository\SacaRepository;
+use App\Repository\Envio\SacaRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -17,7 +17,7 @@ class Saca extends _Entity_
     #[ORM\Column(type: 'string', length: 13, nullable: false)]
     private string $sello;
 
-    #[ORM\Column(type: 'datetime',nullable: false)]
+    #[ORM\Column(type: 'datetime', nullable: false)]
     private \DateTime $fecha_creacion;
 
     #[ORM\Column(type: 'string', length: 31, nullable: false)]
@@ -49,12 +49,12 @@ class Saca extends _Entity_
     #[ORM\OneToMany(mappedBy: 'saca', targetEntity: Envio::class, cascade: ['persist'])]
     private ?Collection $envios;
 
-    #[ORM\Column(type: 'json', nullable: true )]
+    #[ORM\Column(type: 'json', nullable: true)]
     private $observaciones;
 
     #[ORM\OneToMany(mappedBy: "saca", targetEntity: SacaTraza::class)]
     private $trazas;
-    
+
     #[Pure]
     public function __construct()
     {

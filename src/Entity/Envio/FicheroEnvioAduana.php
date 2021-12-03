@@ -5,7 +5,7 @@ namespace App\Entity\Envio;
 
 use App\Entity\_Entity_;
 use App\Enum\TipoFichero;
-use App\Repository\FicheroEnvioAduanaRepository;
+use App\Repository\Envio\FicheroEnvioAduanaRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: FicheroEnvioAduanaRepository::class)]

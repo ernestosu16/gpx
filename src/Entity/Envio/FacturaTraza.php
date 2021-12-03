@@ -6,7 +6,7 @@ use App\Entity\_Entity_;
 use App\Entity\Estructura;
 use App\Entity\Nomenclador;
 use App\Entity\Trabajador;
-use App\Repository\FacturaTrazaRepository;
+use App\Repository\Envio\FacturaTrazaRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: FacturaTrazaRepository::class)]
@@ -145,7 +145,6 @@ class FacturaTraza extends _Entity_
         $this->ip = $ip;
         return $this;
     }
-
 
 
 }

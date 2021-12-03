@@ -4,9 +4,10 @@ namespace App\Entity\Envio;
 
 use App\Entity\_Entity_;
 use App\Entity\Nomenclador;
+use App\Repository\Envio\EnvioAduanaTrazaRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: EnvioAduanaTraza::class)]
+#[ORM\Entity(repositoryClass: EnvioAduanaTrazaRepository::class)]
 class EnvioAduanaTraza extends _Entity_
 {
 

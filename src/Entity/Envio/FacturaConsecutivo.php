@@ -4,7 +4,7 @@ namespace App\Entity\Envio;
 
 use App\Entity\_Entity_;
 use App\Entity\Estructura;
-use App\Repository\FacturaConsecutivoRepository;
+use App\Repository\Envio\FacturaConsecutivoRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: FacturaConsecutivoRepository::class)]

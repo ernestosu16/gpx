@@ -6,7 +6,7 @@ use App\Entity\_Entity_;
 use App\Entity\Estructura;
 use App\Entity\Nomenclador;
 use App\Entity\Trabajador;
-use App\Repository\SacaTrazaRepository;
+use App\Repository\Envio\SacaTrazaRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SacaTrazaRepository::class)]

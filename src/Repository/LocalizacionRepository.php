@@ -7,7 +7,7 @@ use App\Entity\Nomenclador\LocalizacionTipo;
 use Doctrine\ORM\Exception\ORMException;
 use Doctrine\ORM\QueryBuilder;
 
-class LocalizacionRepository extends _NestedTreeRepository_
+final class LocalizacionRepository extends _NestedTreeRepository_
 {
     protected static function classEntity(): string
     {
@@ -65,10 +65,10 @@ class LocalizacionRepository extends _NestedTreeRepository_
         $tipo = $em->getRepository(LocalizacionTipo::class)->findOneByCodigo(LocalizacionTipo::PROVINCIA);
         $parent = $this->findOneBy(['tipo' => $tipo, 'codigo_aduana' => $provincia]);
         $children = null;
-        if($parent){
+        if ($parent) {
             $children = $this->findOneBy(['parent' => $parent, 'codigo_aduana' => $municipio]);
         }
-        return [$children,$parent];
+        return [$children, $parent];
     }
 
 }

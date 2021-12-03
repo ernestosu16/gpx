@@ -4,7 +4,7 @@ namespace App\Entity\Envio;
 
 use App\Entity\_Entity_;
 use App\Entity\Nomenclador;
-use App\Repository\EnvioAduanaRepository;
+use App\Repository\Envio\EnvioAduanaRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: EnvioAduanaRepository::class)]

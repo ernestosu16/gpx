@@ -17,7 +17,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\Route;
 
-class MenuType extends AbstractType
+final class MenuType extends AbstractType
 {
     public function __construct(protected ContainerInterface $container)
     {

@@ -6,7 +6,7 @@ use App\Entity\_Entity_;
 use App\Entity\Estructura;
 use App\Entity\Nomenclador;
 use App\Entity\Trabajador;
-use App\Repository\EnvioTrazaRepository;
+use App\Repository\Envio\EnvioTrazaRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: EnvioTrazaRepository::class)]

@@ -4,13 +4,13 @@ namespace App\Form\Admin;
 
 use App\Config\Data\Nomenclador\LocalizacionTipoData;
 use App\Entity\Nomenclador\LocalizacionTipo;
-use App\Repository\LocalizacionTipoRepository;
+use App\Repository\Nomenclador\LocalizacionTipoRepository;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class LocalizacionTipoType extends BaseNomencladorType
+final class LocalizacionTipoType extends BaseNomencladorType
 {
 
     public function buildForm(FormBuilderInterface $builder, array $options)

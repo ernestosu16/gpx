@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Repository;
+namespace App\Repository\Nomenclador;
 
 
 use App\Entity\Nomenclador\LocalizacionTipo;
+use App\Repository\_NestedTreeRepository_;
 
 class LocalizacionTipoRepository extends _NestedTreeRepository_
 {

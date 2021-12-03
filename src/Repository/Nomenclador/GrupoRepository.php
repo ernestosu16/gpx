@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Repository;
+namespace App\Repository\Nomenclador;
 
 use App\Config\Data\Nomenclador\GrupoData;
 use App\Entity\Nomenclador\Grupo;
+use App\Repository\NomencladorRepository;
 use Doctrine\ORM\QueryBuilder;
 
 /**

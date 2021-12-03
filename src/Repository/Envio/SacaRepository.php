@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Repository;
+namespace App\Repository\Envio;
 
-use App\Entity\Saca;
+use App\Entity\Envio\Saca;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\Persistence\ManagerRegistry;
@@ -13,7 +13,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Saca[]    findAll()
  * @method Saca[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class SacaRepository extends ServiceEntityRepository
+final class SacaRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
@@ -44,33 +44,4 @@ class SacaRepository extends ServiceEntityRepository
     {
         return $this->findOneBy(['codigo'=>$codigo]);
     }
-
-    // /**
-    //  * @return Saca[] Returns an array of Saca objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('s.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Saca
-    {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

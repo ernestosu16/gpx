@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Repository;
+namespace App\Repository\Nomenclador;
 
 use App\Config\Data\Nomenclador\AgenciaData;
 use App\Entity\Nomenclador\Agencia;
 use App\Entity\Nomenclador;
+use App\Repository\NomencladorRepository;
 use Doctrine\ORM\QueryBuilder;
 
 final class AgenciaRepository extends NomencladorRepository

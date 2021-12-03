@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Repository;
+namespace App\Repository\Nomenclador;
 
 use App\Entity\Nomenclador\EstructuraTipo;
+use App\Repository\NomencladorRepository;
 use Doctrine\ORM\QueryBuilder;
 
 final class EstructuraTipoRepository extends NomencladorRepository
