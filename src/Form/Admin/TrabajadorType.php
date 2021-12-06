@@ -2,7 +2,7 @@
 
 namespace App\Form\Admin;
 
-use App\Entity\Grupo;
+use App\Entity\Nomenclador\Grupo;
 use App\Entity\Trabajador;
 use App\Form\Admin\Event\TrabajadorTypeSubscriber;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -12,7 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class TrabajadorType extends BaseAdminType
+final class TrabajadorType extends BaseAdminType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {

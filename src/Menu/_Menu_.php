@@ -4,22 +4,29 @@ namespace App\Menu;
 
 use App\Entity\Trabajador;
 use App\Entity\TrabajadorCredencial;
+use App\Manager\RouteManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Menu\FactoryInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 abstract class _Menu_
 {
+    protected RouteManager $routeManager;
     protected FactoryInterface $factory;
     protected EntityManagerInterface $entityManager;
     protected RequestStack $requestStack;
     protected TokenStorageInterface $tokenStorage;
+    protected LoggerInterface $logger;
 
-    /**
-     * @param FactoryInterface $factory
-     */
+    public function setRouteManager(RouteManager $routeManager): void
+    {
+        $this->routeManager = $routeManager;
+    }
+
     public function setFactory(FactoryInterface $factory): void
     {
         $this->factory = $factory;
@@ -50,5 +57,10 @@ abstract class _Menu_
     protected function getTrabajador(): ?Trabajador
     {
         return $this->getCredencial()->getTrabajador();
+    }
+
+    public function setLogger(LoggerInterface $logger): void
+    {
+        $this->logger = $logger;
     }
 }

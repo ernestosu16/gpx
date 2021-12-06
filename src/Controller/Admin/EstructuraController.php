@@ -69,23 +69,6 @@ final class EstructuraController extends _CrudController_
         ]);
     }
 
-    private function getEstructuras(): QueryBuilder
-    {
-        /** @var TrabajadorCredencial $credencial */
-        $credencial = $this->getUser();
-
-        $query = $this->estructuraRepository
-            ->createQueryBuilder('e')
-            ->addOrderBy('e.level', 'ASC')
-            ->addOrderBy('e.lft', 'ASC');
-
-        if (in_array('ROLE_ADMIN', $credencial->getRoles()))
-            return $query;
-
-        return $this->estructuraRepository->childrenQueryBuilder($credencial->getTrabajador()->getEstructura())
-            ->orWhere('node = :estructura ')->setParameter('estructura', $credencial->getTrabajador()->getEstructura());
-    }
-
     private function getRootNodes()
     {
         /** @var TrabajadorCredencial $credencial */

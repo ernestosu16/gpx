@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use function Symfony\Component\String\u;
 
+#[ORM\Table(name: 'app_pais')]
 #[ORM\Entity(repositoryClass: PaisRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IATA', columns: ['iata'])]
 #[ORM\UniqueConstraint(name: 'UNIQ_CODIGO_ADUANA', columns: ['codigo_aduana'])]

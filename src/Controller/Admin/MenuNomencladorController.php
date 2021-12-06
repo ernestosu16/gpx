@@ -3,7 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Config\Data\Nomenclador\MenuData;
-use App\Entity\Menu;
+use App\Entity\Nomenclador\Menu;
 use App\Form\Admin\MenuType;
 use Symfony\Component\Routing\Annotation\Route;
 

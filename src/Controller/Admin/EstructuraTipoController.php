@@ -3,7 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Config\Data\Nomenclador\EstructuraTipoData;
-use App\Entity\EstructuraTipo;
+use App\Entity\Nomenclador\EstructuraTipo;
 use App\Form\Admin\EstructuraTipoType;
 use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Routing\Annotation\Route;

@@ -5,7 +5,7 @@ namespace App\Command\Fixtures;
 use App\Command\BaseCommand;
 use App\Command\BaseCommandInterface;
 use App\Entity\Localizacion;
-use App\Entity\LocalizacionTipo;
+use App\Entity\Nomenclador\LocalizacionTipo;
 use App\Entity\Pais;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\InvalidOptionException;

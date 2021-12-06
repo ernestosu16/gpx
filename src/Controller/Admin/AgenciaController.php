@@ -3,7 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Config\Data\Nomenclador\AgenciaData;
-use App\Entity\Agencia;
+use App\Entity\Nomenclador\Agencia;
 use App\Form\Admin\AgenciaType;
 use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Routing\Annotation\Route;

@@ -3,7 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Config\Data\Nomenclador\GrupoData;
-use App\Entity\Grupo;
+use App\Entity\Nomenclador\Grupo;
 use App\Form\Admin\GrupoType;
 use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Routing\Annotation\Route;

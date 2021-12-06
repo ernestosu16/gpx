@@ -3,14 +3,14 @@
 namespace App\Form\Admin;
 
 use App\Entity\Localizacion;
-use App\Entity\LocalizacionTipo;
+use App\Entity\Nomenclador\LocalizacionTipo;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class LocalizacionType extends AbstractType
+final class LocalizacionType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {

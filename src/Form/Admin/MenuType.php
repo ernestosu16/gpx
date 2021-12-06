@@ -2,7 +2,7 @@
 
 namespace App\Form\Admin;
 
-use App\Entity\Menu;
+use App\Entity\Nomenclador\Menu;
 use App\Manager\RouteManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\AbstractType;
@@ -17,7 +17,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\Route;
 
-class MenuType extends AbstractType
+final class MenuType extends AbstractType
 {
     public function __construct(protected ContainerInterface $container)
     {

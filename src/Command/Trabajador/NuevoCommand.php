@@ -3,13 +3,13 @@
 namespace App\Command\Trabajador;
 
 use App\Entity\Estructura;
-use App\Entity\EstructuraTipo;
-use App\Entity\Grupo;
+use App\Entity\Nomenclador\EstructuraTipo;
+use App\Entity\Nomenclador\Grupo;
 use App\Entity\Pais;
 use App\Entity\Trabajador;
 use App\Repository\EstructuraRepository;
-use App\Repository\EstructuraTipoRepository;
-use App\Repository\GrupoRepository;
+use App\Repository\Nomenclador\EstructuraTipoRepository;
+use App\Repository\Nomenclador\GrupoRepository;
 use App\Repository\PaisRepository;
 use App\Repository\TrabajadorCredencialRepository;
 use App\Repository\TrabajadorRepository;

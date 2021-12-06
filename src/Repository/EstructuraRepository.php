@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\Estructura;
-use App\Entity\EstructuraTipo;
 
 final class EstructuraRepository extends _NestedTreeRepository_
 {
@@ -23,11 +22,10 @@ final class EstructuraRepository extends _NestedTreeRepository_
     public function findEstructuraByTipo(string $tipo)
     {
         return $this->createQueryBuilder('e')
-            ->innerJoin('e.tipos','t')
+            ->innerJoin('e.tipos', 't')
             ->andWhere('t.codigo = :val')
             ->setParameter('val', $tipo)
             ->getQuery()
-            ->getResult()
-            ;
+            ->getResult();
     }
 }

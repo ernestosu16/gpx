@@ -2,10 +2,12 @@ services:
     App\Menu\_Menu_:
         abstract: true
         calls:
+            -   setRouteManager: [ '@app.manager.route' ]
             -   setFactory: [ '@knp_menu.factory' ]
             -   setEntityManager: [ '@Doctrine\ORM\EntityManagerInterface' ]
             -   setRequestStack: [ '@request_stack' ]
             -   setStorage: [ '@security.token_storage' ]
+            -   setLogger: [ '@logger' ]
 
     app.menu_builder:
         class: App\Menu\MenuBuilder

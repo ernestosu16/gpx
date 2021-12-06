@@ -5,7 +5,7 @@ namespace App\Form\Admin;
 use App\Entity\Estructura;
 use App\Entity\TrabajadorCredencial;
 use App\Repository\EstructuraRepository;
-use App\Repository\GrupoRepository;
+use App\Repository\Nomenclador\GrupoRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;

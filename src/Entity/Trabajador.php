@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Nomenclador\Grupo;
 use App\Repository\TrabajadorRepository;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -10,6 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Validator\Constraints as Assert;
 
+#[ORM\Table(name: 'app_trabajador')]
 #[ORM\Entity(repositoryClass: TrabajadorRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_PERSONA_ID', columns: ['persona_id'])]
 #[ORM\Index(columns: ['estructura_id'], name: 'IDX_ESTRUCTURA_ID')]
@@ -29,7 +31,7 @@ class Trabajador extends _Entity_
     private Estructura $estructura;
 
     #[ORM\ManyToMany(targetEntity: Nomenclador::class)]
-    #[ORM\JoinTable(name: 'trabajador_grupo_asignado')]
+    #[ORM\JoinTable(name: 'app_trabajador_grupo_asignado')]
     #[ORM\JoinColumn(name: 'trabajador_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'grupo_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[Assert\Valid]

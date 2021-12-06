@@ -56,6 +56,5 @@ final class TrabajadorCredencialDoctrineSubscriber extends _DoctrineSubscriber_
             return;
 
         $credencial->setContrasena($this->passwordHasher->hashPassword($credencial, $credencial->getContrasena()));
-        $credencial->setForzarCambioContrasena(true);
     }
 }

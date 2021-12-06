@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Nomenclador\LocalizacionTipo;
 use App\Entity\Traits\VersionTrait;
 use App\Repository\LocalizacionRepository;
 use App\Utils\RegexUtil;
@@ -16,6 +17,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use function Symfony\Component\String\u;
 
 /** @Gedmo\Tree(type="nested") */
+#[ORM\Table(name: 'app_localizacion')]
 #[ORM\Entity(repositoryClass: LocalizacionRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_CODIGO', columns: ['codigo'])]
 #[ORM\Index(columns: ['root_id'], name: 'IDX_ROOT_ID')]

@@ -3,7 +3,7 @@
 namespace App\Config\Data\Nomenclador;
 
 use App\Config\Data\_Data_;
-use App\Entity\Grupo;
+use App\Entity\Nomenclador\Grupo;
 
 final class GrupoData extends _Data_
 {

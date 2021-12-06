@@ -6,8 +6,8 @@ namespace App\Command\Envio;
 
 use App\Command\BaseCommand;
 use App\Command\BaseCommandInterface;
-use App\Entity\Agencia;
-use App\Entity\EnvioManifiesto;
+use App\Entity\Nomenclador\Agencia;
+use App\Entity\Envio\EnvioManifiesto;
 use App\Entity\Estructura;
 use App\Entity\Localizacion;
 use App\Entity\Nomenclador;

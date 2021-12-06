@@ -9,6 +9,7 @@ use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+#[ORM\Table(name: 'app_trabajador_credencial')]
 #[ORM\Entity(repositoryClass: TrabajadorCredencialRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_USUARIO', fields: ['usuario'])]
 #[ORM\HasLifecycleCallbacks]

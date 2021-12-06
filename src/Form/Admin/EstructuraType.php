@@ -3,8 +3,8 @@
 namespace App\Form\Admin;
 
 use App\Entity\Estructura;
-use App\Entity\EstructuraTipo;
-use App\Entity\Grupo;
+use App\Entity\Nomenclador\EstructuraTipo;
+use App\Entity\Nomenclador\Grupo;
 use App\Entity\Localizacion;
 use App\Entity\Trabajador;
 use App\Entity\TrabajadorCredencial;
@@ -21,7 +21,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
 
-class EstructuraType extends BaseAdminType
+final class EstructuraType extends BaseAdminType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {

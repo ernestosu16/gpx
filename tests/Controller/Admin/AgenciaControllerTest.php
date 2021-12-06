@@ -2,7 +2,7 @@
 
 namespace App\Tests\Controller\Admin;
 
-use App\Entity\Agencia;
+use App\Entity\Nomenclador\Agencia;
 
 class AgenciaControllerTest extends AdminWebTestCase
 {

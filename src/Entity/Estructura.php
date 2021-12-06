@@ -2,13 +2,16 @@
 
 namespace App\Entity;
 
+use App\Entity\Nomenclador\EstructuraTipo;
+use App\Entity\Nomenclador\Grupo;
+use App\Entity\Nomenclador\LocalizacionTipo;
 use App\Entity\Traits\VersionTrait;
 use App\Repository\EstructuraRepository;
 use App\Utils\RegexUtil;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Exception\ORMException;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\ORMException;
 use Gedmo\Mapping\Annotation as Gedmo;
 use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
@@ -16,6 +19,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use function Symfony\Component\String\u;
 
 /** @Gedmo\Tree(type="nested") */
+#[ORM\Table(name: 'app_estructura')]
 #[ORM\Entity(repositoryClass: EstructuraRepository::class)]
 #[ORM\Index(columns: ['parent_id'], name: 'IDX_PARENT_ID')]
 #[ORM\Index(columns: ['root_id'], name: 'IDX_ROOT_ID')]
@@ -39,15 +43,15 @@ class Estructura extends BaseNestedTree
     protected Collection $children;
 
     #[ORM\ManyToMany(targetEntity: Localizacion::class, cascade: ['persist'])]
-    #[ORM\JoinTable(name: 'estructura_localizacion_asignada')]
+    #[ORM\JoinTable(name: 'app_estructura_localizacion_asignada')]
     private Collection $localizaciones;
 
     #[ORM\ManyToMany(targetEntity: EstructuraTipo::class, inversedBy: 'estructuras')]
-    #[ORM\JoinTable(name: 'estructura_tipo_asignado')]
+    #[ORM\JoinTable(name: 'app_estructura_tipo_asignado')]
     private Collection $tipos;
 
     #[ORM\ManyToMany(targetEntity: Grupo::class, inversedBy: 'estructuras')]
-    #[ORM\JoinTable(name: 'estructura_grupo_asignado')]
+    #[ORM\JoinTable(name: 'app_estructura_grupo_asignado')]
     #[ORM\JoinColumn(onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(onDelete: 'CASCADE')]
     private Collection $grupos;

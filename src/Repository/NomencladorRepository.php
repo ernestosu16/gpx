@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\Nomenclador;
-use DeepCopy\Exception\PropertyException;
 use Doctrine\Instantiator\Exception\InvalidArgumentException;
 
 /**
@@ -39,7 +38,7 @@ class NomencladorRepository extends _NestedTreeRepository_
         $class = static::classEntity();
         $object = new $class();
 
-        if(!$object instanceof Nomenclador)
+        if (!$object instanceof Nomenclador)
             throw new InvalidArgumentException('El objeto instanciado no es de clase "Nomenclador"');
 
         if ($parent)

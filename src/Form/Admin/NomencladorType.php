@@ -8,7 +8,7 @@ use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class NomencladorType extends BaseNomencladorType
+final class NomencladorType extends BaseNomencladorType
 {
     public function __construct(
         private EventDispatcherInterface $dispatcher

@@ -3,9 +3,9 @@
 namespace App\Form\Admin;
 
 use App\Config\Data\Nomenclador\EstructuraTipoData;
-use App\Entity\EstructuraTipo;
-use App\Entity\Grupo;
-use App\Repository\EstructuraTipoRepository;
+use App\Entity\Nomenclador\EstructuraTipo;
+use App\Entity\Nomenclador\Grupo;
+use App\Repository\Nomenclador\EstructuraTipoRepository;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -14,7 +14,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class EstructuraTipoType extends BaseNomencladorType
+final class EstructuraTipoType extends BaseNomencladorType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {

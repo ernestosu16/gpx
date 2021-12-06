@@ -2,6 +2,11 @@
 
 namespace App\Entity;
 
+use App\Entity\Nomenclador\Agencia;
+use App\Entity\Nomenclador\EstructuraTipo;
+use App\Entity\Nomenclador\Grupo;
+use App\Entity\Nomenclador\LocalizacionTipo;
+use App\Entity\Nomenclador\Menu;
 use App\Entity\Traits\VersionTrait;
 use App\Repository\NomencladorRepository;
 use App\Utils\RegexUtil;
@@ -17,6 +22,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use function Symfony\Component\String\u;
 
 /** @Gedmo\Tree(type="nested") */
+#[ORM\Table(name: 'app_nomenclador')]
 #[ORM\Entity(repositoryClass: NomencladorRepository::class)]
 #[ORM\Index(columns: ['parent_id'], name: 'IDX_PARENT_ID')]
 #[ORM\Index(columns: ['root_id'], name: 'IDX_ROOT_ID')]

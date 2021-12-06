@@ -3,7 +3,7 @@
 namespace App\Config\Data\Nomenclador;
 
 use App\Config\Data\_Data_;
-use App\Entity\EstructuraTipo;
+use App\Entity\Nomenclador\EstructuraTipo;
 
 final class EstructuraTipoData extends _Data_
 {

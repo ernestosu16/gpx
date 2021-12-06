@@ -30,3 +30,8 @@ services:
         arguments:
             - '%env(DATABASE_URL)%'
             - { db_table: 'app_sessions' }
+
+    Symfony\Component\Uid\Command\GenerateUlidCommand: ~
+    Symfony\Component\Uid\Command\GenerateUuidCommand: ~
+    Symfony\Component\Uid\Command\InspectUlidCommand: ~
+    Symfony\Component\Uid\Command\InspectUuidCommand: ~

@@ -3,7 +3,7 @@
 namespace App\Config\Data\Nomenclador;
 
 use App\Config\Data\_Data_;
-use App\Entity\Menu;
+use App\Entity\Nomenclador\Menu;
 
 final class MenuData extends _Data_
 {
