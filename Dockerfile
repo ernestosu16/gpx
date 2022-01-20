@@ -1,53 +1,55 @@
-FROM dap/php:8.0-apache
+FROM php:8.1-apache AS builder
+LABEL maintainer="Ernesto Suárez Ramírez <ernestosr@ecc.cu>"
 
-COPY [".env", "composer.json", "composer.lock", "symfony.lock", "proyect-init.sh", "/app/"]
+ENV TZ "America/Havana"
+ENV APACHE_RUN_USER  "www-data"
+ENV APACHE_RUN_GROUP "www-data"
+ENV APACHE_LOG_DIR   "/var/log/apache2"
+ENV APACHE_PID_FILE  "/var/run/apache2/apache2.pid"
+ENV APACHE_RUN_DIR   "/var/run/apache2"
+ENV APACHE_LOCK_DIR  "/var/lock/apache2"
+ENV APACHE_LOG_DIR   "/var/log/apache2"
 
-COPY bin /app/bin
-COPY config /app/config
-COPY docker /app/docker
-COPY migrations /app/migrations
-COPY public /app/public
-COPY src /app/src
-COPY translations /app/translations
-COPY templates /app/templates
+# Instalando paquetes necesarios para la aplicación
+COPY requirements.system /requirements.system
+RUN apt-get update &&  cat /requirements.system | xargs apt install -y && apt-get clean
 
-# Instalando paquete
-RUN apt-get -y update && \
-    apt-get install -y libicu-dev libxml2-dev libsodium-dev
+# Activando modulos del apache
+RUN a2enmod rewrite ssl
 
 # Configurando extenciones
 RUN docker-php-ext-configure intl && \
-    docker-php-ext-install intl
+    docker-php-ext-configure zip  && \
+    docker-php-ext-configure opcache --enable-opcache  && \
+    docker-php-ext-install intl opcache zip pcntl zip soap pdo pdo_mysql bcmath sockets sodium
 
-RUN docker-php-ext-configure opcache --enable-opcache \
-    && docker-php-ext-install opcache
+# Instalando rabbitmq
+RUN pecl install amqp \
+    && docker-php-ext-enable amqp
 
-RUN docker-php-ext-install pcntl bcmath  pdo_mysql sockets sodium soap zip
-# APACHE
-COPY ./docker/app/conf/apache /etc/apache2
-# PHP
-COPY ./docker/app/conf/php/php.ini.dist /usr/local/etc/php/php.ini
+# Instalando composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
+    composer -V
 
-# Instalando paquetes necesarios
-RUN composer install --no-scripts
+# Instalando symfony
+RUN curl -sS https://get.symfony.com/cli/installer | bash && \
+    mv /root/.symfony/bin/symfony /usr/local/bin/symfony && \
+    symfony check:requirements
 
-# Publicando el proyecto
-RUN ln -s /app /var/www/app
-
-# Configure cron jobs, and ensure crontab-file permissions
-COPY docker/app/conf/cron.d/crontab /etc/cron.d/app-cron
-RUN chmod 0644 /etc/cron.d/app-cron && \
-    crontab /etc/cron.d/app-cron && \
-    touch /var/log/cron.log
-
-# Apache mod
-RUN a2enmod ssl
+# Configurando APP
+ENV APP_DIR "/app"
+COPY docker/conf/apache /etc/apache2
+RUN mkdir /app && ln -s ${APP_DIR} /var/www/app
 
 WORKDIR /app
-ENTRYPOINT ["/app/docker/app/docker-entrypoint.sh"]
-
 EXPOSE 80
-EXPOSE 443
+
+ENTRYPOINT ["docker-entrypoint"]
 RUN mkdir -p /var/log/supervisor
-COPY ./docker/app/conf/supervisord.conf /etc/supervisor/supervisord.conf
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
+COPY docker/supervisord.conf /etc/supervisor/supervisord.conf
+CMD ["supervisord","-c","/etc/supervisor/supervisord.conf"]
+
+FROM builder AS developer
+
+COPY docker/conf/php/php.ini /usr/local/etc/php/php.ini
+RUN ln -s ${APP_DIR}/docker/docker-entrypoint.sh /usr/local/bin/docker-entrypoint

@@ -1,4 +1,4 @@
-version: '3'
+version: '3.9'
 
 networks:
     app-net:
@@ -51,7 +51,10 @@ services:
             MYSQL_DATABASE: 'gpx'
 
     app:
-        build: 'docker/app'
+        build:
+            context: .
+            dockerfile: Dockerfile
+            target: developer
         volumes:
             - './:/app'
         depends_on:
@@ -59,5 +62,6 @@ services:
         networks:
             - 'app-net'
         ports:
-            - '80:80'
-            - '443:443'
+            - "80:80"
+        environment:
+            DATABASE_URL: "mysql://root:root@db:3306/gpx?serverVersion=8.0"

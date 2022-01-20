@@ -1,0 +1,15 @@
+librabbitmq-dev
+libicu-dev
+libxml2-dev
+libsodium-dev
+libssh-dev
+libzip-dev
+zip
+iputils-ping
+net-tools
+git
+mc
+jq
+default-mysql-client
+cron
+supervisor
