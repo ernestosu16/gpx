@@ -7,7 +7,7 @@ use App\Entity\TrabajadorCredencial;
 use App\Form\Admin\EstructuraType;
 use App\Repository\EstructuraRepository;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 use JetBrains\PhpStorm\Pure;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,11 +18,12 @@ use Symfony\Component\Routing\Annotation\Route;
 final class EstructuraController extends _CrudController_
 {
     #[Pure] public function __construct(
+        protected ManagerRegistry    $managerRegistry,
+        protected PaginatorInterface $paginator,
         private EstructuraRepository $estructuraRepository,
-        protected PaginatorInterface $paginator
     )
     {
-        parent::__construct($paginator);
+        parent::__construct($managerRegistry, $paginator);
     }
 
     protected static function entity(): string

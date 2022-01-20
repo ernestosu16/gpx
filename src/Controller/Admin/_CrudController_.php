@@ -4,8 +4,12 @@ namespace App\Controller\Admin;
 
 use App\Controller\_Controller_;
 use App\Service\NotifyService;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\ORMInvalidArgumentException;
+use Doctrine\Persistence\ManagerRegistry;
 use Knp\Component\Pager\PaginatorInterface;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use ReflectionProperty;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -46,9 +50,18 @@ abstract class _CrudController_ extends _Controller_
     private array $page = ['limit' => 20, 'orderBy' => []];
 
     public function __construct(
+        protected ManagerRegistry    $managerRegistry,
         protected PaginatorInterface $paginator
     )
     {
+    }
+
+    public static function getSubscribedServices(): array
+    {
+        $services = parent::getSubscribedServices();
+        $services['app.service.notify'] = NotifyService::class;
+        $services['doctrine.orm.entity_manager'] = '?' . EntityManagerInterface::class;
+        return $services;
     }
 
     protected static function fields(): array
@@ -71,7 +84,7 @@ abstract class _CrudController_ extends _Controller_
     {
         $fields = static::fields();
         if (empty($fields)) {
-            $metadata = $this->getDoctrine()->getManager()->getClassMetadata(static::entity());
+            $metadata = $this->managerRegistry->getManager()->getClassMetadata(static::entity());
             /** @var ReflectionProperty $field */
             foreach ($metadata->reflFields as $field) {
                 if ($field->getName() === 'id') continue;
@@ -114,7 +127,7 @@ abstract class _CrudController_ extends _Controller_
         $this->denyAccessUnlessGranted([], $request);
         $settings = $this->settings();
 
-        $query = $this->getDoctrine()
+        $query = $this->managerRegistry
             ->getRepository(static::entity())
             ->createQueryBuilder('q');
 
@@ -137,13 +150,6 @@ abstract class _CrudController_ extends _Controller_
         ]);
     }
 
-    public static function getSubscribedServices(): array
-    {
-        $services = parent::getSubscribedServices();
-        $services['app.service.notify'] = NotifyService::class;
-        return $services;
-    }
-
     #[Route('/new', name: '_new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
@@ -157,16 +163,16 @@ abstract class _CrudController_ extends _Controller_
         if ($form->isSubmitted() && $form->isValid()) {
 
             if (static::parentCode()) {
-                $parent = $this->getDoctrine()->getManager()->getRepository($class)->findOneByCodigo(static::parentCode());
+                $parent = $this->managerRegistry->getManager()->getRepository($class)->findOneByCodigo(static::parentCode());
                 if (!$parent)
                     throw new ORMInvalidArgumentException(sprintf("No se encontró el padre el código \"%s\" buscado", static::parentCode()));
                 $entity->setParent($parent);
             }
 
-            $this->getDoctrine()->getManager()->persist($entity);
-            $this->getDoctrine()->getManager()->flush();
+            $this->managerRegistry->getManager()->persist($entity);
+            $this->managerRegistry->getManager()->flush();
 
-            $this->get('app.service.notify')->addToastr('Creado', 'Datos creado correctamente.');
+            $this->container->get('app.service.notify')->addToastr('Creado', 'Datos creado correctamente.');
             return $this->redirectToRoute($settings['routes'][self::INDEX], [], Response::HTTP_SEE_OTHER);
         }
 
@@ -177,20 +183,19 @@ abstract class _CrudController_ extends _Controller_
         ]);
     }
 
-
     #[Route('/{id}/edit', name: '_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, string $id): Response
     {
         $this->denyAccessUnlessGranted([], $request);
-        $entity = $this->getDoctrine()->getRepository(static::entity())->find($id);
+        $entity = $this->managerRegistry->getRepository(static::entity())->find($id);
         $settings = $this->settings();
         $form = $this->createForm(static::formType(), $entity);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entity = $form->getData();
-            $this->getDoctrine()->getManager()->persist($entity);
-            $this->getDoctrine()->getManager()->flush();
+            $this->managerRegistry->getManager()->persist($entity);
+            $this->managerRegistry->getManager()->flush();
 
             $this->get('app.service.notify')->addToastr('Editar', 'Editado correctamente.');
             return $this->redirectToRoute($settings['routes'][self::INDEX], [], Response::HTTP_SEE_OTHER);
@@ -207,9 +212,9 @@ abstract class _CrudController_ extends _Controller_
     public function delete(Request $request, $id): Response
     {
         $this->denyAccessUnlessGranted([], $request);
-        $entity = $this->getDoctrine()->getRepository(static::entity())->find($id);
+        $entity = $this->managerRegistry->getRepository(static::entity())->find($id);
         if ($this->isCsrfTokenValid('delete' . $entity->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager = $this->managerRegistry->getManager();
             $entityManager->remove($entity);
             $entityManager->flush();
 

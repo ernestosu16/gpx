@@ -7,7 +7,9 @@ use App\Entity\TrabajadorCredencial;
 use App\Form\Admin\TrabajadorType;
 use App\Repository\EstructuraRepository;
 use App\Repository\TrabajadorRepository;
+use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 use JetBrains\PhpStorm\Pure;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,12 +20,13 @@ use Symfony\Component\Routing\Annotation\Route;
 final class TrabajadorController extends _CrudController_
 {
     #[Pure] public function __construct(
+        protected ManagerRegistry    $managerRegistry,
+        protected PaginatorInterface $paginator,
         private TrabajadorRepository $trabajadorRepository,
         private EstructuraRepository $estructuraRepository,
-        protected PaginatorInterface $paginator
     )
     {
-        parent::__construct($paginator);
+        parent::__construct($managerRegistry, $paginator);
     }
 
     protected static function entity(): string
@@ -102,5 +105,26 @@ final class TrabajadorController extends _CrudController_
 
 
         return $query;
+    }
+
+    #[Route('/{id}', name: '_delete', methods: ['POST'])]
+    public function delete(Request $request, $id): Response
+    {
+        $this->denyAccessUnlessGranted([], $request);
+        $entity = $this->trabajadorRepository->find($id);
+        if ($this->isCsrfTokenValid('delete' . $entity->getId(), $request->request->get('_token'))) {
+            $entityManager = $this->managerRegistry->getManager();
+            try {
+                $entityManager->remove($entity);
+                $entityManager->flush();
+                $this->container->get('app.service.notify')->addToastr('Eliminado', 'Eliminado correctamente.');
+            } catch (ForeignKeyConstraintViolationException $exception) {
+                $this->container->get('app.service.notify')->addBsAlert('Eliminado', $exception->getMessage());
+            }
+
+        }
+
+        $settings = $this->settings();
+        return $this->redirectToRoute($settings['routes'][self::INDEX], [], Response::HTTP_SEE_OTHER);
     }
 }
