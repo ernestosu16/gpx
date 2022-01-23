@@ -3,9 +3,9 @@
 namespace App\Form\Admin;
 
 use App\Entity\Estructura;
+use App\Entity\Localizacion;
 use App\Entity\Nomenclador\EstructuraTipo;
 use App\Entity\Nomenclador\Grupo;
-use App\Entity\Localizacion;
 use App\Entity\Trabajador;
 use App\Entity\TrabajadorCredencial;
 use App\Form\Admin\Event\EstructuraTypeSubscriber;
@@ -90,6 +90,7 @@ final class EstructuraType extends BaseAdminType
                 'attr' => ['class' => 'form-control input-sm'],
                 'label' => 'codigo_postal',
                 'label_attr' => ['class' => 'control-label'],
+                'help' => 'Código Postal al que pertenece la estructura.'
             ])
             ->add('tipos', EntityType::class, [
                 'class' => EstructuraTipo::class,
@@ -131,7 +132,7 @@ final class EstructuraType extends BaseAdminType
                 'label_attr' => ['class' => 'control-label'],
                 'disabled' => $data === $estructura && !in_array('ROLE_ADMIN', $credencial->getRoles())
             ])
-            ->add('parametros', EstructuraExtendType::class,[
+            ->add('parametros', EstructuraExtendType::class, [
                 'label' => false
             ]);
 
@@ -152,6 +153,15 @@ final class EstructuraType extends BaseAdminType
         if (in_array('ROLE_ADMIN', $credencial->getRoles())) {
             return $estructura->getRoot()->getTiposPermitidos();
         }
-        return $estructura->getTiposPermitidos();
+
+        # Quitando de la lista
+        $collection = $estructura->getTiposPermitidos();
+        foreach ($estructura->getTipos() as $item) {
+            $collection = array_filter($collection, function (EstructuraTipo $tipo) use ($item) {
+                return $tipo !== $item ? $tipo : null;
+            });
+        }
+
+        return $collection;
     }
 }

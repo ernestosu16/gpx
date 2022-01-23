@@ -1,0 +1,12 @@
+<form method="post" action="{{ path('admin_estructura_delete', {'id': node.id}) }}">
+    <button class="btn btn-xs btn-primary info" type="button" data-toggle="modal"
+            data-target="#show"><i class="fa fa-info"></i></button>
+
+    <a class="btn btn-xs btn-primary2" title="{{ 'editar'|trans([],'admin') }}"
+       href="{{ path('admin_estructura_edit', {'id': node.id}) }}">
+        <i class="fa fa-pencil"></i></a>
+
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ node.id) }}">
+    <button type="button" class="btn btn-xs btn-danger delete" data-value="{{ node.id }}">
+        <i class="fa fa-remove"></i></button>
+</form>

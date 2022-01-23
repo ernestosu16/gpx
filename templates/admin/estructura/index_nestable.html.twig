@@ -64,6 +64,27 @@
                     });
                 });
             });
+
+            $('.delete').click(function (e) {
+                let btn = $(e.target);
+
+                if (!btn.data('value'))
+                    btn = $(e.target).parent();
+
+                swal({
+                        title: "Estás seguro",
+                        text: "¡No podrá recuperar los datos de la estructura!",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Si, bórralo!",
+                        cancelButtonText: "Cancelar"
+                    },
+                    function (isConfirm) {
+                        if (isConfirm)
+                            btn.parent('form').submit();
+                    });
+            });
         });
 
     </script>

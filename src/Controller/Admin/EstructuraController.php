@@ -6,6 +6,7 @@ use App\Entity\Estructura;
 use App\Entity\TrabajadorCredencial;
 use App\Form\Admin\EstructuraType;
 use App\Repository\EstructuraRepository;
+use App\Service\NotifyService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Persistence\ManagerRegistry;
 use JetBrains\PhpStorm\Pure;
@@ -20,10 +21,11 @@ final class EstructuraController extends _CrudController_
     #[Pure] public function __construct(
         protected ManagerRegistry    $managerRegistry,
         protected PaginatorInterface $paginator,
+        protected NotifyService      $notify,
         private EstructuraRepository $estructuraRepository,
     )
     {
-        parent::__construct($managerRegistry, $paginator);
+        parent::__construct($managerRegistry, $paginator, $notify);
     }
 
     protected static function entity(): string

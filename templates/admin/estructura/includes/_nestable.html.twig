@@ -16,15 +16,8 @@
             <div class="dd-handle dd-nodrag">
                 <div style="margin-left: 22px">
                     <span class="pull-right">
-                    <a class="btn btn-xs btn-primary2"
-                       href="{{ path('admin_estructura_edit', {'id': node.id}) }}"
-                       title="{{ 'editar'|trans([],'admin') }}">
-                        <i class="fa fa-pencil"></i>
-                    </a>
-                    <button class="btn btn-xs btn-primary info" type="button" data-toggle="modal" data-target="#show">
-                        <i class="fa fa-info"></i>
-                    </button>
-                </span>
+                        {% include 'admin/estructura/includes/_nestable_inputs.html.twig' with {'node': node} only %}
+                    </span>
                     {{ node.nombre }}
                     <span class="label h-bg-navy-blue" title="Provincia, Municipio y Código Postal">
                         <i class="fa fa-map-signs"></i>

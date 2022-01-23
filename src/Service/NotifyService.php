@@ -2,46 +2,48 @@
 
 namespace App\Service;
 
-use App\Utils\BsAlert;
-use App\Utils\Toastr;
+use App\Utils\Notify\Toastr;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 
-class NotifyService extends _Service_
+final class NotifyService extends _Service_
 {
     public const SUCCESS = 'success';
     public const INFO = 'info';
     public const WARNING = 'warning';
     public const ERROR = 'error';
 
-    private SessionInterface $session;
+    private ?string $type;
+    private ?string $message;
 
-    public function __construct(SessionInterface $session)
+    public function __construct(private SessionInterface $session)
     {
-        $this->session = $session;
     }
 
-    /**
-     * @param string $title
-     * @param string $message
-     * @param array $options
-     * @return $this
-     */
-    public function addToastr(string $title, string $message, array $options = Toastr::OPTIONS): static
+    public function setType(?string $type): NotifyService
     {
-        $toastr = new Toastr($message, $title, $options);
-        $this->session->getFlashBag()->add('toastr', $toastr);
+        $this->type = $type;
         return $this;
     }
 
-    public function addBsAlert(string $message, string $type = NotifyService::SUCCESS, string $icon = 'fa fa-check'): static
+    public function setMessage(?string $message): NotifyService
     {
-        $this->session->getFlashBag()->add('bsalert', new BsAlert($message, $type, $icon));
-
+        $this->message = $message;
         return $this;
     }
 
-    public function clearAll(){
+    public function toastr(array $options = Toastr::OPTIONS): Toastr
+    {
+        return new Toastr($this, $options);
+    }
+
+    public function render(): void
+    {
+        $this->session->getFlashBag()->add($this->type, $this->message);
+    }
+
+    public function clearAll()
+    {
         return $this->session->getFlashBag()->clear();
     }
 }

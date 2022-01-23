@@ -7,6 +7,8 @@ use App\Entity\TrabajadorCredencial;
 use App\Form\Admin\TrabajadorType;
 use App\Repository\EstructuraRepository;
 use App\Repository\TrabajadorRepository;
+use App\Service\NotifyService;
+use App\Service\NotifyServiceInterface;
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -22,11 +24,12 @@ final class TrabajadorController extends _CrudController_
     #[Pure] public function __construct(
         protected ManagerRegistry    $managerRegistry,
         protected PaginatorInterface $paginator,
+        protected NotifyService      $notify,
         private TrabajadorRepository $trabajadorRepository,
         private EstructuraRepository $estructuraRepository,
     )
     {
-        parent::__construct($managerRegistry, $paginator);
+        parent::__construct($managerRegistry, $paginator, $notify);
     }
 
     protected static function entity(): string
@@ -117,9 +120,9 @@ final class TrabajadorController extends _CrudController_
             try {
                 $entityManager->remove($entity);
                 $entityManager->flush();
-                $this->container->get('app.service.notify')->addToastr('Eliminado', 'Eliminado correctamente.');
+                $this->notify->toastr()->success('Eliminado correctamente.', 'Eliminado');
             } catch (ForeignKeyConstraintViolationException $exception) {
-                $this->container->get('app.service.notify')->addBsAlert('Eliminado', $exception->getMessage());
+                $this->notify->toastr()->error($exception->getMessage(), 'Eliminado');
             }
 
         }

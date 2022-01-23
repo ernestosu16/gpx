@@ -15,7 +15,8 @@
             </div>
             {% set fields = {
                 nombre: {class:'col-sm-12'},
-                codigo_postal: {class:'col-sm-6'}
+                codigo: {class:'col-xs-12 col-sm-6 col-lg-6'},
+                codigo_postal: {class:'col-xs-12 col-sm-6 col-lg-6'},
             } %}
             {% for key,field in fields %}
                 <div class="form-group {{ field.class }}">
@@ -34,7 +35,6 @@
                 parent: {class:'col-sm-12'},
                 municipio: {class:'col-sm-12'},
                 descripcion: {class:'col-sm-12'},
-                habilitado: {class:'col-sm-12'}
             } %}
             {% for key,field in fields %}
                 <div class="form-group {{ field.class }}">
@@ -52,7 +52,7 @@
             {% set fields = {
                 tipos: {class:'col-sm-12'},
                 grupos: {class:'col-sm-12'},
-                codigo: {class:'col-sm-12'},
+                habilitado: {class:'col-sm-12'},
             } %}
             {% for key,field in fields %}
                 <div class="form-group {{ field.class }}">

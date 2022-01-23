@@ -4,12 +4,11 @@ namespace App\Controller\Admin;
 
 use App\Controller\_Controller_;
 use App\Service\NotifyService;
+use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\ORMInvalidArgumentException;
 use Doctrine\Persistence\ManagerRegistry;
 use Knp\Component\Pager\PaginatorInterface;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use ReflectionProperty;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -51,7 +50,8 @@ abstract class _CrudController_ extends _Controller_
 
     public function __construct(
         protected ManagerRegistry    $managerRegistry,
-        protected PaginatorInterface $paginator
+        protected PaginatorInterface $paginator,
+        protected NotifyService      $notify,
     )
     {
     }
@@ -59,7 +59,6 @@ abstract class _CrudController_ extends _Controller_
     public static function getSubscribedServices(): array
     {
         $services = parent::getSubscribedServices();
-        $services['app.service.notify'] = NotifyService::class;
         $services['doctrine.orm.entity_manager'] = '?' . EntityManagerInterface::class;
         return $services;
     }
@@ -172,7 +171,7 @@ abstract class _CrudController_ extends _Controller_
             $this->managerRegistry->getManager()->persist($entity);
             $this->managerRegistry->getManager()->flush();
 
-            $this->container->get('app.service.notify')->addToastr('Creado', 'Datos creado correctamente.');
+            $this->notify->toastr()->success('Datos creado correctamente.', 'Creado');
             return $this->redirectToRoute($settings['routes'][self::INDEX], [], Response::HTTP_SEE_OTHER);
         }
 
@@ -197,7 +196,7 @@ abstract class _CrudController_ extends _Controller_
             $this->managerRegistry->getManager()->persist($entity);
             $this->managerRegistry->getManager()->flush();
 
-            $this->get('app.service.notify')->addToastr('Editar', 'Editado correctamente.');
+            $this->notify->toastr()->success('Editado correctamente.', 'Editar');
             return $this->redirectToRoute($settings['routes'][self::INDEX], [], Response::HTTP_SEE_OTHER);
         }
 
@@ -214,11 +213,15 @@ abstract class _CrudController_ extends _Controller_
         $this->denyAccessUnlessGranted([], $request);
         $entity = $this->managerRegistry->getRepository(static::entity())->find($id);
         if ($this->isCsrfTokenValid('delete' . $entity->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->managerRegistry->getManager();
-            $entityManager->remove($entity);
-            $entityManager->flush();
+            try {
+                $entityManager = $this->managerRegistry->getManager();
+                $entityManager->remove($entity);
+                $entityManager->flush();
+                $this->notify->toastr()->success('Eliminado', 'Eliminado correctamente.');
+            } catch (ForeignKeyConstraintViolationException $constraintViolationException) {
+                $this->notify->toastr()->error($constraintViolationException->getMessage());
+            }
 
-            $this->get('app.service.notify')->addToastr('Eliminado', 'Eliminado correctamente.');
         }
 
         $settings = $this->settings();
