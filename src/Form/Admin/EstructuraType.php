@@ -15,6 +15,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\ChoiceList\ChoiceList;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -59,7 +60,7 @@ final class EstructuraType extends BaseAdminType
             ])
             ->add('parent', EntityType::class, [
                 'class' => Estructura::class,
-                'required' => false,
+                'required' => !$credencial->getAdmin(),
                 'label' => 'pertenece',
                 'attr' => ['class' => 'form-control input-sm select2'],
                 'label_attr' => ['class' => 'control-label'],
@@ -136,6 +137,9 @@ final class EstructuraType extends BaseAdminType
                 'label' => false
             ]);
 
+//        if (!$credencial->getAdmin()) {
+//            $builder->add('grupos', HiddenType::class, ['label' => false, 'disabled' => true]);
+//        }
 
         $builder->addEventSubscriber(new EstructuraTypeSubscriber($this->container));
     }
