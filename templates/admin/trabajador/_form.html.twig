@@ -78,6 +78,16 @@
                 {{ form_errors(form.grupos) }}
             </div>
         </div>
+        {% if form.credencial.admin is defined %}
+        <div class="form-group">
+            {{ form_label(form.credencial.admin) }}
+            <div class="col-sm-8">
+                {{ form_widget(form.credencial.admin) }}
+                {{ form_help(form.credencial.admin) }}
+                {{ form_errors(form.credencial.admin) }}
+            </div>
+        </div>
+        {% endif %}
     </div>
 </div>
 <button class="btn btn-sm btn-success">{{ button_label|default('guardar'|trans({},'admin')) }}</button>

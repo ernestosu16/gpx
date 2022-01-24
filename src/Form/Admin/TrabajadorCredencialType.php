@@ -3,17 +3,20 @@
 namespace App\Form\Admin;
 
 use App\Entity\TrabajadorCredencial;
-use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-final class TrabajadorCredencialType extends AbstractType
+final class TrabajadorCredencialType extends BaseAdminType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        /** @var TrabajadorCredencial $credencial */
+        $credencial = $this->tokenStorage->getToken()->getUser();
+
         /** @var TrabajadorCredencial $data */
         $data = $builder->getData();
         $builder
@@ -36,6 +39,13 @@ final class TrabajadorCredencialType extends AbstractType
                     'label' => 'repetir contrasena',
                     'label_attr' => ['class' => 'col-sm-4 control-label'],
                 ],
+            ]);
+        if ($credencial->getAdmin())
+            $builder->add('admin', CheckboxType::class, [
+                'label' => 'is_admin',
+                'label_attr' => ['class' => 'col-sm-4 control-label'],
+                'required' => false,
+                'help' => 'Trabajador con acceso total al sistema.'
             ]);
     }
 
