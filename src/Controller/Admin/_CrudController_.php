@@ -207,7 +207,7 @@ abstract class _CrudController_ extends _Controller_
         ]);
     }
 
-    #[Route('/{id}', name: '_delete', methods: ['POST'])]
+    #[Route('/{id}/remove', name: '_delete', methods: ['POST'])]
     public function delete(Request $request, $id): Response
     {
         $this->denyAccessUnlessGranted([], $request);

@@ -8,7 +8,6 @@ use App\Form\Admin\TrabajadorType;
 use App\Repository\EstructuraRepository;
 use App\Repository\TrabajadorRepository;
 use App\Service\NotifyService;
-use App\Service\NotifyServiceInterface;
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -110,7 +109,7 @@ final class TrabajadorController extends _CrudController_
         return $query;
     }
 
-    #[Route('/{id}', name: '_delete', methods: ['POST'])]
+    #[Route('/{id}/remove', name: '_delete', methods: ['POST'])]
     public function delete(Request $request, $id): Response
     {
         $this->denyAccessUnlessGranted([], $request);
