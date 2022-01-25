@@ -112,6 +112,7 @@ final class EstructuraType extends BaseAdminType
                 'attr' => ['class' => 'form-control input-sm select2'],
                 'label_attr' => ['class' => 'control-label'],
                 'help' => 'Grupos validos que admite esta estructura.',
+                'choices' => $this->getChoiceGrupos(),
                 'disabled' => $data === $estructura && !in_array('ROLE_ADMIN', $credencial->getRoles())
             ])
             ->add('municipio', EntityType::class, [
