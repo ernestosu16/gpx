@@ -418,4 +418,21 @@ class Estructura extends BaseNestedTree
     {
         return $this->getParametros()['codigo_operador'];
     }
+
+
+    public function getSubordinadas(): Collection
+    {
+        $closure = function (ArrayCollection $collection, Collection $estructuras) use (&$closure): Collection {
+            foreach ($estructuras as $estructura) {
+                if ($estructura->getChildren()->count() > 0) {
+                    $closure($collection, $estructura->getChildren());
+                }
+                $collection->add($estructura);
+            }
+            return $collection;
+        };
+
+        $collection = new ArrayCollection();
+        return ($this->getChildren()->count() > 0) ? $closure($collection, $this->getChildren()) : $collection;
+    }
 }

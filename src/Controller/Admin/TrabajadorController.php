@@ -16,19 +16,21 @@ use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 #[Route(path: '/trabajador', name: 'admin_trabajador')]
 final class TrabajadorController extends _CrudController_
 {
     #[Pure] public function __construct(
-        protected ManagerRegistry    $managerRegistry,
-        protected PaginatorInterface $paginator,
-        protected NotifyService      $notify,
-        private TrabajadorRepository $trabajadorRepository,
-        private EstructuraRepository $estructuraRepository,
+        protected TokenStorageInterface $tokenStorage,
+        protected ManagerRegistry       $managerRegistry,
+        protected PaginatorInterface    $paginator,
+        protected NotifyService         $notify,
+        private TrabajadorRepository    $trabajadorRepository,
+        private EstructuraRepository    $estructuraRepository,
     )
     {
-        parent::__construct($managerRegistry, $paginator, $notify);
+        parent::__construct($tokenStorage, $managerRegistry, $paginator, $notify);
     }
 
     protected static function entity(): string

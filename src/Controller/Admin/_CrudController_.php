@@ -13,6 +13,7 @@ use ReflectionProperty;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 abstract class _CrudController_ extends _Controller_
 {
@@ -49,9 +50,10 @@ abstract class _CrudController_ extends _Controller_
     private array $page = ['limit' => 20, 'orderBy' => []];
 
     public function __construct(
-        protected ManagerRegistry    $managerRegistry,
-        protected PaginatorInterface $paginator,
-        protected NotifyService      $notify,
+        protected TokenStorageInterface $tokenStorage,
+        protected ManagerRegistry       $managerRegistry,
+        protected PaginatorInterface    $paginator,
+        protected NotifyService         $notify,
     )
     {
     }
