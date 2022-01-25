@@ -1,6 +1,6 @@
 <div id="tab-1" class="tab-pane active">
     <div class="panel-body">
-        {% set fields = ['codigo', 'nombre','descripcion', 'menus', 'habilitado'] %}
+        {% set fields = ['codigo', 'nombre','descripcion', 'menus', 'estructura_tipos', 'habilitado'] %}
         {% for field in fields %}
             <div class="form-group">
                 {{ form_label(form[field]) }}

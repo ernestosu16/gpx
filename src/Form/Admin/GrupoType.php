@@ -2,13 +2,12 @@
 
 namespace App\Form\Admin;
 
+use App\Entity\Nomenclador\EstructuraTipo;
 use App\Entity\Nomenclador\Grupo;
 use App\Entity\Nomenclador\Menu;
 use App\Manager\RouteManager;
 use App\Repository\Nomenclador\MenuRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -18,12 +17,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\Route;
 use function Symfony\Component\String\u;
 
-final class GrupoType extends AbstractType
+final class GrupoType extends BaseAdminType
 {
-    public function __construct(private ContainerInterface $container)
-    {
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         /** @var RouteManager $routeManager */
@@ -66,6 +61,16 @@ final class GrupoType extends AbstractType
                         return $menu->getParent()->getNombre();
                     return '';
                 },
+            ])
+            ->add('estructura_tipos', EntityType::class, [
+                'class' => EstructuraTipo::class,
+                'required' => false,
+                'multiple' => true,
+                'attr' => ['class' => 'form-control input-sm select2'],
+                'label' => 'estructura tipos',
+                'label_attr' => ['class' => 'col-sm-2 control-label'],
+                'help' => 'Tipos de estructura que pueden agregar este grupo',
+                'by_reference' => false
             ])
             ->add('accesos', ChoiceType::class, [
                 'required' => false,

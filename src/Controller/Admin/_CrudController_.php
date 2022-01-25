@@ -168,8 +168,7 @@ abstract class _CrudController_ extends _Controller_
                 $entity->setParent($parent);
             }
 
-            $this->managerRegistry->getManager()->persist($entity);
-            $this->managerRegistry->getManager()->flush();
+            $this->save($entity);
 
             $this->notify->toastr()->success('Datos creado correctamente.', 'Creado');
             return $this->redirectToRoute($settings['routes'][self::INDEX], [], Response::HTTP_SEE_OTHER);
@@ -193,8 +192,8 @@ abstract class _CrudController_ extends _Controller_
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entity = $form->getData();
-            $this->managerRegistry->getManager()->persist($entity);
-            $this->managerRegistry->getManager()->flush();
+
+            $this->save($entity);
 
             $this->notify->toastr()->success('Editado correctamente.', 'Editar');
             return $this->redirectToRoute($settings['routes'][self::INDEX], [], Response::HTTP_SEE_OTHER);
@@ -226,5 +225,11 @@ abstract class _CrudController_ extends _Controller_
 
         $settings = $this->settings();
         return $this->redirectToRoute($settings['routes'][self::INDEX], [], Response::HTTP_SEE_OTHER);
+    }
+
+    protected function save(object $entity)
+    {
+        $this->managerRegistry->getManager()->persist($entity);
+        $this->managerRegistry->getManager()->flush();
     }
 }

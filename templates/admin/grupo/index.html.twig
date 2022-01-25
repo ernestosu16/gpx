@@ -8,8 +8,6 @@
             <tr>
                 <th>{{ 'nombre'|trans([],'admin') }}</th>
                 <th>{{ 'descripcion'|trans([],'admin') }}</th>
-                <th>{{ 'menu'|trans([],'admin') }}</th>
-                <th>{{ 'estructuras'|trans([],'admin') }}</th>
                 <th>{{ 'habilitado'|trans([],'admin') }}</th>
                 <th></th>
             </tr>
@@ -20,24 +18,6 @@
                 <tr>
                     <td>{{ grupo.nombre }}</td>
                     <td>{{ grupo.descripcion }}</td>
-                    <td>
-                        <div class="article">
-                            <ul class="inline ">
-                                {% for menu in grupo.menus %}
-                                    <li>{{ menu }} ({{ menu.route }})</li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="article">
-                            <ul class="inline">
-                                {% for estructura in grupo.estructuras %}
-                                    <li>{{ estructura }}</li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    </td>
                     <td>{{ grupo.habilitado ? 'si'|trans([],'admin') : 'no'|trans([],'admin') }}</td>
                     <td>
                         <a class="btn btn-xs btn-default" href="{{ path('admin_grupo_edit', {'id': grupo.id}) }}"
