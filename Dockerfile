@@ -51,5 +51,9 @@ CMD ["supervisord","-c","/etc/supervisor/supervisord.conf"]
 
 FROM builder AS developer
 
+## Activando el xdebug
+RUN pecl install xdebug && \
+    echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini
+
 COPY docker/conf/php/php.ini /usr/local/etc/php/php.ini
 RUN ln -s ${APP_DIR}/docker/docker-entrypoint.sh /usr/local/bin/docker-entrypoint

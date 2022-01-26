@@ -6,7 +6,6 @@ use App\Controller\_Controller_;
 use App\Service\NotifyService;
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\ORMInvalidArgumentException;
 use Doctrine\Persistence\ManagerRegistry;
 use Knp\Component\Pager\PaginatorInterface;
 use ReflectionProperty;
@@ -163,13 +162,6 @@ abstract class _CrudController_ extends _Controller_
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            if (static::parentCode()) {
-                $parent = $this->managerRegistry->getManager()->getRepository($class)->findOneByCodigo(static::parentCode());
-                if (!$parent)
-                    throw new ORMInvalidArgumentException(sprintf("No se encontró el padre el código \"%s\" buscado", static::parentCode()));
-                $entity->setParent($parent);
-            }
-
             $this->save($entity);
 
             $this->notify->toastr()->success('Datos creado correctamente.', 'Creado');
@@ -194,7 +186,6 @@ abstract class _CrudController_ extends _Controller_
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entity = $form->getData();
-
             $this->save($entity);
 
             $this->notify->toastr()->success('Editado correctamente.', 'Editar');

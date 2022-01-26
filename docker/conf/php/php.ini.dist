@@ -3,3 +3,9 @@ short_open_tag = off
 
 [Date]
 date.timezone = America/Havana
+
+;[Xdebug]
+;xdebug.mode=debug
+;xdebug.start_with_request=yes
+;xdebug.client_host="<host>"
+;xdebug.client_port=9003

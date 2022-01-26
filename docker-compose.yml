@@ -65,3 +65,4 @@ services:
             - "80:80"
         environment:
             DATABASE_URL: "mysql://root:root@db:3306/gpx?serverVersion=8.0"
+            PHP_IDE_CONFIG: "serverName=localhost"
